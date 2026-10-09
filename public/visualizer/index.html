@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TOGETHER // 3D BRUTALIST AUDIO STAGE</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="shortcut icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <!-- Technical Monospace & Heavy Brutalist Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+  <!-- Core Brutalist Styling -->
+  <link rel="stylesheet" href="style.css?v=2">
+
+  <!-- Local Three.js 3D WebGL Library + OrbitControls (No External CDN Delay) -->
+  <script src="three.min.js"></script>
+  <script src="OrbitControls.js"></script>
+</head>
+<body>
+  <!-- 3D WebGL Canvas Layer -->
+  <canvas id="stage-canvas"></canvas>
+
+  <!-- Loading / WebGL Detection Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-card">
+      <div class="loading-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <img src="logo.png?v=2" alt="TOGETHER" width="24" height="24" style="width: 24px; height: 24px; max-width: 24px; max-height: 24px; object-fit: contain; border-radius: 3px; display: inline-block;" class="loading-logo-img">
+          <span class="hazard-tag">INITIALIZING</span>
+        </div>
+        <span class="mono-code">SYS.3D_STAGE // V2.0</span>
+      </div>
+      <h2 class="loading-title">LOADING 3D AUDIO ENGINE...</h2>
+      <div class="loading-bar-wrap">
+        <div class="loading-bar-fill" id="loading-progress"></div>
+      </div>
+      <p class="loading-sub" id="loading-status">Compiling WebGL Shaders & Geometry...</p>
+    </div>
+  </div>
+
+  <!-- WebGL Not Supported Fallback (Hidden by default) -->
+  <div id="webgl-fallback" class="webgl-fallback" style="display: none;">
+    <div class="fallback-card">
+      <div class="hazard-stripe-top"></div>
+      <h1>⚠️ WEBGL NOT SUPPORTED</h1>
+      <p>Your browser or graphics driver does not support hardware-accelerated 3D WebGL.</p>
+      <div class="fallback-track-card">
+        <img id="fallback-art" src="logo.png?v=2" alt="Track Art" width="64" height="64" style="width: 64px; height: 64px; max-width: 64px; max-height: 64px; object-fit: cover;">
+        <div class="fallback-meta">
+          <h3 id="fallback-title">Active Track</h3>
+          <p id="fallback-artist">Together Music Bot</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Neo-Brutalist HUD Interface -->
+  <div class="hud-container">
+
+    <!-- Top Brutalist Header Block -->
+    <header class="brutalist-header">
+      <div class="header-left">
+        <div class="system-badge">
+          <img src="logo.png?v=2" alt="TOGETHER" width="22" height="22" style="width: 22px; height: 22px; max-width: 22px; max-height: 22px; object-fit: contain; border-radius: 3px; display: inline-block;" class="brand-logo-img">
+          <span class="status-indicator"></span>
+          <span class="system-title">TOGETHER</span>
+        </div>
+        <div class="tag-box mono" id="mode-tag">[ STAGE // 3D_ACTIVE ]</div>
+        <div class="tag-box caution mono">/// LIVE PROTOCOL ///</div>
+      </div>
+
+      <div class="header-right">
+        <div class="metric-box">
+          <span class="metric-key">FPS</span>
+          <span class="metric-val mono" id="fps-text">60</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-key">STREAM</span>
+          <span class="metric-val mono green" id="player-state-text">CONNECTED</span>
+        </div>
+        <button class="brutalist-btn" id="theme-btn" title="Switch Brutalist Palette">
+          <span class="btn-icon">🎨</span>
+          <span class="btn-label" id="theme-name">CYBER BRUTAL</span>
+        </button>
+        <button class="brutalist-btn icon-only" id="camera-reset-btn" title="Reset 3D Camera">
+          <span class="btn-icon">🎯</span>
+        </button>
+        <button class="brutalist-btn icon-only" id="fullscreen-btn" title="Toggle Fullscreen">
+          <span class="btn-icon">⛶</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Center Stage Floating Track Hero -->
+    <main class="center-stage">
+      <div class="hero-block" id="hero-block">
+        <div class="hero-header-strip">
+          <span class="hero-strip-tag">[ ACTIVE NOW ]</span>
+          <span class="hero-strip-source" id="track-source">LOSSLESS AUDIO</span>
+          <span class="corner-crosshair">[+]</span>
+        </div>
+
+        <div class="hero-content">
+          <div class="art-frame">
+            <img id="hero-artwork" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300" alt="Album Cover">
+            <div class="art-shadow"></div>
+          </div>
+          <div class="hero-text-col">
+            <div class="hero-badge-row">
+              <span class="brutal-pill" id="badge-quality">HIGH FIDELITY</span>
+              <span class="brutal-pill sub" id="time-badge">0:00 / 0:00</span>
+            </div>
+            <h1 class="hero-title" id="track-title">Waiting for Music...</h1>
+            <h2 class="hero-artist" id="track-artist">Use /play in Discord to stream</h2>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom Brutalist Deck Controller -->
+    <footer class="brutalist-deck">
+      <div class="deck-frame">
+        <!-- Progress Bar Strip with Hazard Accent -->
+        <div class="scrubber-section">
+          <span class="time-readout mono" id="time-current">0:00</span>
+          <div class="progress-track" id="scrubber-bar">
+            <div class="progress-fill" id="scrubber-fill"></div>
+          </div>
+          <span class="time-readout mono" id="time-total">0:00</span>
+        </div>
+
+        <div class="deck-main-row">
+          <!-- Left Mini Info -->
+          <div class="deck-mini-info">
+            <img class="deck-thumb" id="deck-artwork" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100" alt="Art">
+            <div class="deck-mini-text">
+              <span class="deck-mini-title" id="deck-title">No Track Active</span>
+              <span class="deck-mini-artist mono" id="deck-artist">Together Engine</span>
+            </div>
+          </div>
+
+          <!-- Center Mechanical Tactile Buttons -->
+          <div class="deck-controls">
+            <button class="tactile-btn" id="btn-prev" title="Previous Track">
+              <span>⏮</span>
+            </button>
+            <button class="tactile-btn play" id="btn-play-pause" title="Play / Pause">
+              <span id="btn-play-icon">▶</span>
+            </button>
+            <button class="tactile-btn" id="btn-next" title="Skip Track">
+              <span>⏭</span>
+            </button>
+          </div>
+
+          <!-- Right Status Badges & Brutalist Meter -->
+          <div class="deck-status-col">
+            <div class="status-pill-group">
+              <span class="status-pill" id="badge-loop">LOOP: OFF</span>
+              <span class="status-pill" id="badge-autoplay">AUTO: OFF</span>
+            </div>
+            <div class="stepped-vu-meter">
+              <div class="vu-step" id="vu-1"></div>
+              <div class="vu-step" id="vu-2"></div>
+              <div class="vu-step" id="vu-3"></div>
+              <div class="vu-step" id="vu-4"></div>
+              <div class="vu-step" id="vu-5"></div>
+              <div class="vu-step" id="vu-6"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Hazard Bar -->
+        <div class="bottom-hazard-tape"></div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Audio Visualizer Core Script -->
+  <script src="visualizer.js?v=2"></script>
+</body>
+</html>

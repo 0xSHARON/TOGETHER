@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+logs/
+.DS_Store
+Thumbs.db
+*.pem
+*.key
+assets/emojis/*-source.png
+lavalink/application.yml
+lavalink/Lavalink.jar
+lavalink/logs/
+lavalink/plugins/
+extra/
+.cache/

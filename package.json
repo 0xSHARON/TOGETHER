@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "TOGETHER",
+  "version": "1.0.0",
+  "description": "TOGETHER • Sound that brings us closer. A polished, component-first Discord music bot powered by the Native TOGETHER Audio Engine, @discordjs/voice, and FFmpeg.",
+  "main": "devrock.js",
+  "type": "commonjs",
+  "private": true,
+  "scripts": {
+    "start": "node devrock.js",
+    "dev": "node --watch devrock.js",
+    "check": "node scripts/check.js",
+    "test": "node --test",
+    "setup:channels": "node scripts/setup_guild_channels.js",
+    "clear:guild-commands": "node scripts/clear_guild_slash_commands.js",
+    "tunnel": "npx localtunnel --port 5050"
+  },
+  "keywords": [
+    "discord",
+    "music-bot",
+    "together",
+    "native-audio-engine",
+    "discordjs-voice",
+    "ffmpeg",
+    "components-v2",
+    "audio-streaming",
+    "spotify"
+  ],
+  "author": "0xSHARON",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0xSHARON/TOGETHER.git"
+  },
+  "engines": {
+    "node": ">=20.18.1"
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.19.2",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@flytri/lyrics-finder": "^1.0.7",
+    "@napi-rs/canvas": "^0.1.100",
+    "axios": "^1.13.6",
+    "discord-hybrid-sharding": "^3.0.1",
+    "discord.js": "^14.25.1",
+    "dokdo": "1.0.1",
+    "gifenc": "^1.0.3",
+    "kazagumo": "^3.4.1",
+    "kazagumo-spotify": "^2.1.1",
+    "libsodium-wrappers": "^0.8.4",
+    "moment-timezone": "^0.6.0",
+    "mongoose": "^9.2.4",
+    "opusscript": "^0.0.8",
+    "play-dl": "^1.9.7",
+    "spotify-url-info": "^3.3.3",
+    "undici": "^6.0.0"
+  },
+  "license": "SEE LICENSE IN LICENSE.md"
+}
