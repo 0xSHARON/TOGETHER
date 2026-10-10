@@ -109,8 +109,11 @@ module.exports = {
       })
       .setTimestamp();
 
-    if (track?.thumbnail) {
-      embed.setThumbnail(track.thumbnail);
+    const thumbUrl = track?.thumbnail || track?.artworkUrl || (typeof track?.displayThumbnail === "function" ? track.displayThumbnail("hqdefault") : null);
+    if (thumbUrl) {
+      embed.setThumbnail(thumbUrl.startsWith("http://") ? thumbUrl.replace(/^http:\/\//, "https://") : thumbUrl);
+    } else {
+      embed.setThumbnail(`${baseHost}/logo.png?v=2`);
     }
 
     return message.reply({

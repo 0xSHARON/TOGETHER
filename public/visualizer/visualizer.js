@@ -50,7 +50,7 @@ let rawTarget =
 
 let activeTargetId = String(rawTarget).trim().replace(/\/+$/, "");
 
-// Discord Embedded Activity Detection (Desktop, Web, iOS & Android)
+// Discord Embedded Activity Detection & Auto-Handshake (Desktop, Web, iOS & Android)
 const isInsideDiscord =
   window.parent !== window ||
   urlParams.has("frame_id") ||
@@ -63,6 +63,39 @@ if (isInsideDiscord) {
   const modeTag = document.getElementById("mode-tag");
   if (modeTag) modeTag.innerText = "[ DISCORD ACTIVITY // SYNCED ]";
   document.body.classList.add("in-discord-activity");
+
+  // Discord Embedded App RPC Protocol Handshake
+  const frameId = urlParams.get("frame_id");
+  if (frameId && window.parent) {
+    try {
+      const rpcSource = window.parent.opener || window.parent;
+      const handshakePayload = {
+        v: 1,
+        encoding: "json",
+        client_id: "863496211667484676",
+        frame_id: frameId,
+        sdk_version: "1.1.0"
+      };
+
+      // Send Opcode 0 (HANDSHAKE) to parent window
+      rpcSource.postMessage([0, handshakePayload], "*");
+
+      // Listen for Discord Client Handshake Confirmation / HELLO / FRAME
+      window.addEventListener("message", (ev) => {
+        if (!Array.isArray(ev.data)) return;
+        const [opcode, payload] = ev.data;
+        if (opcode === 0) {
+          // Handshake confirmed by Discord
+          rpcSource.postMessage([1, { cmd: "SUBSCRIBE", evt: "VOICE_CHANNEL_SELECT", nonce: "init" }], "*");
+        } else if (opcode === 3) {
+          // HELLO received
+          rpcSource.postMessage([0, handshakePayload], "*");
+        }
+      });
+    } catch (e) {
+      console.warn("[Discord Activity] Handshake notice:", e.message);
+    }
+  }
 }
 
 let playerState = {
@@ -474,9 +507,28 @@ function applyPlayerState(data) {
   if (fallbackArtist) fallbackArtist.innerText = artist;
 
   if (playerState.thumbnail) {
-    if (heroArt) heroArt.src = playerState.thumbnail;
-    if (deckArt) deckArt.src = playerState.thumbnail;
-    if (fallbackArt) fallbackArt.src = playerState.thumbnail;
+    let rawThumb = playerState.thumbnail;
+    if (rawThumb.startsWith("http://")) rawThumb = rawThumb.replace(/^http:\/\//, "https://");
+
+    const setResilientImage = (imgEl) => {
+      if (!imgEl) return;
+      imgEl.referrerPolicy = "no-referrer";
+      imgEl.crossOrigin = "anonymous";
+      imgEl.onerror = function() {
+        if (this.src.includes("maxresdefault.jpg")) {
+          this.src = this.src.replace("maxresdefault.jpg", "hqdefault.jpg");
+        } else if (this.src.includes("hqdefault.jpg")) {
+          this.src = this.src.replace("hqdefault.jpg", "mqdefault.jpg");
+        } else if (!this.src.includes("logo.png")) {
+          this.src = "logo.png?v=2";
+        }
+      };
+      imgEl.src = rawThumb;
+    };
+
+    setResilientImage(heroArt);
+    setResilientImage(deckArt);
+    setResilientImage(fallbackArt);
   }
 
   // Play / Pause Icon

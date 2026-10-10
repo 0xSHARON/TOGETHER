@@ -64,13 +64,20 @@ function getGuildPlayerState(client, targetId) {
   }
 
   const current = player.queue?.current;
+  let rawThumb = current?.thumbnail || current?.artworkUrl || (typeof current?.displayThumbnail === "function" ? current.displayThumbnail("hqdefault") : null);
+  if (!rawThumb) {
+    rawThumb = "logo.png";
+  } else if (rawThumb.startsWith("http://")) {
+    rawThumb = rawThumb.replace(/^http:\/\//, "https://");
+  }
+
   return {
     guildId,
     playing: Boolean(player.playing && current),
     paused: Boolean(player.paused),
     title: current?.title || "Unknown Track",
     author: current?.author || "Unknown Artist",
-    thumbnail: current?.thumbnail || current?.displayThumbnail?.("hqdefault") || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&auto=format&fit=crop&q=80",
+    thumbnail: rawThumb,
     position: player.position || 0,
     duration: current?.length || 0,
     loop: player.loop || "none",
