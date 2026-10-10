@@ -217,19 +217,19 @@ class TogetherStreamWorker {
    */
   static async extractStreamUrl(target) {
     const cookieArgs = getCookiesArgs();
-    const queryStr = typeof target === "string"
-      ? target
-      : (target.uri || target.query || `${target.title || ""} ${target.author || ""}`.trim());
 
-    // 0. Direct Media Stream (Saavn CDN or direct media links)
-    if (queryStr.startsWith("http") && (queryStr.includes("saavncdn.com") || /\.(mp3|mp4|m4a|aac|opus|ogg)(\?|$)/i.test(queryStr))) {
-      return queryStr;
+    // 0. Extract raw URI and determine if target is a direct audio/video URL
+    const rawUri = typeof target === "string" ? target.trim() : (target?.uri || "").trim();
+    const isDirectSoundcloud = rawUri.startsWith("http") && rawUri.includes("soundcloud.com");
+    const isDirectYt = rawUri.startsWith("http") && (rawUri.includes("youtube.com") || rawUri.includes("youtu.be"));
+    const isDirectMedia = rawUri.startsWith("http") && (rawUri.includes("saavncdn.com") || /\.(mp3|mp4|m4a|aac|opus|ogg)(\?|$)/i.test(rawUri));
+
+    // Instant return for direct media links (Saavn 320kbps CDN or raw audio files)
+    if (isDirectMedia) {
+      return rawUri;
     }
 
-    const isDirectSoundcloud = queryStr.startsWith("http") && queryStr.includes("soundcloud.com");
-    const isDirectYt = queryStr.startsWith("http") && (queryStr.includes("youtube.com") || queryStr.includes("youtu.be"));
-
-    // 1. Direct SoundCloud Stream (Always works)
+    // 1. Direct SoundCloud Stream
     if (isDirectSoundcloud) {
       return await this._runYtDlp([
         "--no-update",
@@ -237,27 +237,33 @@ class TogetherStreamWorker {
         "--no-playlist",
         "-f", "ba/b",
         "-g",
-        queryStr,
+        rawUri,
       ]);
     }
 
-    // 2. Build prioritized list of search queries for resolution
+    // 2. Build prioritized list of clean search queries for resolution
     const fallbackCandidates = [];
-    if (typeof target === "object") {
+    if (typeof target === "object" && target !== null) {
       const clean1 = this.cleanQueryForSearch(target.title, target.author);
       if (clean1) fallbackCandidates.push(clean1);
 
       if (target.originalQuery && typeof target.originalQuery === "string" && !target.originalQuery.startsWith("http")) {
         const cleanOrig = this.cleanQueryForSearch(target.originalQuery);
         if (cleanOrig && !fallbackCandidates.includes(cleanOrig)) fallbackCandidates.push(cleanOrig);
-        fallbackCandidates.push(target.originalQuery.trim());
+        if (!fallbackCandidates.includes(target.originalQuery.trim())) fallbackCandidates.push(target.originalQuery.trim());
       }
 
       if (target.title) {
-        const strippedTitle = target.title.split(/[|/•—]/)[0].trim();
+        const strippedTitle = String(target.title).split(/[|/•—]/)[0].trim();
         if (strippedTitle && !fallbackCandidates.includes(strippedTitle)) {
           fallbackCandidates.push(strippedTitle);
         }
+      }
+
+      if (target.searchQuery && typeof target.searchQuery === "string" && !target.searchQuery.startsWith("http")) {
+        const cleanSq = this.cleanQueryForSearch(target.searchQuery);
+        if (cleanSq && !fallbackCandidates.includes(cleanSq)) fallbackCandidates.push(cleanSq);
+        if (!fallbackCandidates.includes(target.searchQuery.trim())) fallbackCandidates.push(target.searchQuery.trim());
       }
 
       if (target.query && typeof target.query === "string" && !target.query.startsWith("http")) {
@@ -275,7 +281,7 @@ class TogetherStreamWorker {
       try {
         const https = require("https");
         const oembedData = await new Promise((res) => {
-          https.get(`https://www.youtube.com/oembed?url=${encodeURIComponent(queryStr)}&format=json`, (r) => {
+          https.get(`https://www.youtube.com/oembed?url=${encodeURIComponent(rawUri)}&format=json`, (r) => {
             let body = "";
             r.on("data", (c) => (body += c));
             r.on("end", () => {
@@ -291,9 +297,16 @@ class TogetherStreamWorker {
       } catch {}
     }
 
+    // Determine the optimal textual search target (never a non-YouTube URL)
+    const bestSearchQuery = (
+      fallbackCandidates[0] ||
+      (typeof target === "object" ? `${target.title || ""} ${target.author || ""}`.trim() : "") ||
+      (typeof target === "string" && !target.startsWith("http") ? target : "")
+    ).trim();
+
     // 3. Native YouTube Stream Extraction (Powered by Node.js JavaScript challenge solver)
     try {
-      const ytQuery = isDirectYt ? queryStr : `ytsearch1:${queryStr}`;
+      const ytQuery = isDirectYt ? rawUri : `ytsearch1:${bestSearchQuery}`;
       const ytArgs = [
         ...cookieArgs,
         "--no-update",
@@ -311,7 +324,7 @@ class TogetherStreamWorker {
     }
 
     // 4. Studio Master via JioSaavn Engine (Zero bot blocking, 320kbps CD audio fallback)
-    const saavnQuery = (typeof target === "object" ? (target.originalQuery || fallbackCandidates[0] || target.title) : queryStr) || "";
+    const saavnQuery = (typeof target === "object" ? (target.originalQuery || fallbackCandidates[0] || target.title) : bestSearchQuery) || "";
     if (saavnQuery && !saavnQuery.startsWith("http")) {
       try {
         const saavnRes = await SaavnStreamer.resolveStream(saavnQuery, typeof target === "object" ? target : {});

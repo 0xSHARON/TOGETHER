@@ -6,9 +6,9 @@ module.exports = (client) => {
   const eventsRoot = path.join(__dirname, "../events");
   let totalEvents  = 0;
 
-  // Load from every subdirectory under src/events/ (Client, Guild, Node, Players...)
+  // Load only client-level event directories (exclude Node and Players which have dedicated loaders)
   const subDirs = fs.readdirSync(eventsRoot).filter((d) =>
-    fs.statSync(path.join(eventsRoot, d)).isDirectory()
+    fs.statSync(path.join(eventsRoot, d)).isDirectory() && !["Node", "Players"].includes(d)
   );
 
   for (const dir of subDirs) {

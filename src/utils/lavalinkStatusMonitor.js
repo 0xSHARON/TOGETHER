@@ -120,7 +120,8 @@ class LavalinkStatusMonitor {
     });
   }
 
-  async handleNodeReady(name) {
+  async handleNodeReady(rawName) {
+    const name = typeof rawName === "string" ? rawName : rawName?.name || "Native-TOGETHER";
     const prev = this.nodeStates.get(name);
     if (!prev || prev.isOnline !== true) {
       this.nodeStates.set(name, { isOnline: true, lastAlert: Date.now() });
@@ -131,7 +132,8 @@ class LavalinkStatusMonitor {
     this.updateStatusDebounced();
   }
 
-  async handleNodeDown(name, reason = "Connection closed / unreachable") {
+  async handleNodeDown(rawName, reason = "Connection closed / unreachable") {
+    const name = typeof rawName === "string" ? rawName : rawName?.name || "Native-TOGETHER";
     const prev = this.nodeStates.get(name);
     const now = Date.now();
 
