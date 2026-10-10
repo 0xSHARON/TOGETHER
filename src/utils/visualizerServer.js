@@ -346,6 +346,17 @@ function startVisualizerServer(client, preferredPort = 5050) {
       return res.end();
     }
 
+    // ── Top.gg Vote Webhook Endpoint (/webhook, /api/webhook, /webhook/topgg) ──
+    if (
+      pathname === "/webhook" ||
+      pathname === "/webhook/" ||
+      pathname === "/api/webhook" ||
+      pathname === "/webhook/topgg"
+    ) {
+      const { handleVoteWebhook } = require("./voteNotifier");
+      return handleVoteWebhook(client, req, res);
+    }
+
     // ── Root Guild Redirect (?guild=<id>) ─────────────────────
     // If user opens https://together.dpdns.org/?guild=..., redirect to /visualizer/?guild=...
     if (pathname === "/" && (reqUrl.searchParams.has("guild") || reqUrl.searchParams.has("guild_id") || reqUrl.searchParams.has("channel"))) {

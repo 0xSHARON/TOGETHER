@@ -105,3 +105,65 @@ test("sendVoteNotification sends vote announcement to channel 152423525633989032
   assert.match(serialized, /Thank you for voting! Your support keeps the music playing/);
   assert.match(serialized, /Top\.gg/);
 });
+
+test("handleVoteWebhook returns 200 on GET /webhook", async () => {
+  const { handleVoteWebhook } = require("../src/utils/voteNotifier");
+  const mockClient = { config: {}, logger: { log: () => {} } };
+
+  let statusCode = 0;
+  let responseData = "";
+  const req = { method: "GET" };
+  const res = {
+    writeHead: (code) => { statusCode = code; },
+    end: (data) => { responseData = data; }
+  };
+
+  handleVoteWebhook(mockClient, req, res);
+  assert.equal(statusCode, 200);
+  const parsed = JSON.parse(responseData);
+  assert.equal(parsed.status, "ok");
+  assert.equal(parsed.endpoint, "https://together.dpdns.org/webhook");
+});
+
+test("handleVoteWebhook registers voter on POST", async () => {
+  const { handleVoteWebhook } = require("../src/utils/voteNotifier");
+  const { EventEmitter } = require("events");
+
+  const mockClient = {
+    votedUsers: new Set(),
+    announcedVotes: new Set(),
+    user: { id: "987654321", username: "Together" },
+    config: {},
+    channels: { cache: new Map(), fetch: async () => null },
+    users: { cache: new Map(), fetch: async () => null },
+    logger: { log: () => {} },
+  };
+
+  const req = new EventEmitter();
+  req.method = "POST";
+  req.headers = {};
+
+  let statusCode = 0;
+  let responseData = "";
+  const res = {
+    writeHead: (code) => { statusCode = code; },
+    end: (data) => { responseData = data; }
+  };
+
+  const promise = new Promise((resolve) => {
+    res.end = (data) => {
+      responseData = data;
+      resolve();
+    };
+  });
+
+  handleVoteWebhook(mockClient, req, res);
+
+  req.emit("data", Buffer.from(JSON.stringify({ user: "780345293237125152", isWeekend: true, type: "upvote" })));
+  req.emit("end");
+
+  await promise;
+  assert.equal(statusCode, 200);
+  assert.ok(mockClient.votedUsers.has("780345293237125152"));
+  assert.ok(mockClient.announcedVotes.has("780345293237125152"));
+});
