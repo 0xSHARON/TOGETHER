@@ -449,7 +449,8 @@ module.exports = {
             case "pause": {
               const isPaused = !player.paused;
               await player.pause(isPaused);
-              await updateNowPlayingButtons(client, player, isPaused).catch(() => {});
+              const { syncVoiceChannelStatus } = require("../../utils/voiceChannelStatus");
+              await syncVoiceChannelStatus(client, player, { state: isPaused ? "paused" : "playing" }).catch(() => {});
 
               if (player.queue?.current) {
                 const updatedCard = createPlayerCard(client, player, player.queue.current, {
@@ -495,7 +496,8 @@ module.exports = {
               const currentModeIndex = modes.indexOf(player.loop || "none");
               const nextMode = modes[(currentModeIndex + 1) % modes.length];
               setLoopMode(player, nextMode);
-              await updateNowPlayingButtons(client, player, player.paused).catch(() => {});
+              const { syncVoiceChannelStatus } = require("../../utils/voiceChannelStatus");
+              await syncVoiceChannelStatus(client, player, { state: player.paused ? "paused" : "playing" }).catch(() => {});
 
               if (player.queue?.current) {
                 const updatedCard = createPlayerCard(client, player, player.queue.current, {
@@ -531,7 +533,8 @@ module.exports = {
               const currentAuto = player.data.get("autoplay") || false;
               const newAutoStatus = !currentAuto;
               const { disabledLoop } = setAutoplay(player, newAutoStatus);
-              await updateNowPlayingButtons(client, player, player.paused).catch(() => {});
+              const { syncVoiceChannelStatus } = require("../../utils/voiceChannelStatus");
+              await syncVoiceChannelStatus(client, player, { state: player.paused ? "paused" : "playing" }).catch(() => {});
 
               if (player.queue?.current) {
                 const updatedCard = createPlayerCard(client, player, player.queue.current, {
