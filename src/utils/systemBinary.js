@@ -172,16 +172,7 @@ function getFfmpegPath() {
     return cachedFfmpeg;
   }
 
-  // 2. @ffmpeg-installer/ffmpeg bundled static binary (Linux x64/arm64, Windows, Mac)
-  try {
-    const ffmpegInstaller = require("@ffmpeg-installer/ffmpeg");
-    if (ffmpegInstaller && ffmpegInstaller.path && fs.existsSync(ffmpegInstaller.path)) {
-      cachedFfmpeg = ffmpegInstaller.path;
-      return cachedFfmpeg;
-    }
-  } catch {}
-
-  // 3. System ffmpeg
+  // 2. System ffmpeg from PATH (modern Debian/Ubuntu/Windows ffmpeg with TLS 1.3)
   try {
     const testDirect = spawnSync("ffmpeg", ["-version"], { stdio: "ignore" });
     if (testDirect.status === 0) {
@@ -190,7 +181,7 @@ function getFfmpegPath() {
     }
   } catch {}
 
-  // 4. Common Linux / Pterodactyl binary paths
+  // 3. Common Linux / Pterodactyl system binary paths
   const commonLinuxPaths = [
     "/usr/bin/ffmpeg",
     "/usr/local/bin/ffmpeg",
@@ -202,6 +193,15 @@ function getFfmpegPath() {
       return cachedFfmpeg;
     }
   }
+
+  // 4. Bundled fallback (@ffmpeg-installer/ffmpeg)
+  try {
+    const ffmpegInstaller = require("@ffmpeg-installer/ffmpeg");
+    if (ffmpegInstaller && ffmpegInstaller.path && fs.existsSync(ffmpegInstaller.path)) {
+      cachedFfmpeg = ffmpegInstaller.path;
+      return cachedFfmpeg;
+    }
+  } catch {}
 
   cachedFfmpeg = "ffmpeg";
   return cachedFfmpeg;

@@ -2,7 +2,7 @@ const { spawn } = require("child_process");
 const { getYtDlpRunner, getCookiesArgs, ensureYtDlpBinary } = require("../utils/systemBinary");
 
 const STREAM_CACHE = new Map();
-const CACHE_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes (prevents expired token reuse)
 
 /**
  * Together Stream Worker (JavaScript Engine)
@@ -11,18 +11,35 @@ const CACHE_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
  */
 class TogetherStreamWorker {
   /**
+   * Explicitly evicts a target or all cache entries
+   * @param {string} [target] 
+   */
+  static invalidateCache(target) {
+    if (target) {
+      STREAM_CACHE.delete(target.trim());
+    } else {
+      STREAM_CACHE.clear();
+    }
+  }
+
+  /**
    * Resolves direct media stream URL for any song query or URL
    * @param {string} target - Video URL or search query
+   * @param {boolean} [forceRefresh=false] - Invalidate existing cache and re-extract
    * @returns {Promise<string>}
    */
-  static async resolveStream(target) {
+  static async resolveStream(target, forceRefresh = false) {
     if (!target) throw new Error("No target query provided");
     const cacheKey = target.trim();
     const now = Date.now();
 
+    if (forceRefresh) {
+      STREAM_CACHE.delete(cacheKey);
+    }
+
     // 1. Instant Cache Hit (0ms)
     const cached = STREAM_CACHE.get(cacheKey);
-    if (cached && cached.expiresAt > now) {
+    if (!forceRefresh && cached && cached.expiresAt > now) {
       return cached.url;
     }
 

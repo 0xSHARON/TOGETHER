@@ -9,10 +9,19 @@ class TogetherStreamer {
   /**
    * Resolves the direct media audio URL
    * @param {string} target - YouTube URL or search query
+   * @param {boolean} [forceRefresh=false]
    * @returns {Promise<string>}
    */
-  static async getStreamUrl(target) {
-    return TogetherStreamWorker.resolveStream(target);
+  static async getStreamUrl(target, forceRefresh = false) {
+    return TogetherStreamWorker.resolveStream(target, forceRefresh);
+  }
+
+  /**
+   * Invalidates cached direct URLs
+   * @param {string} [target]
+   */
+  static invalidateCache(target) {
+    TogetherStreamWorker.invalidateCache(target);
   }
 
   /**
@@ -37,9 +46,9 @@ class TogetherStreamer {
       "-reconnect_streamed", "1",
       "-reconnect_at_eof", "1",
       "-reconnect_delay_max", "5",
-      "-user_agent", "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
-      "-probesize", "32768",
-      "-analyzeduration", "0",
+      "-user_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+      "-probesize", "1048576",
+      "-analyzeduration", "1000000",
     ];
 
     if (seekSeconds > 0) {

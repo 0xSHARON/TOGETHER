@@ -150,6 +150,9 @@ class NativePlayer {
             `[NativePlayer] Premature stream end detected (${Math.round(elapsedMs / 1000)}s / ${Math.round(durationMs / 1000)}s) for "${finishedTrack.title}". Reconnecting... (attempt ${retries}/2)`,
             "warn"
           );
+          const query = finishedTrack.searchQuery || finishedTrack.uri || `${finishedTrack.title} - ${finishedTrack.author}`;
+          TogetherStreamer.invalidateCache(query);
+          this._forceRefreshStream = true;
           this._seekOffset = elapsedMs;
           await this.play(finishedTrack);
           return;
@@ -271,7 +274,9 @@ class NativePlayer {
     try {
       // 1. Resolve Audio Stream URL via Together Engine
       const query = current.searchQuery || current.uri || `${current.title} - ${current.author}`;
-      const streamUrl = await TogetherStreamer.getStreamUrl(query);
+      const forceRefresh = Boolean(this._forceRefreshStream);
+      this._forceRefreshStream = false;
+      const streamUrl = await TogetherStreamer.getStreamUrl(query, forceRefresh);
       this._currentStreamUrl = streamUrl;
 
       // 2. Stream Audio via FFmpeg to Discord Voice Resource
@@ -292,11 +297,12 @@ class NativePlayer {
       this.audioPlayer.play(resource);
       this.manager.emit("playerStart", this, current);
 
-      // Force Discord Voice Gateway Opcode 5 (Speaking: 1)
-      if (this.connection?.state?.networking?.state?.connectionData) {
-        this.connection.state.networking.state.connectionData.speaking = false;
-        this.connection.setSpeaking(true);
-      }
+      // Ensure Discord Voice Gateway speaking state
+      try {
+        if (typeof this.connection?.setSpeaking === "function") {
+          this.connection.setSpeaking(true);
+        }
+      } catch {}
 
       // 3. Next-Track Pre-buffering (Zero-gap transition)
       if (this.queue.length > 0 && this.queue[0]) {
