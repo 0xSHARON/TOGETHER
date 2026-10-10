@@ -352,7 +352,7 @@ function getBotInfo(client) {
     },
     links: {
       invite: client?.config?.links?.invite || "https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=277298439232&scope=bot%20applications.commands",
-      support: client?.config?.links?.support || "https://discord.gg/NSRgjY74TS",
+      support: client?.config?.links?.support || "https://discord.gg/mUdGTs2Dw5",
       vote: client?.config?.links?.vote || "https://top.gg/bot/863496211667484676/vote",
       visualizer: "https://together.dpdns.org/visualizer/",
     },

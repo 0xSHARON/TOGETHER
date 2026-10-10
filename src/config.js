@@ -26,7 +26,7 @@ const config = {
 
   links: {
     BG: process.env.BACKGROUND_URL || "",
-    support: process.env.SUPPORT_URL || "",
+    support: process.env.SUPPORT_URL || "https://discord.gg/mUdGTs2Dw5",
     invite: process.env.INVITE_URL || "",
     Shafed_Billa: "TOGETHER",
     power: "developed by kajukatli.",

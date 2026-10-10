@@ -22,7 +22,7 @@ client.once("ready", async () => {
 
     const botName = client.user.username || "TOGETHER";
     const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${client.user.id}`;
-    const supportUrl = config.links.support || "https://discord.gg/NSRgjY74TS";
+    const supportUrl = config.links.support || "https://discord.gg/mUdGTs2Dw5";
     const voteUrl = config.links.vote || `https://top.gg/bot/${client.user.id}/vote`;
 
     const newDescription = [
