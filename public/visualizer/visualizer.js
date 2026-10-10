@@ -203,7 +203,7 @@ const rimLight = new THREE.PointLight(THEMES[0].secondary, 2.5, 60);
 rimLight.position.set(-25, 12, -20);
 scene.add(rimLight);
 
-// ── 6. 3D Visual Geometries (7 Distinct Visual Modes) ─────────
+// ── 6. 3D Visual Geometries (10 Distinct Visual Modes) ────────
 const VISUAL_MODES = [
   { id: "monolith", name: "MONOLITH" },
   { id: "tunnel", name: "CYBER TUNNEL" },
@@ -212,6 +212,9 @@ const VISUAL_MODES = [
   { id: "horizon", name: "NEON HORIZON" },
   { id: "neural", name: "NEURAL MATRIX" },
   { id: "supernova", name: "SUPERNOVA DISK" },
+  { id: "astrolabe", name: "ASTROLABE" },
+  { id: "tesseract", name: "HYPERCUBE" },
+  { id: "prism", name: "PRISM VOID" },
 ];
 let currentModeIdx = 0;
 
@@ -597,37 +600,289 @@ let blastRingScale = 1.0;
 supernovaGroup.visible = false;
 scene.add(supernovaGroup);
 
+// (H) MODE 7: ASTROLABE (Orbital Armillary Sphere & Celestial Beacons)
+const astrolabeGroup = new THREE.Group();
+const astrolabeRings = [];
+const ASTROLABE_RINGS_DATA = [
+  { radius: 13.0, tube: 0.24, rotAxis: 'x', speed: 0.7 },
+  { radius: 10.5, tube: 0.22, rotAxis: 'y', speed: -0.9 },
+  { radius: 8.0,  tube: 0.20, rotAxis: 'z', speed: 1.1 },
+  { radius: 5.4,  tube: 0.18, rotAxis: 'xy', speed: -0.8 },
+];
+
+ASTROLABE_RINGS_DATA.forEach((data, idx) => {
+  const ringGeom = new THREE.TorusGeometry(data.radius, data.tube, 8, 36);
+  const ringMat = new THREE.MeshStandardMaterial({
+    color: 0x07090e,
+    emissive: idx % 2 === 0 ? THEMES[0].primary : THEMES[0].secondary,
+    emissiveIntensity: 0.35,
+    roughness: 0.25,
+    metalness: 0.85,
+  });
+  const ringMesh = new THREE.Mesh(ringGeom, ringMat);
+  const ringEdgeMat = new THREE.LineBasicMaterial({
+    color: idx % 2 === 0 ? THEMES[0].primary : THEMES[0].secondary,
+  });
+  const ringEdges = new THREE.LineSegments(new THREE.EdgesGeometry(ringGeom), ringEdgeMat);
+  ringMesh.add(ringEdges);
+  ringMesh.position.set(0, 9, 0);
+  astrolabeGroup.add(ringMesh);
+  astrolabeRings.push({ mesh: ringMesh, mat: ringMat, edgeMat: ringEdgeMat, ...data });
+});
+
+// Central Celestial Core
+const astrolabeCoreGeom = new THREE.IcosahedronGeometry(2.4, 0);
+const astrolabeCoreMat = new THREE.MeshStandardMaterial({
+  color: 0x0b0d14,
+  roughness: 0.2,
+  metalness: 0.9,
+  emissive: THEMES[0].primary,
+  emissiveIntensity: 0.6,
+});
+const astrolabeCoreMesh = new THREE.Mesh(astrolabeCoreGeom, astrolabeCoreMat);
+astrolabeCoreMesh.position.set(0, 9, 0);
+const astrolabeCoreEdgeMat = new THREE.LineBasicMaterial({ color: THEMES[0].secondary });
+const astrolabeCoreEdges = new THREE.LineSegments(new THREE.EdgesGeometry(astrolabeCoreGeom), astrolabeCoreEdgeMat);
+astrolabeCoreMesh.add(astrolabeCoreEdges);
+astrolabeGroup.add(astrolabeCoreMesh);
+
+// Orbiting Celestial Diamond Beacons
+const ASTROLABE_BEACONS_COUNT = 8;
+const astrolabeBeacons = [];
+const beaconGeom = new THREE.OctahedronGeometry(0.85, 0);
+for (let i = 0; i < ASTROLABE_BEACONS_COUNT; i++) {
+  const bMat = new THREE.MeshStandardMaterial({
+    color: 0x0a0c12,
+    emissive: i % 2 === 0 ? THEMES[0].primary : THEMES[0].secondary,
+    emissiveIntensity: 0.5,
+  });
+  const bMesh = new THREE.Mesh(beaconGeom, bMat);
+  const bEdgeMat = new THREE.LineBasicMaterial({ color: THEMES[0].primary });
+  bMesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(beaconGeom), bEdgeMat));
+  astrolabeGroup.add(bMesh);
+  astrolabeBeacons.push({
+    mesh: bMesh,
+    mat: bMat,
+    edgeMat: bEdgeMat,
+    radius: 14 + (i % 3) * 1.8,
+    speed: (0.4 + (i % 4) * 0.15) * (i % 2 === 0 ? 1 : -1),
+    angle: (i / ASTROLABE_BEACONS_COUNT) * Math.PI * 2,
+    tilt: ((i - 4) / 4) * 0.6,
+  });
+}
+astrolabeGroup.visible = false;
+scene.add(astrolabeGroup);
+
+// (I) MODE 8: HYPERCUBE / TESSERACT (4D Wireframe Projection)
+const tesseractGroup = new THREE.Group();
+tesseractGroup.position.set(0, 9, 0);
+
+// Outer Cube (Box wireframe & solid transparent shell)
+const outerBoxGeom = new THREE.BoxGeometry(13, 13, 13);
+const outerBoxMat = new THREE.MeshStandardMaterial({
+  color: 0x04060a,
+  roughness: 0.3,
+  metalness: 0.8,
+  transparent: true,
+  opacity: 0.25,
+});
+const outerBoxMesh = new THREE.Mesh(outerBoxGeom, outerBoxMat);
+const outerBoxEdgeMat = new THREE.LineBasicMaterial({ color: THEMES[0].primary, linewidth: 2 });
+const outerBoxEdges = new THREE.LineSegments(new THREE.EdgesGeometry(outerBoxGeom), outerBoxEdgeMat);
+outerBoxMesh.add(outerBoxEdges);
+tesseractGroup.add(outerBoxMesh);
+
+// Inner Cube
+const innerBoxGeom = new THREE.BoxGeometry(6.5, 6.5, 6.5);
+const innerBoxMat = new THREE.MeshStandardMaterial({
+  color: 0x060810,
+  roughness: 0.2,
+  metalness: 0.9,
+  emissive: THEMES[0].secondary,
+  emissiveIntensity: 0.3,
+});
+const innerBoxMesh = new THREE.Mesh(innerBoxGeom, innerBoxMat);
+const innerBoxEdgeMat = new THREE.LineBasicMaterial({ color: THEMES[0].secondary, linewidth: 2 });
+const innerBoxEdges = new THREE.LineSegments(new THREE.EdgesGeometry(innerBoxGeom), innerBoxEdgeMat);
+innerBoxMesh.add(innerBoxEdges);
+tesseractGroup.add(innerBoxMesh);
+
+// 8 Hypercube Corner Connecting Strut Lines
+const strutLinePositions = new Float32Array(8 * 2 * 3);
+const strutLineGeom = new THREE.BufferGeometry();
+strutLineGeom.setAttribute('position', new THREE.BufferAttribute(strutLinePositions, 3));
+const strutLineMat = new THREE.LineBasicMaterial({
+  color: THEMES[0].primary,
+  transparent: true,
+  opacity: 0.85,
+});
+const strutLinesMesh = new THREE.LineSegments(strutLineGeom, strutLineMat);
+tesseractGroup.add(strutLinesMesh);
+
+// 16 Vertex Node Spheres / Octahedrons
+const tesseractNodes = [];
+const tesseractNodeGeom = new THREE.OctahedronGeometry(0.55, 0);
+for (let i = 0; i < 16; i++) {
+  const nMat = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    emissive: i < 8 ? THEMES[0].primary : THEMES[0].secondary,
+    emissiveIntensity: 0.8,
+  });
+  const nMesh = new THREE.Mesh(tesseractNodeGeom, nMat);
+  tesseractGroup.add(nMesh);
+  tesseractNodes.push({ mesh: nMesh, mat: nMat, isInner: i >= 8, index: i % 8 });
+}
+
+// Center Hyper-Singularity Core
+const tesseractCoreGeom = new THREE.DodecahedronGeometry(1.8, 0);
+const tesseractCoreMat = new THREE.MeshStandardMaterial({
+  color: 0x080a12,
+  emissive: THEMES[0].primary,
+  emissiveIntensity: 0.7,
+  roughness: 0.1,
+  metalness: 0.9,
+});
+const tesseractCoreMesh = new THREE.Mesh(tesseractCoreGeom, tesseractCoreMat);
+tesseractGroup.add(tesseractCoreMesh);
+
+tesseractGroup.visible = false;
+scene.add(tesseractGroup);
+
+// (J) MODE 9: PRISM VOID (Faceted Crystal Obelisk & Laser Matrix)
+const prismGroup = new THREE.Group();
+
+// Central Obelisk / Hexagonal Prism Monolith
+const prismGeom = new THREE.CylinderGeometry(1.2, 4.2, 17, 6);
+const prismMat = new THREE.MeshStandardMaterial({
+  color: 0x05070c,
+  roughness: 0.15,
+  metalness: 0.95,
+  emissive: THEMES[0].primary,
+  emissiveIntensity: 0.25,
+});
+const prismMesh = new THREE.Mesh(prismGeom, prismMat);
+prismMesh.position.set(0, 8.5, 0);
+const prismEdgeMat = new THREE.LineBasicMaterial({ color: THEMES[0].primary });
+const prismEdges = new THREE.LineSegments(new THREE.EdgesGeometry(prismGeom), prismEdgeMat);
+prismMesh.add(prismEdges);
+prismGroup.add(prismMesh);
+
+// Apex Levitation Crystal
+const apexCrystalGeom = new THREE.OctahedronGeometry(1.8, 0);
+const apexCrystalMat = new THREE.MeshStandardMaterial({
+  color: 0xffffff,
+  emissive: THEMES[0].secondary,
+  emissiveIntensity: 0.9,
+  roughness: 0.1,
+  metalness: 0.8,
+});
+const apexCrystalMesh = new THREE.Mesh(apexCrystalGeom, apexCrystalMat);
+apexCrystalMesh.position.set(0, 18.5, 0);
+const apexEdgeMat = new THREE.LineBasicMaterial({ color: THEMES[0].primary });
+apexCrystalMesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(apexCrystalGeom), apexEdgeMat));
+prismGroup.add(apexCrystalMesh);
+
+// 6 Laser Beams to Perimeter Anchor Pedestals
+const PRISM_ANCHORS_COUNT = 6;
+const prismAnchorMeshes = [];
+const laserGeom = new THREE.BufferGeometry();
+const laserPositions = new Float32Array(PRISM_ANCHORS_COUNT * 2 * 3);
+laserGeom.setAttribute('position', new THREE.BufferAttribute(laserPositions, 3));
+const laserMat = new THREE.LineBasicMaterial({
+  color: THEMES[0].primary,
+  transparent: true,
+  opacity: 0.75,
+});
+const laserLines = new THREE.LineSegments(laserGeom, laserMat);
+prismGroup.add(laserLines);
+
+const anchorGeom = new THREE.CylinderGeometry(0.8, 1.3, 2.5, 6);
+for (let i = 0; i < PRISM_ANCHORS_COUNT; i++) {
+  const angle = (i / PRISM_ANCHORS_COUNT) * Math.PI * 2;
+  const aDist = 18;
+  const aMat = new THREE.MeshStandardMaterial({
+    color: 0x080a12,
+    emissive: THEMES[0].secondary,
+    emissiveIntensity: 0.35,
+    roughness: 0.3,
+    metalness: 0.8,
+  });
+  const aMesh = new THREE.Mesh(anchorGeom, aMat);
+  aMesh.position.set(Math.cos(angle) * aDist, 1.25, Math.sin(angle) * aDist);
+  const aEdgeMat = new THREE.LineBasicMaterial({ color: THEMES[0].primary });
+  aMesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(anchorGeom), aEdgeMat));
+  prismGroup.add(aMesh);
+  prismAnchorMeshes.push({ mesh: aMesh, mat: aMat, edgeMat: aEdgeMat, angle, dist: aDist });
+}
+
+// Orbiting Floating Facets (Crystalline shards)
+const PRISM_FACETS_COUNT = 16;
+const prismFacets = [];
+const facetGeom = new THREE.TetrahedronGeometry(1.0, 0);
+for (let i = 0; i < PRISM_FACETS_COUNT; i++) {
+  const fMat = new THREE.MeshStandardMaterial({
+    color: 0x0a0c14,
+    emissive: i % 2 === 0 ? THEMES[0].primary : THEMES[0].secondary,
+    emissiveIntensity: 0.45,
+    roughness: 0.2,
+    metalness: 0.9,
+  });
+  const fMesh = new THREE.Mesh(facetGeom, fMat);
+  const fEdgeMat = new THREE.LineBasicMaterial({ color: THEMES[0].secondary });
+  fMesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(facetGeom), fEdgeMat));
+  prismGroup.add(fMesh);
+  prismFacets.push({
+    mesh: fMesh,
+    mat: fMat,
+    edgeMat: fEdgeMat,
+    radius: 7.5 + (i % 4) * 2.5,
+    height: 4 + (i / PRISM_FACETS_COUNT) * 11,
+    speed: (0.5 + (i % 3) * 0.2) * (i % 2 === 0 ? 1 : -1),
+    angle: (i / PRISM_FACETS_COUNT) * Math.PI * 2,
+  });
+}
+
+// Ascending Spark Void Particles
+const PRISM_SPARKS_COUNT = 40;
+const prismSparks = [];
+const sparkGeom = new THREE.BoxGeometry(0.3, 0.9, 0.3);
+for (let i = 0; i < PRISM_SPARKS_COUNT; i++) {
+  const sMat = new THREE.MeshBasicMaterial({
+    color: i % 2 === 0 ? THEMES[0].primary : THEMES[0].secondary,
+    transparent: true,
+    opacity: 0.8,
+  });
+  const sMesh = new THREE.Mesh(sparkGeom, sMat);
+  const sRadius = 2 + Math.random() * 12;
+  const sAngle = Math.random() * Math.PI * 2;
+  sMesh.position.set(
+    Math.cos(sAngle) * sRadius,
+    Math.random() * 24,
+    Math.sin(sAngle) * sRadius
+  );
+  prismGroup.add(sMesh);
+  prismSparks.push({ mesh: sMesh, mat: sMat, speed: 4 + Math.random() * 7 });
+}
+
+prismGroup.visible = false;
+scene.add(prismGroup);
+
 // (E) Infinite Grid Floor
 let gridFloor = new THREE.GridHelper(160, 64, THEMES[0].primary, 0x1f2433);
 gridFloor.position.y = 0;
 scene.add(gridFloor);
 
-// ── 7. Real Web Audio & Frequency FFT Reactive Engine ──────────
+// ── 7. Frequency Reactive Audio Animation Engine ─────────────
 const audioBands = new Array(ARENA_BARS_COUNT).fill(1);
 let beatPhase    = 0;
 
 function updateAudioVisualization(delta) {
-  const isPlaying = (playerState.playing && !playerState.paused) || isAudioActive;
+  const isPlaying = playerState.playing && !playerState.paused;
   beatPhase += delta * (isPlaying ? 4.5 : 0.8);
 
-  // Extract real audio frequencies if Web Audio is active
-  let realBass = 0;
-  let realMid = 0;
-  let realTreble = 0;
-  if (analyserNode && isAudioActive && audioFreqData) {
-    analyserNode.getByteFrequencyData(audioFreqData);
-    let bSum = 0, mSum = 0, tSum = 0;
-    for (let i = 0; i < 4; i++) bSum += audioFreqData[i];
-    for (let i = 4; i < 20; i++) mSum += audioFreqData[i];
-    for (let i = 20; i < 50; i++) tSum += audioFreqData[i];
-    realBass = (bSum / 4) / 255;
-    realMid = (mSum / 16) / 255;
-    realTreble = (tSum / 30) / 255;
-  }
-
-  const effectiveBass = (isAudioActive && realBass > 0.05)
-    ? realBass * 2.2
-    : (isPlaying ? (Math.sin(beatPhase * 2) > 0.5 ? 1.6 : 1.0) + Math.random() * 0.3 : 0.5);
+  const effectiveBass = isPlaying
+    ? (Math.sin(beatPhase * 2) > 0.4 ? 1.7 : 1.0) + Math.random() * 0.25
+    : 0.4;
 
   primaryLight.intensity = isPlaying ? 2.5 + effectiveBass * 2.2 : 1.0;
 
@@ -635,15 +890,9 @@ function updateAudioVisualization(delta) {
   if (monolithGroup.visible) {
     for (let i = 0; i < ARENA_BARS_COUNT; i++) {
       if (isPlaying) {
-        let targetHeight = 1.0;
-        if (isAudioActive && audioFreqData) {
-          const binIdx = Math.floor((i / ARENA_BARS_COUNT) * 48);
-          targetHeight = 1.0 + (audioFreqData[binIdx] / 255) * 22.0;
-        } else {
-          const freqSpread = (i / ARENA_BARS_COUNT) * Math.PI * 3;
-          const wave = Math.abs(Math.sin(beatPhase * 1.8 + freqSpread));
-          targetHeight = 1.0 + wave * 16.0 + Math.cos(beatPhase * 0.9 + i) * 3.0;
-        }
+        const freqSpread = (i / ARENA_BARS_COUNT) * Math.PI * 3;
+        const wave = Math.abs(Math.sin(beatPhase * 1.8 + freqSpread));
+        const targetHeight = 1.0 + wave * 16.0 + Math.cos(beatPhase * 0.9 + i) * 3.0;
         audioBands[i] += (targetHeight - audioBands[i]) * 0.3;
       } else {
         audioBands[i] += (0.8 - audioBands[i]) * 0.1;
@@ -675,7 +924,7 @@ function updateAudioVisualization(delta) {
         r.mesh.position.z = -125;
       }
       r.mesh.rotation.z += delta * (idx % 2 === 0 ? 0.4 : -0.4);
-      const pulseScale = 1.0 + (isPlaying ? Math.sin(beatPhase + idx * 0.3) * 0.18 : 0) + (isAudioActive ? realBass * 0.2 : 0);
+      const pulseScale = 1.0 + (isPlaying ? Math.sin(beatPhase + idx * 0.3) * 0.18 : 0);
       r.mesh.scale.set(pulseScale, pulseScale, 1);
     });
   }
@@ -684,14 +933,8 @@ function updateAudioVisualization(delta) {
   if (metropolisGroup.visible) {
     metroBuildings.forEach((b, idx) => {
       if (isPlaying) {
-        let bHeight = 1.0;
-        if (isAudioActive && audioFreqData) {
-          const binIdx = Math.floor(((b.row * METRO_COLS + b.col) / (METRO_ROWS * METRO_COLS)) * 48);
-          bHeight = 1.0 + (audioFreqData[binIdx] / 255) * 20.0;
-        } else {
-          const wave = Math.abs(Math.sin(beatPhase * 1.5 + (b.row + b.col) * 0.6));
-          bHeight = 1.0 + wave * 14.0 + Math.sin(beatPhase * 0.8 + idx) * 3.0;
-        }
+        const wave = Math.abs(Math.sin(beatPhase * 1.5 + (b.row + b.col) * 0.6));
+        const bHeight = 1.0 + wave * 14.0 + Math.sin(beatPhase * 0.8 + idx) * 3.0;
         b.mesh.scale.y += (bHeight - b.mesh.scale.y) * 0.25;
       } else {
         b.mesh.scale.y += (1.5 - b.mesh.scale.y) * 0.1;
@@ -704,7 +947,7 @@ function updateAudioVisualization(delta) {
   if (vortexGroup.visible) {
     diskMesh1.rotation.z += delta * (isPlaying ? 1.2 : 0.3);
     diskMesh2.rotation.z -= delta * (isPlaying ? 0.8 : 0.2);
-    const pulseRadius = 1.0 + (isPlaying ? Math.sin(beatPhase * 2.2) * 0.2 : 0) + (isAudioActive ? realBass * 0.3 : 0);
+    const pulseRadius = 1.0 + (isPlaying ? Math.sin(beatPhase * 2.2) * 0.2 : 0);
     bhCoreMesh.scale.set(pulseRadius, pulseRadius, pulseRadius);
 
     vortexParticles.forEach((p) => {
@@ -729,7 +972,7 @@ function updateAudioVisualization(delta) {
     }
     pos.needsUpdate = true;
     sunMesh.rotation.y += delta * 0.2;
-    const sunScale = 1.0 + (isPlaying ? Math.sin(beatPhase * 1.5) * 0.15 : 0) + (isAudioActive ? realBass * 0.3 : 0);
+    const sunScale = 1.0 + (isPlaying ? Math.sin(beatPhase * 1.5) * 0.15 : 0);
     sunMesh.scale.set(sunScale, sunScale, sunScale);
   }
 
@@ -738,7 +981,7 @@ function updateAudioVisualization(delta) {
     neuralNodes.forEach((n) => {
       n.phase += delta * n.speed * (isPlaying ? 2.2 : 0.7);
       n.mesh.position.y = n.basePos.y + Math.sin(n.phase) * 1.8;
-      const pScale = 1.0 + (isPlaying ? Math.sin(n.phase * 2) * 0.3 : 0) + (isAudioActive ? realMid * 0.5 : 0);
+      const pScale = 1.0 + (isPlaying ? Math.sin(n.phase * 2) * 0.3 : 0);
       n.mesh.scale.set(pScale, pScale, pScale);
     });
     neuralGroup.rotation.y += delta * (isPlaying ? 0.15 : 0.04);
@@ -756,13 +999,13 @@ function updateAudioVisualization(delta) {
       }
     }
     neuralLinesGeom.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-    neuralLinesMat.opacity = isPlaying ? 0.35 + (isAudioActive ? realMid * 0.45 : 0.15) : 0.15;
+    neuralLinesMat.opacity = isPlaying ? 0.45 : 0.15;
   }
 
   // 7. Supernova Disk Mode Animation
   if (supernovaGroup.visible) {
     pulsarMesh.rotation.y += delta * (isPlaying ? 3.0 : 0.8);
-    const pulsarScale = 1.0 + (isPlaying ? Math.sin(beatPhase * 3) * 0.25 : 0) + (isAudioActive ? realBass * 0.4 : 0);
+    const pulsarScale = 1.0 + (isPlaying ? Math.sin(beatPhase * 3) * 0.25 : 0);
     pulsarMesh.scale.set(pulsarScale, pulsarScale, pulsarScale);
     pulsarMat.emissiveIntensity = isPlaying ? 0.7 + effectiveBass * 0.5 : 0.3;
 
@@ -778,6 +1021,144 @@ function updateAudioVisualization(delta) {
     if (blastRingScale > 32.0) blastRingScale = 1.0;
     blastRingMesh.scale.set(blastRingScale, blastRingScale, 1.0);
     blastRingMat.opacity = Math.max(0, 0.8 - (blastRingScale / 32.0));
+  }
+
+  // 8. Astrolabe Mode Animation
+  if (astrolabeGroup.visible) {
+    astrolabeRings.forEach((r, idx) => {
+      const rotDelta = delta * r.speed * (isPlaying ? 1.8 : 0.4);
+      if (r.rotAxis === 'x') r.mesh.rotation.x += rotDelta;
+      else if (r.rotAxis === 'y') r.mesh.rotation.y += rotDelta;
+      else if (r.rotAxis === 'z') r.mesh.rotation.z += rotDelta;
+      else {
+        r.mesh.rotation.x += rotDelta * 0.7;
+        r.mesh.rotation.y += rotDelta * 0.8;
+      }
+      const pScale = 1.0 + (isPlaying ? Math.sin(beatPhase * 2 + idx * 0.8) * 0.12 : 0);
+      r.mesh.scale.set(pScale, pScale, pScale);
+    });
+
+    astrolabeCoreMesh.rotation.x += delta * (isPlaying ? 2.0 : 0.5);
+    astrolabeCoreMesh.rotation.y += delta * (isPlaying ? 2.4 : 0.6);
+    const corePulse = 1.0 + (isPlaying ? Math.sin(beatPhase * 2.5) * 0.25 : 0);
+    astrolabeCoreMesh.scale.set(corePulse, corePulse, corePulse);
+    astrolabeCoreMat.emissiveIntensity = isPlaying ? 0.6 + effectiveBass * 0.5 : 0.25;
+
+    astrolabeBeacons.forEach((b) => {
+      b.angle += delta * b.speed * (isPlaying ? 1.6 : 0.5);
+      b.mesh.position.set(
+        Math.cos(b.angle) * b.radius,
+        9 + Math.sin(b.angle * 2) * 3.5 + Math.sin(b.tilt) * 2,
+        Math.sin(b.angle) * b.radius
+      );
+      b.mesh.rotation.x += delta * 1.8;
+      b.mesh.rotation.y += delta * 2.2;
+    });
+    astrolabeGroup.rotation.y += delta * (isPlaying ? 0.18 : 0.04);
+  }
+
+  // 9. Hypercube / Tesseract Mode Animation
+  if (tesseractGroup.visible) {
+    const rotSpeed = isPlaying ? 0.8 : 0.2;
+    outerBoxMesh.rotation.y += delta * rotSpeed * 0.6;
+    outerBoxMesh.rotation.x += delta * rotSpeed * 0.4;
+
+    innerBoxMesh.rotation.y -= delta * rotSpeed * 1.2;
+    innerBoxMesh.rotation.z += delta * rotSpeed * 0.9;
+
+    const tCycle = Math.sin(beatPhase * 1.4);
+    const oScale = 1.0 + (isPlaying ? tCycle * 0.18 : 0);
+    const iScale = 1.0 - (isPlaying ? tCycle * 0.18 : 0);
+    outerBoxMesh.scale.set(oScale, oScale, oScale);
+    innerBoxMesh.scale.set(iScale, iScale, iScale);
+
+    tesseractCoreMesh.rotation.y += delta * (isPlaying ? 2.5 : 0.6);
+    tesseractCoreMesh.rotation.z += delta * (isPlaying ? 1.8 : 0.4);
+    const cScale = 1.0 + (isPlaying ? Math.sin(beatPhase * 3) * 0.3 : 0);
+    tesseractCoreMesh.scale.set(cScale, cScale, cScale);
+    tesseractCoreMat.emissiveIntensity = isPlaying ? 0.7 + effectiveBass * 0.5 : 0.3;
+
+    // Corner vertices calculation for 4D hypercube projection
+    const outHalf = 6.5 * oScale;
+    const inHalf = 3.25 * iScale;
+    const signs = [
+      [-1, -1, -1], [ 1, -1, -1], [ 1,  1, -1], [-1,  1, -1],
+      [-1, -1,  1], [ 1, -1,  1], [ 1,  1,  1], [-1,  1,  1],
+    ];
+
+    const outRot = outerBoxMesh.rotation;
+    const inRot = innerBoxMesh.rotation;
+    const strutPositions = strutLineGeom.attributes.position.array;
+
+    for (let i = 0; i < 8; i++) {
+      const s = signs[i];
+      const vOut = new THREE.Vector3(s[0] * outHalf, s[1] * outHalf, s[2] * outHalf);
+      vOut.applyEuler(outRot);
+      const vIn = new THREE.Vector3(s[0] * inHalf, s[1] * inHalf, s[2] * inHalf);
+      vIn.applyEuler(inRot);
+
+      tesseractNodes[i].mesh.position.copy(vOut);
+      tesseractNodes[i + 8].mesh.position.copy(vIn);
+
+      const baseIdx = i * 6;
+      strutPositions[baseIdx]     = vOut.x;
+      strutPositions[baseIdx + 1] = vOut.y;
+      strutPositions[baseIdx + 2] = vOut.z;
+      strutPositions[baseIdx + 3] = vIn.x;
+      strutPositions[baseIdx + 4] = vIn.y;
+      strutPositions[baseIdx + 5] = vIn.z;
+    }
+    strutLineGeom.attributes.position.needsUpdate = true;
+    strutLineMat.opacity = isPlaying ? 0.65 + effectiveBass * 0.3 : 0.3;
+    tesseractGroup.rotation.y += delta * (isPlaying ? 0.2 : 0.05);
+  }
+
+  // 10. Prism Void Mode Animation
+  if (prismGroup.visible) {
+    prismMesh.rotation.y += delta * (isPlaying ? 0.5 : 0.12);
+    prismMesh.position.y = 8.5 + (isPlaying ? Math.sin(beatPhase * 1.5) * 1.2 : 0);
+    prismMat.emissiveIntensity = isPlaying ? 0.3 + effectiveBass * 0.45 : 0.15;
+
+    apexCrystalMesh.position.y = prismMesh.position.y + 10;
+    apexCrystalMesh.rotation.y += delta * (isPlaying ? 2.5 : 0.7);
+    apexCrystalMesh.rotation.x += delta * (isPlaying ? 1.8 : 0.5);
+    const aScale = 1.0 + (isPlaying ? Math.sin(beatPhase * 2.8) * 0.28 : 0);
+    apexCrystalMesh.scale.set(aScale, aScale, aScale);
+    apexCrystalMat.emissiveIntensity = isPlaying ? 0.8 + effectiveBass * 0.5 : 0.4;
+
+    const apexPos = apexCrystalMesh.position;
+    const lPos = laserGeom.attributes.position.array;
+    prismAnchorMeshes.forEach((a, i) => {
+      const idx = i * 6;
+      lPos[idx]     = apexPos.x;
+      lPos[idx + 1] = apexPos.y;
+      lPos[idx + 2] = apexPos.z;
+      lPos[idx + 3] = a.mesh.position.x;
+      lPos[idx + 4] = a.mesh.position.y + 1.25;
+      lPos[idx + 5] = a.mesh.position.z;
+    });
+    laserGeom.attributes.position.needsUpdate = true;
+    laserMat.opacity = isPlaying ? 0.55 + Math.sin(beatPhase * 4) * 0.35 : 0.2;
+
+    prismFacets.forEach((f) => {
+      f.angle += delta * f.speed * (isPlaying ? 1.5 : 0.5);
+      f.mesh.position.set(
+        Math.cos(f.angle) * f.radius,
+        f.height + Math.sin(f.angle * 2) * 1.5,
+        Math.sin(f.angle) * f.radius
+      );
+      f.mesh.rotation.x += delta * 1.5;
+      f.mesh.rotation.y += delta * 2.0;
+    });
+
+    prismSparks.forEach((s) => {
+      s.mesh.position.y += delta * s.speed * (isPlaying ? 1.5 : 0.5);
+      if (s.mesh.position.y > 26) {
+        s.mesh.position.y = 0.5;
+      }
+      s.mesh.rotation.y += delta * 2;
+    });
+    prismGroup.rotation.y += delta * (isPlaying ? 0.15 : 0.03);
   }
 
   // UI Stepped VU Meter animation
@@ -1194,6 +1575,9 @@ function setVisualMode(modeIdx) {
   horizonGroup.visible    = (mode.id === "horizon");
   neuralGroup.visible     = (mode.id === "neural");
   supernovaGroup.visible  = (mode.id === "supernova");
+  astrolabeGroup.visible  = (mode.id === "astrolabe");
+  tesseractGroup.visible  = (mode.id === "tesseract");
+  prismGroup.visible      = (mode.id === "prism");
 
   // Adjust Camera for best viewing angle per mode
   if (controls) {
@@ -1214,6 +1598,15 @@ function setVisualMode(modeIdx) {
       controls.target.set(0, 9, 0);
     } else if (mode.id === "supernova") {
       camera.position.set(0, 22, 38);
+      controls.target.set(0, 9, 0);
+    } else if (mode.id === "astrolabe") {
+      camera.position.set(0, 16, 36);
+      controls.target.set(0, 9, 0);
+    } else if (mode.id === "tesseract") {
+      camera.position.set(20, 19, 28);
+      controls.target.set(0, 9, 0);
+    } else if (mode.id === "prism") {
+      camera.position.set(0, 16, 38);
       controls.target.set(0, 9, 0);
     } else {
       camera.position.copy(INITIAL_CAMERA_POS);
@@ -1289,6 +1682,46 @@ function applyTheme(idx) {
   });
   blastRingMat.color.setHex(theme.primary);
 
+  // Astrolabe Elements
+  astrolabeRings.forEach((r, i) => {
+    r.mat.emissive.setHex(i % 2 === 0 ? theme.primary : theme.secondary);
+    r.edgeMat.color.setHex(i % 2 === 0 ? theme.primary : theme.secondary);
+  });
+  astrolabeCoreMat.emissive.setHex(theme.primary);
+  astrolabeCoreEdgeMat.color.setHex(theme.secondary);
+  astrolabeBeacons.forEach((b, i) => {
+    b.mat.emissive.setHex(i % 2 === 0 ? theme.primary : theme.secondary);
+    b.edgeMat.color.setHex(theme.primary);
+  });
+
+  // Tesseract Elements
+  outerBoxEdgeMat.color.setHex(theme.primary);
+  innerBoxMat.emissive.setHex(theme.secondary);
+  innerBoxEdgeMat.color.setHex(theme.secondary);
+  strutLineMat.color.setHex(theme.primary);
+  tesseractNodes.forEach((n) => {
+    n.mat.emissive.setHex(n.isInner ? theme.secondary : theme.primary);
+  });
+  tesseractCoreMat.emissive.setHex(theme.primary);
+
+  // Prism Void Elements
+  prismMat.emissive.setHex(theme.primary);
+  prismEdgeMat.color.setHex(theme.primary);
+  apexCrystalMat.emissive.setHex(theme.secondary);
+  apexEdgeMat.color.setHex(theme.primary);
+  laserMat.color.setHex(theme.primary);
+  prismAnchorMeshes.forEach((a) => {
+    a.mat.emissive.setHex(theme.secondary);
+    a.edgeMat.color.setHex(theme.primary);
+  });
+  prismFacets.forEach((f, i) => {
+    f.mat.emissive.setHex(i % 2 === 0 ? theme.primary : theme.secondary);
+    f.edgeMat.color.setHex(theme.secondary);
+  });
+  prismSparks.forEach((s, i) => {
+    s.mat.color.setHex(i % 2 === 0 ? theme.primary : theme.secondary);
+  });
+
   // Grid Floor
   scene.remove(gridFloor);
   gridFloor = new THREE.GridHelper(160, 64, theme.primary, 0x1f2433);
@@ -1300,173 +1733,7 @@ document.getElementById("theme-btn")?.addEventListener("click", () => {
   applyTheme(currentThemeIdx + 1);
 });
 
-// ── 19. Web Audio & Live Sound / Cyber Radio Synthesizer ────────
-let audioCtx = null;
-let analyserNode = null;
-let audioFreqData = null;
-let isAudioActive = false;
-let cyberSynthTimer = null;
-const audioBtn = document.getElementById("audio-toggle-btn");
-const audioBtnIcon = document.getElementById("audio-btn-icon");
-const audioBtnLabel = document.getElementById("audio-btn-label");
-const liveAudioEl = document.getElementById("live-audio-player");
-
-function initWebAudio() {
-  if (!audioCtx) {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) return null;
-    audioCtx = new AudioContextClass();
-    analyserNode = audioCtx.createAnalyser();
-    analyserNode.fftSize = 128;
-    analyserNode.smoothingTimeConstant = 0.8;
-    audioFreqData = new Uint8Array(analyserNode.frequencyBinCount);
-  }
-  if (audioCtx.state === "suspended") {
-    audioCtx.resume();
-  }
-  return audioCtx;
-}
-
-function startCyberSynth() {
-  if (!audioCtx || cyberSynthTimer) return;
-
-  const notes = [55, 65.41, 73.42, 82.41, 98.0, 110.0]; // Sub bass A1, C2, D2, E2, G2, A2
-  let step = 0;
-
-  cyberSynthTimer = setInterval(() => {
-    if (!isAudioActive || !audioCtx || audioCtx.state === "suspended") return;
-    try {
-      const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      const filter = audioCtx.createBiquadFilter();
-
-      const freq = notes[step % notes.length];
-      osc.type = step % 4 === 0 ? "sawtooth" : "triangle";
-      osc.frequency.setValueAtTime(freq, now);
-
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(step % 2 === 0 ? 800 : 350, now);
-      filter.frequency.exponentialRampToValueAtTime(120, now + 0.35);
-
-      gain.gain.setValueAtTime(0.28, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(analyserNode);
-      analyserNode.connect(audioCtx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.4);
-
-      step++;
-    } catch {}
-  }, 240); // 125 BPM
-}
-
-function stopCyberSynth() {
-  if (cyberSynthTimer) {
-    clearInterval(cyberSynthTimer);
-    cyberSynthTimer = null;
-  }
-}
-
-function toggleAudioPlayback() {
-  initWebAudio();
-  isAudioActive = !isAudioActive;
-
-  if (isAudioActive) {
-    startCyberSynth();
-    if (audioBtn) audioBtn.classList.add("active");
-    if (audioBtnIcon) audioBtnIcon.innerText = "🔊";
-    if (audioBtnLabel) audioBtnLabel.innerText = "AUDIO: ON";
-  } else {
-    stopCyberSynth();
-    if (liveAudioEl) liveAudioEl.pause();
-    if (audioBtn) audioBtn.classList.remove("active");
-    if (audioBtnIcon) audioBtnIcon.innerText = "🔇";
-    if (audioBtnLabel) audioBtnLabel.innerText = "LISTEN LIVE";
-  }
-}
-
-audioBtn?.addEventListener("click", toggleAudioPlayback);
-
-// ── 20. Server Session Switcher Modal ─────────────────────────
-const serverSelectBtn = document.getElementById("server-select-btn");
-const serverModal = document.getElementById("server-modal");
-const serverModalCloseBtn = document.getElementById("server-modal-close-btn");
-const serverModalList = document.getElementById("server-modal-list");
-const serverBtnLabel = document.getElementById("server-btn-label");
-
-async function openServerModal() {
-  if (!serverModal || !serverModalList) return;
-  serverModal.classList.add("open");
-  serverModalList.innerHTML = `<div class="queue-empty-state"><p class="mono-code">// SCANNING ACTIVE SERVER SESSIONS...</p></div>`;
-
-  try {
-    const res = await fetch("/api/active-sessions");
-    if (!res.ok) throw new Error("Network response not ok");
-    const data = await res.json();
-    const sessions = data.sessions || [];
-
-    if (sessions.length === 0) {
-      serverModalList.innerHTML = `
-        <div class="queue-empty-state">
-          <p class="mono-code">// NO SERVERS CURRENTLY STREAMING</p>
-          <span class="queue-empty-hint">Join a voice channel and use /play in Discord!</span>
-        </div>
-      `;
-      return;
-    }
-
-    serverModalList.innerHTML = sessions.map((s) => {
-      const isCurrent = s.guildId === activeTargetId;
-      const iconUrl = s.guildIcon || "logo.png?v=2";
-      return `
-        <div class="server-item ${isCurrent ? 'active' : ''}" data-guild="${escapeHtml(s.guildId)}">
-          <div class="server-item-left">
-            <img class="server-item-icon" src="${iconUrl}" onerror="this.src='logo.png?v=2'" alt="Icon">
-            <div class="server-item-info">
-              <div class="server-item-name">${escapeHtml(s.guildName)}</div>
-              <div class="server-item-track">🎵 ${escapeHtml(s.title)} • ${escapeHtml(s.author)}</div>
-            </div>
-          </div>
-          <div class="server-item-status">${s.playing ? '● PLAYING' : '○ IDLE'} (${s.listeners} 👤)</div>
-        </div>
-      `;
-    }).join("");
-
-    serverModalList.querySelectorAll(".server-item").forEach((item) => {
-      item.addEventListener("click", () => {
-        const guildId = item.getAttribute("data-guild");
-        if (guildId) {
-          activeTargetId = guildId;
-          const url = new URL(window.location.href);
-          url.searchParams.set("guild", guildId);
-          window.history.replaceState(null, "", url.toString());
-          initSSE();
-          syncPlayerSnapshot();
-          serverModal.classList.remove("open");
-        }
-      });
-    });
-  } catch (err) {
-    serverModalList.innerHTML = `<div class="queue-empty-state"><p class="mono-code">// ERROR SCANNING ACTIVE SERVERS</p></div>`;
-  }
-}
-
-serverSelectBtn?.addEventListener("click", openServerModal);
-serverModalCloseBtn?.addEventListener("click", () => {
-  serverModal?.classList.remove("open");
-});
-serverModal?.addEventListener("click", (e) => {
-  if (e.target === serverModal) {
-    serverModal.classList.remove("open");
-  }
-});
-
-// Auto-discover playing server on initial open if not specified
+// ── 19. Auto-Discover Active Guild Session on Initial Load ────
 async function autoDiscoverPlayingServer() {
   if (activeTargetId === "default") {
     try {
@@ -1479,7 +1746,6 @@ async function autoDiscoverPlayingServer() {
           const url = new URL(window.location.href);
           url.searchParams.set("guild", activeTargetId);
           window.history.replaceState(null, "", url.toString());
-          if (serverBtnLabel) serverBtnLabel.innerText = active.guildName.slice(0, 10).toUpperCase();
           initSSE();
           syncPlayerSnapshot();
         }

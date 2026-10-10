@@ -435,15 +435,31 @@
       border: var(--border-ultra);
       box-shadow: var(--shadow-hard);
       outline: 2px solid var(--c-accent);
-      padding: 8px 16px;
+      padding: 6px 12px;
       backdrop-filter: blur(8px);
-      gap: 12px;
+      gap: 8px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .brutalist-header::-webkit-scrollbar {
+      display: none;
     }
 
-    .header-left, .header-right {
+    .header-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
     }
 
     .system-badge {
@@ -875,146 +891,39 @@
       border-top: 2px solid #000000;
     }
 
-    /* ── Server Session Switcher Modal ──────────────────────── */
-    .server-modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 1200;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-    .server-modal-backdrop.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .server-modal-card {
-      background: #0c0e14;
-      border: 3px solid #000000;
-      outline: 2px solid var(--c-accent);
-      box-shadow: var(--shadow-hard-lg);
-      width: 100%;
-      max-width: 480px;
-      max-height: 80dvh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .server-modal-header {
-      background: #06070a;
-      padding: 14px 16px;
-      border-bottom: 2px solid var(--c-border-light);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .server-modal-list {
-      padding: 12px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 60dvh;
-    }
-    .server-item {
-      background: #121520;
-      border: 2px solid #000000;
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      cursor: pointer;
-      transition: all 0.12s ease;
-    }
-    .server-item:hover, .server-item.active {
-      border-color: var(--c-accent);
-      background: #181c2c;
-      transform: translate(-1px, -1px);
-      box-shadow: 2px 2px 0px #000;
-    }
-    .server-item-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-      flex: 1;
-    }
-    .server-item-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 4px;
-      background: #000;
-      object-fit: cover;
-      border: 1px solid var(--c-border-light);
-      flex-shrink: 0;
-    }
-    .server-item-info {
-      min-width: 0;
-      flex: 1;
-    }
-    .server-item-name {
-      font-weight: 700;
-      font-size: 13px;
-      color: #fff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .server-item-track {
-      font-size: 11px;
-      color: var(--c-text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-top: 2px;
-    }
-    .server-item-status {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      padding: 3px 6px;
-      background: #000;
-      border: 1px solid var(--c-border-light);
-      color: #10b981;
-      white-space: nowrap;
-    }
-
-    /* Active Audio State on Listen Button */
-    #audio-toggle-btn.active {
-      background: #10b981 !important;
-      color: #000000 !important;
-      border-color: #000000 !important;
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.6) !important;
-    }
-
     /* ── Responsive Rules (Mobile, iOS Safari, Tablet, Discord WebViews) ─ */
+    @media (max-width: 1024px) {
+      .metric-box {
+        display: none !important;
+      }
+      .brutalist-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+    }
+
     @media (max-width: 768px) {
       .hud-container {
-        padding: max(8px, env(safe-area-inset-top, 0px)) 8px max(10px, env(safe-area-inset-bottom, 0px)) 8px;
+        padding: max(6px, env(safe-area-inset-top, 0px)) 6px max(8px, env(safe-area-inset-bottom, 0px)) 6px;
         min-height: 100dvh;
         height: 100dvh;
       }
       .desktop-only {
         display: none !important;
       }
+      .btn-label {
+        display: none !important;
+      }
       .brutalist-header {
-        padding: 6px 8px;
+        padding: 5px 8px;
         gap: 6px;
       }
       .header-right {
-        gap: 5px;
+        gap: 4px;
       }
       .brutalist-btn {
         padding: 6px 8px;
-        min-height: 36px;
+        min-height: 34px;
       }
       .system-badge {
         padding: 4px 6px;
@@ -1141,7 +1050,6 @@
           <span class="system-title">TOGETHER</span>
         </div>
         <div class="tag-box mono desktop-only" id="mode-tag">[ STAGE // 3D_LIVE ]</div>
-        <div class="tag-box caution mono desktop-only">/// LIVE PROTOCOL ///</div>
       </div>
 
       <div class="header-right">
@@ -1153,25 +1061,17 @@
           <span class="metric-key">STREAM</span>
           <span class="metric-val mono green" id="player-state-text">CONNECTED</span>
         </div>
-        <button class="brutalist-btn" id="server-select-btn" title="Choose Active Discord Server">
-          <span class="btn-icon">🌐</span>
-          <span class="btn-label desktop-only" id="server-btn-label">SERVERS</span>
-        </button>
-        <button class="brutalist-btn" id="audio-toggle-btn" title="Listen to Stream or Play Audio Demo">
-          <span class="btn-icon" id="audio-btn-icon">🔊</span>
-          <span class="btn-label desktop-only" id="audio-btn-label">LISTEN LIVE</span>
-        </button>
-        <button class="brutalist-btn" id="mode-btn" title="Switch 3D Geometry Mode">
+        <button class="brutalist-btn" id="mode-btn" title="Switch 3D Visualizer Mode">
           <span class="btn-icon">🔮</span>
-          <span class="btn-label desktop-only" id="mode-name">MONOLITH</span>
+          <span class="btn-label" id="mode-name">MONOLITH</span>
         </button>
         <button class="brutalist-btn" id="queue-toggle-btn" title="Toggle Upcoming Queue Drawer">
           <span class="btn-icon">📑</span>
-          <span class="btn-label desktop-only" id="queue-btn-label">QUEUE (0)</span>
+          <span class="btn-label" id="queue-btn-label">QUEUE (0)</span>
         </button>
         <button class="brutalist-btn" id="theme-btn" title="Switch Brutalist Palette">
           <span class="btn-icon">🎨</span>
-          <span class="btn-label desktop-only" id="theme-name">TOGETHER CRIMSON</span>
+          <span class="btn-label" id="theme-name">TOGETHER CRIMSON</span>
         </button>
         <button class="brutalist-btn icon-only" id="camera-reset-btn" title="Reset 3D Camera">
           <span class="btn-icon">🎯</span>
@@ -1276,32 +1176,11 @@
       </div>
     </aside>
 
-    <!-- Server Session Switcher Modal -->
-    <div id="server-modal" class="server-modal-backdrop">
-      <div class="server-modal-card">
-        <div class="server-modal-header">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span class="hazard-tag">ACTIVE SESSIONS</span>
-            <h3 class="server-modal-title" style="font-family: var(--font-display); font-size: 13px; color: #fff;">SELECT DISCORD SERVER</h3>
-          </div>
-          <button id="server-modal-close-btn" class="queue-close-btn" title="Close Modal">✕</button>
-        </div>
-        <div class="server-modal-list" id="server-modal-list">
-          <div class="queue-empty-state">
-            <p class="mono-code">// SCANNING ACTIVE SERVER SESSIONS...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 
-  <!-- Real-Time Web Audio Stream Player (Plays Live Discord Stream or Cyber Radio) -->
-  <audio id="live-audio-player" crossorigin="anonymous" playsinline style="display: none;"></audio>
-
   <!-- Discord Embedded App SDK (bundled for PC Desktop, Mobile & Web Activity handshakes) -->
-  <script src="discord-sdk.js?v=20261010"></script>
+  <script src="discord-sdk.js?v=20261011"></script>
   <!-- Audio Visualizer Core Script (Versioned with cache-busting timestamp) -->
-  <script src="visualizer.js?v=20261010_v9"></script>
+  <script src="visualizer.js?v=20261011_v10"></script>
 </body>
 </html>
