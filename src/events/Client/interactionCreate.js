@@ -411,13 +411,23 @@ module.exports = {
       }
 
       // Handle Now Playing Buttons
-      const player = client.manager.players.get(interaction.guildId);
-      if (player && player.data.get("nowPlayingMessage")?.id === interaction.message.id) {
+      const playerControlIds = ["previous", "pause", "skip", "stop", "loop", "autoplay"];
+      if (playerControlIds.includes(interaction.customId)) {
+        const player = client.manager.players.get(interaction.guildId);
+        if (!player) {
+          return interaction.reply({ content: `**${client.emoji.warn} No music is currently playing in this server.**`, flags: MessageFlags.Ephemeral });
+        }
+
         if (!interaction.member.voice.channel || interaction.member.voice.channel.id !== player.voiceId) {
           return interaction.reply({ content: `**${client.emoji.warn} You must be in my voice channel to use these buttons.**`, flags: MessageFlags.Ephemeral });
         }
 
+        // Store this message as active now playing message
+        player.data.set("nowPlayingMessage", interaction.message);
+
         const { updateNowPlayingButtons } = require("../Players/playerStart");
+        const { createPlayerCard } = require("../../utils/playerCard");
+        const BANNER_NAME = "now-playing-banner.png";
 
         try {
           switch (interaction.customId) {
@@ -436,15 +446,31 @@ module.exports = {
               }
               break;
   
-            case "pause":
+            case "pause": {
               const isPaused = !player.paused;
               await player.pause(isPaused);
-              await updateNowPlayingButtons(client, player, isPaused);
-              await interaction.reply({ 
-                content: `**${client.emoji.check} Player ${isPaused ? "Paused" : "Resumed"}**`, 
-                flags: MessageFlags.Ephemeral 
-              }).catch(() => { });
+              await updateNowPlayingButtons(client, player, isPaused).catch(() => {});
+
+              if (player.queue?.current) {
+                const updatedCard = createPlayerCard(client, player, player.queue.current, {
+                  bannerName: player.data.get("nowPlayingBanner") ? BANNER_NAME : null,
+                  controls: true,
+                  paused: isPaused,
+                });
+                if (!interaction.replied && !interaction.deferred) {
+                  await interaction.update({
+                    components: [updatedCard],
+                    flags: MessageFlags.IsComponentsV2,
+                  }).catch(() => {});
+                }
+              } else {
+                await interaction.reply({ 
+                  content: `**${client.emoji.check} Player ${isPaused ? "Paused" : "Resumed"}**`, 
+                  flags: MessageFlags.Ephemeral 
+                }).catch(() => {});
+              }
               break;
+            }
   
             case "skip":
               await player.skip();
@@ -464,17 +490,33 @@ module.exports = {
               }).catch(() => { });
               break;
   
-            case "loop":
+            case "loop": {
               const modes = ["none", "track", "queue"];
               const currentModeIndex = modes.indexOf(player.loop || "none");
               const nextMode = modes[(currentModeIndex + 1) % modes.length];
               setLoopMode(player, nextMode);
-              await updateNowPlayingButtons(client, player, player.paused);
-              await interaction.reply({ 
-                content: `**${client.emoji.check} Loop mode set to: \`${nextMode.charAt(0).toUpperCase() + nextMode.slice(1)}\`**`, 
-                flags: MessageFlags.Ephemeral 
-              }).catch(() => { });
+              await updateNowPlayingButtons(client, player, player.paused).catch(() => {});
+
+              if (player.queue?.current) {
+                const updatedCard = createPlayerCard(client, player, player.queue.current, {
+                  bannerName: player.data.get("nowPlayingBanner") ? BANNER_NAME : null,
+                  controls: true,
+                  paused: player.paused,
+                });
+                if (!interaction.replied && !interaction.deferred) {
+                  await interaction.update({
+                    components: [updatedCard],
+                    flags: MessageFlags.IsComponentsV2,
+                  }).catch(() => {});
+                }
+              } else {
+                await interaction.reply({ 
+                  content: `**${client.emoji.check} Loop mode set to: \`${nextMode.charAt(0).toUpperCase() + nextMode.slice(1)}\`**`, 
+                  flags: MessageFlags.Ephemeral 
+                }).catch(() => {});
+              }
               break;
+            }
   
             case "autoplay": {
               const { checkVoterAccess, buildVoterLockPayload } = require("../../utils/voterCheck");
@@ -489,11 +531,26 @@ module.exports = {
               const currentAuto = player.data.get("autoplay") || false;
               const newAutoStatus = !currentAuto;
               const { disabledLoop } = setAutoplay(player, newAutoStatus);
-              await updateNowPlayingButtons(client, player, player.paused);
-              await interaction.reply({ 
-                content: `**${client.emoji.check} Autoplay has been \`${newAutoStatus ? "Enabled" : "Disabled"}\`**${disabledLoop ? "\nLoop was disabled." : ""}`,
-                flags: MessageFlags.Ephemeral 
-              }).catch(() => { });
+              await updateNowPlayingButtons(client, player, player.paused).catch(() => {});
+
+              if (player.queue?.current) {
+                const updatedCard = createPlayerCard(client, player, player.queue.current, {
+                  bannerName: player.data.get("nowPlayingBanner") ? BANNER_NAME : null,
+                  controls: true,
+                  paused: player.paused,
+                });
+                if (!interaction.replied && !interaction.deferred) {
+                  await interaction.update({
+                    components: [updatedCard],
+                    flags: MessageFlags.IsComponentsV2,
+                  }).catch(() => {});
+                }
+              } else {
+                await interaction.reply({ 
+                  content: `**${client.emoji.check} Autoplay has been \`${newAutoStatus ? "Enabled" : "Disabled"}\`**${disabledLoop ? "\nLoop was disabled." : ""}`,
+                  flags: MessageFlags.Ephemeral 
+                }).catch(() => {});
+              }
               break;
             }
           }

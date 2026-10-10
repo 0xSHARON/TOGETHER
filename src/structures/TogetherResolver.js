@@ -163,7 +163,7 @@ class TogetherResolver {
             thumbnail: oembedData.thumbnail_url,
             requester,
             sourceName: "youtube",
-            searchQuery: query
+            searchQuery: `${oembedData.title || ""} ${oembedData.author_name || ""}`.trim() || query
           });
           return { type: "TRACK", tracks: [track] };
         }

@@ -52,12 +52,14 @@ module.exports = {
     const payload = {
       components: [createPlayerCard(client, player, track, {
         bannerName: banner ? BANNER_NAME : null,
+        controls: true,
       })],
       flags: MessageFlags.IsComponentsV2,
     };
     if (banner) payload.files = [new AttachmentBuilder(banner, { name: BANNER_NAME })];
 
     const response = await message.reply(payload);
+    player.data?.set("nowPlayingMessage", response);
     return response;
   },
 };

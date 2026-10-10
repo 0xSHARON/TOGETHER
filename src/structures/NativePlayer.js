@@ -278,10 +278,17 @@ class NativePlayer {
 
     try {
       // 1. Resolve Audio Stream URL via Together Engine
-      const query = current.searchQuery || current.uri || `${current.title} - ${current.author}`;
+      const query = (current.title && current.author && current.author !== "Unknown Artist")
+        ? `${current.title} - ${current.author}`
+        : (current.searchQuery || current.uri || `${current.title}`);
       const forceRefresh = Boolean(this._forceRefreshStream);
       this._forceRefreshStream = false;
-      const streamUrl = await TogetherStreamer.getStreamUrl(query, forceRefresh);
+      const streamUrl = await TogetherStreamer.getStreamUrl({
+        query,
+        title: current.title,
+        author: current.author,
+        uri: current.uri
+      }, forceRefresh);
       this._currentStreamUrl = streamUrl;
 
       // 2. Stream Audio via FFmpeg to Discord Voice Resource
@@ -338,6 +345,11 @@ class NativePlayer {
 
   async resume() {
     return this.pause(false);
+  }
+
+  setLoop(mode) {
+    this.loop = mode || "none";
+    return this;
   }
 
   async skip() {

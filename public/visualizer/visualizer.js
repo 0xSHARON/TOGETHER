@@ -63,40 +63,29 @@ if (isInsideDiscord) {
   const modeTag = document.getElementById("mode-tag");
   if (modeTag) modeTag.innerText = "[ DISCORD ACTIVITY // SYNCED ]";
   document.body.classList.add("in-discord-activity");
+}
 
-  // Discord Embedded App RPC Protocol Handshake
-  const frameId = urlParams.get("frame_id");
-  if (frameId && window.parent) {
+// Official Discord Embedded App SDK Integration (PC Desktop & Mobile)
+let discordSdk = null;
+async function setupDiscordSdk() {
+  if (window.DiscordEmbeddedAppSdk && typeof window.DiscordEmbeddedAppSdk.DiscordSDK === "function") {
     try {
-      const rpcSource = window.parent.opener || window.parent;
-      const handshakePayload = {
-        v: 1,
-        encoding: "json",
-        client_id: "863496211667484676",
-        frame_id: frameId,
-        sdk_version: "1.1.0"
-      };
-
-      // Send Opcode 0 (HANDSHAKE) to parent window
-      rpcSource.postMessage([0, handshakePayload], "*");
-
-      // Listen for Discord Client Handshake Confirmation / HELLO / FRAME
-      window.addEventListener("message", (ev) => {
-        if (!Array.isArray(ev.data)) return;
-        const [opcode, payload] = ev.data;
-        if (opcode === 0) {
-          // Handshake confirmed by Discord
-          rpcSource.postMessage([1, { cmd: "SUBSCRIBE", evt: "VOICE_CHANNEL_SELECT", nonce: "init" }], "*");
-        } else if (opcode === 3) {
-          // HELLO received
-          rpcSource.postMessage([0, handshakePayload], "*");
-        }
-      });
+      discordSdk = new window.DiscordEmbeddedAppSdk.DiscordSDK("863496211667484676");
+      await discordSdk.ready();
+      console.log("[Discord SDK] Official Handshake Ready!");
+      if (discordSdk.guildId && discordSdk.guildId !== "null") {
+        activeTargetId = discordSdk.guildId;
+      } else if (discordSdk.channelId && discordSdk.channelId !== "null") {
+        activeTargetId = discordSdk.channelId;
+      }
+      initSSE();
+      syncPlayerSnapshot();
     } catch (e) {
-      console.warn("[Discord Activity] Handshake notice:", e.message);
+      console.warn("[Discord SDK] Handshake not active or running outside Discord:", e);
     }
   }
 }
+setupDiscordSdk();
 
 let playerState = {
   title: "Waiting for music...",
@@ -714,6 +703,7 @@ async function sendControlCommand(action, extra = {}) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action, ...extra }),
     });
+    setTimeout(syncPlayerSnapshot, 150);
   } catch (err) {
     console.error("Control command error:", err);
   }

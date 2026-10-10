@@ -465,8 +465,11 @@ function startVisualizerServer(client, preferredPort = 5050) {
     // ── API: Interactive Playback Control ─────────────────────
     if (pathname.startsWith("/api/player/") && pathname.endsWith("/control") && req.method === "POST") {
       const rawTarget = pathname.replace("/api/player/", "").replace("/control", "").trim();
-      const guildId   = resolveGuildId(client, rawTarget);
-      const player    = client?.manager?.players?.get(guildId);
+      let guildId   = resolveGuildId(client, rawTarget);
+      let player    = guildId ? client?.manager?.players?.get(guildId) : null;
+      if (!player && (!guildId || rawTarget === "default")) {
+        player = client?.manager?.players?.first?.() || Array.from(client?.manager?.players?.values() || [])[0];
+      }
 
       let body = "";
       req.on("data", (chunk) => { body += chunk; });
