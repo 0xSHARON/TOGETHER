@@ -16,6 +16,7 @@
   <p>
     <a href="#-architecture"><img src="https://img.shields.io/badge/Audio%20Engine-Native%20%2B%20FFmpeg-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Native Engine" /></a>
     <a href="#-features"><img src="https://img.shields.io/badge/UI-Discord%20Components%20V2-57F287?style=for-the-badge" alt="Discord Components V2" /></a>
+    <a href="https://together.dpdns.org/visualizer/"><img src="https://img.shields.io/badge/3D%20Stage-10%20Visual%20Modes-FF0033?style=for-the-badge" alt="3D Visualizer" /></a>
     <a href="#-requirements"><img src="https://img.shields.io/badge/Node.js-v20.18.1%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" /></a>
     <a href="#-license--credits"><img src="https://img.shields.io/badge/Creator-0xSHARON-FEE75C?style=for-the-badge" alt="Author" /></a>
     <a href="LICENSE.md"><img src="https://img.shields.io/badge/License-Credit%20Protected-ED4245?style=for-the-badge" alt="License" /></a>
@@ -28,6 +29,7 @@
 
 - [Overview](#-overview)
 - [Key Features](#-key-features)
+- [3D Audio Stage & Visualizer](#-3d-audio-stage--visualizer)
 - [Feature Modules & Commands](#-feature-modules--commands)
   - [Core & Home](#-core--home)
   - [Music Playback](#-music-playback)
@@ -57,6 +59,7 @@ Equipped with the **Native TOGETHER Audio Engine**, the bot connects directly to
 ## ✨ Key Features
 
 - **🎧 Native TOGETHER Audio Engine:** Direct voice streaming via `@discordjs/voice` and FFmpeg for ultra-low latency, crystal-clear sound, and jitter-free playback.
+- **🔮 3D Brutalist Audio Stage & Discord Activity:** Real-time WebGL audio visualizer synchronized via Server-Sent Events (SSE) featuring **10 distinct 3D visual modes** (Monolith, Cyber Tunnel, Equalizer Metropolis, Quantum Vortex, Neon Horizon, Neural Matrix, Supernova Disk, Astrolabe, Hypercube, Prism Void), 5 neo-brutalist palettes, slide-out queue drawer, and full Discord Activity SDK support.
 - **🎛️ Discord Components V2 UI:** Beautiful, interactive now-playing cards with embedded artworks, responsive action rows, dynamic volume controls, and track seek bars.
 - **⚡ Dual-Interface Parity:** 68 Prefix commands (`.play`) and 66 Slash commands (`/play`) featuring intelligent search autocomplete and interactive category pagination.
 - **🌈 Real-Time DSP Audio Filters:** 13+ studio filters including 8D Audio, BassBoost, Nightcore, Slowed + Reverb, Vaporwave, and Karaoke without playback stutter.
@@ -64,6 +67,33 @@ Equipped with the **Native TOGETHER Audio Engine**, the bot connects directly to
 - **🗳️ Top.gg Voting Integration:** Built-in lightweight voting server with automatic webhook validation, voter role tracking, and live announcements.
 - **✨ Automated Emoji Sync:** Detects transparent high-res UI icons from `assets/emojis/` on boot and automatically registers application emojis into your bot.
 - **📡 24/7 Persistent Mode & Auto-Recovery:** Automatic voice connection health monitoring with proactive reconnection and voice-channel status display.
+
+---
+
+## 🔮 3D Audio Stage & Visualizer
+
+Launch the live 3D WebGL Audio Stage directly in your browser or as an embedded Discord Activity:
+- 🌐 **Live Web URL:** [https://together.dpdns.org/visualizer/](https://together.dpdns.org/visualizer/)
+- 💬 **In Discord:** Use `/visualizer` or `.visualizer` in any voice channel!
+
+### 🪐 10 Selectable 3D Visual Modes
+1. **MONOLITH:** Neo-brutalist central hexagonal obsidian pillar with an orbiting polyhedra cloud and 48 reactive audio spectrum perimeter towers.
+2. **CYBER TUNNEL:** Infinite wireframe warp tunnel with beat-pulsing rings and dynamic camera motion.
+3. **METROPOLIS:** 64-building geometric city skyline reacting dynamically to audio equalizer bands.
+4. **QUANTUM VORTEX:** Gravitational event horizon singularity with dual counter-rotating accretion discs and quantum accretion particle flows.
+5. **NEON HORIZON:** Retro synthwave undulating vertex mountain wireframe grid under an illuminated digital wireframe sun.
+6. **NEURAL MATRIX:** Interconnected synaptic node network computing live relational graph distances with glowing energy pulses.
+7. **SUPERNOVA DISK:** High-energy pulsar core blasting radial relativistic shockwaves and dual spiral arm star shards.
+8. **ASTROLABE:** Quad-axis concentric celestial armillary rings rotating at harmonic speeds with orbital diamond satellites and pulsating stellar core.
+9. **HYPERCUBE:** 4-Dimensional Tesseract wireframe projection with corner hyper-strut lines, pulsing vertex nodes, and inner-outer cube dimensional inversion.
+10. **PRISM VOID:** Floating hexagonal crystal obelisk with levitating apex crystal, 6 perimeter anchor laser beams, tumbling faceted crystal shards, and ascending spark void particles.
+
+### 🎨 Neo-Brutalist Color Themes
+- **TOGETHER CRIMSON:** High-voltage crimson red on void black.
+- **CYBER BRUTAL:** Electric cyber yellow and deep indigo.
+- **ACID INDUSTRIAL:** High-visibility acid lime and hazard orange.
+- **MIDNIGHT PURPLE:** Neon violet and cyberpunk cyan.
+- **OLED MONOCHROME:** Pure stark white on true zero-black background.
 
 ---
 
@@ -80,8 +110,6 @@ The core module powers heartbeat monitoring, cluster sharding, voice-connection 
 - **Dynamic Startup:** In clustered setups, cluster `0` synchronizes application emojis while downstream clusters wait and inherit the mapped IDs.
 - **TUI Bordered Studio Logger:** Clean, box-drawing console interface with detailed diagnostics for commands, voice states, database connections, and system load.
 
----
-
 <div align="center">
   <img src="assets/banners/music.png" alt="TOGETHER Music Banner" width="100%" />
 </div>
@@ -92,6 +120,7 @@ Supports searching and streaming from YouTube, YouTube Music, Spotify, Apple Mus
 
 | Command | Aliases | Description |
 | :--- | :--- | :--- |
+| `visualizer` | `stage`, `3d` | Launch the interactive 3D WebGL Audio Stage & Discord Activity |
 | `play <query>` | `p` | Search and stream music from URL or query with interactive player card |
 | `pause` | — | Pause current track playback |
 | `resume` | `r` | Resume paused track playback |
