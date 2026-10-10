@@ -1,5 +1,6 @@
 const { spawn } = require("child_process");
 const { getYtDlpRunner, getCookiesArgs, ensureYtDlpBinary } = require("../utils/systemBinary");
+const SaavnStreamer = require("./SaavnStreamer");
 
 const STREAM_CACHE = new Map();
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes (prevents expired token reuse)
@@ -147,6 +148,69 @@ class TogetherStreamWorker {
   }
 
   /**
+   * Searches SoundCloud and strictly filters out amateur covers/remixes unless requested
+   * @param {string[]} candidates
+   * @param {string} originalQuery
+   * @returns {Promise<string|null>}
+   */
+  static async _searchAndPickSoundCloud(candidates, originalQuery = "") {
+    const isExplicitCoverOrRemix = /cover|remix|mix|karaoke|instrumental|mashup|slowed|reverb/i.test(originalQuery);
+
+    for (const candidate of candidates) {
+      if (!candidate || candidate.startsWith("http")) continue;
+      try {
+        const out = await new Promise((resolve) => {
+          const runner = getYtDlpRunner();
+          const args = [
+            ...runner.argsPrefix,
+            "--no-update",
+            "--no-warnings",
+            "--flat-playlist",
+            "--print", "%(title)s\t%(uploader)s\t%(webpage_url)s",
+            `scsearch6:${candidate}`
+          ];
+          const proc = spawn(runner.cmd, args);
+          let buf = "";
+          proc.stdout.on("data", d => buf += d.toString());
+          proc.on("error", () => resolve(""));
+          proc.on("close", () => resolve(buf));
+        });
+
+        if (!out.trim()) continue;
+        const lines = out.trim().split("\n");
+        for (const line of lines) {
+          const parts = line.split("\t");
+          if (parts.length >= 3) {
+            const [scTitle, scUploader, scUrl] = parts;
+            const titleLower = scTitle.toLowerCase();
+
+            // Strictly filter out amateur covers, remixes, and karaoke unless explicitly requested
+            if (!isExplicitCoverOrRemix) {
+              const isAmateurCover = /\b(cover|remix|reproduced|remake|karaoke|instrumental|mashup|slowed|reverb|acoustic)\b/i.test(titleLower);
+              if (isAmateurCover) continue;
+            }
+
+            if (scUrl && scUrl.startsWith("http")) {
+              try {
+                const streamUrl = await this._runYtDlp([
+                  "--no-update",
+                  "--no-warnings",
+                  "--no-playlist",
+                  "-f", "ba/b",
+                  "-g",
+                  scUrl
+                ]);
+                if (streamUrl) return streamUrl;
+              } catch {}
+            }
+          }
+        }
+      } catch {}
+    }
+    return null;
+  }
+
+  /**
    * Extracts direct CDN stream URL with automatic cross-platform fallback
    * @param {string|Object} target 
    * @returns {Promise<string>}
@@ -156,6 +220,11 @@ class TogetherStreamWorker {
     const queryStr = typeof target === "string"
       ? target
       : (target.uri || target.query || `${target.title || ""} ${target.author || ""}`.trim());
+
+    // 0. Direct Media Stream (Saavn CDN or direct media links)
+    if (queryStr.startsWith("http") && (queryStr.includes("saavncdn.com") || /\.(mp3|mp4|m4a|aac|opus|ogg)(\?|$)/i.test(queryStr))) {
+      return queryStr;
+    }
 
     const isDirectSoundcloud = queryStr.startsWith("http") && queryStr.includes("soundcloud.com");
     const isDirectYt = queryStr.startsWith("http") && (queryStr.includes("youtube.com") || queryStr.includes("youtu.be"));
@@ -172,7 +241,7 @@ class TogetherStreamWorker {
       ]);
     }
 
-    // 2. Build prioritized list of search queries for SoundCloud fallback
+    // 2. Build prioritized list of search queries for resolution
     const fallbackCandidates = [];
     if (typeof target === "object") {
       const clean1 = this.cleanQueryForSearch(target.title, target.author);
@@ -201,7 +270,7 @@ class TogetherStreamWorker {
       fallbackCandidates.push(target.trim());
     }
 
-    // Direct YouTube URL oEmbed title extraction
+    // Direct YouTube URL oEmbed title extraction if metadata is missing
     if (isDirectYt && fallbackCandidates.length === 0) {
       try {
         const https = require("https");
@@ -222,11 +291,42 @@ class TogetherStreamWorker {
       } catch {}
     }
 
-    // Try YouTube first (works when not blocked)
+    // 3. If YouTube Cookies are provided, try YouTube extraction directly
+    if (cookieArgs.length > 0) {
+      try {
+        const ytQuery = isDirectYt ? queryStr : `ytsearch1:${queryStr}`;
+        const ytArgs = [
+          ...cookieArgs,
+          "--no-update",
+          "--no-warnings",
+          "--no-playlist",
+          "--extractor-args", "youtube:player_client=android",
+          "-f", "ba/b",
+          "-g",
+          ytQuery,
+        ];
+        const url = await this._runYtDlp(ytArgs);
+        if (url) return url;
+      } catch {}
+    }
+
+    // 4. Studio Master via JioSaavn Engine (Zero bot blocking, 320kbps original audio)
+    const saavnQuery = (typeof target === "object" ? (target.originalQuery || fallbackCandidates[0] || target.title) : queryStr) || "";
+    if (saavnQuery && !saavnQuery.startsWith("http")) {
+      try {
+        const saavnRes = await SaavnStreamer.resolveStream(saavnQuery, typeof target === "object" ? target : {});
+        if (saavnRes && saavnRes.streamUrl) {
+          return saavnRes.streamUrl;
+        }
+      } catch (err) {
+        console.warn(`[TogetherStreamWorker] Saavn resolution notice:`, err.message);
+      }
+    }
+
+    // 5. Try YouTube direct (without cookies, works when IP is not rate limited)
     try {
       const ytQuery = isDirectYt ? queryStr : `ytsearch1:${queryStr}`;
       const ytArgs = [
-        ...cookieArgs,
         "--no-update",
         "--no-warnings",
         "--no-playlist",
@@ -237,27 +337,14 @@ class TogetherStreamWorker {
       ];
       const url = await this._runYtDlp(ytArgs);
       if (url) return url;
-    } catch (ytErr) {
-      // 3. Fallback: Iterate through cleaned SoundCloud queries
-      for (const candidate of fallbackCandidates) {
-        if (!candidate || candidate.startsWith("http")) continue;
-        try {
-          const scUrl = await this._runYtDlp([
-            "--no-update",
-            "--no-warnings",
-            "--no-playlist",
-            "-f", "ba/b",
-            "-g",
-            `scsearch1:${candidate}`,
-          ]);
-          if (scUrl) return scUrl;
-        } catch {}
-      }
+    } catch {}
 
-      throw ytErr;
-    }
+    // 6. Filtered SoundCloud Fallback (Strict anti-cover filtering)
+    const originalQuery = typeof target === "object" ? (target.originalQuery || target.title || queryStr) : queryStr;
+    const scUrl = await this._searchAndPickSoundCloud(fallbackCandidates, originalQuery);
+    if (scUrl) return scUrl;
 
-    throw new Error(`Failed to resolve audio stream for "${queryStr}"`);
+    throw new Error(`Failed to resolve authentic audio stream for "${queryStr}"`);
   }
 
   /**

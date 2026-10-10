@@ -11,9 +11,18 @@ let cachedFfmpeg = null;
  * @returns {string[]}
  */
 function getCookiesArgs() {
-  const cookiePath = process.env.YTDLP_COOKIES || path.join(process.cwd(), "cookies.txt");
-  if (fs.existsSync(cookiePath)) {
-    return ["--cookies", cookiePath];
+  const candidatePaths = [
+    process.env.YTDLP_COOKIES,
+    path.join(process.cwd(), "cookies.txt"),
+    path.join(process.cwd(), "..", "cookies.txt"),
+    "/app/cookies.txt",
+    "/home/imadmin/app/cookies.txt",
+    "/home/imadmin/cookies.txt"
+  ];
+  for (const cookiePath of candidatePaths) {
+    if (cookiePath && fs.existsSync(cookiePath)) {
+      return ["--cookies", cookiePath];
+    }
   }
   return [];
 }
