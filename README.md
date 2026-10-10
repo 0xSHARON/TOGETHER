@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/banner.png" alt="TOGETHER Banner" width="100%" />
+  <img src="assets/badges1.png" alt="TOGETHER Banner" width="100%" />
 </div>
 
 <div align="center">
@@ -76,17 +76,14 @@ Launch the live 3D WebGL Audio Stage directly in your browser or as an embedded 
 - 🌐 **Live Web URL:** [https://together.dpdns.org/visualizer/](https://together.dpdns.org/visualizer/)
 - 💬 **In Discord:** Use `/visualizer` or `.visualizer` in any voice channel!
 
-### 🪐 10 Selectable 3D Visual Modes
-1. **MONOLITH:** Neo-brutalist central hexagonal obsidian pillar with an orbiting polyhedra cloud and 48 reactive audio spectrum perimeter towers.
-2. **CYBER TUNNEL:** Infinite wireframe warp tunnel with beat-pulsing rings and dynamic camera motion.
-3. **METROPOLIS:** 64-building geometric city skyline reacting dynamically to audio equalizer bands.
-4. **QUANTUM VORTEX:** Gravitational event horizon singularity with dual counter-rotating accretion discs and quantum accretion particle flows.
-5. **NEON HORIZON:** Retro synthwave undulating vertex mountain wireframe grid under an illuminated digital wireframe sun.
-6. **NEURAL MATRIX:** Interconnected synaptic node network computing live relational graph distances with glowing energy pulses.
-7. **SUPERNOVA DISK:** High-energy pulsar core blasting radial relativistic shockwaves and dual spiral arm star shards.
-8. **ASTROLABE:** Quad-axis concentric celestial armillary rings rotating at harmonic speeds with orbital diamond satellites and pulsating stellar core.
-9. **HYPERCUBE:** 4-Dimensional Tesseract wireframe projection with corner hyper-strut lines, pulsing vertex nodes, and inner-outer cube dimensional inversion.
-10. **PRISM VOID:** Floating hexagonal crystal obelisk with levitating apex crystal, 6 perimeter anchor laser beams, tumbling faceted crystal shards, and ascending spark void particles.
+### 🪐 50 Selectable 3D Visual Modes (6 Cyber Categories)
+The visualizer includes an interactive Mode Selector Modal (`[🔮 MODE]`, hotkey `[M]`, or arrow keys `[← / →]`):
+- **🏛️ Brutalist (2):** Monolith, Metropolis.
+- **✨ Cosmic & Celestial (10):** Supernova Disk, Astrolabe, Solar Flare, Nebula Cloud, Galaxy Spiral, Dark Matter, Satellite Fleet, Ringed Giant, Eclipse Disk, Comet Tail.
+- **⚡ Cyberpunk & Digital Grid (11):** Cyber Tunnel, Neon Horizon, Neural Matrix, Matrix Rain, Cyber Highway, Hologram Cube, Circuit Matrix, Outrun Retro, Laser Harp, Chromatic Beam, Server Mainframe.
+- **📐 Sacred & Hyper Geometry (10):** Hypercube, Prism Void, Kaleidoscope, Merkaba Star, Fibonacci Lattice, Dodeca Matrix, Mobius Ribbon, Torus Knot, Icosa Cluster, Fractal Dendrite.
+- **🌊 Soundwave & Signal (8):** Radial Spectrum, Lissajous Scope, Audio Ribbon, Liquid Mesh, Geodesic Dome, Hex Conduit, 3D VU Towers, Spectrum Globe.
+- **⚛️ Quantum & Atomic Physics (9):** Quantum Vortex, Bohr Atom, Tesla Plasma, DNA Helix, Hadron Collider, Magnetic Dipole, Calabi Yau, Antimatter Trap, Chrono Engine.
 
 ### 🎨 Neo-Brutalist Color Themes
 - **TOGETHER CRIMSON:** High-voltage crimson red on void black.

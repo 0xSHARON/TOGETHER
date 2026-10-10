@@ -203,19 +203,25 @@ const rimLight = new THREE.PointLight(THEMES[0].secondary, 2.5, 60);
 rimLight.position.set(-25, 12, -20);
 scene.add(rimLight);
 
-// ── 6. 3D Visual Geometries (10 Distinct Visual Modes) ────────
-const VISUAL_MODES = [
-  { id: "monolith", name: "MONOLITH" },
-  { id: "tunnel", name: "CYBER TUNNEL" },
-  { id: "metropolis", name: "METROPOLIS" },
-  { id: "vortex", name: "QUANTUM VORTEX" },
-  { id: "horizon", name: "NEON HORIZON" },
-  { id: "neural", name: "NEURAL MATRIX" },
-  { id: "supernova", name: "SUPERNOVA DISK" },
-  { id: "astrolabe", name: "ASTROLABE" },
-  { id: "tesseract", name: "HYPERCUBE" },
-  { id: "prism", name: "PRISM VOID" },
+// ── 6. 3D Visual Geometries (50 Distinct Visual Modes) ────────
+const BASE_VISUAL_MODES = [
+  { id: "monolith", name: "MONOLITH", category: "Brutalist", icon: "🗿" },
+  { id: "tunnel", name: "CYBER TUNNEL", category: "Cyberpunk", icon: "🌀" },
+  { id: "metropolis", name: "METROPOLIS", category: "Brutalist", icon: "🏙️" },
+  { id: "vortex", name: "QUANTUM VORTEX", category: "Quantum", icon: "🌌" },
+  { id: "horizon", name: "NEON HORIZON", category: "Cyberpunk", icon: "🌅" },
+  { id: "neural", name: "NEURAL MATRIX", category: "Cyberpunk", icon: "🧠" },
+  { id: "supernova", name: "SUPERNOVA DISK", category: "Cosmic", icon: "💥" },
+  { id: "astrolabe", name: "ASTROLABE", category: "Cosmic", icon: "🧭" },
+  { id: "tesseract", name: "HYPERCUBE", category: "Geometry", icon: "🧊" },
+  { id: "prism", name: "PRISM VOID", category: "Geometry", icon: "💎" },
 ];
+
+const EXTRA_MODES = (typeof window !== "undefined" && Array.isArray(window.MODES_EXTRA))
+  ? window.MODES_EXTRA
+  : [];
+
+const VISUAL_MODES = [...BASE_VISUAL_MODES, ...EXTRA_MODES];
 let currentModeIdx = 0;
 
 // (A) MODE 0: BRUTALIST MONOLITH & ARENA
@@ -872,6 +878,22 @@ let gridFloor = new THREE.GridHelper(160, 64, THEMES[0].primary, 0x1f2433);
 gridFloor.position.y = 0;
 scene.add(gridFloor);
 
+// Initialize 40 Additional Procedural Modes (50 Total Modes)
+const extraModeHandles = [];
+EXTRA_MODES.forEach((mode, idx) => {
+  try {
+    if (typeof mode.init === "function") {
+      const handle = mode.init(scene, THEMES[0]);
+      extraModeHandles.push(handle);
+    } else {
+      extraModeHandles.push(null);
+    }
+  } catch (err) {
+    console.error(`[Visualizer] Failed to initialize mode ${mode.id || idx}:`, err);
+    extraModeHandles.push(null);
+  }
+});
+
 // ── 7. Frequency Reactive Audio Animation Engine ─────────────
 const audioBands = new Array(ARENA_BARS_COUNT).fill(1);
 let beatPhase    = 0;
@@ -1159,6 +1181,14 @@ function updateAudioVisualization(delta) {
       s.mesh.rotation.y += delta * 2;
     });
     prismGroup.rotation.y += delta * (isPlaying ? 0.15 : 0.03);
+  }
+
+  // 11+. Procedural Extra Modes Animation (Modes 10 through 49)
+  if (currentModeIdx >= 10) {
+    const extraHandle = extraModeHandles[currentModeIdx - 10];
+    if (extraHandle && typeof extraHandle.animate === "function") {
+      extraHandle.animate(delta, isPlaying, effectiveBass, beatPhase);
+    }
   }
 
   // UI Stepped VU Meter animation
@@ -1557,15 +1587,17 @@ queueCloseBtn?.addEventListener("click", () => {
   }
 });
 
-// ── 17. 3D Visual Mode Switcher ───────────────────────────────
+// ── 17. 3D Visual Mode Switcher (50 Visualizer Modes) ─────────
 function setVisualMode(modeIdx) {
-  currentModeIdx = modeIdx % VISUAL_MODES.length;
+  currentModeIdx = ((modeIdx % VISUAL_MODES.length) + VISUAL_MODES.length) % VISUAL_MODES.length;
   const mode = VISUAL_MODES[currentModeIdx];
 
   const modeLabel = document.getElementById("mode-name");
-  if (modeLabel) modeLabel.innerText = mode.name;
+  if (modeLabel) {
+    modeLabel.innerText = `${mode.icon ? mode.icon + " " : ""}${mode.name}`;
+  }
 
-  // Toggle Visibility of Groups
+  // Toggle Visibility of Base 10 Groups
   monolithGroup.visible   = (mode.id === "monolith");
   arenaGroup.visible      = (mode.id === "monolith");
   polyhedraGroup.visible  = (mode.id === "monolith");
@@ -1579,9 +1611,19 @@ function setVisualMode(modeIdx) {
   tesseractGroup.visible  = (mode.id === "tesseract");
   prismGroup.visible      = (mode.id === "prism");
 
+  // Toggle Visibility of Extra 40 Modes
+  extraModeHandles.forEach((handle, idx) => {
+    if (handle && handle.group) {
+      handle.group.visible = (currentModeIdx === 10 + idx);
+    }
+  });
+
   // Adjust Camera for best viewing angle per mode
   if (controls) {
-    if (mode.id === "tunnel") {
+    if (currentModeIdx >= 10 && mode.camera) {
+      camera.position.set(mode.camera.x, mode.camera.y, mode.camera.z);
+      controls.target.set(0, mode.camera.targetY !== undefined ? mode.camera.targetY : 6, 0);
+    } else if (mode.id === "tunnel") {
       camera.position.set(0, 0, 18);
       controls.target.set(0, 0, -40);
     } else if (mode.id === "metropolis") {
@@ -1614,13 +1656,166 @@ function setVisualMode(modeIdx) {
     }
     controls.update();
   }
+
+  updateModeModalCards();
 }
 
-document.getElementById("mode-btn")?.addEventListener("click", () => {
+// ── 18. Mode Selector Modal Controller ────────────────────────
+const modeModal       = document.getElementById("mode-modal");
+const modeBtn         = document.getElementById("mode-btn");
+const modeCloseBtn    = document.getElementById("mode-close-btn");
+const modeBtnPrev     = document.getElementById("mode-btn-prev");
+const modeBtnNext     = document.getElementById("mode-btn-next");
+const modeBtnRandom   = document.getElementById("mode-btn-random");
+const modeSearchInput = document.getElementById("mode-search-input");
+const modeFilterPills = document.querySelectorAll(".mode-filter-pill");
+const modeGrid        = document.getElementById("mode-grid");
+const modeCountLabel  = document.getElementById("mode-modal-count");
+
+let activeFilterCategory = "ALL";
+let activeSearchQuery    = "";
+
+function renderModeCards() {
+  if (!modeGrid) return;
+  modeGrid.innerHTML = "";
+
+  let matchCount = 0;
+  VISUAL_MODES.forEach((mode, idx) => {
+    const category = mode.category || "Standard";
+    const matchesCategory = activeFilterCategory === "ALL" || category.toLowerCase() === activeFilterCategory.toLowerCase();
+    const query = activeSearchQuery.toLowerCase();
+    const matchesSearch = !query || mode.name.toLowerCase().includes(query) || category.toLowerCase().includes(query) || String(idx + 1).includes(query);
+
+    if (matchesCategory && matchesSearch) {
+      matchCount++;
+      const card = document.createElement("div");
+      card.className = `mode-card ${idx === currentModeIdx ? "active" : ""}`;
+      card.id = `mode-card-${idx}`;
+      card.dataset.index = idx;
+
+      card.innerHTML = `
+        <div class="mode-card-top">
+          <span class="mode-card-idx">#${String(idx + 1).padStart(2, "0")}</span>
+          <span class="mode-card-category">${escapeHtml(category)}</span>
+        </div>
+        <div class="mode-card-main">
+          <span class="mode-card-icon">${mode.icon || "🔮"}</span>
+          <span class="mode-card-title">${escapeHtml(mode.name)}</span>
+        </div>
+      `;
+
+      card.addEventListener("click", () => {
+        setVisualMode(idx);
+        closeModeModal();
+      });
+
+      modeGrid.appendChild(card);
+    }
+  });
+
+  if (modeCountLabel) {
+    modeCountLabel.innerText = `Showing ${matchCount} / ${VISUAL_MODES.length} modes`;
+  }
+}
+
+function updateModeModalCards() {
+  document.querySelectorAll(".mode-card").forEach((card) => {
+    const idx = Number(card.dataset.index);
+    if (idx === currentModeIdx) {
+      card.classList.add("active");
+    } else {
+      card.classList.remove("active");
+    }
+  });
+}
+
+function openModeModal() {
+  if (modeModal) {
+    modeModal.classList.add("open");
+    modeModal.setAttribute("aria-hidden", "false");
+    renderModeCards();
+    setTimeout(() => {
+      const activeCard = document.getElementById(`mode-card-${currentModeIdx}`);
+      if (activeCard) activeCard.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      if (modeSearchInput) modeSearchInput.focus();
+    }, 60);
+  }
+}
+
+function closeModeModal() {
+  if (modeModal) {
+    modeModal.classList.remove("open");
+    modeModal.setAttribute("aria-hidden", "true");
+  }
+}
+
+modeBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  openModeModal();
+});
+
+modeCloseBtn?.addEventListener("click", closeModeModal);
+
+modeModal?.addEventListener("click", (e) => {
+  if (e.target === modeModal) closeModeModal();
+});
+
+modeBtnPrev?.addEventListener("click", () => {
+  setVisualMode(currentModeIdx - 1);
+});
+
+modeBtnNext?.addEventListener("click", () => {
   setVisualMode(currentModeIdx + 1);
 });
 
-// ── 18. Theme Switcher: Cycle Brutalist Themes in 3D and DOM ──
+modeBtnRandom?.addEventListener("click", () => {
+  let nextIdx;
+  do {
+    nextIdx = Math.floor(Math.random() * VISUAL_MODES.length);
+  } while (nextIdx === currentModeIdx && VISUAL_MODES.length > 1);
+  setVisualMode(nextIdx);
+});
+
+modeSearchInput?.addEventListener("input", (e) => {
+  activeSearchQuery = e.target.value.trim();
+  renderModeCards();
+});
+
+modeFilterPills?.forEach((pill) => {
+  pill.addEventListener("click", () => {
+    modeFilterPills.forEach((p) => p.classList.remove("active"));
+    pill.classList.add("active");
+    activeFilterCategory = pill.dataset.category || "ALL";
+    renderModeCards();
+  });
+});
+
+// Keyboard shortcuts for visualizer control
+window.addEventListener("keydown", (e) => {
+  if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) {
+    if (e.key === "Escape") closeModeModal();
+    return;
+  }
+  if (e.key === "m" || e.key === "M") {
+    if (modeModal && modeModal.classList.contains("open")) {
+      closeModeModal();
+    } else {
+      openModeModal();
+    }
+  } else if (e.key === "ArrowLeft") {
+    setVisualMode(currentModeIdx - 1);
+  } else if (e.key === "ArrowRight") {
+    setVisualMode(currentModeIdx + 1);
+  } else if (e.key === "Escape") {
+    closeModeModal();
+    if (queueDrawer) queueDrawer.classList.remove("open");
+  }
+});
+
+// Initialize default mode with icon
+setVisualMode(0);
+
+// ── 19. Theme Switcher: Cycle Brutalist Themes in 3D and DOM ──
 function applyTheme(idx) {
   currentThemeIdx = idx % THEMES.length;
   const theme = THEMES[currentThemeIdx];
@@ -1720,6 +1915,13 @@ function applyTheme(idx) {
   });
   prismSparks.forEach((s, i) => {
     s.mat.color.setHex(i % 2 === 0 ? theme.primary : theme.secondary);
+  });
+
+  // Extra 40 Modes Dynamic Recoloring
+  extraModeHandles.forEach((handle) => {
+    if (handle && typeof handle.recolor === "function") {
+      handle.recolor(theme);
+    }
   });
 
   // Grid Floor
