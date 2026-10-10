@@ -257,8 +257,8 @@ function startVisualizerServer(client, preferredPort = 5050) {
     }
   });
 
-  server.listen(port, () => {
-    client?.logger?.log(`[Visualizer] 3D Visualizer Web Server listening at http://localhost:${port}`, "ready");
+  server.listen(port, "0.0.0.0", () => {
+    client?.logger?.log(`[Visualizer] 3D Visualizer Web Server listening at http://0.0.0.0:${port}`, "ready");
   });
 
   client.visualizerServer = server;

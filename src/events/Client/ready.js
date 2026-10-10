@@ -53,9 +53,30 @@ module.exports = {
           const rest = new REST({ version: "10" }).setToken(client.token);
           client.logger.log(`Deploying ${commands.length} slash commands...`, "cmd");
 
+          // Preserve Discord Activity Entry Point commands (type 4 / handler 2) to prevent DiscordAPIError[50240]
+          let payload = [...commands];
+          try {
+            const existing = await rest.get(Routes.applicationCommands(client.user.id));
+            const entryPoints = existing
+              .filter((c) => c.type === 4 || c.handler === 2)
+              .map((c) => ({
+                name: c.name,
+                description: c.description || "Launch an activity",
+                type: c.type,
+                handler: c.handler,
+                integration_types: c.integration_types,
+                contexts: c.contexts,
+              }));
+            if (entryPoints.length > 0) {
+              payload.push(...entryPoints);
+            }
+          } catch (fetchErr) {
+            client.logger?.log(`[CMD] Warning: Could not fetch existing commands: ${fetchErr.message}`, "warn");
+          }
+
           // Deploy globally
           await rest.put(Routes.applicationCommands(client.user.id), {
-            body: commands,
+            body: payload,
           });
           client.logger.log(`Successfully deployed ${commands.length} global slash commands.`, "cmd");
 
