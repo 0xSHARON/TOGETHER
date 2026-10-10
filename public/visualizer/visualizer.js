@@ -203,12 +203,15 @@ const rimLight = new THREE.PointLight(THEMES[0].secondary, 2.5, 60);
 rimLight.position.set(-25, 12, -20);
 scene.add(rimLight);
 
-// ── 6. 3D Visual Geometries (4 Distinct Visual Modes) ─────────
+// ── 6. 3D Visual Geometries (7 Distinct Visual Modes) ─────────
 const VISUAL_MODES = [
   { id: "monolith", name: "MONOLITH" },
   { id: "tunnel", name: "CYBER TUNNEL" },
   { id: "metropolis", name: "METROPOLIS" },
-  { id: "vortex", name: "QUANTUM VORTEX" }
+  { id: "vortex", name: "QUANTUM VORTEX" },
+  { id: "horizon", name: "NEON HORIZON" },
+  { id: "neural", name: "NEURAL MATRIX" },
+  { id: "supernova", name: "SUPERNOVA DISK" },
 ];
 let currentModeIdx = 0;
 
@@ -456,32 +459,191 @@ for (let i = 0; i < VORTEX_PARTICLE_COUNT; i++) {
 vortexGroup.visible = false;
 scene.add(vortexGroup);
 
+// (E) MODE 4: NEON HORIZON (Synthwave Mountain Grid & Wireframe Sun)
+const horizonGroup = new THREE.Group();
+const HORIZON_W = 130;
+const HORIZON_SEGS = 26;
+const horizonPlaneGeom = new THREE.PlaneGeometry(HORIZON_W, HORIZON_W, HORIZON_SEGS, HORIZON_SEGS);
+horizonPlaneGeom.rotateX(-Math.PI / 2);
+const horizonMat = new THREE.MeshStandardMaterial({
+  color: 0x05070c,
+  wireframe: true,
+  roughness: 0.8,
+  metalness: 0.2,
+  emissive: THEMES[0].primary,
+  emissiveIntensity: 0.35,
+});
+const horizonMesh = new THREE.Mesh(horizonPlaneGeom, horizonMat);
+horizonMesh.position.set(0, 0, 0);
+horizonGroup.add(horizonMesh);
+
+// Glowing Retro Wireframe Sun
+const sunGeom = new THREE.SphereGeometry(15, 24, 16);
+const sunMat = new THREE.MeshBasicMaterial({
+  color: THEMES[0].primary,
+  wireframe: true,
+});
+const sunMesh = new THREE.Mesh(sunGeom, sunMat);
+sunMesh.position.set(0, 15, -60);
+horizonGroup.add(sunMesh);
+horizonGroup.visible = false;
+scene.add(horizonGroup);
+
+// (F) MODE 5: NEURAL MATRIX (Synaptic Network Graph)
+const neuralGroup = new THREE.Group();
+const NEURAL_NODES_COUNT = 44;
+const neuralNodes = [];
+const nodeGeom = new THREE.OctahedronGeometry(1.0, 0);
+const nodeEdgeGeom = new THREE.EdgesGeometry(nodeGeom);
+
+for (let i = 0; i < NEURAL_NODES_COUNT; i++) {
+  const nMat = new THREE.MeshStandardMaterial({
+    color: 0x090b12,
+    emissive: i % 2 === 0 ? THEMES[0].primary : THEMES[0].secondary,
+    emissiveIntensity: 0.5,
+    roughness: 0.3,
+    metalness: 0.8,
+  });
+  const nMesh = new THREE.Mesh(nodeGeom, nMat);
+  const nEdgeMat = new THREE.LineBasicMaterial({ color: THEMES[0].primary });
+  const nEdge = new THREE.LineSegments(nodeEdgeGeom, nEdgeMat);
+  nMesh.add(nEdge);
+
+  const radius = 8 + Math.random() * 20;
+  const theta = Math.random() * Math.PI * 2;
+  const phi = (Math.random() - 0.5) * Math.PI;
+
+  nMesh.position.set(
+    radius * Math.cos(phi) * Math.cos(theta),
+    9 + radius * Math.sin(phi) * 0.5,
+    radius * Math.cos(phi) * Math.sin(theta)
+  );
+
+  neuralGroup.add(nMesh);
+  neuralNodes.push({
+    mesh: nMesh,
+    basePos: nMesh.position.clone(),
+    mat: nMat,
+    edgeMat: nEdgeMat,
+    speed: 0.5 + Math.random() * 0.8,
+    phase: Math.random() * Math.PI * 2,
+  });
+}
+
+// Synaptic Connecting Lines
+const neuralLinesMat = new THREE.LineBasicMaterial({
+  color: THEMES[0].secondary,
+  transparent: true,
+  opacity: 0.4,
+});
+const neuralLinesGeom = new THREE.BufferGeometry();
+const neuralLinesMesh = new THREE.LineSegments(neuralLinesGeom, neuralLinesMat);
+neuralGroup.add(neuralLinesMesh);
+neuralGroup.visible = false;
+scene.add(neuralGroup);
+
+// (G) MODE 6: SUPERNOVA DISK (Pulsar Star & Cosmic Shockwaves)
+const supernovaGroup = new THREE.Group();
+const pulsarGeom = new THREE.SphereGeometry(3.6, 24, 24);
+const pulsarMat = new THREE.MeshStandardMaterial({
+  color: 0xffffff,
+  emissive: THEMES[0].primary,
+  emissiveIntensity: 0.8,
+  roughness: 0.1,
+  metalness: 0.9,
+});
+const pulsarMesh = new THREE.Mesh(pulsarGeom, pulsarMat);
+pulsarMesh.position.set(0, 9, 0);
+supernovaGroup.add(pulsarMesh);
+
+// Spiral Arms Particles
+const SUPERNOVA_PARTICLES_COUNT = 72;
+const supernovaParticles = [];
+const shardGeom = new THREE.OctahedronGeometry(0.7, 0);
+
+for (let i = 0; i < SUPERNOVA_PARTICLES_COUNT; i++) {
+  const arm = i % 2;
+  const angle = (i / SUPERNOVA_PARTICLES_COUNT) * Math.PI * 5 + (arm * Math.PI);
+  const dist = 5 + (i / SUPERNOVA_PARTICLES_COUNT) * 25;
+  const sMat = new THREE.MeshStandardMaterial({
+    color: 0x090b10,
+    emissive: arm === 0 ? THEMES[0].primary : THEMES[0].secondary,
+    emissiveIntensity: 0.5,
+  });
+  const sMesh = new THREE.Mesh(shardGeom, sMat);
+  sMesh.position.set(
+    Math.cos(angle) * dist,
+    9 + (Math.sin(angle * 3)) * 1.5,
+    Math.sin(angle) * dist
+  );
+  supernovaGroup.add(sMesh);
+  supernovaParticles.push({ mesh: sMesh, dist, angle, arm, speed: 0.5 + (i % 4) * 0.15, mat: sMat });
+}
+
+// Blast wave ring
+const blastRingGeom = new THREE.RingGeometry(1.5, 2.2, 32);
+const blastRingMat = new THREE.MeshBasicMaterial({
+  color: THEMES[0].primary,
+  side: THREE.DoubleSide,
+  transparent: true,
+  opacity: 0.7,
+});
+const blastRingMesh = new THREE.Mesh(blastRingGeom, blastRingMat);
+blastRingMesh.rotation.x = Math.PI / 2;
+blastRingMesh.position.set(0, 9, 0);
+supernovaGroup.add(blastRingMesh);
+let blastRingScale = 1.0;
+
+supernovaGroup.visible = false;
+scene.add(supernovaGroup);
+
 // (E) Infinite Grid Floor
 let gridFloor = new THREE.GridHelper(160, 64, THEMES[0].primary, 0x1f2433);
 gridFloor.position.y = 0;
 scene.add(gridFloor);
 
-// ── 7. Simulated Frequency FFT Audio Reactive Engine ──────────
+// ── 7. Real Web Audio & Frequency FFT Reactive Engine ──────────
 const audioBands = new Array(ARENA_BARS_COUNT).fill(1);
 let beatPhase    = 0;
 
 function updateAudioVisualization(delta) {
-  const isPlaying = playerState.playing && !playerState.paused;
+  const isPlaying = (playerState.playing && !playerState.paused) || isAudioActive;
   beatPhase += delta * (isPlaying ? 4.5 : 0.8);
 
-  const bassIntensity = isPlaying
-    ? (Math.sin(beatPhase * 2) > 0.5 ? 1.6 : 1.0) + Math.random() * 0.3
-    : 0.5;
+  // Extract real audio frequencies if Web Audio is active
+  let realBass = 0;
+  let realMid = 0;
+  let realTreble = 0;
+  if (analyserNode && isAudioActive && audioFreqData) {
+    analyserNode.getByteFrequencyData(audioFreqData);
+    let bSum = 0, mSum = 0, tSum = 0;
+    for (let i = 0; i < 4; i++) bSum += audioFreqData[i];
+    for (let i = 4; i < 20; i++) mSum += audioFreqData[i];
+    for (let i = 20; i < 50; i++) tSum += audioFreqData[i];
+    realBass = (bSum / 4) / 255;
+    realMid = (mSum / 16) / 255;
+    realTreble = (tSum / 30) / 255;
+  }
 
-  primaryLight.intensity = isPlaying ? 2.5 + bassIntensity * 2.2 : 1.0;
+  const effectiveBass = (isAudioActive && realBass > 0.05)
+    ? realBass * 2.2
+    : (isPlaying ? (Math.sin(beatPhase * 2) > 0.5 ? 1.6 : 1.0) + Math.random() * 0.3 : 0.5);
+
+  primaryLight.intensity = isPlaying ? 2.5 + effectiveBass * 2.2 : 1.0;
 
   // 1. Monolith Mode Animation
   if (monolithGroup.visible) {
     for (let i = 0; i < ARENA_BARS_COUNT; i++) {
       if (isPlaying) {
-        const freqSpread = (i / ARENA_BARS_COUNT) * Math.PI * 3;
-        const wave = Math.abs(Math.sin(beatPhase * 1.8 + freqSpread));
-        const targetHeight = 1.0 + wave * 16.0 + Math.cos(beatPhase * 0.9 + i) * 3.0;
+        let targetHeight = 1.0;
+        if (isAudioActive && audioFreqData) {
+          const binIdx = Math.floor((i / ARENA_BARS_COUNT) * 48);
+          targetHeight = 1.0 + (audioFreqData[binIdx] / 255) * 22.0;
+        } else {
+          const freqSpread = (i / ARENA_BARS_COUNT) * Math.PI * 3;
+          const wave = Math.abs(Math.sin(beatPhase * 1.8 + freqSpread));
+          targetHeight = 1.0 + wave * 16.0 + Math.cos(beatPhase * 0.9 + i) * 3.0;
+        }
         audioBands[i] += (targetHeight - audioBands[i]) * 0.3;
       } else {
         audioBands[i] += (0.8 - audioBands[i]) * 0.1;
@@ -494,7 +656,7 @@ function updateAudioVisualization(delta) {
     coreMesh.rotation.x += delta * (isPlaying ? 1.8 : 0.4);
     coreMesh.rotation.y += delta * (isPlaying ? 2.2 : 0.5);
     coreMesh.position.y = 14 + Math.sin(beatPhase * 1.2) * (isPlaying ? 1.2 : 0.3);
-    coreMesh.material.emissiveIntensity = isPlaying ? 0.5 + bassIntensity * 0.5 : 0.2;
+    coreMesh.material.emissiveIntensity = isPlaying ? 0.5 + effectiveBass * 0.5 : 0.2;
 
     polyhedraItems.forEach((item) => {
       item.angle += delta * item.speed * (isPlaying ? 1.5 : 0.5);
@@ -508,12 +670,12 @@ function updateAudioVisualization(delta) {
   // 2. Cyber Tunnel Mode Animation
   if (tunnelGroup.visible) {
     tunnelRings.forEach((r, idx) => {
-      r.mesh.position.z += delta * (isPlaying ? (22 + bassIntensity * 8) : 6);
+      r.mesh.position.z += delta * (isPlaying ? (22 + effectiveBass * 8) : 6);
       if (r.mesh.position.z > 25) {
         r.mesh.position.z = -125;
       }
       r.mesh.rotation.z += delta * (idx % 2 === 0 ? 0.4 : -0.4);
-      const pulseScale = 1.0 + (isPlaying ? Math.sin(beatPhase + idx * 0.3) * 0.18 : 0);
+      const pulseScale = 1.0 + (isPlaying ? Math.sin(beatPhase + idx * 0.3) * 0.18 : 0) + (isAudioActive ? realBass * 0.2 : 0);
       r.mesh.scale.set(pulseScale, pulseScale, 1);
     });
   }
@@ -522,8 +684,14 @@ function updateAudioVisualization(delta) {
   if (metropolisGroup.visible) {
     metroBuildings.forEach((b, idx) => {
       if (isPlaying) {
-        const wave = Math.abs(Math.sin(beatPhase * 1.5 + (b.row + b.col) * 0.6));
-        const bHeight = 1.0 + wave * 14.0 + Math.sin(beatPhase * 0.8 + idx) * 3.0;
+        let bHeight = 1.0;
+        if (isAudioActive && audioFreqData) {
+          const binIdx = Math.floor(((b.row * METRO_COLS + b.col) / (METRO_ROWS * METRO_COLS)) * 48);
+          bHeight = 1.0 + (audioFreqData[binIdx] / 255) * 20.0;
+        } else {
+          const wave = Math.abs(Math.sin(beatPhase * 1.5 + (b.row + b.col) * 0.6));
+          bHeight = 1.0 + wave * 14.0 + Math.sin(beatPhase * 0.8 + idx) * 3.0;
+        }
         b.mesh.scale.y += (bHeight - b.mesh.scale.y) * 0.25;
       } else {
         b.mesh.scale.y += (1.5 - b.mesh.scale.y) * 0.1;
@@ -536,7 +704,7 @@ function updateAudioVisualization(delta) {
   if (vortexGroup.visible) {
     diskMesh1.rotation.z += delta * (isPlaying ? 1.2 : 0.3);
     diskMesh2.rotation.z -= delta * (isPlaying ? 0.8 : 0.2);
-    const pulseRadius = 1.0 + (isPlaying ? Math.sin(beatPhase * 2.2) * 0.2 : 0);
+    const pulseRadius = 1.0 + (isPlaying ? Math.sin(beatPhase * 2.2) * 0.2 : 0) + (isAudioActive ? realBass * 0.3 : 0);
     bhCoreMesh.scale.set(pulseRadius, pulseRadius, pulseRadius);
 
     vortexParticles.forEach((p) => {
@@ -546,6 +714,70 @@ function updateAudioVisualization(delta) {
       p.mesh.position.y = 8 + Math.sin(p.angle * 3) * 3.0;
       p.mesh.rotation.x += delta * 1.5;
     });
+  }
+
+  // 5. Neon Horizon Mode Animation
+  if (horizonGroup.visible) {
+    const pos = horizonPlaneGeom.attributes.position;
+    const time = beatPhase * 0.6;
+    for (let i = 0; i < pos.count; i++) {
+      const u = pos.getX(i);
+      const distFromCenter = Math.abs(u) / (HORIZON_W / 2);
+      const wave = Math.sin(u * 0.15 + time) * Math.cos(pos.getZ(i) * 0.15 - time);
+      const mHeight = (distFromCenter > 0.25 ? Math.pow(distFromCenter, 2.0) * 16 : 0);
+      pos.setY(i, (wave * (isPlaying ? 3.0 : 1.0) + mHeight) * (1.0 + effectiveBass * 0.4));
+    }
+    pos.needsUpdate = true;
+    sunMesh.rotation.y += delta * 0.2;
+    const sunScale = 1.0 + (isPlaying ? Math.sin(beatPhase * 1.5) * 0.15 : 0) + (isAudioActive ? realBass * 0.3 : 0);
+    sunMesh.scale.set(sunScale, sunScale, sunScale);
+  }
+
+  // 6. Neural Matrix Mode Animation
+  if (neuralGroup.visible) {
+    neuralNodes.forEach((n) => {
+      n.phase += delta * n.speed * (isPlaying ? 2.2 : 0.7);
+      n.mesh.position.y = n.basePos.y + Math.sin(n.phase) * 1.8;
+      const pScale = 1.0 + (isPlaying ? Math.sin(n.phase * 2) * 0.3 : 0) + (isAudioActive ? realMid * 0.5 : 0);
+      n.mesh.scale.set(pScale, pScale, pScale);
+    });
+    neuralGroup.rotation.y += delta * (isPlaying ? 0.15 : 0.04);
+
+    const linePositions = [];
+    for (let i = 0; i < neuralNodes.length; i++) {
+      for (let j = i + 1; j < neuralNodes.length; j++) {
+        const d = neuralNodes[i].mesh.position.distanceTo(neuralNodes[j].mesh.position);
+        if (d < 12.0) {
+          linePositions.push(
+            neuralNodes[i].mesh.position.x, neuralNodes[i].mesh.position.y, neuralNodes[i].mesh.position.z,
+            neuralNodes[j].mesh.position.x, neuralNodes[j].mesh.position.y, neuralNodes[j].mesh.position.z
+          );
+        }
+      }
+    }
+    neuralLinesGeom.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+    neuralLinesMat.opacity = isPlaying ? 0.35 + (isAudioActive ? realMid * 0.45 : 0.15) : 0.15;
+  }
+
+  // 7. Supernova Disk Mode Animation
+  if (supernovaGroup.visible) {
+    pulsarMesh.rotation.y += delta * (isPlaying ? 3.0 : 0.8);
+    const pulsarScale = 1.0 + (isPlaying ? Math.sin(beatPhase * 3) * 0.25 : 0) + (isAudioActive ? realBass * 0.4 : 0);
+    pulsarMesh.scale.set(pulsarScale, pulsarScale, pulsarScale);
+    pulsarMat.emissiveIntensity = isPlaying ? 0.7 + effectiveBass * 0.5 : 0.3;
+
+    supernovaParticles.forEach((p) => {
+      p.angle += delta * p.speed * (isPlaying ? 1.8 : 0.5);
+      p.mesh.position.x = Math.cos(p.angle) * p.dist;
+      p.mesh.position.z = Math.sin(p.angle) * p.dist;
+      p.mesh.rotation.x += delta * 2.0;
+    });
+    supernovaGroup.rotation.y += delta * (isPlaying ? 0.2 : 0.05);
+
+    blastRingScale += delta * (isPlaying ? 24.0 : 8.0);
+    if (blastRingScale > 32.0) blastRingScale = 1.0;
+    blastRingMesh.scale.set(blastRingScale, blastRingScale, 1.0);
+    blastRingMat.opacity = Math.max(0, 0.8 - (blastRingScale / 32.0));
   }
 
   // UI Stepped VU Meter animation
@@ -946,6 +1178,9 @@ function setVisualMode(modeIdx) {
   tunnelGroup.visible     = (mode.id === "tunnel");
   metropolisGroup.visible = (mode.id === "metropolis");
   vortexGroup.visible     = (mode.id === "vortex");
+  horizonGroup.visible    = (mode.id === "horizon");
+  neuralGroup.visible     = (mode.id === "neural");
+  supernovaGroup.visible  = (mode.id === "supernova");
 
   // Adjust Camera for best viewing angle per mode
   if (controls) {
@@ -958,6 +1193,15 @@ function setVisualMode(modeIdx) {
     } else if (mode.id === "vortex") {
       camera.position.set(0, 16, 36);
       controls.target.set(0, 8, 0);
+    } else if (mode.id === "horizon") {
+      camera.position.set(0, 11, 46);
+      controls.target.set(0, 10, -50);
+    } else if (mode.id === "neural") {
+      camera.position.set(0, 15, 34);
+      controls.target.set(0, 9, 0);
+    } else if (mode.id === "supernova") {
+      camera.position.set(0, 22, 38);
+      controls.target.set(0, 9, 0);
     } else {
       camera.position.copy(INITIAL_CAMERA_POS);
       controls.target.set(0, 5, 0);
@@ -1014,6 +1258,24 @@ function applyTheme(idx) {
     p.edgeLine.material.color.setHex(theme.primary);
   });
 
+  // Horizon Elements
+  horizonMat.emissive.setHex(theme.primary);
+  sunMat.color.setHex(theme.primary);
+
+  // Neural Elements
+  neuralNodes.forEach((n, i) => {
+    n.mat.emissive.setHex(i % 2 === 0 ? theme.primary : theme.secondary);
+    n.edgeMat.color.setHex(theme.primary);
+  });
+  neuralLinesMat.color.setHex(theme.secondary);
+
+  // Supernova Elements
+  pulsarMat.emissive.setHex(theme.primary);
+  supernovaParticles.forEach((p, i) => {
+    p.mat.emissive.setHex(p.arm === 0 ? theme.primary : theme.secondary);
+  });
+  blastRingMat.color.setHex(theme.primary);
+
   // Grid Floor
   scene.remove(gridFloor);
   gridFloor = new THREE.GridHelper(160, 64, theme.primary, 0x1f2433);
@@ -1024,6 +1286,195 @@ function applyTheme(idx) {
 document.getElementById("theme-btn")?.addEventListener("click", () => {
   applyTheme(currentThemeIdx + 1);
 });
+
+// ── 19. Web Audio & Live Sound / Cyber Radio Synthesizer ────────
+let audioCtx = null;
+let analyserNode = null;
+let audioFreqData = null;
+let isAudioActive = false;
+let cyberSynthTimer = null;
+const audioBtn = document.getElementById("audio-toggle-btn");
+const audioBtnIcon = document.getElementById("audio-btn-icon");
+const audioBtnLabel = document.getElementById("audio-btn-label");
+const liveAudioEl = document.getElementById("live-audio-player");
+
+function initWebAudio() {
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    audioCtx = new AudioContextClass();
+    analyserNode = audioCtx.createAnalyser();
+    analyserNode.fftSize = 128;
+    analyserNode.smoothingTimeConstant = 0.8;
+    audioFreqData = new Uint8Array(analyserNode.frequencyBinCount);
+  }
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function startCyberSynth() {
+  if (!audioCtx || cyberSynthTimer) return;
+
+  const notes = [55, 65.41, 73.42, 82.41, 98.0, 110.0]; // Sub bass A1, C2, D2, E2, G2, A2
+  let step = 0;
+
+  cyberSynthTimer = setInterval(() => {
+    if (!isAudioActive || !audioCtx || audioCtx.state === "suspended") return;
+    try {
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      const freq = notes[step % notes.length];
+      osc.type = step % 4 === 0 ? "sawtooth" : "triangle";
+      osc.frequency.setValueAtTime(freq, now);
+
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(step % 2 === 0 ? 800 : 350, now);
+      filter.frequency.exponentialRampToValueAtTime(120, now + 0.35);
+
+      gain.gain.setValueAtTime(0.28, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(analyserNode);
+      analyserNode.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.4);
+
+      step++;
+    } catch {}
+  }, 240); // 125 BPM
+}
+
+function stopCyberSynth() {
+  if (cyberSynthTimer) {
+    clearInterval(cyberSynthTimer);
+    cyberSynthTimer = null;
+  }
+}
+
+function toggleAudioPlayback() {
+  initWebAudio();
+  isAudioActive = !isAudioActive;
+
+  if (isAudioActive) {
+    startCyberSynth();
+    if (audioBtn) audioBtn.classList.add("active");
+    if (audioBtnIcon) audioBtnIcon.innerText = "🔊";
+    if (audioBtnLabel) audioBtnLabel.innerText = "AUDIO: ON";
+  } else {
+    stopCyberSynth();
+    if (liveAudioEl) liveAudioEl.pause();
+    if (audioBtn) audioBtn.classList.remove("active");
+    if (audioBtnIcon) audioBtnIcon.innerText = "🔇";
+    if (audioBtnLabel) audioBtnLabel.innerText = "LISTEN LIVE";
+  }
+}
+
+audioBtn?.addEventListener("click", toggleAudioPlayback);
+
+// ── 20. Server Session Switcher Modal ─────────────────────────
+const serverSelectBtn = document.getElementById("server-select-btn");
+const serverModal = document.getElementById("server-modal");
+const serverModalCloseBtn = document.getElementById("server-modal-close-btn");
+const serverModalList = document.getElementById("server-modal-list");
+const serverBtnLabel = document.getElementById("server-btn-label");
+
+async function openServerModal() {
+  if (!serverModal || !serverModalList) return;
+  serverModal.classList.add("open");
+  serverModalList.innerHTML = `<div class="queue-empty-state"><p class="mono-code">// SCANNING ACTIVE SERVER SESSIONS...</p></div>`;
+
+  try {
+    const res = await fetch("/api/active-sessions");
+    if (!res.ok) throw new Error("Network response not ok");
+    const data = await res.json();
+    const sessions = data.sessions || [];
+
+    if (sessions.length === 0) {
+      serverModalList.innerHTML = `
+        <div class="queue-empty-state">
+          <p class="mono-code">// NO SERVERS CURRENTLY STREAMING</p>
+          <span class="queue-empty-hint">Join a voice channel and use /play in Discord!</span>
+        </div>
+      `;
+      return;
+    }
+
+    serverModalList.innerHTML = sessions.map((s) => {
+      const isCurrent = s.guildId === activeTargetId;
+      const iconUrl = s.guildIcon || "logo.png?v=2";
+      return `
+        <div class="server-item ${isCurrent ? 'active' : ''}" data-guild="${escapeHtml(s.guildId)}">
+          <div class="server-item-left">
+            <img class="server-item-icon" src="${iconUrl}" onerror="this.src='logo.png?v=2'" alt="Icon">
+            <div class="server-item-info">
+              <div class="server-item-name">${escapeHtml(s.guildName)}</div>
+              <div class="server-item-track">🎵 ${escapeHtml(s.title)} • ${escapeHtml(s.author)}</div>
+            </div>
+          </div>
+          <div class="server-item-status">${s.playing ? '● PLAYING' : '○ IDLE'} (${s.listeners} 👤)</div>
+        </div>
+      `;
+    }).join("");
+
+    serverModalList.querySelectorAll(".server-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        const guildId = item.getAttribute("data-guild");
+        if (guildId) {
+          activeTargetId = guildId;
+          const url = new URL(window.location.href);
+          url.searchParams.set("guild", guildId);
+          window.history.replaceState(null, "", url.toString());
+          initSSE();
+          syncPlayerSnapshot();
+          serverModal.classList.remove("open");
+        }
+      });
+    });
+  } catch (err) {
+    serverModalList.innerHTML = `<div class="queue-empty-state"><p class="mono-code">// ERROR SCANNING ACTIVE SERVERS</p></div>`;
+  }
+}
+
+serverSelectBtn?.addEventListener("click", openServerModal);
+serverModalCloseBtn?.addEventListener("click", () => {
+  serverModal?.classList.remove("open");
+});
+serverModal?.addEventListener("click", (e) => {
+  if (e.target === serverModal) {
+    serverModal.classList.remove("open");
+  }
+});
+
+// Auto-discover playing server on initial open if not specified
+async function autoDiscoverPlayingServer() {
+  if (activeTargetId === "default") {
+    try {
+      const res = await fetch("/api/active-sessions");
+      if (res.ok) {
+        const data = await res.json();
+        const active = (data.sessions || []).find((s) => s.playing);
+        if (active && active.guildId) {
+          activeTargetId = active.guildId;
+          const url = new URL(window.location.href);
+          url.searchParams.set("guild", activeTargetId);
+          window.history.replaceState(null, "", url.toString());
+          if (serverBtnLabel) serverBtnLabel.innerText = active.guildName.slice(0, 10).toUpperCase();
+          initSSE();
+          syncPlayerSnapshot();
+        }
+      }
+    } catch {}
+  }
+}
+autoDiscoverPlayingServer();
 
 // Initialize Handshake & SSE
 initSSE();

@@ -55,7 +55,7 @@ module.exports = {
 
     // 1. Construct Web Visualizer Link
     const baseHost = (process.env.VISUALIZER_URL || `http://localhost:${client.visualizerPort || 5050}`).replace(/\/+$/, "");
-    const webUrl = `${baseHost}/?guild=${message.guild.id}`;
+    const webUrl = `${baseHost}/visualizer/?guild=${message.guild.id}`;
 
     // 2. Try creating Discord Embedded Application Activity Invite
     let activityInviteUrl = null;

@@ -129,14 +129,40 @@ class NativePlayer {
   _setupEventListeners() {
     this.audioPlayer.on(AudioPlayerStatus.Idle, async () => {
       this._cleanupFfmpeg();
+
+      // If a track is currently resolving and about to play, ignore spurious Idle
+      if (this._isResolving) return;
+
       const finishedTrack = this.queue.current;
       const elapsedMs = this.position;
       this.playing = false;
 
-      if (!finishedTrack) return;
-
       const isManualSkip = Boolean(this._isSkipping);
       this._isSkipping = false;
+
+      if (!finishedTrack) {
+        if (this.queue.length > 0) {
+          await this.play();
+        } else if (this.data.get("autoplay")) {
+          this._isLoadingAutoplay = true;
+          try {
+            const { attemptAutoplay } = require("../utils/playerUtils");
+            await attemptAutoplay(this.manager.client, this);
+          } catch (e) {
+            this.manager.client.logger?.log(`[Autoplay] Hook error in Idle: ${e.message}`, "error");
+          } finally {
+            this._isLoadingAutoplay = false;
+          }
+          if (this.queue.length > 0) {
+            await this.play();
+          } else if (!this.playing && !this.queue.current) {
+            this.manager.emit("playerEmpty", this);
+          }
+        } else {
+          this.manager.emit("playerEmpty", this);
+        }
+        return;
+      }
 
       // Detect premature stream termination (e.g. YouTube stream drop)
       const durationMs = finishedTrack.length || finishedTrack.duration || 0;
@@ -187,7 +213,7 @@ class NativePlayer {
 
         if (this.queue.length > 0) {
           await this.play();
-        } else {
+        } else if (!this.playing && !this.queue.current) {
           this.queue.current = null;
           this.manager.emit("playerEmpty", this);
         }
@@ -276,6 +302,7 @@ class NativePlayer {
       }
     } catch {}
 
+    this._isResolving = true;
     try {
       // 1. Resolve Audio Stream URL via Together Engine
       const query = (current.title && current.author && current.author !== "Unknown Artist")
@@ -308,6 +335,7 @@ class NativePlayer {
       }
 
       this.audioPlayer.play(resource);
+      this._isResolving = false;
       this.manager.emit("playerStart", this, current);
 
       // Ensure Discord Voice Gateway speaking state
@@ -322,6 +350,7 @@ class NativePlayer {
         TogetherStreamer.prefetch(this.queue[0]);
       }
     } catch (err) {
+      this._isResolving = false;
       this.manager.client.logger?.log(`[NativePlayer] Failed to stream "${current.title}": ${err.message}`, "error");
       this.manager.emit("playerError", this, err);
       // Auto-skip unplayable track
