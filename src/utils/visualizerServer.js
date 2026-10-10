@@ -139,6 +139,51 @@ function startVisualizerServer(client, preferredPort = 5050) {
       }));
     }
 
+    // ── API: High-Res Thumbnail Image Proxy (/api/thumbnail?url=...) ──
+    if (pathname === "/api/thumbnail") {
+      const rawUrl = reqUrl.searchParams.get("url");
+      if (!rawUrl || (!rawUrl.startsWith("http://") && !rawUrl.startsWith("https://"))) {
+        res.writeHead(400, { "Content-Type": "text/plain" });
+        return res.end("Invalid thumbnail URL");
+      }
+      const https = require("https");
+      const http = require("http");
+      const clientReq = rawUrl.startsWith("https:") ? https : http;
+      
+      const fetchImage = (targetUrl, redirectCount = 0) => {
+        if (redirectCount > 3) {
+          res.writeHead(502);
+          return res.end("Too many redirects");
+        }
+        clientReq.get(targetUrl, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8"
+          }
+        }, (proxyRes) => {
+          if (proxyRes.statusCode >= 300 && proxyRes.statusCode < 400 && proxyRes.headers.location) {
+            let nextUrl = proxyRes.headers.location;
+            if (nextUrl.startsWith("/")) {
+              const parsedTarget = new URL(targetUrl);
+              nextUrl = `${parsedTarget.protocol}//${parsedTarget.host}${nextUrl}`;
+            }
+            return fetchImage(nextUrl, redirectCount + 1);
+          }
+          res.writeHead(proxyRes.statusCode || 200, {
+            "Content-Type": proxyRes.headers["content-type"] || "image/jpeg",
+            "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
+            "Access-Control-Allow-Origin": "*"
+          });
+          proxyRes.pipe(res);
+        }).on("error", (err) => {
+          res.writeHead(502, { "Content-Type": "text/plain" });
+          res.end("Proxy Error: " + err.message);
+        });
+      };
+
+      return fetchImage(rawUrl);
+    }
+
     // ── API: Real-Time SSE Stream (/api/stream/:targetId) ──────
     if (pathname.startsWith("/api/stream/")) {
       const rawTarget = pathname.replace("/api/stream/", "").trim();

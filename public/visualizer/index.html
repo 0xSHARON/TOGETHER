@@ -84,7 +84,7 @@
         </div>
         <button class="brutalist-btn" id="theme-btn" title="Switch Brutalist Palette">
           <span class="btn-icon">🎨</span>
-          <span class="btn-label" id="theme-name">CYBER BRUTAL</span>
+          <span class="btn-label" id="theme-name">TOGETHER CRIMSON</span>
         </button>
         <button class="brutalist-btn icon-only" id="camera-reset-btn" title="Reset 3D Camera">
           <span class="btn-icon">🎯</span>
@@ -95,74 +95,70 @@
       </div>
     </header>
 
-    <!-- Center Stage Floating Track Hero -->
-    <main class="center-stage">
-      <div class="hero-block" id="hero-block">
-        <div class="hero-header-strip">
-          <span class="hero-strip-tag">[ ACTIVE NOW ]</span>
-          <span class="hero-strip-source" id="track-source">LOSSLESS AUDIO</span>
-          <span class="corner-crosshair">[+]</span>
-        </div>
-
-        <div class="hero-content">
-          <div class="art-frame">
-            <img id="hero-artwork" src="logo.png?v=2" alt="Album Cover" referrerpolicy="no-referrer" loading="eager" onerror="if(!this.src.includes('logo.png')) this.src='logo.png?v=2';">
-            <div class="art-shadow"></div>
-          </div>
-          <div class="hero-text-col">
-            <div class="hero-badge-row">
-              <span class="brutal-pill" id="badge-quality">HIGH FIDELITY</span>
-              <span class="brutal-pill sub" id="time-badge">0:00 / 0:00</span>
-            </div>
-            <h1 class="hero-title" id="track-title">Waiting for Music...</h1>
-            <h2 class="hero-artist" id="track-artist">Use /play in Discord to stream</h2>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Bottom Brutalist Deck Controller -->
+    <!-- Bottom Brutalist Deck Controller (Unified Player Hub for All Devices) -->
     <footer class="brutalist-deck">
       <div class="deck-frame">
-        <!-- Progress Bar Strip with Hazard Accent -->
+        <!-- Deck Header Strip (Matches banner.png with Tactical Reticles & Tech Tags) -->
+        <div class="deck-header-strip">
+          <div class="deck-strip-left">
+            <span class="crosshair-tag">+ + +</span>
+            <span class="hero-strip-tag" id="badge-active">[ ACTIVE NOW ]</span>
+            <span class="hero-strip-source" id="track-source">LOSSLESS AUDIO</span>
+          </div>
+          <div class="deck-strip-center">
+            <span class="banner-tech-tag">/// TOGETHER AUDIO SYSTEM ///</span>
+          </div>
+          <div class="deck-strip-right">
+            <span class="deck-quality-pill" id="badge-quality">HIGH FIDELITY</span>
+            <span class="deck-time-pill mono" id="time-badge">0:00 / 0:00</span>
+            <span class="corner-crosshair">[+]</span>
+          </div>
+        </div>
+
+        <!-- Full-Width Scrubber Track with Crimson Hazard Striping -->
         <div class="scrubber-section">
           <span class="time-readout mono" id="time-current">0:00</span>
-          <div class="progress-track" id="scrubber-bar">
+          <div class="progress-track" id="scrubber-bar" title="Click to Seek">
             <div class="progress-fill" id="scrubber-fill"></div>
           </div>
           <span class="time-readout mono" id="time-total">0:00</span>
         </div>
 
+        <!-- Main Deck Interaction Row -->
         <div class="deck-main-row">
-          <!-- Left Mini Info -->
-          <div class="deck-mini-info">
-            <img class="deck-thumb" id="deck-artwork" src="logo.png?v=2" alt="Art" referrerpolicy="no-referrer" loading="eager" onerror="if(!this.src.includes('logo.png')) this.src='logo.png?v=2';">
-            <div class="deck-mini-text">
-              <span class="deck-mini-title" id="deck-title">No Track Active</span>
-              <span class="deck-mini-artist mono" id="deck-artist">Together Engine</span>
+          <!-- Left: Track Artwork Frame + Live Meta Stack (Visible on ALL devices) -->
+          <div class="deck-track-unit">
+            <div class="deck-art-frame">
+              <img class="deck-thumb" id="deck-artwork" src="logo.png?v=2" alt="Track Artwork" referrerpolicy="no-referrer" loading="eager" onerror="if(!this.src.includes('logo.png')) this.src='logo.png?v=2';">
+              <div class="deck-art-glow"></div>
+              <span class="art-live-badge">● LIVE</span>
+            </div>
+            <div class="deck-meta-col">
+              <h2 class="deck-title" id="deck-title">Waiting for Music...</h2>
+              <p class="deck-artist" id="deck-artist">Use /play in Discord to stream</p>
             </div>
           </div>
 
-          <!-- Center Mechanical Tactile Buttons -->
+          <!-- Center: Mechanical Brutalist Tactile Controls -->
           <div class="deck-controls">
-            <button class="tactile-btn" id="btn-prev" title="Previous Track">
+            <button class="tactile-btn" id="btn-prev" title="Previous Track (Discord /previous)">
               <span>⏮</span>
             </button>
             <button class="tactile-btn play" id="btn-play-pause" title="Play / Pause">
               <span id="btn-play-icon">▶</span>
             </button>
-            <button class="tactile-btn" id="btn-next" title="Skip Track">
+            <button class="tactile-btn" id="btn-next" title="Skip Track (Discord /skip)">
               <span>⏭</span>
             </button>
           </div>
 
-          <!-- Right Status Badges & Brutalist Meter -->
+          <!-- Right: Audio VU Meters, Status Pills & Tactical Barcode -->
           <div class="deck-status-col">
             <div class="status-pill-group">
               <span class="status-pill" id="badge-loop">LOOP: OFF</span>
               <span class="status-pill" id="badge-autoplay">AUTO: OFF</span>
             </div>
-            <div class="stepped-vu-meter">
+            <div class="stepped-vu-meter" title="Audio Output VU Meter">
               <div class="vu-step" id="vu-1"></div>
               <div class="vu-step" id="vu-2"></div>
               <div class="vu-step" id="vu-3"></div>
@@ -170,10 +166,14 @@
               <div class="vu-step" id="vu-5"></div>
               <div class="vu-step" id="vu-6"></div>
             </div>
+            <!-- Banner.png Barcode Motif -->
+            <div class="banner-barcode" title="TOGETHER PROTOCOL">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
           </div>
         </div>
 
-        <!-- Bottom Hazard Bar -->
+        <!-- Bottom Hazard Bar Accent -->
         <div class="bottom-hazard-tape"></div>
       </div>
     </footer>

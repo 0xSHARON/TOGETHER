@@ -112,8 +112,16 @@ let playerState = {
   lastUpdate: Date.now(),
 };
 
-// ── 2. Neo-Brutalist Color Themes ─────────────────────────────
+// ── 2. Neo-Brutalist Color Themes (Matched to assets/banner.png) ─────
 const THEMES = [
+  {
+    key: "TOGETHER_CRIMSON",
+    name: "TOGETHER CRIMSON",
+    primary: 0xff0033,       // Banner High-Voltage Crimson Red
+    secondary: 0xffffff,     // Stark Banner White
+    background: 0x06070a,    // Deep Void Black
+    fogColor: 0x06070a,
+  },
   {
     key: "CYBER_BRUTAL",
     name: "CYBER BRUTAL",
@@ -129,14 +137,6 @@ const THEMES = [
     secondary: 0xf97316,     // Hazard Orange
     background: 0x101510,
     fogColor: 0x101510,
-  },
-  {
-    key: "BLOOD_PROTOCOL",
-    name: "BLOOD PROTOCOL",
-    primary: 0xf43f5e,       // Electric Crimson
-    secondary: 0x06b6d4,     // Electric Cyan
-    background: 0x160c10,
-    fogColor: 0x160c10,
   },
 ];
 let currentThemeIdx = 0;
@@ -334,7 +334,7 @@ for (let i = 0; i < POLY_COUNT; i++) {
 scene.add(polyhedraGroup);
 
 // (D) Infinite Brutalist Grid Floor
-let gridFloor = new THREE.GridHelper(160, 64, THEMES[0].primary, 0x1f2433);
+let gridFloor = new THREE.GridHelper(160, 64, THEMES[0].primary, 0x22131a);
 gridFloor.position.y = 0;
 scene.add(gridFloor);
 
@@ -485,20 +485,19 @@ function applyPlayerState(data) {
   playerState = { ...playerState, ...data };
 
   // Track metadata
-  const titleEl   = document.getElementById("track-title");
-  const artistEl  = document.getElementById("track-artist");
-  const heroArt   = document.getElementById("hero-artwork");
-  const deckTitle = document.getElementById("deck-title");
-  const deckArtist= document.getElementById("deck-artist");
-  const deckArt   = document.getElementById("deck-artwork");
+  const deckTitle   = document.getElementById("deck-title");
+  const trackTitle  = document.getElementById("track-title");
+  const deckArtist  = document.getElementById("deck-artist");
+  const trackArtist = document.getElementById("track-artist");
+  const deckArt     = document.getElementById("deck-artwork");
 
   const title  = playerState.title  || "Waiting for Music...";
   const artist = playerState.author || "Use /play in Discord to stream";
 
-  if (titleEl)   titleEl.innerText   = title;
-  if (artistEl)  artistEl.innerText  = artist;
-  if (deckTitle) deckTitle.innerText = title;
-  if (deckArtist)deckArtist.innerText= artist;
+  if (deckTitle)   deckTitle.innerText   = title;
+  if (trackTitle)  trackTitle.innerText  = title;
+  if (deckArtist)  deckArtist.innerText  = artist;
+  if (trackArtist) trackArtist.innerText = artist;
 
   const fallbackTitle  = document.getElementById("fallback-title");
   const fallbackArtist = document.getElementById("fallback-artist");
@@ -513,12 +512,21 @@ function applyPlayerState(data) {
     const setResilientImage = (imgEl) => {
       if (!imgEl) return;
       imgEl.referrerPolicy = "no-referrer";
-      imgEl.crossOrigin = "anonymous";
+      // CRITICAL FIX: Do NOT set crossOrigin = "anonymous" on <img> tags!
+      // External CDNs (i.ytimg.com) do not return Access-Control-Allow-Origin, causing browser to block images.
+      imgEl.crossOrigin = null;
+      imgEl.removeAttribute("crossorigin");
+
+      let failCount = 0;
       imgEl.onerror = function() {
-        if (this.src.includes("maxresdefault.jpg")) {
+        failCount++;
+        if (failCount === 1 && this.src.includes("maxresdefault.jpg")) {
           this.src = this.src.replace("maxresdefault.jpg", "hqdefault.jpg");
-        } else if (this.src.includes("hqdefault.jpg")) {
+        } else if (failCount === 2 && this.src.includes("hqdefault.jpg")) {
           this.src = this.src.replace("hqdefault.jpg", "mqdefault.jpg");
+        } else if (failCount <= 3 && !this.src.includes("/api/thumbnail")) {
+          // High-reliability server proxy fallback
+          this.src = `/api/thumbnail?url=${encodeURIComponent(rawThumb)}`;
         } else if (!this.src.includes("logo.png")) {
           this.src = "logo.png?v=2";
         }
@@ -526,7 +534,6 @@ function applyPlayerState(data) {
       imgEl.src = rawThumb;
     };
 
-    setResilientImage(heroArt);
     setResilientImage(deckArt);
     setResilientImage(fallbackArt);
   }
