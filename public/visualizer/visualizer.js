@@ -1,11 +1,12 @@
 /**
- * visualizer.js  —  TOGETHER 3D BRUTALIST AUDIO STAGE
- * Compliant with 3d-web-experience skill:
- * - WebGL capability detection & fallback state
- * - DPR mobile clamping (60fps target)
- * - Three.js OrbitControls with damping & camera reset
- * - Neo-Brutalist 3D scene (Monolith, Stepped VU Arena, Tumbling Polyhedra)
- * - Real-time SSE synchronization with TOGETHER Music Engine
+ * visualizer.js  —  TOGETHER 3D BRUTALIST AUDIO STAGE & ACTIVITY
+ * Features:
+ * - 4 Selectable 3D Visual Modes: Monolith, Cyber Tunnel, Equalizer Metropolis, Quantum Vortex
+ * - 5 Cyberpunk / Brutalist Themes: Crimson, Cyber Yellow, Acid Lime, Midnight Purple, OLED Monochrome
+ * - Live Slide-Out Queue Drawer with Real-Time SSE Sync & Audio Durations
+ * - Interactive Deck: Play, Pause, Skip, Previous, Scrubber Seek, Loop Toggle, Autoplay Toggle
+ * - DPR mobile clamping (60fps target on mobile, desktop & Discord Activity)
+ * - Three.js OrbitControls with camera reset & damping
  */
 
 // ── 0. WebGL Detection & Fallback Check ────────────────────────
@@ -50,7 +51,6 @@ let rawTarget =
 
 let activeTargetId = String(rawTarget).trim().replace(/\/+$/, "");
 
-// Discord Embedded Activity Detection & Auto-Handshake (Desktop, Web, iOS & Android)
 const isInsideDiscord =
   window.parent !== window ||
   urlParams.has("frame_id") ||
@@ -65,7 +65,6 @@ if (isInsideDiscord) {
   document.body.classList.add("in-discord-activity");
 }
 
-// Official Discord Embedded App SDK Integration (PC Desktop & Mobile)
 let discordSdk = null;
 async function setupDiscordSdk() {
   if (window.DiscordEmbeddedAppSdk && typeof window.DiscordEmbeddedAppSdk.DiscordSDK === "function") {
@@ -90,7 +89,7 @@ setupDiscordSdk();
 let playerState = {
   title: "Waiting for music...",
   author: "Join a voice channel and use /play",
-  thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&auto=format&fit=crop&q=80",
+  thumbnail: "logo.png?v=2",
   position: 0,
   duration: 0,
   paused: true,
@@ -98,17 +97,19 @@ let playerState = {
   loop: "none",
   autoplay: false,
   volume: 80,
+  queue: [],
+  queueLength: 0,
   lastUpdate: Date.now(),
 };
 
-// ── 2. Neo-Brutalist Color Themes (Matched to assets/banner.png) ─────
+// ── 2. Neo-Brutalist Color Themes ──────────────────────────────
 const THEMES = [
   {
     key: "TOGETHER_CRIMSON",
     name: "TOGETHER CRIMSON",
-    primary: 0xff0033,       // Banner High-Voltage Crimson Red
-    secondary: 0xffffff,     // Stark Banner White
-    background: 0x06070a,    // Deep Void Black
+    primary: 0xff0033,       // Crimson Red
+    secondary: 0xffffff,     // Stark White
+    background: 0x06070a,    // Void Black
     fogColor: 0x06070a,
   },
   {
@@ -127,14 +128,24 @@ const THEMES = [
     background: 0x101510,
     fogColor: 0x101510,
   },
+  {
+    key: "MIDNIGHT_PURPLE",
+    name: "MIDNIGHT PURPLE",
+    primary: 0xa855f7,       // Neon Violet
+    secondary: 0x06b6d4,     // Cyber Cyan
+    background: 0x090611,
+    fogColor: 0x090611,
+  },
+  {
+    key: "OLED_MONOCHROME",
+    name: "OLED MONOCHROME",
+    primary: 0xffffff,       // Pure White
+    secondary: 0x94a3b8,     // Polished Silver
+    background: 0x000000,    // Pure OLED Black
+    fogColor: 0x000000,
+  },
 ];
 let currentThemeIdx = 0;
-try {
-  localStorage.removeItem("visualizer_theme");
-} catch {}
-document.documentElement.setAttribute("data-theme", "TOGETHER_CRIMSON");
-const initialThemeName = document.getElementById("theme-name");
-if (initialThemeName) initialThemeName.innerText = "TOGETHER CRIMSON";
 
 // ── 3. Three.js Scene, Camera & Optimized Renderer ────────────
 const canvas   = document.getElementById("stage-canvas");
@@ -154,7 +165,6 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// 3D-Web-Experience Rule: Clamp DPR on mobile to 1 to guarantee 60fps
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
 renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
 
@@ -164,13 +174,12 @@ if (typeof THREE.OrbitControls !== "undefined") {
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
-  controls.maxPolarAngle = Math.PI / 2 - 0.04; // Don't dip below floor plane
-  controls.minDistance   = 16;
-  controls.maxDistance   = 85;
+  controls.maxPolarAngle = Math.PI / 2 - 0.04;
+  controls.minDistance   = 14;
+  controls.maxDistance   = 90;
   controls.target.set(0, 5, 0);
 }
 
-// Mouse Parallax coordinates
 let mouseX = 0;
 let mouseY = 0;
 window.addEventListener("mousemove", (e) => {
@@ -179,10 +188,10 @@ window.addEventListener("mousemove", (e) => {
 });
 
 // ── 5. Brutalist Dynamic Lighting ─────────────────────────────
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
 scene.add(ambientLight);
 
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.85);
 dirLight.position.set(20, 40, 20);
 scene.add(dirLight);
 
@@ -194,12 +203,17 @@ const rimLight = new THREE.PointLight(THEMES[0].secondary, 2.5, 60);
 rimLight.position.set(-25, 12, -20);
 scene.add(rimLight);
 
-// ── 6. Brutalist 3D Elements ──────────────────────────────────
+// ── 6. 3D Visual Geometries (4 Distinct Visual Modes) ─────────
+const VISUAL_MODES = [
+  { id: "monolith", name: "MONOLITH" },
+  { id: "tunnel", name: "CYBER TUNNEL" },
+  { id: "metropolis", name: "METROPOLIS" },
+  { id: "vortex", name: "QUANTUM VORTEX" }
+];
+let currentModeIdx = 0;
 
-// (A) Central Monolithic Brutalist Obelisk
+// (A) MODE 0: BRUTALIST MONOLITH & ARENA
 const monolithGroup = new THREE.Group();
-
-// Main faceted pillar
 const monolithGeom = new THREE.CylinderGeometry(2.8, 4.4, 11, 6);
 const monolithMat  = new THREE.MeshStandardMaterial({
   color: 0x0c0e14,
@@ -210,7 +224,6 @@ const monolithMesh = new THREE.Mesh(monolithGeom, monolithMat);
 monolithMesh.position.y = 5.5;
 monolithGroup.add(monolithMesh);
 
-// Brutalist Wireframe Edges
 const monolithEdgesGeom = new THREE.EdgesGeometry(monolithGeom);
 const monolithEdgesMat  = new THREE.LineBasicMaterial({
   color: THEMES[0].primary,
@@ -219,7 +232,6 @@ const monolithEdgesMat  = new THREE.LineBasicMaterial({
 const monolithEdges = new THREE.LineSegments(monolithEdgesGeom, monolithEdgesMat);
 monolithMesh.add(monolithEdges);
 
-// Floating Floating Core Crystal on top
 const coreGeom = new THREE.OctahedronGeometry(2.2, 0);
 const coreMat  = new THREE.MeshStandardMaterial({
   color: 0x11131a,
@@ -236,10 +248,8 @@ const coreEdgesGeom = new THREE.EdgesGeometry(coreGeom);
 const coreEdgesMat  = new THREE.LineBasicMaterial({ color: THEMES[0].secondary });
 const coreEdges = new THREE.LineSegments(coreEdgesGeom, coreEdgesMat);
 coreMesh.add(coreEdges);
-
 scene.add(monolithGroup);
 
-// (B) Circular Brutalist VU Arena (48 Stepped Monolith Towers)
 const ARENA_BARS_COUNT = 48;
 const arenaTowers = [];
 const arenaEdges  = [];
@@ -247,12 +257,11 @@ const arenaGroup  = new THREE.Group();
 const ARENA_RADIUS = 18;
 
 const towerBoxGeom = new THREE.BoxGeometry(1.2, 1, 1.2);
-towerBoxGeom.translate(0, 0.5, 0); // Scale up from the base
+towerBoxGeom.translate(0, 0.5, 0);
 const towerEdgesGeom = new THREE.EdgesGeometry(towerBoxGeom);
 
 for (let i = 0; i < ARENA_BARS_COUNT; i++) {
   const angle = (i / ARENA_BARS_COUNT) * Math.PI * 2;
-
   const towerMat = new THREE.MeshStandardMaterial({
     color: 0x0c0e14,
     roughness: 0.4,
@@ -260,15 +269,12 @@ for (let i = 0; i < ARENA_BARS_COUNT; i++) {
     emissive: THEMES[0].primary,
     emissiveIntensity: 0.2,
   });
-
   const towerMesh = new THREE.Mesh(towerBoxGeom, towerMat);
   towerMesh.position.x = Math.cos(angle) * ARENA_RADIUS;
   towerMesh.position.z = Math.sin(angle) * ARENA_RADIUS;
   towerMesh.rotation.y = -angle;
 
-  const lineMat = new THREE.LineBasicMaterial({
-    color: THEMES[0].primary,
-  });
+  const lineMat = new THREE.LineBasicMaterial({ color: THEMES[0].primary });
   const towerLine = new THREE.LineSegments(towerEdgesGeom, lineMat);
   towerMesh.add(towerLine);
 
@@ -278,7 +284,6 @@ for (let i = 0; i < ARENA_BARS_COUNT; i++) {
 }
 scene.add(arenaGroup);
 
-// (C) Tumbling Low-Poly Wireframe Polyhedra
 const polyhedraGroup = new THREE.Group();
 const polyhedraItems = [];
 const POLY_COUNT     = 10;
@@ -296,7 +301,6 @@ for (let i = 0; i < POLY_COUNT; i++) {
     metalness: 0.8,
   });
   const polyMesh = new THREE.Mesh(polyGeom, polyMat);
-
   const pEdgeGeom = new THREE.EdgesGeometry(polyGeom);
   const pEdgeMat  = new THREE.LineBasicMaterial({
     color: i % 2 === 0 ? THEMES[0].primary : THEMES[0].secondary,
@@ -328,8 +332,132 @@ for (let i = 0; i < POLY_COUNT; i++) {
 }
 scene.add(polyhedraGroup);
 
-// (D) Infinite Brutalist Grid Floor
-let gridFloor = new THREE.GridHelper(160, 64, THEMES[0].primary, 0x22131a);
+// (B) MODE 1: CYBER MATRIX TUNNEL
+const tunnelGroup = new THREE.Group();
+const TUNNEL_RINGS_COUNT = 30;
+const tunnelRings = [];
+
+for (let i = 0; i < TUNNEL_RINGS_COUNT; i++) {
+  const ringGeom = new THREE.TorusGeometry(8 + (i % 3) * 1.2, 0.22, 6, 8);
+  const ringMat  = new THREE.MeshStandardMaterial({
+    color: 0x050608,
+    emissive: i % 2 === 0 ? THEMES[0].primary : THEMES[0].secondary,
+    emissiveIntensity: 0.35,
+    roughness: 0.3,
+    metalness: 0.8
+  });
+  const ringMesh = new THREE.Mesh(ringGeom, ringMat);
+  ringMesh.position.z = -i * 5 + 10;
+  const ringEdgesGeom = new THREE.EdgesGeometry(ringGeom);
+  const ringEdgesMat = new THREE.LineBasicMaterial({ color: THEMES[0].primary });
+  const ringEdges = new THREE.LineSegments(ringEdgesGeom, ringEdgesMat);
+  ringMesh.add(ringEdges);
+
+  tunnelGroup.add(ringMesh);
+  tunnelRings.push({ mesh: ringMesh, baseZ: ringMesh.position.z, edgeMat: ringEdgesMat, meshMat: ringMat });
+}
+tunnelGroup.visible = false;
+scene.add(tunnelGroup);
+
+// (C) MODE 2: EQUALIZER METROPOLIS (8x8 City Grid = 64 Skyscrapers)
+const metropolisGroup = new THREE.Group();
+const METRO_COLS = 8;
+const METRO_ROWS = 8;
+const metroBuildings = [];
+const bldgBoxGeom = new THREE.BoxGeometry(2.4, 1, 2.4);
+bldgBoxGeom.translate(0, 0.5, 0);
+const bldgEdgesGeom = new THREE.EdgesGeometry(bldgBoxGeom);
+
+for (let r = 0; r < METRO_ROWS; r++) {
+  for (let c = 0; c < METRO_COLS; c++) {
+    const bMat = new THREE.MeshStandardMaterial({
+      color: 0x0a0c12,
+      roughness: 0.4,
+      metalness: 0.8,
+      emissive: (r + c) % 2 === 0 ? THEMES[0].primary : THEMES[0].secondary,
+      emissiveIntensity: 0.25,
+    });
+    const bMesh = new THREE.Mesh(bldgBoxGeom, bMat);
+    bMesh.position.x = (c - METRO_COLS / 2 + 0.5) * 3.8;
+    bMesh.position.z = (r - METRO_ROWS / 2 + 0.5) * 3.8;
+
+    const bEdgeMat = new THREE.LineBasicMaterial({ color: THEMES[0].primary });
+    const bEdges = new THREE.LineSegments(bldgEdgesGeom, bEdgeMat);
+    bMesh.add(bEdges);
+
+    metropolisGroup.add(bMesh);
+    metroBuildings.push({ mesh: bMesh, mat: bMat, edgeMat: bEdgeMat, row: r, col: c });
+  }
+}
+metropolisGroup.visible = false;
+scene.add(metropolisGroup);
+
+// (D) MODE 3: QUANTUM VORTEX / BLACK HOLE
+const vortexGroup = new THREE.Group();
+const VORTEX_PARTICLE_COUNT = 50;
+const vortexParticles = [];
+
+// Event Horizon Core Sphere
+const bhCoreGeom = new THREE.SphereGeometry(3.6, 24, 24);
+const bhCoreMat = new THREE.MeshStandardMaterial({
+  color: 0x000000,
+  roughness: 0.9,
+  metalness: 0.1,
+  emissive: THEMES[0].primary,
+  emissiveIntensity: 0.15,
+});
+const bhCoreMesh = new THREE.Mesh(bhCoreGeom, bhCoreMat);
+bhCoreMesh.position.y = 8;
+vortexGroup.add(bhCoreMesh);
+
+// Accretion Disk Rings
+const diskGeom1 = new THREE.RingGeometry(5.0, 14.0, 32);
+const diskMat1  = new THREE.MeshBasicMaterial({
+  color: THEMES[0].primary,
+  side: THREE.DoubleSide,
+  wireframe: true,
+});
+const diskMesh1 = new THREE.Mesh(diskGeom1, diskMat1);
+diskMesh1.rotation.x = Math.PI / 2.3;
+diskMesh1.position.y = 8;
+vortexGroup.add(diskMesh1);
+
+const diskGeom2 = new THREE.RingGeometry(6.5, 18.0, 24);
+const diskMat2  = new THREE.MeshBasicMaterial({
+  color: THEMES[0].secondary,
+  side: THREE.DoubleSide,
+  wireframe: true,
+});
+const diskMesh2 = new THREE.Mesh(diskGeom2, diskMat2);
+diskMesh2.rotation.x = Math.PI / 2.1;
+diskMesh2.rotation.y = Math.PI / 4;
+diskMesh2.position.y = 8;
+vortexGroup.add(diskMesh2);
+
+for (let i = 0; i < VORTEX_PARTICLE_COUNT; i++) {
+  const pGeom = new THREE.OctahedronGeometry(0.7, 0);
+  const pMat  = new THREE.MeshStandardMaterial({
+    color: 0x0a0c10,
+    emissive: i % 2 === 0 ? THEMES[0].primary : THEMES[0].secondary,
+    emissiveIntensity: 0.4,
+  });
+  const pMesh = new THREE.Mesh(pGeom, pMat);
+  const pEdges = new THREE.LineSegments(new THREE.EdgesGeometry(pGeom), new THREE.LineBasicMaterial({ color: THEMES[0].primary }));
+  pMesh.add(pEdges);
+
+  const dist = 6 + (i * 0.4);
+  const speed = 0.3 + (i * 0.02);
+  const angle = (i / VORTEX_PARTICLE_COUNT) * Math.PI * 4;
+  pMesh.position.set(Math.cos(angle) * dist, 8 + Math.sin(angle * 2) * 2.5, Math.sin(angle) * dist);
+
+  vortexGroup.add(pMesh);
+  vortexParticles.push({ mesh: pMesh, dist, speed, angle, edgeLine: pEdges });
+}
+vortexGroup.visible = false;
+scene.add(vortexGroup);
+
+// (E) Infinite Grid Floor
+let gridFloor = new THREE.GridHelper(160, 64, THEMES[0].primary, 0x1f2433);
 gridFloor.position.y = 0;
 scene.add(gridFloor);
 
@@ -345,42 +473,80 @@ function updateAudioVisualization(delta) {
     ? (Math.sin(beatPhase * 2) > 0.5 ? 1.6 : 1.0) + Math.random() * 0.3
     : 0.5;
 
-  // Strobe primary light on beats
   primaryLight.intensity = isPlaying ? 2.5 + bassIntensity * 2.2 : 1.0;
 
-  // Animate Arena Towers
-  for (let i = 0; i < ARENA_BARS_COUNT; i++) {
-    if (isPlaying) {
-      const freqSpread = (i / ARENA_BARS_COUNT) * Math.PI * 3;
-      const wave = Math.abs(Math.sin(beatPhase * 1.8 + freqSpread));
-      const targetHeight = 1.0 + wave * 16.0 + Math.cos(beatPhase * 0.9 + i) * 3.0;
-      audioBands[i] += (targetHeight - audioBands[i]) * 0.3;
-    } else {
-      audioBands[i] += (0.8 - audioBands[i]) * 0.1;
+  // 1. Monolith Mode Animation
+  if (monolithGroup.visible) {
+    for (let i = 0; i < ARENA_BARS_COUNT; i++) {
+      if (isPlaying) {
+        const freqSpread = (i / ARENA_BARS_COUNT) * Math.PI * 3;
+        const wave = Math.abs(Math.sin(beatPhase * 1.8 + freqSpread));
+        const targetHeight = 1.0 + wave * 16.0 + Math.cos(beatPhase * 0.9 + i) * 3.0;
+        audioBands[i] += (targetHeight - audioBands[i]) * 0.3;
+      } else {
+        audioBands[i] += (0.8 - audioBands[i]) * 0.1;
+      }
+      arenaTowers[i].scale.y = Math.max(0.2, audioBands[i]);
     }
+    arenaGroup.rotation.y += delta * (isPlaying ? 0.25 : 0.05);
+    monolithGroup.rotation.y -= delta * (isPlaying ? 0.3 : 0.08);
 
-    const scaleY = Math.max(0.2, audioBands[i]);
-    arenaTowers[i].scale.y = scaleY;
+    coreMesh.rotation.x += delta * (isPlaying ? 1.8 : 0.4);
+    coreMesh.rotation.y += delta * (isPlaying ? 2.2 : 0.5);
+    coreMesh.position.y = 14 + Math.sin(beatPhase * 1.2) * (isPlaying ? 1.2 : 0.3);
+    coreMesh.material.emissiveIntensity = isPlaying ? 0.5 + bassIntensity * 0.5 : 0.2;
+
+    polyhedraItems.forEach((item) => {
+      item.angle += delta * item.speed * (isPlaying ? 1.5 : 0.5);
+      item.mesh.position.x = Math.cos(item.angle) * item.radius;
+      item.mesh.position.z = Math.sin(item.angle) * item.radius;
+      item.mesh.rotation.x += delta * item.rotX * (isPlaying ? 2.0 : 0.8);
+      item.mesh.rotation.y += delta * item.rotY * (isPlaying ? 2.0 : 0.8);
+    });
   }
 
-  // Rotate arena & monolith
-  arenaGroup.rotation.y += delta * (isPlaying ? 0.25 : 0.05);
-  monolithGroup.rotation.y -= delta * (isPlaying ? 0.3 : 0.08);
+  // 2. Cyber Tunnel Mode Animation
+  if (tunnelGroup.visible) {
+    tunnelRings.forEach((r, idx) => {
+      r.mesh.position.z += delta * (isPlaying ? (22 + bassIntensity * 8) : 6);
+      if (r.mesh.position.z > 25) {
+        r.mesh.position.z = -125;
+      }
+      r.mesh.rotation.z += delta * (idx % 2 === 0 ? 0.4 : -0.4);
+      const pulseScale = 1.0 + (isPlaying ? Math.sin(beatPhase + idx * 0.3) * 0.18 : 0);
+      r.mesh.scale.set(pulseScale, pulseScale, 1);
+    });
+  }
 
-  // Pulse & spin floating core crystal
-  coreMesh.rotation.x += delta * (isPlaying ? 1.8 : 0.4);
-  coreMesh.rotation.y += delta * (isPlaying ? 2.2 : 0.5);
-  coreMesh.position.y = 14 + Math.sin(beatPhase * 1.2) * (isPlaying ? 1.2 : 0.3);
-  coreMesh.material.emissiveIntensity = isPlaying ? 0.5 + bassIntensity * 0.5 : 0.2;
+  // 3. Metropolis Mode Animation
+  if (metropolisGroup.visible) {
+    metroBuildings.forEach((b, idx) => {
+      if (isPlaying) {
+        const wave = Math.abs(Math.sin(beatPhase * 1.5 + (b.row + b.col) * 0.6));
+        const bHeight = 1.0 + wave * 14.0 + Math.sin(beatPhase * 0.8 + idx) * 3.0;
+        b.mesh.scale.y += (bHeight - b.mesh.scale.y) * 0.25;
+      } else {
+        b.mesh.scale.y += (1.5 - b.mesh.scale.y) * 0.1;
+      }
+    });
+    metropolisGroup.rotation.y += delta * (isPlaying ? 0.12 : 0.03);
+  }
 
-  // Orbit & tumble low-poly shapes
-  polyhedraItems.forEach((item) => {
-    item.angle += delta * item.speed * (isPlaying ? 1.5 : 0.5);
-    item.mesh.position.x = Math.cos(item.angle) * item.radius;
-    item.mesh.position.z = Math.sin(item.angle) * item.radius;
-    item.mesh.rotation.x += delta * item.rotX * (isPlaying ? 2.0 : 0.8);
-    item.mesh.rotation.y += delta * item.rotY * (isPlaying ? 2.0 : 0.8);
-  });
+  // 4. Quantum Vortex Mode Animation
+  if (vortexGroup.visible) {
+    diskMesh1.rotation.z += delta * (isPlaying ? 1.2 : 0.3);
+    diskMesh2.rotation.z -= delta * (isPlaying ? 0.8 : 0.2);
+    const pulseRadius = 1.0 + (isPlaying ? Math.sin(beatPhase * 2.2) * 0.2 : 0);
+    bhCoreMesh.scale.set(pulseRadius, pulseRadius, pulseRadius);
+
+    vortexParticles.forEach((p) => {
+      p.angle += delta * p.speed * (isPlaying ? 2.0 : 0.6);
+      p.mesh.position.x = Math.cos(p.angle) * p.dist;
+      p.mesh.position.z = Math.sin(p.angle) * p.dist;
+      p.mesh.position.y = 8 + Math.sin(p.angle * 3) * 3.0;
+      p.mesh.rotation.x += delta * 1.5;
+    });
+  }
 
   // UI Stepped VU Meter animation
   for (let v = 1; v <= 6; v++) {
@@ -403,10 +569,9 @@ function animate() {
   requestAnimationFrame(animate);
 
   const now   = performance.now();
-  const delta = Math.min((now - lastFrameTime) / 1000, 0.1); // Clamp delta to avoid large jump
+  const delta = Math.min((now - lastFrameTime) / 1000, 0.1);
   lastFrameTime = now;
 
-  // Calculate FPS
   frameCount++;
   if (now - lastFpsCheck >= 1000) {
     if (fpsDisplay) fpsDisplay.innerText = frameCount;
@@ -414,9 +579,7 @@ function animate() {
     lastFpsCheck = now;
   }
 
-  // Update OrbitControls
   if (controls) {
-    // Parallax damping when not actively dragging
     if (!controls.state || controls.state === -1) {
       controls.target.x += (mouseX * 2 - controls.target.x) * 0.02;
     }
@@ -428,10 +591,9 @@ function animate() {
 
   renderer.render(scene, camera);
 }
-
 requestAnimationFrame(animate);
 
-// ── 10. Responsive Resizing ───────────────────────────────────
+// ── 9. Responsive Resizing ────────────────────────────────────
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
@@ -439,7 +601,7 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
 });
 
-// ── 11. Scrubber & Timeline Synchronization ───────────────────
+// ── 10. Scrubber & Timeline Synchronization ───────────────────
 function updateLocalPlaybackPosition(delta) {
   if (playerState.playing && !playerState.paused && playerState.duration > 0) {
     playerState.position = Math.min(playerState.duration, playerState.position + delta * 1000);
@@ -448,104 +610,128 @@ function updateLocalPlaybackPosition(delta) {
 }
 
 function formatTimecode(ms) {
-  if (!ms || isNaN(ms)) return "0:00";
-  const s = Math.floor(ms / 1000);
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
-  return `${m}:${sec < 10 ? "0" : ""}${sec}`;
+  if (!ms || ms < 0 || isNaN(ms)) return "0:00";
+  const totalSec = Math.floor(ms / 1000);
+  const minutes  = Math.floor(totalSec / 60);
+  const seconds  = totalSec % 60;
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
 
 function renderScrubber() {
-  const current = document.getElementById("time-current");
-  const total   = document.getElementById("time-total");
-  const fill    = document.getElementById("scrubber-fill");
-  const badge   = document.getElementById("time-badge");
+  const currentText = document.getElementById("time-current");
+  const totalText   = document.getElementById("time-total");
+  const timeBadge   = document.getElementById("time-badge");
+  const fill        = document.getElementById("scrubber-fill");
 
   const curFormatted = formatTimecode(playerState.position);
   const totFormatted = formatTimecode(playerState.duration);
 
-  if (current) current.innerText = curFormatted;
-  if (total)   total.innerText   = totFormatted;
-  if (badge)   badge.innerText   = `${curFormatted} / ${totFormatted}`;
+  if (currentText) currentText.innerText = curFormatted;
+  if (totalText)   totalText.innerText   = totFormatted;
+  if (timeBadge)   timeBadge.innerText   = `${curFormatted} / ${totFormatted}`;
 
-  if (fill && playerState.duration > 0) {
-    const pct = Math.min(100, Math.max(0, (playerState.position / playerState.duration) * 100));
+  if (fill) {
+    const pct = playerState.duration > 0
+      ? Math.min(100, Math.max(0, (playerState.position / playerState.duration) * 100))
+      : 0;
     fill.style.width = `${pct}%`;
   }
 }
 
-// ── 12. Apply Player State to Neo-Brutalist HUD ───────────────
+// ── 11. Escape HTML Helper ────────────────────────────────────
+function escapeHtml(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// ── 12. Upcoming Queue Drawer Rendering ───────────────────────
+function renderQueue(queue = [], queueLength = 0) {
+  const countBadge = document.getElementById("queue-count-badge");
+  const btnBadge   = document.getElementById("queue-btn-label");
+  const listEl     = document.getElementById("queue-track-list");
+
+  const total = queueLength || queue.length || 0;
+  if (countBadge) countBadge.innerText = `${total} ${total === 1 ? "SONG" : "SONGS"}`;
+  if (btnBadge)   btnBadge.innerText   = `QUEUE (${total})`;
+
+  if (!listEl) return;
+  if (!queue || queue.length === 0) {
+    listEl.innerHTML = `
+      <div class="queue-empty-state">
+        <p class="mono-code">// QUEUE IS CURRENTLY EMPTY</p>
+        <span class="queue-empty-hint">Use /play in Discord to queue tracks</span>
+      </div>
+    `;
+    return;
+  }
+
+  listEl.innerHTML = queue.map((track) => {
+    const dur = formatTimecode(track.duration);
+    const thumb = track.thumbnail || "logo.png?v=2";
+    return `
+      <div class="queue-track-item">
+        <span class="queue-item-idx">#${track.index}</span>
+        <img class="queue-item-thumb" src="${thumb}" onerror="this.src='logo.png?v=2'" alt="Thumb">
+        <div class="queue-item-meta">
+          <div class="queue-item-title" title="${escapeHtml(track.title)}">${escapeHtml(track.title)}</div>
+          <div class="queue-item-sub">
+            <span>${escapeHtml(track.author)}</span>
+            <span class="mono-code">${dur}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// ── 13. State Applicator ──────────────────────────────────────
 function applyPlayerState(data) {
   if (!data) return;
-  playerState = { ...playerState, ...data };
 
-  // Track metadata
-  const deckTitle   = document.getElementById("deck-title");
-  const trackTitle  = document.getElementById("track-title");
-  const deckArtist  = document.getElementById("deck-artist");
-  const trackArtist = document.getElementById("track-artist");
-  const deckArt     = document.getElementById("deck-artwork");
+  const previousPlaying = playerState.playing && !playerState.paused;
+  const previousTitle   = playerState.title;
 
-  // Handle intelligent track metadata (never display ugly "No Track Active")
-  let title = playerState.title;
-  let artist = playerState.author;
+  playerState.title         = data.title || playerState.title;
+  playerState.author        = data.author || playerState.author;
+  playerState.thumbnail     = data.thumbnail || playerState.thumbnail;
+  playerState.duration      = Number(data.duration) || 0;
+  playerState.paused        = Boolean(data.paused);
+  playerState.playing       = Boolean(data.playing);
+  playerState.loop          = data.loop || "none";
+  playerState.autoplay      = Boolean(data.autoplay);
+  playerState.volume        = typeof data.volume === "number" ? data.volume : 80;
+  playerState.transitioning = Boolean(data.transitioning);
+  playerState.queue         = Array.isArray(data.queue) ? data.queue : [];
+  playerState.queueLength   = typeof data.queueLength === "number" ? data.queueLength : (data.queue?.length || 0);
 
-  if (!title || title === "No Track Active" || title === "No track active") {
-    if (playerState.transitioning || playerState.playing) {
-      title = "Loading Next Track...";
-      artist = "TOGETHER Audio Engine • Autoplay";
-    } else {
-      title = "Waiting for Music...";
-      artist = "Use /play in Discord to stream";
+  if (typeof data.position === "number") {
+    if (Math.abs(playerState.position - data.position) > 1200 || !previousPlaying) {
+      playerState.position = data.position;
     }
   }
 
-  if (deckTitle)   deckTitle.innerText   = title;
-  if (trackTitle)  trackTitle.innerText  = title;
-  if (deckArtist)  deckArtist.innerText  = artist;
-  if (trackArtist) trackArtist.innerText = artist;
+  const titleEl    = document.getElementById("deck-title");
+  const artistEl   = document.getElementById("deck-artist");
+  const deckGuild  = document.getElementById("deck-guild-badge");
+  const deckArt    = document.getElementById("deck-artwork");
+  const fallbackArt = document.getElementById("fallback-art");
 
-  const modeTag = document.getElementById("mode-tag");
-  if (modeTag) {
-    if (playerState.guildName) {
-      modeTag.innerText = `[ SERVER // ${playerState.guildName.toUpperCase()} ]`;
-    } else {
-      modeTag.innerText = `[ STAGE // 3D_LIVE ]`;
+  if (titleEl)   titleEl.innerText  = playerState.title;
+  if (artistEl)  artistEl.innerText = playerState.author;
+  if (deckGuild && data.guildName) deckGuild.innerText = `[ ${data.guildName.toUpperCase()} ]`;
+
+  if (data.thumbnail && data.title !== previousTitle) {
+    let rawThumb = data.thumbnail;
+    if (rawThumb.startsWith("http://")) {
+      rawThumb = rawThumb.replace(/^http:\/\//, "https://");
     }
-  }
-
-  const guildBadge = document.getElementById("deck-guild-badge");
-  if (guildBadge) {
-    guildBadge.innerText = playerState.guildName ? `[ ${playerState.guildName.toUpperCase()} ]` : `[ TOGETHER ]`;
-  }
-
-  const qualityBadge = document.getElementById("badge-quality");
-  const trackSource  = document.getElementById("track-source");
-  if (qualityBadge) {
-    qualityBadge.innerText = playerState.playing ? "LOSSLESS 24-BIT" : "STANDBY";
-  }
-  if (trackSource) {
-    trackSource.innerText = playerState.playing ? "HIGH FIDELITY" : "SERVER IDLE";
-  }
-
-  const fallbackTitle  = document.getElementById("fallback-title");
-  const fallbackArtist = document.getElementById("fallback-artist");
-  const fallbackArt    = document.getElementById("fallback-art");
-  if (fallbackTitle)  fallbackTitle.innerText  = title;
-  if (fallbackArtist) fallbackArtist.innerText = artist;
-
-  if (playerState.thumbnail) {
-    let rawThumb = playerState.thumbnail;
-    if (rawThumb.startsWith("http://")) rawThumb = rawThumb.replace(/^http:\/\//, "https://");
 
     const setResilientImage = (imgEl) => {
       if (!imgEl) return;
-      imgEl.referrerPolicy = "no-referrer";
-      // CRITICAL FIX: Do NOT set crossOrigin = "anonymous" on <img> tags!
-      // External CDNs (i.ytimg.com) do not return Access-Control-Allow-Origin, causing browser to block images.
-      imgEl.crossOrigin = null;
-      imgEl.removeAttribute("crossorigin");
-
       let failCount = 0;
       imgEl.onerror = function() {
         failCount++;
@@ -554,7 +740,6 @@ function applyPlayerState(data) {
         } else if (failCount === 2 && this.src.includes("hqdefault.jpg")) {
           this.src = this.src.replace("hqdefault.jpg", "mqdefault.jpg");
         } else if (failCount <= 3 && !this.src.includes("/api/thumbnail")) {
-          // High-reliability server proxy fallback
           this.src = `/api/thumbnail?url=${encodeURIComponent(rawThumb)}`;
         } else if (!this.src.includes("logo.png")) {
           this.src = "logo.png?v=2";
@@ -567,10 +752,9 @@ function applyPlayerState(data) {
     setResilientImage(fallbackArt);
   }
 
-  // Play / Pause Icon
-  const playIcon = document.getElementById("btn-play-icon");
+  const playIcon   = document.getElementById("btn-play-icon");
   const streamText = document.getElementById("player-state-text");
-  const isPlaying = playerState.playing && !playerState.paused;
+  const isPlaying  = playerState.playing && !playerState.paused;
 
   if (playIcon) playIcon.innerText = isPlaying ? "⏸" : "▶";
   if (streamText) {
@@ -589,23 +773,23 @@ function applyPlayerState(data) {
     }
   }
 
-  // Badges
   const bLoop = document.getElementById("badge-loop");
   const bAuto = document.getElementById("badge-autoplay");
   if (bLoop) {
     const loopVal = (playerState.loop || "off").toUpperCase();
     bLoop.innerText = `LOOP: ${loopVal}`;
-    bLoop.className = `status-pill ${playerState.loop && playerState.loop !== "none" ? "active" : ""}`;
+    bLoop.className = `status-pill interactive-pill ${playerState.loop && playerState.loop !== "none" ? "active" : ""}`;
   }
   if (bAuto) {
     bAuto.innerText = `AUTO: ${playerState.autoplay ? "ON" : "OFF"}`;
-    bAuto.className = `status-pill ${playerState.autoplay ? "active" : ""}`;
+    bAuto.className = `status-pill interactive-pill ${playerState.autoplay ? "active" : ""}`;
   }
 
   renderScrubber();
+  renderQueue(playerState.queue, playerState.queueLength);
 }
 
-// ── 13. SSE Live Feed & Polling Fallback ──────────────────────
+// ── 14. SSE Live Feed & Polling Fallback ──────────────────────
 let activeEventSource = null;
 
 function initSSE() {
@@ -618,14 +802,12 @@ function initSSE() {
 
   try {
     activeEventSource = new EventSource(sseUrl);
-
     activeEventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         applyPlayerState(data);
       } catch {}
     };
-
     activeEventSource.onerror = () => {
       if (activeEventSource) activeEventSource.close();
       activeEventSource = null;
@@ -636,7 +818,12 @@ function initSSE() {
   }
 }
 
-// ── Instant Player State Sync & Fast Periodic Sync ────────────
+let pollingInterval = null;
+function startPollingFallback() {
+  if (pollingInterval) return;
+  pollingInterval = setInterval(syncPlayerSnapshot, 1500);
+}
+
 async function syncPlayerSnapshot() {
   try {
     const res = await fetch(`/api/player/${encodeURIComponent(activeTargetId)}`);
@@ -649,53 +836,7 @@ async function syncPlayerSnapshot() {
   }
 }
 
-// Immediately load snapshot on load (0ms delay)
-syncPlayerSnapshot();
-// Continuous 1s sync interval to keep track position & status live
-const playerSyncInterval = setInterval(syncPlayerSnapshot, 1000);
-
-// ── Discord Embedded Activity Handshake (iOS, Android & Desktop) ─
-function notifyDiscordFrameReady() {
-  // 1. React Native Webview Bridge (iOS & Android native Discord app)
-  if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === "function") {
-    try {
-      window.ReactNativeWebView.postMessage(JSON.stringify({ cmd: "FRAME_READY", args: {} }));
-    } catch {}
-  }
-
-  // 2. Standard parent window postMessage (Web & Desktop client)
-  try {
-    if (window.parent) {
-      window.parent.postMessage({ cmd: "FRAME_READY", args: {} }, "*");
-      window.parent.postMessage(JSON.stringify({ cmd: "FRAME_READY", args: {} }), "*");
-    }
-  } catch {}
-
-  // 3. Window event dispatch fallback
-  try {
-    window.postMessage({ cmd: "FRAME_READY", args: {} }, "*");
-  } catch {}
-}
-
-if (isInsideDiscord) {
-  notifyDiscordFrameReady();
-  let burstCount = 0;
-  const burstInterval = setInterval(() => {
-    notifyDiscordFrameReady();
-    burstCount++;
-    if (burstCount > 8) clearInterval(burstInterval);
-  }, 120);
-
-  window.addEventListener("message", (e) => {
-    if (e.data?.cmd === "DISPATCH" || e.data?.evt === "READY") {
-      console.log("[Discord Activity] Handshake confirmed by Discord client.");
-    }
-  });
-}
-
-initSSE();
-
-// ── 14. Interactive Controls & Theme Switcher ─────────────────
+// ── 15. Interactive Controls & API Calls ───────────────────────
 async function sendControlCommand(action, extra = {}) {
   try {
     await fetch(`/api/player/${encodeURIComponent(activeTargetId)}/control`, {
@@ -703,7 +844,7 @@ async function sendControlCommand(action, extra = {}) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action, ...extra }),
     });
-    setTimeout(syncPlayerSnapshot, 150);
+    setTimeout(syncPlayerSnapshot, 120);
   } catch (err) {
     console.error("Control command error:", err);
   }
@@ -738,7 +879,14 @@ document.getElementById("btn-prev")?.addEventListener("click", () => {
   sendControlCommand("previous");
 });
 
-// Interactive Scrubber Seek
+document.getElementById("badge-loop")?.addEventListener("click", () => {
+  sendControlCommand("loop");
+});
+
+document.getElementById("badge-autoplay")?.addEventListener("click", () => {
+  sendControlCommand("autoplay");
+});
+
 document.getElementById("scrubber-bar")?.addEventListener("click", (e) => {
   if (!playerState.duration) return;
   const rect = e.currentTarget.getBoundingClientRect();
@@ -750,7 +898,6 @@ document.getElementById("scrubber-bar")?.addEventListener("click", (e) => {
   sendControlCommand("seek", { position: newPos });
 });
 
-// Camera Reset Button
 document.getElementById("camera-reset-btn")?.addEventListener("click", () => {
   if (controls) {
     camera.position.copy(INITIAL_CAMERA_POS);
@@ -759,7 +906,6 @@ document.getElementById("camera-reset-btn")?.addEventListener("click", () => {
   }
 });
 
-// Fullscreen Toggle
 document.getElementById("fullscreen-btn")?.addEventListener("click", () => {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen().catch(() => {});
@@ -768,43 +914,118 @@ document.getElementById("fullscreen-btn")?.addEventListener("click", () => {
   }
 });
 
-// Theme Switcher: Cycle Brutalist Themes in 3D and DOM
-document.getElementById("theme-btn")?.addEventListener("click", () => {
-  currentThemeIdx = (currentThemeIdx + 1) % THEMES.length;
+// ── 16. Queue Drawer Toggle ───────────────────────────────────
+const queueDrawer   = document.getElementById("queue-drawer");
+const queueToggleBtn = document.getElementById("queue-toggle-btn");
+const queueCloseBtn  = document.getElementById("queue-close-btn");
+
+queueToggleBtn?.addEventListener("click", () => {
+  if (queueDrawer) {
+    queueDrawer.classList.toggle("open");
+  }
+});
+
+queueCloseBtn?.addEventListener("click", () => {
+  if (queueDrawer) {
+    queueDrawer.classList.remove("open");
+  }
+});
+
+// ── 17. 3D Visual Mode Switcher ───────────────────────────────
+function setVisualMode(modeIdx) {
+  currentModeIdx = modeIdx % VISUAL_MODES.length;
+  const mode = VISUAL_MODES[currentModeIdx];
+
+  const modeLabel = document.getElementById("mode-name");
+  if (modeLabel) modeLabel.innerText = mode.name;
+
+  // Toggle Visibility of Groups
+  monolithGroup.visible   = (mode.id === "monolith");
+  arenaGroup.visible      = (mode.id === "monolith");
+  polyhedraGroup.visible  = (mode.id === "monolith");
+  tunnelGroup.visible     = (mode.id === "tunnel");
+  metropolisGroup.visible = (mode.id === "metropolis");
+  vortexGroup.visible     = (mode.id === "vortex");
+
+  // Adjust Camera for best viewing angle per mode
+  if (controls) {
+    if (mode.id === "tunnel") {
+      camera.position.set(0, 0, 18);
+      controls.target.set(0, 0, -40);
+    } else if (mode.id === "metropolis") {
+      camera.position.set(0, 24, 38);
+      controls.target.set(0, 4, 0);
+    } else if (mode.id === "vortex") {
+      camera.position.set(0, 16, 36);
+      controls.target.set(0, 8, 0);
+    } else {
+      camera.position.copy(INITIAL_CAMERA_POS);
+      controls.target.set(0, 5, 0);
+    }
+    controls.update();
+  }
+}
+
+document.getElementById("mode-btn")?.addEventListener("click", () => {
+  setVisualMode(currentModeIdx + 1);
+});
+
+// ── 18. Theme Switcher: Cycle Brutalist Themes in 3D and DOM ──
+function applyTheme(idx) {
+  currentThemeIdx = idx % THEMES.length;
   const theme = THEMES[currentThemeIdx];
 
-  // Update DOM data-theme attribute
   document.documentElement.setAttribute("data-theme", theme.key);
   const themeLabel = document.getElementById("theme-name");
   if (themeLabel) themeLabel.innerText = theme.name;
 
-  // Update Three.js Scene colors
   scene.background.setHex(theme.background);
   scene.fog.color.setHex(theme.fogColor);
   primaryLight.color.setHex(theme.primary);
   rimLight.color.setHex(theme.secondary);
 
-  // Update Monolith & Core colors
+  // Monolith Elements
   monolithEdgesMat.color.setHex(theme.primary);
   coreMat.emissive.setHex(theme.primary);
   coreEdgesMat.color.setHex(theme.secondary);
 
-  // Update Arena Towers
-  arenaEdges.forEach((edgeLine) => {
-    edgeLine.material.color.setHex(theme.primary);
-  });
-  arenaTowers.forEach((tower) => {
-    tower.material.emissive.setHex(theme.primary);
+  arenaEdges.forEach((e) => e.material.color.setHex(theme.primary));
+  arenaTowers.forEach((t) => t.material.emissive.setHex(theme.primary));
+  polyhedraItems.forEach((p, i) => p.edgeMat.color.setHex(i % 2 === 0 ? theme.primary : theme.secondary));
+
+  // Tunnel Elements
+  tunnelRings.forEach((r, i) => {
+    r.edgeMat.color.setHex(theme.primary);
+    r.meshMat.emissive.setHex(i % 2 === 0 ? theme.primary : theme.secondary);
   });
 
-  // Update Polyhedra
-  polyhedraItems.forEach((item, idx) => {
-    item.edgeMat.color.setHex(idx % 2 === 0 ? theme.primary : theme.secondary);
+  // Metropolis Elements
+  metroBuildings.forEach((b, i) => {
+    b.edgeMat.color.setHex(theme.primary);
+    b.mat.emissive.setHex(i % 2 === 0 ? theme.primary : theme.secondary);
   });
 
-  // Update Grid
+  // Vortex Elements
+  bhCoreMat.emissive.setHex(theme.primary);
+  diskMat1.color.setHex(theme.primary);
+  diskMat2.color.setHex(theme.secondary);
+  vortexParticles.forEach((p, i) => {
+    p.mesh.material.emissive.setHex(i % 2 === 0 ? theme.primary : theme.secondary);
+    p.edgeLine.material.color.setHex(theme.primary);
+  });
+
+  // Grid Floor
   scene.remove(gridFloor);
   gridFloor = new THREE.GridHelper(160, 64, theme.primary, 0x1f2433);
   gridFloor.position.y = 0;
   scene.add(gridFloor);
+}
+
+document.getElementById("theme-btn")?.addEventListener("click", () => {
+  applyTheme(currentThemeIdx + 1);
 });
+
+// Initialize Handshake & SSE
+initSSE();
+syncPlayerSnapshot();
+setInterval(syncPlayerSnapshot, 6000);

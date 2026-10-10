@@ -9,7 +9,7 @@
   <p><strong>Sound that brings us closer.</strong></p>
   <p>A polished, component-first Discord music bot powered by the <strong>Native TOGETHER Audio Engine</strong>, <code>@discordjs/voice</code>, and <strong>FFmpeg</strong>.</p>
 
-  <img src="assets/badges.png" alt="TOGETHER Badges" width="75%" />
+  <img src="assets/badges1.png" alt="TOGETHER Badges" width="75%" />
 
   <br /><br />
 

@@ -94,6 +94,8 @@ function getGuildPlayerState(client, targetId) {
       loop: "none",
       autoplay: false,
       volume: 80,
+      queue: [],
+      queueLength: 0,
     };
   }
 
@@ -140,6 +142,16 @@ function getGuildPlayerState(client, targetId) {
     (current && !player.paused)
   );
 
+  const upcomingQueue = (player.queue || []).slice(0, 25).map((t, idx) => ({
+    index: idx + 1,
+    title: t.title || "Unknown Track",
+    author: t.author || "Unknown Artist",
+    duration: t.length || t.duration || 0,
+    uri: t.uri || "",
+    thumbnail: t.thumbnail || t.artworkUrl || "/logo.png?v=2",
+    requester: t.requester ? (t.requester.username || t.requester.tag || t.requester.displayName || "Listener") : "Listener"
+  }));
+
   return {
     guildId: player.guildId,
     guildName,
@@ -155,6 +167,8 @@ function getGuildPlayerState(client, targetId) {
     autoplay: Boolean(player.data?.get("autoplay")),
     volume: player.volume || 80,
     voiceChannel: currentGuild?.channels?.cache?.get(player.voiceId)?.name || "Voice Channel",
+    queue: upcomingQueue,
+    queueLength: player.queue?.length || 0,
   };
 }
 
@@ -497,6 +511,18 @@ function startVisualizerServer(client, preferredPort = 5050) {
             }
             if (action === "seek" && typeof position === "number") {
               await player.seek(position);
+            }
+            if (action === "loop") {
+              const modes = ["none", "track", "queue"];
+              const curIdx = modes.indexOf(player.loop || "none");
+              player.loop = modes[(curIdx + 1) % modes.length];
+            }
+            if (action === "autoplay") {
+              const cur = player.data.get("autoplay") || false;
+              player.data.set("autoplay", !cur);
+            }
+            if (action === "volume" && typeof position === "number") {
+              player.setVolume(position);
             }
           }
           res.writeHead(200, { "Content-Type": "application/json" });
