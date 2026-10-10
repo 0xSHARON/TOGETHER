@@ -497,8 +497,19 @@ function applyPlayerState(data) {
   const trackArtist = document.getElementById("track-artist");
   const deckArt     = document.getElementById("deck-artwork");
 
-  const title  = playerState.title  || "Waiting for Music...";
-  const artist = playerState.author || "Use /play in Discord to stream";
+  // Handle intelligent track metadata (never display ugly "No Track Active")
+  let title = playerState.title;
+  let artist = playerState.author;
+
+  if (!title || title === "No Track Active" || title === "No track active") {
+    if (playerState.transitioning || playerState.playing) {
+      title = "Loading Next Track...";
+      artist = "TOGETHER Audio Engine • Autoplay";
+    } else {
+      title = "Waiting for Music...";
+      artist = "Use /play in Discord to stream";
+    }
+  }
 
   if (deckTitle)   deckTitle.innerText   = title;
   if (trackTitle)  trackTitle.innerText  = title;
@@ -574,8 +585,19 @@ function applyPlayerState(data) {
 
   if (playIcon) playIcon.innerText = isPlaying ? "⏸" : "▶";
   if (streamText) {
-    streamText.innerText = isPlaying ? "STREAMING" : (playerState.playing ? "PAUSED" : "IDLE");
-    streamText.className = `metric-val mono ${isPlaying ? "green" : ""}`;
+    if (playerState.transitioning) {
+      streamText.innerText = "LOADING";
+      streamText.className = "metric-val mono";
+    } else if (isPlaying) {
+      streamText.innerText = "STREAMING";
+      streamText.className = "metric-val mono green";
+    } else if (playerState.playing && playerState.paused) {
+      streamText.innerText = "PAUSED";
+      streamText.className = "metric-val mono";
+    } else {
+      streamText.innerText = "IDLE";
+      streamText.className = "metric-val mono";
+    }
   }
 
   // Badges
@@ -703,10 +725,26 @@ document.getElementById("btn-play-pause")?.addEventListener("click", () => {
 });
 
 document.getElementById("btn-next")?.addEventListener("click", () => {
+  playerState.transitioning = true;
+  const deckTitle = document.getElementById("deck-title");
+  const streamText = document.getElementById("player-state-text");
+  if (deckTitle) deckTitle.innerText = "Skipping track...";
+  if (streamText) {
+    streamText.innerText = "SKIPPING";
+    streamText.className = "metric-val mono";
+  }
   sendControlCommand("skip");
 });
 
 document.getElementById("btn-prev")?.addEventListener("click", () => {
+  playerState.transitioning = true;
+  const deckTitle = document.getElementById("deck-title");
+  const streamText = document.getElementById("player-state-text");
+  if (deckTitle) deckTitle.innerText = "Loading previous track...";
+  if (streamText) {
+    streamText.innerText = "LOADING";
+    streamText.className = "metric-val mono";
+  }
   sendControlCommand("previous");
 });
 

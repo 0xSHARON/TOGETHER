@@ -161,7 +161,7 @@ class NativePlayer {
       this._retryCount = 0;
 
       // Handle Loop Modes
-      if (this.loop === "track") {
+      if (this.loop === "track" && !isManualSkip) {
         this.play(finishedTrack);
         return;
       } else if (this.loop === "queue") {
@@ -174,15 +174,15 @@ class NativePlayer {
 
       if (this.queue.length > 0) {
         await this.play();
-      } else {
-        // If autoplay is enabled, await attemptAutoplay before declaring playerEmpty
-        if (this.data.get("autoplay")) {
-          try {
-            const { attemptAutoplay } = require("../utils/playerUtils");
-            await attemptAutoplay(this.manager.client, this);
-          } catch (e) {
-            this.manager.client.logger?.log(`[Autoplay] Hook error in Idle: ${e.message}`, "error");
-          }
+      } else if (this.data.get("autoplay")) {
+        this._isLoadingAutoplay = true;
+        try {
+          const { attemptAutoplay } = require("../utils/playerUtils");
+          await attemptAutoplay(this.manager.client, this);
+        } catch (e) {
+          this.manager.client.logger?.log(`[Autoplay] Hook error in Idle: ${e.message}`, "error");
+        } finally {
+          this._isLoadingAutoplay = false;
         }
 
         if (this.queue.length > 0) {
@@ -191,6 +191,9 @@ class NativePlayer {
           this.queue.current = null;
           this.manager.emit("playerEmpty", this);
         }
+      } else {
+        this.queue.current = null;
+        this.manager.emit("playerEmpty", this);
       }
     });
 
@@ -244,6 +247,8 @@ class NativePlayer {
     this._cleanupFfmpeg();
     this.playing = true;
     this.paused = false;
+    this._isSkipping = false;
+    this._isLoadingAutoplay = false;
     this._playbackStartTime = Date.now();
     this._seekOffset = 0;
 
@@ -337,6 +342,9 @@ class NativePlayer {
 
   async skip() {
     this._isSkipping = true;
+    if (this.queue.length === 0 && this.data.get("autoplay")) {
+      this._isLoadingAutoplay = true;
+    }
     this._cleanupFfmpeg();
     this.audioPlayer.stop(true);
     return this;

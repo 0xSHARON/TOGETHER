@@ -97,9 +97,21 @@ function getGuildPlayerState(client, targetId) {
     };
   }
 
-  const current = player.queue?.current;
   const currentGuild = client?.guilds?.cache?.get(player.guildId);
   const guildName = currentGuild?.name || `Server (${player.guildId})`;
+
+  // Handle active track vs upcoming / transitioning track
+  let current = player.queue?.current;
+  const isTransitioning = Boolean(
+    player._isSkipping ||
+    player._isLoadingAutoplay ||
+    player.data?.get("autoplayInProgress")
+  );
+
+  // If current is not set yet, but queue has a song waiting, display upcoming track
+  if (!current && player.queue?.length > 0) {
+    current = player.queue[0];
+  }
 
   let rawThumb = current?.thumbnail || current?.artworkUrl || (typeof current?.displayThumbnail === "function" ? current.displayThumbnail("hqdefault") : null);
   if (!rawThumb) {
@@ -108,15 +120,36 @@ function getGuildPlayerState(client, targetId) {
     rawThumb = rawThumb.replace(/^http:\/\//, "https://");
   }
 
+  // Determine intelligent title & author during transitions
+  let title = current?.title;
+  let author = current?.author;
+
+  if (!title) {
+    if (isTransitioning || player.data?.get("autoplay")) {
+      title = "Loading Next Track...";
+      author = "TOGETHER Audio Engine • Autoplay";
+    } else {
+      title = "Waiting for Music...";
+      author = "Use /play in Discord to stream";
+    }
+  }
+
+  const isActuallyPlaying = Boolean(
+    (player.playing && current) ||
+    isTransitioning ||
+    (current && !player.paused)
+  );
+
   return {
     guildId: player.guildId,
     guildName,
-    playing: Boolean(player.playing && current),
-    paused: Boolean(player.paused),
-    title: current?.title || "No Track Active",
-    author: current?.author || "Together Music Bot",
+    playing: isActuallyPlaying,
+    paused: Boolean(player.paused && !isTransitioning),
+    transitioning: isTransitioning,
+    title,
+    author: author || "Together Music Bot",
     thumbnail: rawThumb,
-    position: player.position || 0,
+    position: isTransitioning ? 0 : (player.position || 0),
     duration: current?.length || 0,
     loop: player.loop || "none",
     autoplay: Boolean(player.data?.get("autoplay")),

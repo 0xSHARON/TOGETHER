@@ -81,7 +81,7 @@ async function attemptAutoplay(client, player) {
 
         player.data?.set("autoplayInProgress", true);
 
-        const lastTrack = player.data?.get("lastTrack") || null;
+        const lastTrack = player.data?.get("lastTrack") || player.queue?.current || player.queue?.previous || null;
         if (!lastTrack || !lastTrack.title) {
             player.data?.delete("autoplayInProgress");
             return;
