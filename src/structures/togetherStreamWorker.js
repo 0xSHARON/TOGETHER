@@ -291,26 +291,26 @@ class TogetherStreamWorker {
       } catch {}
     }
 
-    // 3. If YouTube Cookies are provided, try YouTube extraction directly
-    if (cookieArgs.length > 0) {
-      try {
-        const ytQuery = isDirectYt ? queryStr : `ytsearch1:${queryStr}`;
-        const ytArgs = [
-          ...cookieArgs,
-          "--no-update",
-          "--no-warnings",
-          "--no-playlist",
-          "--extractor-args", "youtube:player_client=android",
-          "-f", "ba/b",
-          "-g",
-          ytQuery,
-        ];
-        const url = await this._runYtDlp(ytArgs);
-        if (url) return url;
-      } catch {}
+    // 3. Native YouTube Stream Extraction (Powered by Node.js JavaScript challenge solver)
+    try {
+      const ytQuery = isDirectYt ? queryStr : `ytsearch1:${queryStr}`;
+      const ytArgs = [
+        ...cookieArgs,
+        "--no-update",
+        "--no-warnings",
+        "--no-playlist",
+        "--js-runtimes", "node",
+        "-f", "ba/b",
+        "-g",
+        ytQuery,
+      ];
+      const url = await this._runYtDlp(ytArgs);
+      if (url && url.startsWith("http")) return url;
+    } catch (ytErr) {
+      console.warn(`[TogetherStreamWorker] YouTube stream resolution fallback:`, ytErr.message);
     }
 
-    // 4. Studio Master via JioSaavn Engine (Zero bot blocking, 320kbps original audio)
+    // 4. Studio Master via JioSaavn Engine (Zero bot blocking, 320kbps CD audio fallback)
     const saavnQuery = (typeof target === "object" ? (target.originalQuery || fallbackCandidates[0] || target.title) : queryStr) || "";
     if (saavnQuery && !saavnQuery.startsWith("http")) {
       try {
@@ -323,23 +323,7 @@ class TogetherStreamWorker {
       }
     }
 
-    // 5. Try YouTube direct (without cookies, works when IP is not rate limited)
-    try {
-      const ytQuery = isDirectYt ? queryStr : `ytsearch1:${queryStr}`;
-      const ytArgs = [
-        "--no-update",
-        "--no-warnings",
-        "--no-playlist",
-        "--extractor-args", "youtube:player_client=android",
-        "-f", "ba/b",
-        "-g",
-        ytQuery,
-      ];
-      const url = await this._runYtDlp(ytArgs);
-      if (url) return url;
-    } catch {}
-
-    // 6. Filtered SoundCloud Fallback (Strict anti-cover filtering)
+    // 5. Filtered SoundCloud Fallback (Strict anti-cover filtering)
     const originalQuery = typeof target === "object" ? (target.originalQuery || target.title || queryStr) : queryStr;
     const scUrl = await this._searchAndPickSoundCloud(fallbackCandidates, originalQuery);
     if (scUrl) return scUrl;

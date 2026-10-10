@@ -65,6 +65,7 @@ class TogetherResolver {
         ...runner.argsPrefix,
         "--no-update",
         "--no-warnings",
+        "--js-runtimes", "node",
         "--flat-playlist",
         "-j",
         `ytsearch${limit}:${query}`
