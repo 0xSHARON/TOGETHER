@@ -337,11 +337,12 @@ class TogetherStreamWorker {
     }
 
     // 5. Filtered SoundCloud Fallback (Strict anti-cover filtering)
-    const originalQuery = typeof target === "object" ? (target.originalQuery || target.title || queryStr) : queryStr;
+    const queryDescription = typeof target === "string" ? target : (target?.title || target?.uri || target?.originalQuery || "unknown track");
+    const originalQuery = typeof target === "object" ? (target.originalQuery || target.title || queryDescription) : queryDescription;
     const scUrl = await this._searchAndPickSoundCloud(fallbackCandidates, originalQuery);
     if (scUrl) return scUrl;
 
-    throw new Error(`Failed to resolve authentic audio stream for "${queryStr}"`);
+    throw new Error(`Failed to resolve authentic audio stream for "${queryDescription}"`);
   }
 
   /**
