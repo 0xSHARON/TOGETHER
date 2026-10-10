@@ -667,6 +667,9 @@ function startVisualizerServer(client, preferredPort = 5050) {
               res.writeHead(404, { "Content-Type": "text/plain" });
               return res.end("File not found");
             }
+            res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            res.setHeader("Pragma", "no-cache");
+            res.setHeader("Expires", "0");
             res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
             res.end(vizData);
           });
@@ -678,6 +681,9 @@ function startVisualizerServer(client, preferredPort = 5050) {
             res.writeHead(404, { "Content-Type": "text/plain" });
             return res.end("File not found");
           }
+          res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+          res.setHeader("Pragma", "no-cache");
+          res.setHeader("Expires", "0");
           res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
           res.end(homeData);
         });
@@ -687,7 +693,11 @@ function startVisualizerServer(client, preferredPort = 5050) {
       const ext = path.extname(filePath).toLowerCase();
       const contentType = MIME_TYPES[ext] || "application/octet-stream";
 
-      if (ext === ".html" || ext === ".css" || ext === ".js") {
+      if (ext === ".html") {
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+      } else if (ext === ".css" || ext === ".js") {
         res.setHeader("Cache-Control", "no-cache, must-revalidate");
       } else {
         res.setHeader("Cache-Control", "public, max-age=86400");

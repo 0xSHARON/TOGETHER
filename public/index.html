@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TOGETHER // 24-Bit Lossless Discord Music Bot & 3D Audio Stage</title>
   <meta name="description" content="TOGETHER is a next-generation high-fidelity Discord music bot with 24-bit lossless audio, 3D WebGL visualizers, studio DSP filters, and real-time server tracking.">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="icon" type="image/png" href="/logo.png">
   <link rel="shortcut icon" type="image/png" href="/logo.png">
   <link rel="apple-touch-icon" href="/logo.png">
@@ -1033,10 +1036,14 @@
         <a href="#features" class="nav-link">// FEATURES</a>
         <a href="#commands" class="nav-link">// COMMANDS</a>
         <a href="#developer" class="nav-link">// OWNER</a>
+        <a id="nav-link-support" href="https://discord.gg/mUdGTs2Dw5" target="_blank" class="nav-link">// SUPPORT</a>
         <a href="/visualizer/" class="nav-link" target="_blank" style="color: var(--c-accent);">// 3D STAGE</a>
       </nav>
 
       <div class="nav-actions">
+        <a id="nav-btn-support" href="https://discord.gg/mUdGTs2Dw5" target="_blank" class="btn-brutal outline desktop-only" style="padding: 9px 16px;">
+          💬 SUPPORT
+        </a>
         <a id="nav-btn-invite" href="https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=277298439232&scope=bot%20applications.commands" target="_blank" class="btn-brutal primary">
           + ADD TO DISCORD
         </a>
@@ -1289,6 +1296,12 @@
         <span class="footer-sub">Sound that brings us closer • Developed by kajukatli.</span>
       </div>
 
+      <div class="footer-links" style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+        <a id="footer-btn-support" href="https://discord.gg/mUdGTs2Dw5" target="_blank" class="nav-link" style="color: var(--c-accent); font-weight: 700;">💬 SUPPORT GUILD</a>
+        <a href="https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=277298439232&scope=bot%20applications.commands" target="_blank" class="nav-link">+ INVITE</a>
+        <a href="/visualizer/" target="_blank" class="nav-link">⚡ 3D STAGE</a>
+      </div>
+
       <div class="footer-barcode" title="TOGETHER PROTOCOL">
         <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
       </div>
@@ -1400,8 +1413,17 @@
           document.getElementById("hero-btn-invite").href = data.links.invite;
         }
         if (data.links?.support) {
-          document.getElementById("hero-btn-support").href = data.links.support;
-          document.getElementById("dev-btn-support").href = data.links.support;
+          const supportUrl = data.links.support;
+          const heroSup = document.getElementById("hero-btn-support");
+          if (heroSup) heroSup.href = supportUrl;
+          const devSup = document.getElementById("dev-btn-support");
+          if (devSup) devSup.href = supportUrl;
+          const navSup = document.getElementById("nav-btn-support");
+          if (navSup) navSup.href = supportUrl;
+          const navLinkSup = document.getElementById("nav-link-support");
+          if (navLinkSup) navLinkSup.href = supportUrl;
+          const footerSup = document.getElementById("footer-btn-support");
+          if (footerSup) footerSup.href = supportUrl;
         }
         if (data.links?.vote) {
           document.getElementById("hero-btn-vote").href = data.links.vote;
