@@ -1242,7 +1242,7 @@
 
       <div class="dev-profile-card">
         <div class="dev-avatar-wrap">
-          <img src="/logo.png?v=2" alt="kajukatli" id="dev-avatar">
+          <img src="https://cdn.discordapp.com/avatars/780345293237125152/7f51fb84d251a79180344e8ee91a4fb1.png?size=512" alt="kajukatli" id="dev-avatar" referrerpolicy="no-referrer" onerror="if(!this.src.includes('/api/owner-avatar')) this.src='/api/owner-avatar'; else if(!this.src.includes('logo.png')) this.src='/logo.png?v=2';">
           <span class="dev-badge-corner">OWNER</span>
         </div>
 
@@ -1253,7 +1253,7 @@
             <span class="dev-tag-pill">FOUNDER</span>
           </div>
 
-          <h3 class="dev-name" id="dev-name">kajukatli</h3>
+          <h3 class="dev-name" id="dev-name">KAJU🦋</h3>
           <p class="dev-bio" id="dev-bio">
             Engineered the TOGETHER Discord audio engine, native Opus audio streamer with system FFmpeg pipelines, real-time 3D WebGL visualizers, and cluster orchestration.
           </p>
@@ -1264,9 +1264,6 @@
             </div>
             <div class="dev-chip">
               <span>TAG:</span> <code id="dev-tag">kajukatli.</code>
-            </div>
-            <div class="dev-chip">
-              <span>ENGINE:</span> <code>Node.js 20 • Opus • WebGL 2.0</code>
             </div>
           </div>
         </div>
@@ -1409,17 +1406,26 @@
 
         // Owner Profile
         if (data.owner) {
-          document.getElementById("dev-name").innerText = data.owner.name || "kajukatli";
+          const ownerName = data.owner.globalName || data.owner.name || "KAJU🦋";
+          document.getElementById("dev-name").innerText = ownerName;
           document.getElementById("dev-tag").innerText = data.owner.tag || "kajukatli.";
           document.getElementById("dev-id").innerText = data.owner.id || "780345293237125152";
           if (data.owner.credit) document.getElementById("dev-bio").innerText = data.owner.credit;
+          if (data.owner.avatar) {
+            const devAvatarEl = document.getElementById("dev-avatar");
+            if (devAvatarEl) {
+              devAvatarEl.src = data.owner.avatar;
+            }
+          }
         }
 
-        // Commands catalog
+        // Commands catalog (strictly exclude owner commands)
         allCommandsList = [];
         if (data.commands) {
           for (const cat in data.commands) {
+            if (cat.toLowerCase() === "owner") continue;
             data.commands[cat].forEach(cmd => {
+              if (cmd.owner === true || (cmd.category && cmd.category.toLowerCase() === "owner")) return;
               allCommandsList.push({ ...cmd, category: cat });
             });
           }
@@ -1456,6 +1462,7 @@
       const searchVal = document.getElementById("cmd-search-input").value.trim().toLowerCase();
 
       const filtered = allCommandsList.filter(cmd => {
+        if (cmd.category && cmd.category.toLowerCase() === "owner") return false;
         const matchCat = (currentCategory === "ALL" || cmd.category.toLowerCase() === currentCategory.toLowerCase());
         const matchSearch = (!searchVal || cmd.name.toLowerCase().includes(searchVal) || cmd.description.toLowerCase().includes(searchVal));
         return matchCat && matchSearch;

@@ -89,7 +89,7 @@ setupDiscordSdk();
 let playerState = {
   title: "Waiting for music...",
   author: "Join a voice channel and use /play",
-  thumbnail: "logo.png?v=2",
+  thumbnail: "/logo.png?v=2",
   position: 0,
   duration: 0,
   paused: true,
@@ -903,11 +903,24 @@ function renderQueue(queue = [], queueLength = 0) {
 
   listEl.innerHTML = queue.map((track) => {
     const dur = formatTimecode(track.duration);
-    const thumb = track.thumbnail || "logo.png?v=2";
+    let directThumb = track.thumbnail || "/logo.png?v=2";
+    if (directThumb.startsWith("http://")) directThumb = directThumb.replace(/^http:\/\//, "https://");
+
+    // In Discord Activity, route remote image URLs through thumbnail proxy to bypass CSP/Referrer blocking
+    const thumbSrc = (isInsideDiscord && directThumb.startsWith("http"))
+      ? `/api/thumbnail?url=${encodeURIComponent(directThumb)}`
+      : directThumb;
+
     return `
       <div class="queue-track-item">
         <span class="queue-item-idx">#${track.index}</span>
-        <img class="queue-item-thumb" src="${thumb}" onerror="this.src='logo.png?v=2'" alt="Thumb">
+        <img class="queue-item-thumb" 
+             src="${escapeHtml(thumbSrc)}" 
+             referrerpolicy="no-referrer"
+             loading="lazy"
+             data-original="${escapeHtml(directThumb)}"
+             onerror="if(!this.src.includes('/api/thumbnail') && this.dataset.original && this.dataset.original.startsWith('http')){this.src='/api/thumbnail?url=' + encodeURIComponent(this.dataset.original);}else if(!this.src.includes('logo.png')){this.src='/logo.png?v=2';}" 
+             alt="Thumb">
         <div class="queue-item-meta">
           <div class="queue-item-title" title="${escapeHtml(track.title)}">${escapeHtml(track.title)}</div>
           <div class="queue-item-sub">
@@ -974,7 +987,7 @@ function applyPlayerState(data) {
         } else if (failCount <= 3 && !this.src.includes("/api/thumbnail")) {
           this.src = `/api/thumbnail?url=${encodeURIComponent(rawThumb)}`;
         } else if (!this.src.includes("logo.png")) {
-          this.src = "logo.png?v=2";
+          this.src = "/logo.png?v=2";
         }
       };
       imgEl.src = rawThumb;

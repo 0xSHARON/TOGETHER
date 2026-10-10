@@ -142,15 +142,23 @@ function getGuildPlayerState(client, targetId) {
     (current && !player.paused)
   );
 
-  const upcomingQueue = (player.queue || []).slice(0, 25).map((t, idx) => ({
-    index: idx + 1,
-    title: t.title || "Unknown Track",
-    author: t.author || "Unknown Artist",
-    duration: t.length || t.duration || 0,
-    uri: t.uri || "",
-    thumbnail: t.thumbnail || t.artworkUrl || "/logo.png?v=2",
-    requester: t.requester ? (t.requester.username || t.requester.tag || t.requester.displayName || "Listener") : "Listener"
-  }));
+  const upcomingQueue = (player.queue || []).slice(0, 25).map((t, idx) => {
+    let qThumb = t.thumbnail || t.artworkUrl || t.info?.thumbnail || (typeof t.displayThumbnail === "function" ? t.displayThumbnail("hqdefault") : null);
+    if (!qThumb) {
+      qThumb = "/logo.png?v=2";
+    } else if (qThumb.startsWith("http://")) {
+      qThumb = qThumb.replace(/^http:\/\//, "https://");
+    }
+    return {
+      index: idx + 1,
+      title: t.title || "Unknown Track",
+      author: t.author || "Unknown Artist",
+      duration: t.length || t.duration || 0,
+      uri: t.uri || "",
+      thumbnail: qThumb,
+      requester: t.requester ? (t.requester.username || t.requester.tag || t.requester.displayName || "Listener") : "Listener"
+    };
+  });
 
   return {
     guildId: player.guildId,
@@ -222,6 +230,39 @@ function getAllActiveSessions(client) {
   return sessions;
 }
 
+let cachedOwnerData = {
+  id: "780345293237125152",
+  name: "KAJU🦋",
+  tag: "kajukatli.",
+  avatar: "https://cdn.discordapp.com/avatars/780345293237125152/7f51fb84d251a79180344e8ee91a4fb1.png?size=512",
+  role: "Bot Owner & Core Audio Systems Architect",
+  credit: "Engineered and crafted by kajukatli. High-performance Discord audio streaming & 3D WebGL visuals.",
+};
+
+async function refreshOwnerData(client) {
+  try {
+    const ownerId = "780345293237125152";
+    let user = client?.users?.cache?.get(ownerId);
+    if (!user && client?.users?.fetch) {
+      user = await client.users.fetch(ownerId).catch(() => null);
+    }
+    if (user) {
+      cachedOwnerData = {
+        id: user.id,
+        name: user.globalName || user.username || "KAJU🦋",
+        tag: user.tag || (user.discriminator && user.discriminator !== "0" ? `${user.username}#${user.discriminator}` : user.username),
+        avatar: user.displayAvatarURL({ size: 512, extension: "png" }),
+        role: "Bot Owner & Core Audio Systems Architect",
+        credit: "Engineered and crafted by kajukatli. High-performance Discord audio streaming & 3D WebGL visuals.",
+      };
+      return cachedOwnerData;
+    }
+  } catch (err) {
+    // quiet fallback
+  }
+  return cachedOwnerData;
+}
+
 /**
  * Builds complete bot metadata, owner info, statistics and command catalog
  */
@@ -242,6 +283,11 @@ function getBotInfo(client) {
       seen.add(cmd.name.toLowerCase());
 
       const cat = cmd.category || "Music";
+      // Exclude owner-only commands from public API and website
+      if (cat.toLowerCase() === "owner" || cmd.owner === true) {
+        continue;
+      }
+
       if (!commandsByCategory[cat]) {
         commandsByCategory[cat] = [];
       }
@@ -256,12 +302,31 @@ function getBotInfo(client) {
     }
   }
 
+  // Ensure owner category never leaks
+  delete commandsByCategory["Owner"];
+  delete commandsByCategory["owner"];
+
   // Sort commands alphabetically
   for (const cat in commandsByCategory) {
     commandsByCategory[cat].sort((a, b) => a.name.localeCompare(b.name));
   }
 
   const totalUsers = client?.guilds?.cache?.reduce((acc, g) => acc + (g.memberCount || 0), 0) || 6782;
+
+  // Sync owner cache if user is cached in Discord client
+  const cachedUser = client?.users?.cache?.get("780345293237125152");
+  if (cachedUser) {
+    cachedOwnerData = {
+      id: cachedUser.id,
+      name: cachedUser.globalName || cachedUser.username || "KAJU🦋",
+      tag: cachedUser.tag || (cachedUser.discriminator && cachedUser.discriminator !== "0" ? `${cachedUser.username}#${cachedUser.discriminator}` : cachedUser.username),
+      avatar: cachedUser.displayAvatarURL({ size: 512, extension: "png" }),
+      role: "Bot Owner & Core Audio Systems Architect",
+      credit: "Engineered and crafted by kajukatli. High-performance Discord audio streaming & 3D WebGL visuals.",
+    };
+  } else if (client?.users?.fetch) {
+    refreshOwnerData(client).catch(() => {});
+  }
 
   return {
     bot: {
@@ -277,10 +342,11 @@ function getBotInfo(client) {
       version: "2.5.0",
       audioEngine: "Native Opus / 24-bit Lossless Studio Transcoder",
     },
-    owner: {
+    owner: cachedOwnerData || {
       id: "780345293237125152",
-      name: "kajukatli",
+      name: "KAJU🦋",
       tag: "kajukatli.",
+      avatar: "https://cdn.discordapp.com/avatars/780345293237125152/7f51fb84d251a79180344e8ee91a4fb1.png?size=512",
       role: "Bot Owner & Core Audio Systems Architect",
       credit: "Engineered and crafted by kajukatli. High-performance Discord audio streaming & 3D WebGL visuals.",
     },
@@ -406,23 +472,50 @@ function startVisualizerServer(client, preferredPort = 5050) {
       return res.end(JSON.stringify(getBotInfo(client)));
     }
 
+    // ── API: Bot Owner Avatar Endpoint (/api/owner-avatar) ────
+    if (pathname === "/api/owner-avatar") {
+      const getOwnerAvatar = async () => {
+        if (cachedOwnerData?.avatar && cachedOwnerData.avatar.startsWith("http")) {
+          return cachedOwnerData.avatar;
+        }
+        const refreshed = await refreshOwnerData(client);
+        return refreshed?.avatar || "https://cdn.discordapp.com/avatars/780345293237125152/7f51fb84d251a79180344e8ee91a4fb1.png?size=512";
+      };
+
+      getOwnerAvatar().then((avatarUrl) => {
+        res.writeHead(302, {
+          "Location": avatarUrl,
+          "Cache-Control": "public, max-age=3600",
+          "Access-Control-Allow-Origin": "*"
+        });
+        res.end();
+      }).catch(() => {
+        res.writeHead(302, {
+          "Location": "/logo.png?v=2",
+          "Access-Control-Allow-Origin": "*"
+        });
+        res.end();
+      });
+      return;
+    }
+
     // ── API: High-Res Thumbnail Image Proxy (/api/thumbnail?url=...) ──
     if (pathname === "/api/thumbnail") {
       const rawUrl = reqUrl.searchParams.get("url");
       if (!rawUrl || (!rawUrl.startsWith("http://") && !rawUrl.startsWith("https://"))) {
-        res.writeHead(400, { "Content-Type": "text/plain" });
-        return res.end("Invalid thumbnail URL");
+        res.writeHead(302, { "Location": "/logo.png?v=2", "Access-Control-Allow-Origin": "*" });
+        return res.end();
       }
       const https = require("https");
       const http = require("http");
-      const clientReq = rawUrl.startsWith("https:") ? https : http;
       
       const fetchImage = (targetUrl, redirectCount = 0) => {
         if (redirectCount > 3) {
-          res.writeHead(502);
-          return res.end("Too many redirects");
+          res.writeHead(302, { "Location": "/logo.png?v=2", "Access-Control-Allow-Origin": "*" });
+          return res.end();
         }
-        clientReq.get(targetUrl, {
+        const mod = targetUrl.startsWith("https:") ? https : http;
+        mod.get(targetUrl, {
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
             "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8"
@@ -436,15 +529,19 @@ function startVisualizerServer(client, preferredPort = 5050) {
             }
             return fetchImage(nextUrl, redirectCount + 1);
           }
+          if (proxyRes.statusCode >= 400) {
+            res.writeHead(302, { "Location": "/logo.png?v=2", "Access-Control-Allow-Origin": "*" });
+            return res.end();
+          }
           res.writeHead(proxyRes.statusCode || 200, {
             "Content-Type": proxyRes.headers["content-type"] || "image/jpeg",
             "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
             "Access-Control-Allow-Origin": "*"
           });
           proxyRes.pipe(res);
-        }).on("error", (err) => {
-          res.writeHead(502, { "Content-Type": "text/plain" });
-          res.end("Proxy Error: " + err.message);
+        }).on("error", () => {
+          res.writeHead(302, { "Location": "/logo.png?v=2", "Access-Control-Allow-Origin": "*" });
+          res.end();
         });
       };
 
@@ -611,6 +708,8 @@ function startVisualizerServer(client, preferredPort = 5050) {
 
   server.listen(port, "0.0.0.0", () => {
     client?.logger?.log(`[Visualizer] Web & Visualizer Server listening at http://0.0.0.0:${port}`, "ready");
+    // Pre-cache owner avatar and Discord details
+    refreshOwnerData(client).catch(() => {});
   });
 
   client.visualizerServer = server;
