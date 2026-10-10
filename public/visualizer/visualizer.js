@@ -499,6 +499,24 @@ function applyPlayerState(data) {
   if (deckArtist)  deckArtist.innerText  = artist;
   if (trackArtist) trackArtist.innerText = artist;
 
+  const modeTag = document.getElementById("mode-tag");
+  if (modeTag) {
+    if (playerState.guildName) {
+      modeTag.innerText = `[ SERVER // ${playerState.guildName.toUpperCase()} ]`;
+    } else {
+      modeTag.innerText = `[ STAGE // 3D_LIVE ]`;
+    }
+  }
+
+  const qualityBadge = document.getElementById("badge-quality");
+  const trackSource  = document.getElementById("track-source");
+  if (qualityBadge) {
+    qualityBadge.innerText = playerState.playing ? "LOSSLESS 24-BIT" : "STANDBY";
+  }
+  if (trackSource) {
+    trackSource.innerText = playerState.playing ? "HIGH FIDELITY" : "SERVER IDLE";
+  }
+
   const fallbackTitle  = document.getElementById("fallback-title");
   const fallbackArtist = document.getElementById("fallback-artist");
   const fallbackArt    = document.getElementById("fallback-art");

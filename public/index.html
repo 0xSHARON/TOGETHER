@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TOGETHER // 24-Bit Lossless Discord Music Bot & 3D Audio Stage</title>
+  <meta name="description" content="TOGETHER is a next-generation high-fidelity Discord music bot with 24-bit lossless audio, 3D WebGL visualizers, studio DSP filters, and real-time server tracking.">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="shortcut icon" type="image/png" href="/logo.png">
+  <link rel="apple-touch-icon" href="/logo.png">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ══════════════════════════════════════════════════════════════════
+       TOGETHER DISCORD BOT PORTAL — CYBER BRUTALIST SYSTEM
+       Matched to assets/banner.png aesthetic
+       ══════════════════════════════════════════════════════════════════ */
+    :root {
+      --c-bg: #06070a;
+      --c-surface: #0c0e14;
+      --c-surface-bright: #151822;
+      --c-border: #ff0033;
+      --c-border-dark: #000000;
+      --c-border-light: #252838;
+      --c-accent: #ff0033;
+      --c-accent-hover: #ff2a55;
+      --c-accent-glow: rgba(255, 0, 51, 0.4);
+      --c-secondary: #ffffff;
+      --c-text: #ffffff;
+      --c-text-muted: #9aa0b4;
+      --c-text-dim: #64687a;
+
+      --shadow-hard-sm: 3px 3px 0px #000000;
+      --shadow-hard: 5px 5px 0px #000000;
+      --shadow-hard-lg: 8px 8px 0px #000000;
+      --border-thick: 3px solid #000000;
+      --border-ultra: 4px solid #000000;
+
+      --font-display: 'Orbitron', 'Space Grotesk', sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --hazard-stripe: repeating-linear-gradient(
+        -45deg,
+        #ff0033,
+        #ff0033 10px,
+        #000000 10px,
+        #000000 20px
+      );
+      --hazard-stripe-mini: repeating-linear-gradient(
+        -45deg,
+        #ff0033,
+        #ff0033 6px,
+        #000000 6px,
+        #000000 12px
+      );
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--c-bg);
+      color: var(--c-text);
+      font-family: var(--font-heading);
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(255, 0, 51, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 0, 51, 0.06) 0%, transparent 40%),
+        linear-gradient(to right, rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ── Top Bar & Navigation ────────────────────────────────── */
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(6, 7, 10, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--c-border-light);
+      padding: 12px 24px;
+    }
+
+    .nav-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-logo-box {
+      width: 38px;
+      height: 38px;
+      background: #000;
+      border: 2px solid var(--c-accent);
+      box-shadow: var(--shadow-hard-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-logo-box img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: #fff;
+    }
+
+    .brand-status-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--c-accent);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c-accent);
+      box-shadow: 0 0 8px var(--c-accent);
+      animation: pulseNeon 1.5s infinite;
+    }
+
+    @keyframes pulseNeon {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--c-text-muted);
+      letter-spacing: 0.05em;
+      transition: color 0.15s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--c-accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Brutalist Buttons */
+    .btn-brutal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      padding: 9px 16px;
+      border: var(--border-thick);
+      box-shadow: var(--shadow-hard-sm);
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .btn-brutal.primary {
+      background: var(--c-accent);
+      color: #000000;
+    }
+
+    .btn-brutal.primary:hover {
+      background: var(--c-accent-hover);
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px #000000;
+    }
+
+    .btn-brutal.primary:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000000;
+    }
+
+    .btn-brutal.dark {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .btn-brutal.dark:hover {
+      background: var(--c-accent);
+      color: #ffffff;
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px #000000;
+    }
+
+    .btn-brutal.outline {
+      background: #000000;
+      color: #ffffff;
+      border-color: var(--c-border-light);
+    }
+
+    .btn-brutal.outline:hover {
+      border-color: var(--c-accent);
+      color: var(--c-accent);
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px #000000;
+    }
+
+    /* ── Main Layout Wrapper ─────────────────────────────────── */
+    .main-wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px 24px 80px 24px;
+    }
+
+    /* ── Hazard Banner Tape ──────────────────────────────────── */
+    .hazard-ribbon {
+      height: 12px;
+      background: var(--hazard-stripe-mini);
+      border: 2px solid #000;
+      box-shadow: var(--shadow-hard-sm);
+      margin-bottom: 24px;
+    }
+
+    /* ── Hero Section ────────────────────────────────────────── */
+    .hero-banner-card {
+      background: var(--c-surface);
+      border: var(--border-ultra);
+      box-shadow: var(--shadow-hard-lg);
+      outline: 2px solid var(--c-accent);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    .banner-art-wrap {
+      position: relative;
+      width: 100%;
+      max-height: 380px;
+      overflow: hidden;
+      border-bottom: var(--border-thick);
+      background: #000000;
+    }
+
+    .banner-art-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      filter: contrast(1.05);
+    }
+
+    .banner-overlay-strip {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .banner-tag {
+      background: #000000;
+      color: var(--c-accent);
+      border: 2px solid var(--c-accent);
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: var(--shadow-hard-sm);
+    }
+
+    .hero-info-body {
+      padding: 32px 36px;
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 4vw, 42px);
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-headline span {
+      color: var(--c-accent);
+      text-shadow: 0 0 16px rgba(255, 0, 51, 0.4);
+    }
+
+    .hero-desc {
+      font-size: 16px;
+      color: var(--c-text-muted);
+      max-width: 820px;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .hero-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    /* Live Stats Ribbon */
+    .hero-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      padding-top: 24px;
+      border-top: 2px solid var(--c-border-light);
+    }
+
+    .stat-card {
+      background: #000000;
+      border: 2px solid var(--c-border-light);
+      padding: 14px 16px;
+      position: relative;
+    }
+
+    .stat-card::before {
+      content: '+';
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-accent);
+    }
+
+    .stat-val {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--c-accent);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .stat-lbl {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* ── Section Titles ──────────────────────────────────────── */
+    .section-head {
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .section-kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--c-accent);
+      letter-spacing: 0.12em;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+    }
+
+    .section-sub {
+      color: var(--c-text-muted);
+      font-size: 14px;
+    }
+
+    /* ── Live Server Monitor (Active Sessions) ───────────────── */
+    .live-monitor-section {
+      margin-bottom: 54px;
+    }
+
+    .active-sessions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    .session-card {
+      background: var(--c-surface);
+      border: var(--border-thick);
+      box-shadow: var(--shadow-hard);
+      outline: 2px solid var(--c-border-light);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: outline-color 0.15s ease, transform 0.1s ease;
+      position: relative;
+    }
+
+    .session-card:hover {
+      outline-color: var(--c-accent);
+      transform: translateY(-2px);
+    }
+
+    .session-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--c-border-light);
+      padding-bottom: 12px;
+    }
+
+    .session-guild-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .session-guild-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 4px;
+      border: 2px solid #000;
+      background: #111;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .session-guild-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .session-vc-name {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .session-live-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      background: var(--c-accent);
+      color: #000;
+      padding: 2px 7px;
+      border: 1px solid #000;
+      flex-shrink: 0;
+      box-shadow: 2px 2px 0 #000;
+    }
+
+    .session-track-body {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .session-track-thumb {
+      width: 60px;
+      height: 60px;
+      border: 2px solid #000;
+      outline: 2px solid var(--c-accent);
+      box-shadow: 3px 3px 0 #000;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #000;
+    }
+
+    .session-track-meta {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .session-track-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .session-track-artist {
+      font-size: 12px;
+      color: var(--c-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 6px;
+    }
+
+    .session-progress-strip {
+      width: 100%;
+      height: 6px;
+      background: #000;
+      border: 1px solid #222;
+      overflow: hidden;
+    }
+
+    .session-progress-bar {
+      height: 100%;
+      background: var(--c-accent);
+      width: 40%;
+    }
+
+    .session-action-btn {
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      border: 2px solid #000000;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 8px 12px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 #000;
+      transition: background 0.1s ease, transform 0.1s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .session-action-btn:hover {
+      background: var(--c-accent);
+      color: #ffffff;
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 #000;
+    }
+
+    .empty-sessions-card {
+      grid-column: 1 / -1;
+      background: var(--c-surface);
+      border: var(--border-thick);
+      box-shadow: var(--shadow-hard);
+      outline: 2px solid var(--c-border-light);
+      padding: 36px 24px;
+      text-align: center;
+    }
+
+    .empty-sessions-card h3 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: var(--c-accent);
+      margin-bottom: 8px;
+    }
+
+    .empty-sessions-card p {
+      color: var(--c-text-muted);
+      font-size: 13px;
+      max-width: 520px;
+      margin: 0 auto 18px auto;
+    }
+
+    /* ── Features Grid ───────────────────────────────────────── */
+    .features-section {
+      margin-bottom: 54px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--c-surface);
+      border: var(--border-thick);
+      box-shadow: var(--shadow-hard);
+      outline: 2px solid var(--c-border-light);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+
+    .feature-card:hover {
+      outline-color: var(--c-accent);
+    }
+
+    .feature-badge-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .feature-icon {
+      font-size: 24px;
+    }
+
+    .feature-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      background: #000;
+      color: var(--c-accent);
+      border: 1px solid var(--c-accent);
+      padding: 2px 7px;
+    }
+
+    .feature-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--c-text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Commands Browser ────────────────────────────────────── */
+    .commands-section {
+      margin-bottom: 54px;
+    }
+
+    .commands-box {
+      background: var(--c-surface);
+      border: var(--border-ultra);
+      box-shadow: var(--shadow-hard-lg);
+      outline: 2px solid var(--c-accent);
+      padding: 28px;
+    }
+
+    .commands-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--c-border-light);
+      padding-bottom: 20px;
+    }
+
+    .category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .cat-btn {
+      background: #000000;
+      color: var(--c-text-muted);
+      border: 2px solid var(--c-border-light);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 12px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #000;
+      transition: all 0.1s ease;
+    }
+
+    .cat-btn.active, .cat-btn:hover {
+      background: var(--c-accent);
+      color: #000000;
+      border-color: #000000;
+    }
+
+    .command-search-wrap {
+      position: relative;
+      min-width: 260px;
+      flex: 1;
+      max-width: 380px;
+    }
+
+    .command-search-input {
+      width: 100%;
+      background: #000000;
+      border: 2px solid var(--c-border-light);
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .command-search-input:focus {
+      border-color: var(--c-accent);
+    }
+
+    .commands-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      max-height: 540px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .command-card {
+      background: #000000;
+      border: 2px solid var(--c-border-light);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.1s ease;
+    }
+
+    .command-card:hover {
+      border-color: var(--c-accent);
+    }
+
+    .cmd-name-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cmd-name {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--c-accent);
+    }
+
+    .cmd-badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      background: #191c28;
+      color: #ffffff;
+      padding: 1px 5px;
+      border: 1px solid #2d3345;
+    }
+
+    .cmd-desc {
+      font-size: 12px;
+      color: var(--c-text-muted);
+      line-height: 1.4;
+    }
+
+    .cmd-syntax {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #ffffff;
+      background: #0b0d12;
+      padding: 4px 6px;
+      border-left: 2px solid var(--c-accent);
+      margin-top: 4px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    /* ── Owner & Developer Section ───────────────────────────── */
+    .developer-section {
+      margin-bottom: 54px;
+    }
+
+    .dev-profile-card {
+      background: var(--c-surface);
+      border: var(--border-ultra);
+      box-shadow: var(--shadow-hard-lg);
+      outline: 2px solid var(--c-accent);
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .dev-avatar-wrap {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      min-width: 100px;
+      min-height: 100px;
+      border: 3px solid #000;
+      outline: 2px solid var(--c-accent);
+      box-shadow: 5px 5px 0 #000;
+      background: #000;
+    }
+
+    .dev-avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .dev-badge-corner {
+      position: absolute;
+      bottom: -6px;
+      right: -6px;
+      background: var(--c-accent);
+      color: #000;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 900;
+      padding: 1px 5px;
+      border: 1px solid #000;
+    }
+
+    .dev-info-col {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .dev-tag-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .dev-tag-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      background: #000;
+      color: var(--c-accent);
+      border: 1px solid var(--c-accent);
+      padding: 2px 7px;
+    }
+
+    .dev-name {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .dev-bio {
+      font-size: 14px;
+      color: var(--c-text-muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .dev-meta-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .dev-chip {
+      background: #000;
+      border: 1px solid var(--c-border-light);
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dev-chip span {
+      color: var(--c-accent);
+      font-weight: 800;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    .portal-footer {
+      border-top: 2px solid var(--c-border-light);
+      background: #040507;
+      padding: 36px 24px;
+      margin-top: 40px;
+    }
+
+    .footer-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-sub {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-muted);
+    }
+
+    .footer-barcode {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 28px;
+      background: #000;
+      padding: 2px 4px;
+      border: 1px solid #222;
+    }
+
+    .footer-barcode span {
+      display: block;
+      height: 100%;
+      background: #fff;
+    }
+    .footer-barcode span:nth-child(1) { width: 3px; background: var(--c-accent); }
+    .footer-barcode span:nth-child(2) { width: 1px; }
+    .footer-barcode span:nth-child(3) { width: 4px; }
+    .footer-barcode span:nth-child(4) { width: 2px; background: var(--c-accent); }
+    .footer-barcode span:nth-child(5) { width: 1px; }
+    .footer-barcode span:nth-child(6) { width: 3px; }
+    .footer-barcode span:nth-child(7) { width: 2px; }
+
+    /* ── Responsive Mobile ───────────────────────────────────── */
+    @media (max-width: 820px) {
+      .nav-links {
+        display: none;
+      }
+      .main-wrap {
+        padding: 16px 14px 60px 14px;
+      }
+      .hero-info-body {
+        padding: 20px 18px;
+      }
+      .hero-headline {
+        font-size: 24px;
+      }
+      .active-sessions-grid {
+        grid-template-columns: 1fr;
+      }
+      .commands-box {
+        padding: 18px;
+      }
+      .command-search-wrap {
+        min-width: 100%;
+      }
+      .dev-profile-card {
+        padding: 20px;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="nav-bar">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">
+        <div class="nav-logo-box">
+          <img src="/logo.png?v=2" alt="TOGETHER">
+        </div>
+        <div class="brand-title-wrap">
+          <span class="brand-name">TOGETHER</span>
+          <span class="brand-status-tag"><span class="status-dot"></span> 24/7 LOSSLESS ONLINE</span>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#sessions" class="nav-link">// LIVE SESSIONS</a>
+        <a href="#features" class="nav-link">// FEATURES</a>
+        <a href="#commands" class="nav-link">// COMMANDS</a>
+        <a href="#developer" class="nav-link">// OWNER</a>
+        <a href="/visualizer/" class="nav-link" target="_blank" style="color: var(--c-accent);">// 3D STAGE</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a id="nav-btn-invite" href="https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=277298439232&scope=bot%20applications.commands" target="_blank" class="btn-brutal primary">
+          + ADD TO DISCORD
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrap -->
+  <main class="main-wrap">
+
+    <!-- Top Hazard Ribbon -->
+    <div class="hazard-ribbon"></div>
+
+    <!-- Hero Card with assets/banner.png Banner Display -->
+    <section class="hero-banner-card">
+      <div class="banner-art-wrap">
+        <img src="/banner.png" alt="TOGETHER Discord Bot Banner" loading="eager">
+        <div class="banner-overlay-strip">
+          <span class="banner-tag">/// AUDIO PROTOCOL V2.5 ///</span>
+          <span class="banner-tag" style="border-color: #fff; color: #fff;">24-BIT HIGH RES</span>
+        </div>
+      </div>
+
+      <div class="hero-info-body">
+        <h1 class="hero-headline">THE ULTIMATE <span>LOSSLESS AUDIO</span> & 3D VISUALIZER BOT</h1>
+        <p class="hero-desc">
+          Experience studio-grade Opus 320kbps lossless audio streaming, real-time interactive 3D WebGL sound stages, and professional DSP audio filters built natively for modern Discord communities.
+        </p>
+
+        <div class="hero-btn-row">
+          <a id="hero-btn-invite" href="https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=277298439232&scope=bot%20applications.commands" target="_blank" class="btn-brutal primary">
+            [+] INVITE TO DISCORD
+          </a>
+          <a href="/visualizer/" target="_blank" class="btn-brutal dark">
+            ⚡ LAUNCH 3D VISUALIZER
+          </a>
+          <a id="hero-btn-support" href="https://discord.gg/NSRgjY74TS" target="_blank" class="btn-brutal outline">
+            COMMUNITY DISCORD
+          </a>
+          <a id="hero-btn-vote" href="https://top.gg/bot/863496211667484676/vote" target="_blank" class="btn-brutal outline">
+            ⭐ VOTE TOP.GG
+          </a>
+        </div>
+
+        <!-- Live Metrics Counter -->
+        <div class="hero-stats-grid">
+          <div class="stat-card">
+            <div class="stat-val" id="stat-servers">103+</div>
+            <div class="stat-lbl">Active Guilds</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-users">6,800+</div>
+            <div class="stat-lbl">Discord Listeners</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">320 KBPS</div>
+            <div class="stat-lbl">Lossless Opus Audio</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-ping">&lt; 25 ms</div>
+            <div class="stat-lbl">Native Gateway Ping</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">0%</div>
+            <div class="stat-lbl">Packet Loss Target</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Live Active Server Sessions Monitor ──────────────── -->
+    <section class="live-monitor-section" id="sessions">
+      <div class="section-head">
+        <span class="section-kicker">/// REAL-TIME AUDIO TELEMETRY ///</span>
+        <h2 class="section-title">ACTIVE STREAMING SESSIONS</h2>
+        <p class="section-sub">Live synchronized monitoring of Discord servers streaming music through TOGETHER right now.</p>
+      </div>
+
+      <div class="active-sessions-grid" id="active-sessions-list">
+        <!-- Rendered dynamically by JavaScript -->
+        <div class="empty-sessions-card">
+          <h3>CONNECTING TO LIVE TELEMETRY...</h3>
+          <p>Polling active voice channel sessions across all clusters...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Core Features Grid ─────────────────────────────────── -->
+    <section class="features-section" id="features">
+      <div class="section-head">
+        <span class="section-kicker">/// SYSTEM CAPABILITIES ///</span>
+        <h2 class="section-title">ENGINEERED FOR SUPREME FIDELITY</h2>
+        <p class="section-sub">Built from the ground up for zero audio stutter, crystalline acoustics, and visual immersion.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-badge-top">
+            <span class="feature-icon">🎨</span>
+            <span class="feature-pill">WEBGL 2.0</span>
+          </div>
+          <h3 class="feature-title">3D Reactive Audio Stage</h3>
+          <p class="feature-desc">
+            Immersive 3D brutalist sound stage reacting to audio amplitude, frequencies, and rhythm in real-time. Full OrbitControls and theme toggles.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-badge-top">
+            <span class="feature-icon">🔊</span>
+            <span class="feature-pill">320 KBPS OPUS</span>
+          </div>
+          <h3 class="feature-title">24-Bit Lossless Streaming</h3>
+          <p class="feature-desc">
+            Direct PCM transcoding using custom system FFmpeg v5 and native @discordjs/opus bindings for distortion-free, studio-quality sound.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-badge-top">
+            <span class="feature-icon">🌐</span>
+            <span class="feature-pill">UNIVERSAL</span>
+          </div>
+          <h3 class="feature-title">Multi-Source Playback</h3>
+          <p class="feature-desc">
+            Supports YouTube, Spotify playlists, SoundCloud, Apple Music albums, Deezer, and direct HTTP audio URLs with zero search lag.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-badge-top">
+            <span class="feature-icon">🎛️</span>
+            <span class="feature-pill">STUDIO DSP</span>
+          </div>
+          <h3 class="feature-title">Real-Time Audio Filters</h3>
+          <p class="feature-desc">
+            Bassboost, 8D Spatial Audio, Nightcore, Vaporwave, Slowed & Reverb, and Treblebass filters applied instantaneously on the fly.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-badge-top">
+            <span class="feature-icon">🛡️</span>
+            <span class="feature-pill">24/7 PERSISTENT</span>
+          </div>
+          <h3 class="feature-title">Auto Reconnect & 24/7 VC</h3>
+          <p class="feature-desc">
+            Automated voice health monitoring, cluster failover recovery, and queue preservation ensure the bot never leaves your radio room.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-badge-top">
+            <span class="feature-icon">🎮</span>
+            <span class="feature-pill">DISCORD EMBEDDED</span>
+          </div>
+          <h3 class="feature-title">Discord Activities SDK</h3>
+          <p class="feature-desc">
+            Complete RPC handshake support allowing seamless execution as a Discord Embedded App right inside voice channel windows.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Interactive Commands Directory ────────────────────── -->
+    <section class="commands-section" id="commands">
+      <div class="section-head">
+        <span class="section-kicker">/// COMMAND TERMINAL ///</span>
+        <h2 class="section-title">COMMAND DIRECTORY</h2>
+        <p class="section-sub">Browse full command syntax, parameters, aliases, and slash command integration.</p>
+      </div>
+
+      <div class="commands-box">
+        <div class="commands-controls">
+          <div class="category-tabs" id="category-tabs">
+            <button class="cat-btn active" data-cat="ALL">ALL (60+)</button>
+            <button class="cat-btn" data-cat="Music">🎵 MUSIC</button>
+            <button class="cat-btn" data-cat="Filters">🎛️ FILTERS</button>
+            <button class="cat-btn" data-cat="Config">⚙️ CONFIG</button>
+            <button class="cat-btn" data-cat="Favourite">❤️ FAVOURITE</button>
+            <button class="cat-btn" data-cat="Information">ℹ️ INFO</button>
+            <button class="cat-btn" data-cat="Utility">🛠️ UTILITY</button>
+          </div>
+
+          <div class="command-search-wrap">
+            <input type="text" id="cmd-search-input" class="command-search-input" placeholder="Search commands (/play, filter, 247...)" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="commands-grid" id="commands-grid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Bot Owner & Developer Profile ─────────────────────── -->
+    <section class="developer-section" id="developer">
+      <div class="section-head">
+        <span class="section-kicker">/// ARCHITECT & CREATOR ///</span>
+        <h2 class="section-title">BOT OWNER & LEAD ENGINEER</h2>
+        <p class="section-sub">The creator behind the TOGETHER Discord music engine and visualizer platform.</p>
+      </div>
+
+      <div class="dev-profile-card">
+        <div class="dev-avatar-wrap">
+          <img src="/logo.png?v=2" alt="kajukatli" id="dev-avatar">
+          <span class="dev-badge-corner">OWNER</span>
+        </div>
+
+        <div class="dev-info-col">
+          <div class="dev-tag-row">
+            <span class="dev-tag-pill">LEAD DEVELOPER</span>
+            <span class="dev-tag-pill">AUDIO ARCHITECT</span>
+            <span class="dev-tag-pill">FOUNDER</span>
+          </div>
+
+          <h3 class="dev-name" id="dev-name">kajukatli</h3>
+          <p class="dev-bio" id="dev-bio">
+            Engineered the TOGETHER Discord audio engine, native Opus audio streamer with system FFmpeg pipelines, real-time 3D WebGL visualizers, and cluster orchestration.
+          </p>
+
+          <div class="dev-meta-chips">
+            <div class="dev-chip">
+              <span>DISCORD ID:</span> <code id="dev-id">780345293237125152</code>
+            </div>
+            <div class="dev-chip">
+              <span>TAG:</span> <code id="dev-tag">kajukatli.</code>
+            </div>
+            <div class="dev-chip">
+              <span>ENGINE:</span> <code>Node.js 20 • Opus • WebGL 2.0</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="dev-cta-col">
+          <a id="dev-btn-support" href="https://discord.gg/NSRgjY74TS" target="_blank" class="btn-brutal primary">
+            JOIN SUPPORT GUILD
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Portal Footer -->
+  <footer class="portal-footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span class="footer-brand">/// TOGETHER AUDIO SYSTEMS ///</span>
+        <span class="footer-sub">Sound that brings us closer • Developed by kajukatli.</span>
+      </div>
+
+      <div class="footer-barcode" title="TOGETHER PROTOCOL">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Real-Time Data Fetching & Dynamic Browser Script -->
+  <script>
+    let allCommandsList = [];
+    let currentCategory = "ALL";
+
+    // Format milliseconds to M:SS
+    function formatTime(ms) {
+      if (!ms || isNaN(ms)) return "0:00";
+      const totalSec = Math.floor(ms / 1000);
+      const min = Math.floor(totalSec / 60);
+      const sec = totalSec % 60;
+      return `${min}:${sec < 10 ? "0" : ""}${sec}`;
+    }
+
+    // ── 1. Fetch & Render Active Sessions ──────────────────────
+    async function loadActiveSessions() {
+      const container = document.getElementById("active-sessions-list");
+      try {
+        const res = await fetch("/api/active-sessions");
+        if (!res.ok) throw new Error("Status " + res.status);
+        const data = await res.json();
+        const sessions = data.sessions || [];
+
+        if (sessions.length === 0) {
+          container.innerHTML = `
+            <div class="empty-sessions-card">
+              <h3>[ ALL NODES IDLE // STANDBY MODE ]</h3>
+              <p>No servers are currently streaming music. Join a Discord voice channel in your server and type <code>/play &lt;song&gt;</code> to activate a live 3D session.</p>
+              <a href="${document.getElementById('nav-btn-invite').href}" target="_blank" class="btn-brutal primary">+ INVITE BOT TO PLAY</a>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = sessions.map(session => {
+          const pct = session.duration > 0 ? Math.min(100, Math.round((session.position / session.duration) * 100)) : 0;
+          const posFormatted = formatTime(session.position);
+          const durFormatted = formatTime(session.duration);
+          const iconSrc = session.guildIcon || "/logo.png?v=2";
+          const thumbSrc = session.thumbnail || "/logo.png?v=2";
+
+          return `
+            <div class="session-card">
+              <div class="session-card-header">
+                <div class="session-guild-info">
+                  <img class="session-guild-icon" src="${iconSrc}" alt="Icon" onerror="this.src='/logo.png?v=2'">
+                  <div style="overflow: hidden;">
+                    <div class="session-guild-name" title="${session.guildName}">${session.guildName}</div>
+                    <div class="session-vc-name">🔊 ${session.voiceChannelName} • ${session.listeners} in VC</div>
+                  </div>
+                </div>
+                <span class="session-live-pill">${session.playing ? "● LIVE" : "PAUSED"}</span>
+              </div>
+
+              <div class="session-track-body">
+                <img class="session-track-thumb" src="${thumbSrc}" alt="Art" referrerpolicy="no-referrer" onerror="this.src='/logo.png?v=2'">
+                <div class="session-track-meta">
+                  <div class="session-track-title" title="${session.title}">${session.title}</div>
+                  <div class="session-track-artist" title="${session.author}">${session.author}</div>
+                  <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; color: var(--c-accent); margin-bottom: 4px;">
+                    <span>${posFormatted}</span>
+                    <span>${durFormatted}</span>
+                  </div>
+                  <div class="session-progress-strip">
+                    <div class="session-progress-bar" style="width: ${pct}%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <a href="/visualizer/?guild=${encodeURIComponent(session.guildId)}" target="_blank" class="session-action-btn">
+                ⚡ LAUNCH 3D VISUALIZER FOR THIS SERVER
+              </a>
+            </div>
+          `;
+        }).join("");
+
+      } catch (err) {
+        console.warn("Active sessions fetch notice:", err);
+      }
+    }
+
+    // ── 2. Fetch Bot Info, Stats, Owner & Commands ─────────────
+    async function loadBotInfo() {
+      try {
+        const res = await fetch("/api/bot-info");
+        if (!res.ok) throw new Error("Status " + res.status);
+        const data = await res.json();
+
+        // Stats
+        if (data.bot?.totalGuilds) {
+          document.getElementById("stat-servers").innerText = `${data.bot.totalGuilds}+`;
+        }
+        if (data.bot?.totalUsers) {
+          document.getElementById("stat-users").innerText = `${data.bot.totalUsers.toLocaleString()}+`;
+        }
+        if (data.bot?.ping) {
+          document.getElementById("stat-ping").innerText = `${data.bot.ping} ms`;
+        }
+
+        // Links
+        if (data.links?.invite) {
+          document.getElementById("nav-btn-invite").href = data.links.invite;
+          document.getElementById("hero-btn-invite").href = data.links.invite;
+        }
+        if (data.links?.support) {
+          document.getElementById("hero-btn-support").href = data.links.support;
+          document.getElementById("dev-btn-support").href = data.links.support;
+        }
+        if (data.links?.vote) {
+          document.getElementById("hero-btn-vote").href = data.links.vote;
+        }
+
+        // Owner Profile
+        if (data.owner) {
+          document.getElementById("dev-name").innerText = data.owner.name || "kajukatli";
+          document.getElementById("dev-tag").innerText = data.owner.tag || "kajukatli.";
+          document.getElementById("dev-id").innerText = data.owner.id || "780345293237125152";
+          if (data.owner.credit) document.getElementById("dev-bio").innerText = data.owner.credit;
+        }
+
+        // Commands catalog
+        allCommandsList = [];
+        if (data.commands) {
+          for (const cat in data.commands) {
+            data.commands[cat].forEach(cmd => {
+              allCommandsList.push({ ...cmd, category: cat });
+            });
+          }
+        }
+        renderCommands();
+
+      } catch (err) {
+        console.warn("Bot info fetch notice:", err);
+        // Fallback default commands if offline
+        allCommandsList = [
+          { name: "play", category: "Music", description: "Plays a song or playlist from YouTube, Spotify, or SoundCloud.", usage: "/play <song>" },
+          { name: "pause", category: "Music", description: "Pauses current song playback.", usage: "/pause" },
+          { name: "resume", category: "Music", description: "Resumes paused playback.", usage: "/resume" },
+          { name: "skip", category: "Music", description: "Skips to the next song in the queue.", usage: "/skip" },
+          { name: "previous", category: "Music", description: "Plays the previous track in playback history.", usage: "/previous" },
+          { name: "queue", category: "Music", description: "Displays all tracks waiting in queue.", usage: "/queue" },
+          { name: "seek", category: "Music", description: "Seeks to a specific position in the track.", usage: "/seek <mm:ss>" },
+          { name: "volume", category: "Music", description: "Adjusts playback audio volume (1-150%).", usage: "/volume <1-150>" },
+          { name: "loop", category: "Music", description: "Toggles repeat mode (off, track, queue).", usage: "/loop <mode>" },
+          { name: "bassboost", category: "Filters", description: "Applies powerful low-end bass amplification.", usage: "/bassboost <low/med/high>" },
+          { name: "nightcore", category: "Filters", description: "Increases pitch and tempo for nightcore style.", usage: "/nightcore" },
+          { name: "8d", category: "Filters", description: "Applies 8D spatial 360-degree rotating audio.", usage: "/8d" },
+          { name: "vaporwave", category: "Filters", description: "Slows down audio with nostalgic reverb.", usage: "/vaporwave" },
+          { name: "247", category: "Config", description: "Keeps TOGETHER connected 24/7 in voice channel.", usage: "/247" },
+          { name: "visualizer", category: "Information", description: "Generates private link to the live 3D visualizer stage.", usage: "/visualizer" },
+        ];
+        renderCommands();
+      }
+    }
+
+    // ── 3. Render Commands Grid with Instant Search ───────────
+    function renderCommands() {
+      const grid = document.getElementById("commands-grid");
+      const searchVal = document.getElementById("cmd-search-input").value.trim().toLowerCase();
+
+      const filtered = allCommandsList.filter(cmd => {
+        const matchCat = (currentCategory === "ALL" || cmd.category.toLowerCase() === currentCategory.toLowerCase());
+        const matchSearch = (!searchVal || cmd.name.toLowerCase().includes(searchVal) || cmd.description.toLowerCase().includes(searchVal));
+        return matchCat && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--c-text-muted); font-family: var(--font-mono);">No commands found matching "${searchVal}"</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(cmd => `
+        <div class="command-card">
+          <div class="cmd-name-row">
+            <span class="cmd-name">/${cmd.name}</span>
+            <span class="cmd-badge">${cmd.category.toUpperCase()}</span>
+          </div>
+          <p class="cmd-desc">${cmd.description}</p>
+          <div class="cmd-syntax">${cmd.usage || `/${cmd.name}`}</div>
+        </div>
+      `).join("");
+    }
+
+    // Category Tabs Filtering
+    document.querySelectorAll(".cat-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentCategory = btn.getAttribute("data-cat");
+        renderCommands();
+      });
+    });
+
+    // Real-time search
+    document.getElementById("cmd-search-input").addEventListener("input", renderCommands);
+
+    // Initial Load & Refresh Intervals
+    loadBotInfo();
+    loadActiveSessions();
+    setInterval(loadActiveSessions, 4000);
+  </script>
+</body>
+</html>
