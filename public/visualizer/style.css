@@ -449,15 +449,15 @@ html, body {
   overflow: hidden;
 }
 
-/* Deck Header Strip (Matches banner.png with Reticles & Tech Tags) */
-.deck-header-strip {
+/* Deck Top Strip: Single Sleek Row (Never wraps into 3 messy lines) */
+.deck-top-strip {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: #000000;
   color: #ffffff;
-  padding: 6px 16px;
-  border-bottom: 2px solid #20222e;
+  padding: 6px 14px;
+  border-bottom: 2px solid #1c1e28;
   font-family: var(--font-mono);
   font-size: 11px;
 }
@@ -468,53 +468,41 @@ html, body {
   gap: 8px;
 }
 
-.crosshair-tag {
-  color: var(--c-accent);
-  font-weight: 900;
-  letter-spacing: 2px;
-}
-
-.hero-strip-tag {
+.strip-pill-live {
   background: var(--c-accent);
   color: #000000;
   font-weight: 900;
-  padding: 2px 7px;
-  border: 1px solid #000;
-  box-shadow: 2px 2px 0px #000;
-}
-
-.hero-strip-source {
-  color: var(--c-text-muted);
-  font-weight: 700;
-}
-
-.banner-tech-tag {
-  color: var(--c-accent);
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  font-size: 11px;
-}
-
-.deck-quality-pill {
-  font-family: var(--font-mono);
   font-size: 10px;
-  font-weight: 800;
-  background: #000000;
-  color: var(--c-accent);
-  border: 1px solid var(--c-accent);
-  padding: 2px 7px;
+  padding: 2px 6px;
+  border: 1px solid #000000;
+  letter-spacing: 0.5px;
 }
 
-.deck-time-pill {
-  font-size: 11px;
-  font-weight: 700;
-  background: #151822;
+.strip-guild-name {
   color: #ffffff;
-  border: 1px solid #2d3145;
-  padding: 2px 7px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  font-size: 11px;
 }
 
-.corner-crosshair {
+.strip-codec-tag {
+  color: #71778e;
+  font-size: 10px;
+  font-weight: 600;
+  border-left: 1px solid #282c3c;
+  padding-left: 8px;
+}
+
+.strip-time-readout {
+  color: var(--c-accent);
+  background: #10121a;
+  padding: 2px 7px;
+  border: 1px solid #282c3c;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.strip-crosshair {
   color: var(--c-accent);
   font-weight: 900;
 }
@@ -787,81 +775,36 @@ html, body {
   border-top: 2px solid #000000;
 }
 
-/* ── Responsive Rules (All Devices: Mobile, Tablet, Desktop) ── */
-@media (max-width: 900px) {
-  .hud-container {
-    padding: 12px 14px;
-  }
-  .banner-barcode {
-    display: none;
-  }
-  .banner-tech-tag {
-    display: none;
-  }
-  .deck-title {
-    font-size: 16px;
-  }
-}
-
+/* ── Responsive Rules (Mobile, Tablet, Discord in-app WebViews) ─ */
 @media (max-width: 768px) {
-  .tag-box, .metric-box {
-    display: none;
+  .hud-container {
+    padding: 8px 8px 12px 8px;
+  }
+  .desktop-only {
+    display: none !important;
   }
   .brutalist-header {
-    padding: 8px 12px;
+    padding: 6px 10px;
   }
-  .deck-header-strip {
-    padding: 5px 10px;
+  .brutalist-btn {
+    padding: 6px 8px;
   }
-  .deck-strip-right .deck-quality-pill {
-    display: none;
+  .system-badge {
+    padding: 4px 7px;
   }
-  .deck-main-row {
-    padding: 10px 14px;
-    gap: 12px;
-  }
-  .deck-art-frame {
-    width: 54px;
-    height: 54px;
-    min-width: 54px;
-    min-height: 54px;
-  }
-  .deck-title {
-    font-size: 15px;
-  }
-  .deck-artist {
+  .system-title {
     font-size: 12px;
+  }
+  .deck-top-strip {
+    padding: 5px 10px;
+    font-size: 10px;
   }
   .deck-status-col {
     display: none;
   }
-  .tactile-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 15px;
-  }
-  .tactile-btn.play {
-    width: 48px;
-    height: 48px;
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 520px) {
-  .hud-container {
-    padding: 8px 10px;
-  }
-  .deck-frame {
-    outline-width: 1px;
-  }
   .deck-main-row {
-    flex-wrap: wrap;
-    gap: 10px;
     padding: 10px 12px;
-  }
-  .deck-track-unit {
-    width: 100%;
-    flex: none;
+    gap: 10px;
   }
   .deck-art-frame {
     width: 48px;
@@ -875,21 +818,44 @@ html, body {
   .deck-artist {
     font-size: 11px;
   }
+  .tactile-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
+  }
+  .tactile-btn.play {
+    width: 46px;
+    height: 46px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .deck-top-strip {
+    padding: 4px 8px;
+  }
+  .strip-pill-live {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+  .strip-time-readout {
+    font-size: 10px;
+    padding: 1px 5px;
+  }
+  .deck-main-row {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  .deck-track-unit {
+    width: 100%;
+    flex: none;
+  }
   .deck-controls {
     width: 100%;
     justify-content: center;
-    gap: 16px;
+    gap: 14px;
     padding-top: 4px;
-    border-top: 1px solid #1c1e28;
-  }
-  .tactile-btn {
-    width: 42px;
-    height: 42px;
-    font-size: 15px;
-  }
-  .tactile-btn.play {
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
+    border-top: 1px solid #1a1c26;
   }
 }

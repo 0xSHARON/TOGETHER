@@ -1,22 +1,790 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="TOGETHER_CRIMSON">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>TOGETHER // 3D BRUTALIST AUDIO STAGE</title>
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="shortcut icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
 
-  <!-- Technical Monospace & Heavy Brutalist Typography -->
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 
-  <!-- Core Brutalist Styling -->
-  <link rel="stylesheet" href="style.css?v=2">
+  <!-- INLINED CRITICAL CSS (Guarantees CSS always shows in Discord Activities, PC & Android) -->
+  <style>
+    /* ══════════════════════════════════════════════════════════════════
+       TOGETHER 3D STAGE & AUDIO VISUALIZER — NEO-BRUTALISM SYSTEM
+       Theme: Crimson Blood Combat Protocol (assets/banner.png)
+       ══════════════════════════════════════════════════════════════════ */
+    :root, [data-theme="TOGETHER_CRIMSON"] {
+      --c-bg: #06070a;
+      --c-surface: #0c0e14;
+      --c-surface-bright: #151822;
+      --c-border: #ff0033;
+      --c-border-dark: #000000;
+      --c-border-light: #252838;
+      --c-accent: #ff0033;           /* High-Voltage Crimson Red */
+      --c-accent-hover: #ff2a55;
+      --c-accent-glow: rgba(255, 0, 51, 0.45);
+      --c-accent-secondary: #ffffff; /* Stark White */
+      --c-accent-danger: #ff0033;
+      --c-accent-success: #ff0033;
+      --c-text: #ffffff;
+      --c-text-muted: #9aa0b4;
+      --c-text-inverse: #000000;
 
-  <!-- Local Three.js 3D WebGL Library + OrbitControls (No External CDN Delay) -->
+      --shadow-hard-sm: 3px 3px 0px #000000;
+      --shadow-hard: 5px 5px 0px #000000;
+      --shadow-hard-lg: 7px 7px 0px #000000;
+      --shadow-crimson: 0 0 20px rgba(255, 0, 51, 0.35);
+      --border-thick: 3px solid #000000;
+      --border-ultra: 4px solid #000000;
+
+      --font-display: 'Orbitron', 'Space Grotesk', sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --hazard-stripe: repeating-linear-gradient(
+        -45deg,
+        #ff0033,
+        #ff0033 10px,
+        #000000 10px,
+        #000000 20px
+      );
+      --hazard-stripe-mini: repeating-linear-gradient(
+        -45deg,
+        #ff0033,
+        #ff0033 6px,
+        #000000 6px,
+        #000000 12px
+      );
+    }
+
+    [data-theme="CYBER_BRUTAL"] {
+      --c-accent: #facc15;
+      --c-accent-hover: #fde047;
+      --c-border: #facc15;
+      --hazard-stripe: repeating-linear-gradient(-45deg, #facc15 0 10px, #000 10px 20px);
+      --hazard-stripe-mini: repeating-linear-gradient(-45deg, #facc15 0 6px, #000 6px 12px);
+    }
+
+    [data-theme="ACID_INDUSTRIAL"] {
+      --c-accent: #a3e635;
+      --c-accent-hover: #bef264;
+      --c-border: #a3e635;
+      --hazard-stripe: repeating-linear-gradient(-45deg, #a3e635 0 10px, #000 10px 20px);
+      --hazard-stripe-mini: repeating-linear-gradient(-45deg, #a3e635 0 6px, #000 6px 12px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--c-bg);
+      color: var(--c-text);
+      font-family: var(--font-heading);
+      font-size: 14px;
+    }
+
+    /* 3D WebGL Canvas Layer */
+    #stage-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      display: block;
+      cursor: grab;
+    }
+
+    #stage-canvas:active {
+      cursor: grabbing;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(6, 7, 10, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loading-card {
+      background: var(--c-surface);
+      border: var(--border-ultra);
+      box-shadow: var(--shadow-hard-lg), var(--shadow-crimson);
+      padding: 28px;
+      max-width: 480px;
+      width: 100%;
+      outline: 2px solid var(--c-accent);
+    }
+
+    .loading-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--c-border-light);
+      padding-bottom: 10px;
+    }
+
+    .hazard-tag {
+      background: var(--c-accent);
+      color: #000;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    .mono-code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-muted);
+    }
+
+    .loading-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .loading-bar-wrap {
+      width: 100%;
+      height: 14px;
+      background: #000000;
+      border: 2px solid #ffffff;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .loading-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--hazard-stripe);
+      transition: width 0.2s ease;
+    }
+
+    .loading-sub {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--c-text-muted);
+    }
+
+    /* WebGL Fallback */
+    .webgl-fallback {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #06070a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .fallback-card {
+      background: var(--c-surface);
+      border: var(--border-ultra);
+      box-shadow: var(--shadow-hard-lg);
+      outline: 3px solid var(--c-accent);
+      padding: 32px;
+      max-width: 460px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .hazard-stripe-top {
+      height: 12px;
+      background: var(--hazard-stripe);
+      margin: -32px -32px 24px -32px;
+      border-bottom: 3px solid #000;
+    }
+
+    /* HUD Container (Docked Viewport Layout) */
+    .hud-container {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 20px 20px 20px;
+      pointer-events: none;
+    }
+
+    /* Top Brutalist Header Block */
+    .brutalist-header {
+      pointer-events: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 14, 20, 0.94);
+      border: var(--border-ultra);
+      box-shadow: var(--shadow-hard);
+      outline: 2px solid var(--c-accent);
+      padding: 8px 16px;
+      backdrop-filter: blur(8px);
+      gap: 12px;
+    }
+
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .system-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #000000;
+      border: 2px solid var(--c-accent);
+      padding: 5px 9px;
+      box-shadow: var(--shadow-hard-sm);
+    }
+
+    .brand-logo-img {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      background: var(--c-accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--c-accent);
+      animation: pulseNeon 1.4s infinite ease-in-out;
+    }
+
+    @keyframes pulseNeon {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .system-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: #ffffff;
+    }
+
+    .tag-box {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      background: #000000;
+      border: 2px solid var(--c-border-light);
+      color: var(--c-text-muted);
+      padding: 5px 10px;
+      white-space: nowrap;
+    }
+
+    .tag-box.caution {
+      border-color: var(--c-accent);
+      color: var(--c-accent);
+      font-weight: 800;
+    }
+
+    .metric-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #000000;
+      border: 2px solid var(--c-border-light);
+      padding: 5px 10px;
+    }
+
+    .metric-key {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--c-text-muted);
+    }
+
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--c-accent);
+    }
+
+    .metric-val.green {
+      color: var(--c-accent);
+    }
+
+    /* Brutalist Buttons */
+    .brutalist-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      color: #000000;
+      border: var(--border-thick);
+      box-shadow: var(--shadow-hard-sm);
+      padding: 7px 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
+      white-space: nowrap;
+    }
+
+    .brutalist-btn:hover {
+      background: var(--c-accent);
+      color: #ffffff;
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px #000000;
+    }
+
+    .brutalist-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000000;
+    }
+
+    .brutalist-btn.icon-only {
+      padding: 7px 10px;
+    }
+
+    /* ── Bottom Brutalist Deck Controller ──────────────────────── */
+    .brutalist-deck {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .deck-frame {
+      background: var(--c-surface);
+      border: var(--border-ultra);
+      box-shadow: var(--shadow-hard-lg), var(--shadow-crimson);
+      outline: 2px solid var(--c-accent);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Deck Top Strip: Single Sleek Row (Never wraps into 3 ugly lines) */
+    .deck-top-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #000000;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-bottom: 2px solid #1c1e28;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .deck-strip-left, .deck-strip-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .strip-pill-live {
+      background: var(--c-accent);
+      color: #000000;
+      font-weight: 900;
+      padding: 2px 6px;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0 #000;
+      font-size: 10px;
+    }
+
+    .strip-guild-name {
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .strip-codec-tag {
+      color: var(--c-text-muted);
+      font-weight: 700;
+    }
+
+    .strip-time-readout {
+      background: #141720;
+      color: #ffffff;
+      padding: 2px 7px;
+      border: 1px solid #282c3c;
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    .strip-crosshair {
+      color: var(--c-accent);
+      font-weight: 900;
+    }
+
+    /* Scrubber Section */
+    .scrubber-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 16px 7px 16px;
+      background: #000000;
+      border-bottom: 2px solid #1c1e28;
+    }
+
+    .time-readout {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--c-accent);
+      min-width: 44px;
+    }
+
+    #time-current {
+      text-align: right;
+    }
+
+    .progress-track {
+      position: relative;
+      flex: 1;
+      height: 12px;
+      background: #141720;
+      border: 2px solid #ffffff;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: var(--hazard-stripe);
+      transition: width 0.12s linear;
+    }
+
+    /* Deck Main Row */
+    .deck-main-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      gap: 16px;
+    }
+
+    /* Left: Track Artwork Frame + Live Meta Stack */
+    .deck-track-unit {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .deck-art-frame {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      min-width: 58px;
+      min-height: 58px;
+      flex-shrink: 0;
+    }
+
+    .deck-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: 3px solid #000000;
+      outline: 2px solid var(--c-accent);
+      box-shadow: 3px 3px 0px #000000;
+      background: #000000;
+      display: block;
+    }
+
+    .art-live-badge {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      background: var(--c-accent);
+      color: #000000;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      font-weight: 900;
+      padding: 1px 4px;
+      border: 1px solid #000000;
+      letter-spacing: 0.5px;
+    }
+
+    .deck-meta-col {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .deck-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.02em;
+    }
+
+    .deck-artist {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Center Mechanical Tactile Buttons */
+    .deck-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .tactile-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      background: #ffffff;
+      color: #000000;
+      border: var(--border-thick);
+      box-shadow: var(--shadow-hard-sm);
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
+    }
+
+    .tactile-btn:hover {
+      background: var(--c-accent);
+      color: #ffffff;
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0px #000000;
+    }
+
+    .tactile-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000000;
+    }
+
+    .tactile-btn.play {
+      width: 52px;
+      height: 52px;
+      font-size: 20px;
+      background: var(--c-accent);
+      color: #ffffff;
+      box-shadow: var(--shadow-hard);
+    }
+
+    .tactile-btn.play:hover {
+      background: #ffffff;
+      color: #000000;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #000000;
+    }
+
+    .tactile-btn.play:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000000;
+    }
+
+    /* Right Status Badges & VU Meter */
+    .deck-status-col {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      justify-content: flex-end;
+    }
+
+    .status-pill-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .status-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--c-text-muted);
+      background: #000000;
+      border: 1px solid var(--c-border-light);
+      padding: 2px 5px;
+    }
+
+    .status-pill.active {
+      color: #000000;
+      background: var(--c-accent);
+      border-color: #000000;
+      font-weight: 800;
+    }
+
+    .stepped-vu-meter {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 36px;
+      background: #000000;
+      border: 2px solid #222222;
+      padding: 4px;
+    }
+
+    .vu-step {
+      width: 6px;
+      height: 6px;
+      background: #252838;
+      border: 1px solid #000000;
+      transition: height 0.08s ease, background 0.2s ease;
+    }
+
+    .vu-step.active {
+      background: var(--c-accent);
+      box-shadow: 0 0 8px var(--c-accent);
+    }
+
+    /* Bottom Hazard Tape Accent */
+    .bottom-hazard-tape {
+      height: 8px;
+      background: var(--hazard-stripe-mini);
+      border-top: 2px solid #000000;
+    }
+
+    /* ── Responsive Rules (Mobile, Tablet, Discord in-app WebViews) ─ */
+    @media (max-width: 768px) {
+      .hud-container {
+        padding: 8px 8px 12px 8px;
+      }
+      .desktop-only {
+        display: none !important;
+      }
+      .brutalist-header {
+        padding: 6px 10px;
+      }
+      .brutalist-btn {
+        padding: 6px 8px;
+      }
+      .system-badge {
+        padding: 4px 7px;
+      }
+      .system-title {
+        font-size: 12px;
+      }
+      .deck-top-strip {
+        padding: 5px 10px;
+        font-size: 10px;
+      }
+      .deck-status-col {
+        display: none;
+      }
+      .deck-main-row {
+        padding: 10px 12px;
+        gap: 10px;
+      }
+      .deck-art-frame {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+      }
+      .deck-title {
+        font-size: 14px;
+      }
+      .deck-artist {
+        font-size: 11px;
+      }
+      .tactile-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 13px;
+      }
+      .tactile-btn.play {
+        width: 46px;
+        height: 46px;
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .deck-top-strip {
+        padding: 4px 8px;
+      }
+      .strip-pill-live {
+        font-size: 9px;
+        padding: 1px 4px;
+      }
+      .strip-time-readout {
+        font-size: 10px;
+        padding: 1px 5px;
+      }
+      .deck-main-row {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px 10px;
+      }
+      .deck-track-unit {
+        width: 100%;
+        flex: none;
+      }
+      .deck-controls {
+        width: 100%;
+        justify-content: center;
+        gap: 14px;
+        padding-top: 4px;
+        border-top: 1px solid #1a1c26;
+      }
+    }
+  </style>
+
+  <!-- Local Three.js 3D WebGL Library + OrbitControls -->
   <script src="three.min.js"></script>
   <script src="OrbitControls.js"></script>
 </head>
@@ -24,15 +792,15 @@
   <!-- 3D WebGL Canvas Layer -->
   <canvas id="stage-canvas"></canvas>
 
-  <!-- Loading / WebGL Detection Overlay -->
+  <!-- Loading Overlay -->
   <div id="loading-overlay" class="loading-overlay">
     <div class="loading-card">
       <div class="loading-header">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <img src="logo.png?v=2" alt="TOGETHER" width="24" height="24" style="width: 24px; height: 24px; max-width: 24px; max-height: 24px; object-fit: contain; border-radius: 3px; display: inline-block;" class="loading-logo-img">
+          <img src="logo.png?v=2" alt="TOGETHER" width="24" height="24" style="width: 24px; height: 24px; object-fit: contain; border-radius: 3px; display: inline-block;" class="loading-logo-img">
           <span class="hazard-tag">INITIALIZING</span>
         </div>
-        <span class="mono-code">SYS.3D_STAGE // V2.0</span>
+        <span class="mono-code">SYS.3D_STAGE // V2.5</span>
       </div>
       <h2 class="loading-title">LOADING 3D AUDIO ENGINE...</h2>
       <div class="loading-bar-wrap">
@@ -42,17 +810,17 @@
     </div>
   </div>
 
-  <!-- WebGL Not Supported Fallback (Hidden by default) -->
+  <!-- WebGL Not Supported Fallback -->
   <div id="webgl-fallback" class="webgl-fallback" style="display: none;">
     <div class="fallback-card">
       <div class="hazard-stripe-top"></div>
       <h1>⚠️ WEBGL NOT SUPPORTED</h1>
       <p>Your browser or graphics driver does not support hardware-accelerated 3D WebGL.</p>
-      <div class="fallback-track-card">
-        <img id="fallback-art" src="logo.png?v=2" alt="Track Art" width="64" height="64" style="width: 64px; height: 64px; max-width: 64px; max-height: 64px; object-fit: cover;">
+      <div class="fallback-track-card" style="display: flex; align-items: center; gap: 14px; background: #000; padding: 12px; border: 2px solid #000; text-align: left;">
+        <img id="fallback-art" src="logo.png?v=2" alt="Track Art" width="60" height="60" style="object-fit: cover;">
         <div class="fallback-meta">
-          <h3 id="fallback-title">Active Track</h3>
-          <p id="fallback-artist">Together Music Bot</p>
+          <h3 id="fallback-title" style="font-size: 15px; color: #fff;">Active Track</h3>
+          <p id="fallback-artist" style="font-size: 12px; color: #9aa0b4;">Together Music Bot</p>
         </div>
       </div>
     </div>
@@ -65,26 +833,26 @@
     <header class="brutalist-header">
       <div class="header-left">
         <div class="system-badge">
-          <img src="logo.png?v=2" alt="TOGETHER" width="22" height="22" style="width: 22px; height: 22px; max-width: 22px; max-height: 22px; object-fit: contain; border-radius: 3px; display: inline-block;" class="brand-logo-img">
+          <img src="logo.png?v=2" alt="TOGETHER" width="22" height="22" class="brand-logo-img">
           <span class="status-indicator"></span>
           <span class="system-title">TOGETHER</span>
         </div>
-        <div class="tag-box mono" id="mode-tag">[ STAGE // 3D_ACTIVE ]</div>
-        <div class="tag-box caution mono">/// LIVE PROTOCOL ///</div>
+        <div class="tag-box mono desktop-only" id="mode-tag">[ STAGE // 3D_LIVE ]</div>
+        <div class="tag-box caution mono desktop-only">/// LIVE PROTOCOL ///</div>
       </div>
 
       <div class="header-right">
-        <div class="metric-box">
+        <div class="metric-box desktop-only">
           <span class="metric-key">FPS</span>
           <span class="metric-val mono" id="fps-text">60</span>
         </div>
-        <div class="metric-box">
+        <div class="metric-box desktop-only">
           <span class="metric-key">STREAM</span>
           <span class="metric-val mono green" id="player-state-text">CONNECTED</span>
         </div>
         <button class="brutalist-btn" id="theme-btn" title="Switch Brutalist Palette">
           <span class="btn-icon">🎨</span>
-          <span class="btn-label" id="theme-name">TOGETHER CRIMSON</span>
+          <span class="btn-label desktop-only" id="theme-name">TOGETHER CRIMSON</span>
         </button>
         <button class="brutalist-btn icon-only" id="camera-reset-btn" title="Reset 3D Camera">
           <span class="btn-icon">🎯</span>
@@ -98,20 +866,16 @@
     <!-- Bottom Brutalist Deck Controller (Unified Player Hub for All Devices) -->
     <footer class="brutalist-deck">
       <div class="deck-frame">
-        <!-- Deck Header Strip (Matches banner.png with Tactical Reticles & Tech Tags) -->
-        <div class="deck-header-strip">
+        <!-- Deck Top Strip: Single Sleek Row (Never wraps into 3 ugly lines) -->
+        <div class="deck-top-strip">
           <div class="deck-strip-left">
-            <span class="crosshair-tag">+ + +</span>
-            <span class="hero-strip-tag" id="badge-active">[ ACTIVE NOW ]</span>
-            <span class="hero-strip-source" id="track-source">LOSSLESS AUDIO</span>
-          </div>
-          <div class="deck-strip-center">
-            <span class="banner-tech-tag">/// TOGETHER AUDIO SYSTEM ///</span>
+            <span class="strip-pill-live">● LIVE</span>
+            <span class="strip-guild-name" id="deck-guild-badge">[ TOGETHER ]</span>
+            <span class="strip-codec-tag desktop-only">LOSSLESS 24-BIT OPUS</span>
           </div>
           <div class="deck-strip-right">
-            <span class="deck-quality-pill" id="badge-quality">HIGH FIDELITY</span>
-            <span class="deck-time-pill mono" id="time-badge">0:00 / 0:00</span>
-            <span class="corner-crosshair">[+]</span>
+            <span class="strip-time-readout mono" id="time-badge">0:00 / 0:00</span>
+            <span class="strip-crosshair">[+]</span>
           </div>
         </div>
 
@@ -130,7 +894,6 @@
           <div class="deck-track-unit">
             <div class="deck-art-frame">
               <img class="deck-thumb" id="deck-artwork" src="logo.png?v=2" alt="Track Artwork" referrerpolicy="no-referrer" loading="eager" onerror="if(!this.src.includes('logo.png')) this.src='logo.png?v=2';">
-              <div class="deck-art-glow"></div>
               <span class="art-live-badge">● LIVE</span>
             </div>
             <div class="deck-meta-col">
@@ -152,7 +915,7 @@
             </button>
           </div>
 
-          <!-- Right: Audio VU Meters, Status Pills & Tactical Barcode -->
+          <!-- Right: Audio VU Meters & Status Pills (Desktop & Tablet) -->
           <div class="deck-status-col">
             <div class="status-pill-group">
               <span class="status-pill" id="badge-loop">LOOP: OFF</span>
@@ -166,10 +929,6 @@
               <div class="vu-step" id="vu-5"></div>
               <div class="vu-step" id="vu-6"></div>
             </div>
-            <!-- Banner.png Barcode Motif -->
-            <div class="banner-barcode" title="TOGETHER PROTOCOL">
-              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-            </div>
           </div>
         </div>
 
@@ -180,7 +939,7 @@
 
   </div>
 
-  <!-- Audio Visualizer Core Script -->
-  <script src="visualizer.js?v=2"></script>
+  <!-- Audio Visualizer Core Script (Versioned with cache-busting timestamp) -->
+  <script src="visualizer.js?v=20261010_v5"></script>
 </body>
 </html>

@@ -140,6 +140,12 @@ const THEMES = [
   },
 ];
 let currentThemeIdx = 0;
+try {
+  localStorage.removeItem("visualizer_theme");
+} catch {}
+document.documentElement.setAttribute("data-theme", "TOGETHER_CRIMSON");
+const initialThemeName = document.getElementById("theme-name");
+if (initialThemeName) initialThemeName.innerText = "TOGETHER CRIMSON";
 
 // ── 3. Three.js Scene, Camera & Optimized Renderer ────────────
 const canvas   = document.getElementById("stage-canvas");
@@ -506,6 +512,11 @@ function applyPlayerState(data) {
     } else {
       modeTag.innerText = `[ STAGE // 3D_LIVE ]`;
     }
+  }
+
+  const guildBadge = document.getElementById("deck-guild-badge");
+  if (guildBadge) {
+    guildBadge.innerText = playerState.guildName ? `[ ${playerState.guildName.toUpperCase()} ]` : `[ TOGETHER ]`;
   }
 
   const qualityBadge = document.getElementById("badge-quality");
