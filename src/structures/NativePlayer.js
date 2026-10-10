@@ -287,7 +287,8 @@ class NativePlayer {
         query,
         title: current.title,
         author: current.author,
-        uri: current.uri
+        uri: current.uri,
+        originalQuery: current.originalQuery
       }, forceRefresh);
       this._currentStreamUrl = streamUrl;
 

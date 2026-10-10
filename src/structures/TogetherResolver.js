@@ -21,6 +21,7 @@ class TogetherTrack {
     this.requester = data.requester || null;
     this.sourceName = data.sourceName || "together";
     this.searchQuery = data.searchQuery || `${this.title} - ${this.author}`;
+    this.originalQuery = data.originalQuery || null;
   }
 }
 
@@ -49,6 +50,7 @@ class TogetherResolver {
           thumbnail: item.thumbnails?.[0]?.url,
           sourceName: "youtube",
           searchQuery: item.url || query,
+          originalQuery: query,
           requester
         }));
       }
@@ -192,7 +194,8 @@ class TogetherResolver {
           thumbnail: item.thumbnails?.[0]?.url || `https://i.ytimg.com/vi/${item.id}/hqdefault.jpg`,
           requester,
           sourceName: "youtube",
-          searchQuery: item.url || item.webpage_url || query
+          searchQuery: item.url || item.webpage_url || query,
+          originalQuery: query
         }));
         return { type: "SEARCH", tracks };
       }

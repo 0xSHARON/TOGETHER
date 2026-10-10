@@ -112,6 +112,41 @@ class TogetherStreamWorker {
   }
 
   /**
+   * Sanitizes noisy track titles for resilient multi-platform search matching
+   * @param {string} title
+   * @param {string} author
+   * @returns {string}
+   */
+  static cleanQueryForSearch(title = "", author = "") {
+    if (!title && !author) return "";
+
+    let cleaned = String(title || "").trim();
+    // 1. Strip pipeline delimiters, slashes, and bullet points
+    cleaned = cleaned.split(/[|/•—]/)[0].trim();
+
+    // 2. Remove video metadata clutter in parentheses/brackets
+    cleaned = cleaned
+      .replace(/\s*[\(\[](official\s*(music\s*)?(video|audio|track)?|lyrics?|full\s*(song|video|audio)?|hd|4k|1080p|audio|visualizer|feat\.?.*|ft\.?.*)[\)\]]/gi, "")
+      .replace(/\s*[\(\[].*?[\)\]]/gi, (match) => {
+        if (/remix|mix|cover|live|acoustic|edit|slowed|reverb/i.test(match)) return match;
+        return "";
+      })
+      .trim();
+
+    cleaned = cleaned.replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, "").trim();
+
+    // 3. If title doesn't already contain artist, append non-label author
+    const hasArtistInTitle = cleaned.includes("-") || cleaned.includes("–");
+    const isLabel = author && /(music|records|series|entertainment|company|channel|vevo|production|studio|official)/i.test(author);
+
+    if (!hasArtistInTitle && author && !isLabel && !cleaned.toLowerCase().includes(author.toLowerCase())) {
+      cleaned = `${cleaned} ${author}`.trim();
+    }
+
+    return cleaned;
+  }
+
+  /**
    * Extracts direct CDN stream URL with automatic cross-platform fallback
    * @param {string|Object} target 
    * @returns {Promise<string>}
@@ -137,7 +172,57 @@ class TogetherStreamWorker {
       ]);
     }
 
-    // 2. Try YouTube extraction first
+    // 2. Build prioritized list of search queries for SoundCloud fallback
+    const fallbackCandidates = [];
+    if (typeof target === "object") {
+      const clean1 = this.cleanQueryForSearch(target.title, target.author);
+      if (clean1) fallbackCandidates.push(clean1);
+
+      if (target.originalQuery && typeof target.originalQuery === "string" && !target.originalQuery.startsWith("http")) {
+        const cleanOrig = this.cleanQueryForSearch(target.originalQuery);
+        if (cleanOrig && !fallbackCandidates.includes(cleanOrig)) fallbackCandidates.push(cleanOrig);
+        fallbackCandidates.push(target.originalQuery.trim());
+      }
+
+      if (target.title) {
+        const strippedTitle = target.title.split(/[|/•—]/)[0].trim();
+        if (strippedTitle && !fallbackCandidates.includes(strippedTitle)) {
+          fallbackCandidates.push(strippedTitle);
+        }
+      }
+
+      if (target.query && typeof target.query === "string" && !target.query.startsWith("http")) {
+        const cleanQ = this.cleanQueryForSearch(target.query);
+        if (cleanQ && !fallbackCandidates.includes(cleanQ)) fallbackCandidates.push(cleanQ);
+      }
+    } else if (typeof target === "string" && !target.startsWith("http")) {
+      const cleanStr = this.cleanQueryForSearch(target);
+      if (cleanStr) fallbackCandidates.push(cleanStr);
+      fallbackCandidates.push(target.trim());
+    }
+
+    // Direct YouTube URL oEmbed title extraction
+    if (isDirectYt && fallbackCandidates.length === 0) {
+      try {
+        const https = require("https");
+        const oembedData = await new Promise((res) => {
+          https.get(`https://www.youtube.com/oembed?url=${encodeURIComponent(queryStr)}&format=json`, (r) => {
+            let body = "";
+            r.on("data", (c) => (body += c));
+            r.on("end", () => {
+              try { res(JSON.parse(body)); } catch (e) { res(null); }
+            });
+          }).on("error", () => res(null));
+        });
+        if (oembedData && oembedData.title) {
+          const cleanOembed = this.cleanQueryForSearch(oembedData.title, oembedData.author_name);
+          if (cleanOembed) fallbackCandidates.push(cleanOembed);
+          fallbackCandidates.push(oembedData.title.split(/[|/•—]/)[0].trim());
+        }
+      } catch {}
+    }
+
+    // Try YouTube first (works when not blocked)
     try {
       const ytQuery = isDirectYt ? queryStr : `ytsearch1:${queryStr}`;
       const ytArgs = [
@@ -153,36 +238,9 @@ class TogetherStreamWorker {
       const url = await this._runYtDlp(ytArgs);
       if (url) return url;
     } catch (ytErr) {
-      // 3. Fallback: SoundCloud search (Bypasses YouTube bot block completely)
-      let scQuery = "";
-      if (typeof target === "object" && (target.title || target.author)) {
-        scQuery = `${target.title || ""} ${target.author || ""}`.trim();
-      }
-      
-      if (!scQuery && isDirectYt) {
-        // Fetch clean title via YouTube oEmbed without requiring cookies
-        try {
-          const https = require("https");
-          const oembedData = await new Promise((res, rej) => {
-            https.get(`https://www.youtube.com/oembed?url=${encodeURIComponent(queryStr)}&format=json`, (r) => {
-              let body = "";
-              r.on("data", (c) => (body += c));
-              r.on("end", () => {
-                try { res(JSON.parse(body)); } catch (e) { res(null); }
-              });
-            }).on("error", () => res(null));
-          });
-          if (oembedData && oembedData.title) {
-            scQuery = `${oembedData.title} ${oembedData.author_name || ""}`.trim();
-          }
-        } catch {}
-      }
-
-      if (!scQuery) {
-        scQuery = queryStr.replace(/^https?:\/\/\S+/i, "").trim() || queryStr;
-      }
-
-      if (scQuery && !scQuery.startsWith("http")) {
+      // 3. Fallback: Iterate through cleaned SoundCloud queries
+      for (const candidate of fallbackCandidates) {
+        if (!candidate || candidate.startsWith("http")) continue;
         try {
           const scUrl = await this._runYtDlp([
             "--no-update",
@@ -190,7 +248,7 @@ class TogetherStreamWorker {
             "--no-playlist",
             "-f", "ba/b",
             "-g",
-            `scsearch1:${scQuery}`,
+            `scsearch1:${candidate}`,
           ]);
           if (scUrl) return scUrl;
         } catch {}
