@@ -401,19 +401,6 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-// ── 9. Instant Loading Progression & Dismissal ────────────────
-const loadingOverlay = document.getElementById("loading-overlay");
-const loadingBar     = document.getElementById("loading-progress");
-if (loadingBar) loadingBar.style.width = "100%";
-if (loadingOverlay) {
-  setTimeout(() => {
-    loadingOverlay.classList.add("hidden");
-    setTimeout(() => {
-      loadingOverlay.style.display = "none";
-    }, 300);
-  }, 50);
-}
-
 requestAnimationFrame(animate);
 
 // ── 10. Responsive Resizing ───────────────────────────────────
