@@ -18,7 +18,8 @@ import {
   Flame, 
   CheckCircle2, 
   Cpu,
-  Volume2
+  Volume2,
+  Search
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -34,7 +35,12 @@ export default function LandingPage() {
     ping: 96,
   });
 
+  const [commands, setCommands] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('ALL');
+  const [cmdSearch, setCmdSearch] = useState('');
+
   useEffect(() => {
+    // 1. Fetch bot telemetry
     axios.get('/api/overview')
       .then((res) => {
         if (res.data?.bot) {
@@ -47,7 +53,36 @@ export default function LandingPage() {
         }
       })
       .catch(() => {});
+
+    // 2. Fetch public command registry
+    axios.get('/api/commands')
+      .then((res) => {
+        if (res.data?.commands) {
+          const publicCmds = res.data.commands.filter(
+            (c) => !c.owner && c.category?.toUpperCase() !== 'OWNER'
+          );
+          setCommands(publicCmds);
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  // Filter commands by active category and search
+  const filteredCmds = commands.filter((cmd) => {
+    const matchCat =
+      activeCategory === 'ALL' ||
+      cmd.category?.toUpperCase() === activeCategory.toUpperCase();
+    const q = cmdSearch.toLowerCase();
+    const matchSearch =
+      !cmdSearch ||
+      cmd.name.toLowerCase().includes(q) ||
+      (cmd.description && cmd.description.toLowerCase().includes(q)) ||
+      (cmd.aliases && cmd.aliases.some((a) => a.toLowerCase().includes(q)));
+    return matchCat && matchSearch;
+  });
+
+  // Display top 9 commands for clean section layout
+  const displayedCmds = filteredCmds.slice(0, 9);
 
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono brutal-grid">
@@ -70,12 +105,12 @@ export default function LandingPage() {
             <a href="#features" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               FEATURES
             </a>
+            <a href="#commands" className="text-brutal-muted hover:text-brutal-accent transition-colors">
+              COMMANDS
+            </a>
             <a href="#creator" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               CREATOR
             </a>
-            <Link to="/commands" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              COMMANDS
-            </Link>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -352,6 +387,121 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── COMMANDS SECTION (NEW) ── */}
+      <section id="commands" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
+              COMMAND INTERACTION SUITE
+            </span>
+            <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
+              69+ POWERFUL COMMANDS.
+            </h2>
+            <p className="font-mono text-xs text-zinc-400 mt-2 max-w-xl">
+              100% parity between Discord Slash interactions (<code className="text-brutal-accent">/command</code>) and classic text prefix controls (<code className="text-brutal-accent">.command</code>).
+            </p>
+          </div>
+
+          <Link
+            to="/commands"
+            className="px-4 py-2 bg-brutal-surface text-brutal-text hover:text-brutal-accent hover:border-brutal-accent border-2 border-brutal-border font-mono text-xs font-bold uppercase transition-all flex items-center gap-2 self-start md:self-auto shrink-0"
+          >
+            <span>VIEW FULL COMMAND DIRECTORY</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {/* Filter Pills & Instant Search */}
+        <div className="border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal-sm space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-2">
+              {['ALL', 'MUSIC', 'FILTERS', 'CONFIG', 'FAVOURITE', 'INFO'].map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-3 py-1 font-mono text-xs font-bold uppercase border-2 transition-all ${
+                    activeCategory === cat
+                      ? 'bg-brutal-accent text-black border-black shadow-brutal-sm'
+                      : 'bg-brutal-bg text-brutal-text border-brutal-border hover:border-brutal-accent hover:text-brutal-accent'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+              <input
+                type="text"
+                placeholder="Search commands (e.g. play, 247, loop)..."
+                value={cmdSearch}
+                onChange={(e) => setCmdSearch(e.target.value)}
+                className="w-full bg-brutal-bg border-2 border-brutal-border pl-9 pr-3 py-1.5 font-mono text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-brutal-accent"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Command Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {displayedCmds.map((cmd) => (
+            <div
+              key={cmd.name}
+              className="border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal hover:border-brutal-accent transition-all flex flex-col justify-between group"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-display font-black text-lg text-white group-hover:text-brutal-accent transition-colors">
+                      /{cmd.name}
+                    </span>
+                    <span className="font-mono text-xs text-zinc-500">
+                      .{cmd.name}
+                    </span>
+                  </div>
+                  <span className="font-mono text-[9px] bg-black text-zinc-400 px-2 py-0.5 border border-zinc-800 uppercase font-bold">
+                    {cmd.category}
+                  </span>
+                </div>
+
+                <p className="font-mono text-xs text-zinc-400 line-clamp-2">
+                  {cmd.description}
+                </p>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-zinc-800 flex items-center justify-between text-[11px] font-mono text-zinc-500">
+                <span>Usage: <code className="text-zinc-300">.{cmd.name}</code></span>
+                {cmd.voterOnly && (
+                  <span className="text-amber-400 text-[10px] font-bold flex items-center gap-1">
+                    <Star className="w-3 h-3 fill-amber-400" /> VOTER PERK
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom Callout Banner */}
+        <div className="border-2 border-brutal-border bg-black p-6 shadow-brutal flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Terminal className="w-8 h-8 text-brutal-accent shrink-0" />
+            <div>
+              <h4 className="font-display font-black text-lg text-white uppercase">NEED MORE AUDIO CONTROLS?</h4>
+              <p className="font-mono text-xs text-zinc-400">
+                Explore all {commands.length || 69} audio filters, DJ controls, and utility tools in the full catalog.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/commands"
+            className="px-5 py-2.5 bg-brutal-accent text-black font-mono font-bold text-xs uppercase border-2 border-black shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all shrink-0"
+          >
+            OPEN FULL COMMAND REGISTRY →
+          </Link>
+        </div>
+      </section>
+
       {/* Creator Showcase */}
       <section id="creator" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto">
         <div className="border-2 border-brutal-border bg-brutal-surface p-8 shadow-brutal flex flex-col md:flex-row items-center gap-8">
@@ -425,4 +575,3 @@ export default function LandingPage() {
     </div>
   );
 }
-

@@ -26,7 +26,6 @@ const DEFAULT_TOPGG_URL = "https://top.gg/bot/863496211667484676/vote";
 export default function CommandsPage() {
   const [commands, setCommands] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [dspFilters, setDspFilters] = useState([]);
   const [topggVoteUrl, setTopggVoteUrl] = useState(DEFAULT_TOPGG_URL);
   const [stats, setStats] = useState({
     total: 0,
@@ -60,7 +59,6 @@ export default function CommandsPage() {
 
         setCommands(publicCmds);
         setCategories(publicCats);
-        setDspFilters(resp.data.dspFilters || []);
         if (resp.data.topggVoteUrl) {
           setTopggVoteUrl(resp.data.topggVoteUrl);
         }
@@ -136,16 +134,6 @@ export default function CommandsPage() {
             <Star className="w-4 h-4 fill-amber-400" />
             TOP.GG PERKS
           </a>
-          <button
-            onClick={() => {
-              setFilter('FILTERS');
-              window.scrollTo({ top: 350, behavior: 'smooth' });
-            }}
-            className="flex items-center gap-2 border-2 border-brutal-border bg-brutal-surface text-brutal-text font-mono text-xs font-bold px-3 py-2 hover:border-brutal-accent hover:text-brutal-accent transition-all"
-          >
-            <Sliders className="w-4 h-4" />
-            14 DSP AUDIO PRESETS
-          </button>
         </div>
       </div>
 
@@ -257,44 +245,6 @@ export default function CommandsPage() {
           )}
         </div>
       </div>
-
-      {/* DSP Audio Filter Showcase (If FILTERS or ALL selected) */}
-      {(filter === 'FILTERS' || filter === 'ALL') && !search && (
-        <div className="border-2 border-brutal-border bg-brutal-surface p-5 shadow-brutal space-y-4">
-          <div className="flex items-center justify-between border-b border-brutal-border pb-3">
-            <div className="flex items-center gap-2">
-              <Sliders className="w-5 h-5 text-brutal-accent" />
-              <h3 className="font-display font-black text-lg text-brutal-text uppercase">
-                STUDIO DSP AUDIO FILTERS RACK (14 PRESETS)
-              </h3>
-            </div>
-            <span className="font-mono text-[10px] text-brutal-accent bg-black px-2 py-0.5 border border-brutal-border">
-              LAVALINK DSP POWERED
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {dspFilters.map((f, i) => (
-              <div
-                key={i}
-                className="border border-brutal-border bg-brutal-bg p-3 hover:border-brutal-accent transition-all group"
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-mono text-xs font-bold text-brutal-accent group-hover:text-brutal-accent">
-                    {f.name}
-                  </span>
-                  <span className="font-mono text-[9px] text-brutal-muted uppercase">
-                    /filter
-                  </span>
-                </div>
-                <p className="font-mono text-[11px] text-brutal-muted leading-relaxed">
-                  {f.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Results Header */}
       <div className="flex items-center justify-between font-mono text-xs text-brutal-muted">
