@@ -12,6 +12,7 @@ import CommandsPage from './pages/CommandsPage';
 import OwnerPage from './pages/OwnerPage';
 import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
+import PremiumPage from './pages/PremiumPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -36,6 +37,8 @@ export default function App() {
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/commands" element={<CommandsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/premium" element={<PremiumPage />} />
+            <Route path="/redeem" element={<PremiumPage initialTab="redeem" />} />
             <Route path="/owner" element={<OwnerPage />} />
 
             {/* Legacy & Deprecated Route Redirects */}
