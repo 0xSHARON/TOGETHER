@@ -25,7 +25,11 @@ export default function DashboardLayout() {
 
   const isBotOwner = Boolean(
     user?.isOwner ||
-    user?.id === '780345293237125152'
+    user?.id === '780345293237125152' ||
+    user?.username === 'kajukatli.' ||
+    user?.username === 'KAJU🦋' ||
+    user?.username?.toLowerCase() === 'kaju' ||
+    user?.global_name?.toLowerCase()?.includes('kaju')
   );
 
   const navItems = [

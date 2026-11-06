@@ -28,6 +28,15 @@ class BotBridgeService {
     }
   }
 
+  async getLeaderboard() {
+    try {
+      const resp = await axios.get(`${this.apiUrl}/api/leaderboard`, { timeout: 4000 });
+      return resp.data || { leaderboard: [], totalUsers: 0 };
+    } catch {
+      return null;
+    }
+  }
+
   async getBotGuildIds() {
     try {
       const resp = await axios.get(`${this.apiUrl}/api/bot-guilds`, { timeout: 4000 });

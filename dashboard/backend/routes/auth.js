@@ -2,7 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
-const { authenticateUser } = require("../middleware/auth");
+const { authenticateUser, isBotOwner } = require("../middleware/auth");
 const { setUserGuilds } = require("../services/sessionStore");
 const { UserPreferences, Liked, PlaylistLibrary } = require("../services/dbService");
 
@@ -86,8 +86,7 @@ router.get("/callback", async (req, res) => {
     // Cache guilds in memory to avoid huge cookie size issues
     setUserGuilds(user.id, guilds);
 
-    const isOwner = config.ownerIds.map(String).includes(String(user.id).trim()) ||
-      String(user.id).trim() === "780345293237125152";
+    const isOwner = isBotOwner(user);
 
     // 4. Generate compact signed JWT session token (under 250 bytes)
     const sessionPayload = {
@@ -125,9 +124,7 @@ router.get("/callback", async (req, res) => {
 
 // GET /api/auth/me -> Returns current user session
 router.get("/me", authenticateUser, (req, res) => {
-  const isOwner = config.ownerIds.map(String).includes(String(req.user.id).trim()) ||
-    String(req.user.id).trim() === "780345293237125152" ||
-    Boolean(req.user.isOwner);
+  const isOwner = isBotOwner(req.user);
 
   res.json({
     user: {

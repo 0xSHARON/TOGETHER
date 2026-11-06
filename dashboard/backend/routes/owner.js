@@ -1,6 +1,7 @@
 const express = require("express");
 const { requireOwner } = require("../middleware/auth");
 const botBridge = require("../services/botBridge");
+const { flushLogs } = require("../services/consoleStream");
 const { TwoFourSeven, UserPreferences, Blacklist } = require("../services/dbService");
 
 const router = express.Router();
@@ -33,6 +34,16 @@ router.get("/overview", requireOwner, async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/owner/flush-logs -> Manually flush buffered console logs to Discord thread
+router.post("/flush-logs", requireOwner, async (req, res) => {
+  try {
+    await flushLogs();
+    res.json({ success: true, message: "Dashboard logs flushed to 🌐・dashboard-logs" });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 

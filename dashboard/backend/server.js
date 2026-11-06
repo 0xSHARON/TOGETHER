@@ -8,6 +8,10 @@ const jwt = require("jsonwebtoken");
 
 const config = require("./config");
 const { initMongo } = require("./services/dbService");
+const { initConsoleStream } = require("./services/consoleStream");
+
+// Initialize console log streaming to Discord thread 🌐・dashboard-logs
+initConsoleStream();
 
 // Route handlers
 const authRoutes = require("./routes/auth");
@@ -19,7 +23,7 @@ const ownerRoutes = require("./routes/owner");
 const commandsRoutes = require("./routes/commands");
 
 const app = express();
-app.set("trust proxy", 1);
+app.set("trust proxy", true);
 const server = http.createServer(app);
 
 // Initialize Socket.IO with CORS
@@ -41,10 +45,11 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rate Limiter
+// Rate Limiter with disabled proxy header validation error
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 300,
+  max: 500,
+  validate: { xForwardedForHeader: false, default: false },
   message: { error: "Too many requests. Please slow down." }
 });
 app.use("/api/", apiLimiter);

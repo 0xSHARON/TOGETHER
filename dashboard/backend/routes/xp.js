@@ -1,51 +1,86 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
+const config = require("../config");
 const { authenticateUser } = require("../middleware/auth");
 const { UserPreferences } = require("../services/dbService");
+const botBridge = require("../services/botBridge");
 
 const router = express.Router();
 
-// GET /api/xp/leaderboard -> Global leaderboard sorted by XP & Listening Time
-router.get("/leaderboard", authenticateUser, async (req, res) => {
+// Helper to extract optional user from cookie or authorization header
+function getOptionalUser(req) {
+  const token = req.cookies?.together_token || req.headers?.authorization?.replace(/^Bearer\s+/i, "");
+  if (!token) return null;
   try {
-    const page = parseInt(req.query.page || "1", 10);
-    const limit = 20;
-    const skip = (page - 1) * limit;
+    return jwt.verify(token, config.jwtSecret);
+  } catch {
+    return null;
+  }
+}
 
-    const [users, total] = await Promise.all([
-      UserPreferences.find()
+// GET /api/xp/leaderboard -> Global leaderboard sorted by XP & Listening Time (PUBLIC)
+router.get("/leaderboard", async (req, res) => {
+  try {
+    const viewer = getOptionalUser(req);
+    const viewerId = viewer?.id ? String(viewer.id).trim() : null;
+
+    // 1. Primary: query bot process for Discord-resolved usernames and avatars
+    let botData = await botBridge.getLeaderboard();
+    let leaderboard = botData?.leaderboard || [];
+
+    // 2. Fallback to MongoDB if bot is temporarily restarting
+    if (!leaderboard || leaderboard.length === 0) {
+      const rawUsers = await UserPreferences.find()
         .sort({ xp: -1, songsPlayed: -1, listeningSeconds: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      UserPreferences.countDocuments()
-    ]);
+        .limit(100)
+        .lean()
+        .catch(() => []);
 
-    const formatted = users.map((u, i) => ({
-      rank: skip + i + 1,
-      userId: u.userId,
-      xp: u.xp || 0,
-      level: u.level || 1,
-      songsPlayed: u.songsPlayed || 0,
-      listeningMinutes: Math.floor((u.listeningSeconds || 0) / 60),
-      streak: u.streak || 0,
-      accentColor: u.accentColor || "#FF1E38"
-    }));
+      let activeUsers = rawUsers.filter((d) => (d.songsPlayed > 0 || d.xp > 0 || d.listeningSeconds > 0));
+      if (activeUsers.length === 0) activeUsers = rawUsers;
+
+      leaderboard = activeUsers.map((u, i) => ({
+        rank: i + 1,
+        userId: u.userId,
+        name: `User_${String(u.userId || "").slice(-4)}`,
+        username: `user_${String(u.userId || "").slice(-4)}`,
+        avatarUrl: null,
+        xp: u.xp || 0,
+        level: u.level || 1,
+        songsPlayed: u.songsPlayed || 0,
+        listeningSeconds: u.listeningSeconds || 0,
+        listeningMinutes: Math.floor((u.listeningSeconds || 0) / 60),
+        streak: u.streak || 0,
+        accentColor: u.accentColor || "#00E676"
+      }));
+    }
+
+    // 3. Compute viewer rank
+    let myRank = null;
+    let myProfile = null;
+    if (viewerId) {
+      const idx = leaderboard.findIndex((u) => String(u.userId) === viewerId);
+      if (idx !== -1) {
+        myRank = idx + 1;
+        myProfile = leaderboard[idx];
+      }
+    }
 
     res.json({
-      leaderboard: formatted,
-      page,
-      totalPages: Math.ceil(total / limit),
-      totalUsers: total
+      leaderboard,
+      totalUsers: leaderboard.length,
+      myRank,
+      myProfile
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message, leaderboard: [], totalUsers: 0 });
   }
 });
 
 // GET /api/xp/me -> Current user's XP & listening statistics
 router.get("/me", authenticateUser, async (req, res) => {
   try {
-    let profile = await UserPreferences.findOne({ userId: req.user.id });
+    let profile = await UserPreferences.findOne({ userId: req.user.id }).lean();
     if (!profile) {
       profile = {
         userId: req.user.id,
@@ -65,4 +100,3 @@ router.get("/me", authenticateUser, async (req, res) => {
 });
 
 module.exports = router;
-

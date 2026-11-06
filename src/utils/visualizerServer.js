@@ -741,6 +741,57 @@ function startVisualizerServer(client, preferredPort = 5050) {
       return;
     }
 
+    // ── API: Global Bot Leaderboard (/api/leaderboard) ────────
+    if (pathname === "/api/leaderboard" && req.method === "GET") {
+      try {
+        const UserPreferences = require("../schema/userpreferences");
+        const rawDocs = await UserPreferences.find()
+          .sort({ xp: -1, songsPlayed: -1, listeningSeconds: -1 })
+          .limit(100)
+          .lean()
+          .catch(() => []);
+
+        let docs = Array.isArray(rawDocs) ? rawDocs.filter((d) => (d.songsPlayed > 0 || d.xp > 0 || d.listeningSeconds > 0)) : [];
+        if (docs.length === 0 && Array.isArray(rawDocs)) docs = rawDocs;
+
+        const resolvedUsers = await Promise.all(
+          docs.map(async (doc, idx) => {
+            let discordUser = null;
+            try {
+              discordUser =
+                client.users.cache.get(doc.userId) ||
+                (await client.users.fetch(doc.userId).catch(() => null));
+            } catch {}
+
+            return {
+              rank: idx + 1,
+              userId: doc.userId,
+              name: discordUser?.displayName || discordUser?.username || `User_${doc.userId.slice(-4)}`,
+              username: discordUser?.username || `user_${doc.userId.slice(-4)}`,
+              avatarUrl: discordUser?.displayAvatarURL?.({ extension: "png", size: 256 }) || null,
+              level: Math.max(1, Number(doc.level) || 1),
+              xp: Math.max(0, Number(doc.xp) || 0),
+              songsPlayed: Math.max(0, Number(doc.songsPlayed) || 0),
+              listeningSeconds: Math.max(0, Number(doc.listeningSeconds) || 0),
+              listeningMinutes: Math.floor((Math.max(0, Number(doc.listeningSeconds) || 0)) / 60),
+              streak: Math.max(0, Number(doc.streak) || 0),
+              anthem: doc.anthem,
+              accentColor: doc.accentColor || "#00E676"
+            };
+          })
+        );
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({
+          leaderboard: resolvedUsers,
+          totalUsers: docs.length
+        }));
+      } catch (err) {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ leaderboard: [], totalUsers: 0, error: err.message }));
+      }
+    }
+
     // ── API: Dispatch Dashboard Log to Discord Log Thread (/api/dashboard-log) ──
     if (pathname === "/api/dashboard-log" && req.method === "POST") {
       let body = "";
@@ -752,6 +803,32 @@ function startVisualizerServer(client, preferredPort = 5050) {
           const { EmbedBuilder } = require("discord.js");
           const guild = payload.guildId ? client?.guilds?.cache?.get(payload.guildId) : null;
           const guildName = guild?.name || payload.guildName || (payload.guildId ? `Server (${payload.guildId})` : "Global");
+
+          // Handle console stdout/stderr stream from dashboard backend
+          if (payload.isConsole || payload.event === "CONSOLE") {
+            const rawDetails = String(payload.details || "").trim();
+            if (!rawDetails) {
+              res.writeHead(200, { "Content-Type": "application/json" });
+              return res.end(JSON.stringify({ success: true }));
+            }
+            const embed = new EmbedBuilder()
+              .setColor(payload.color || "#00E676")
+              .setAuthor({
+                name: "TOGETHER Dashboard • Live Console",
+                iconURL: client?.user?.displayAvatarURL({ dynamic: true })
+              })
+              .setTitle(`💻 Dashboard Backend Console Log`)
+              .setDescription(`\`\`\`ansi\n${rawDetails.slice(0, 3900)}\n\`\`\``)
+              .setFooter({
+                text: `${client?.user?.username || "TOGETHER"} • Console Stream`,
+                iconURL: client?.user?.displayAvatarURL({ dynamic: true })
+              })
+              .setTimestamp();
+
+            await sendWebhook(client, "dashboard", { embeds: [embed] });
+            res.writeHead(200, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ success: true }));
+          }
 
           const embed = new EmbedBuilder()
             .setColor(payload.color || "#00E676")
