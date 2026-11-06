@@ -66,7 +66,7 @@ module.exports = {
 
       const header = new TextDisplayBuilder()
         .setContent(
-          `## 🛡️ TOGETHER // Terms & Privacy Policy\n\n` +
+          `## TOGETHER // Terms & Privacy Policy\n\n` +
           `TOGETHER is dedicated to transparent data practices, Discord Developer Terms compliance, and high-fidelity audio privacy.\n\n` +
           `• **No Audio Eavesdropping:** Outbound audio playback only. Voice channels are never recorded, tapped, or stored.\n` +
           `• **Minimal Telemetry:** We only retain user IDs for rank XP/likes and server IDs for 24/7/prefix settings.\n` +
@@ -98,3 +98,4 @@ module.exports = {
     }
   },
 };
+

@@ -8,3 +8,4 @@ const djRoleSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("djroles", djRoleSchema);
+
