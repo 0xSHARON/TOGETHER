@@ -16,6 +16,7 @@ const playerRoutes = require("./routes/player");
 const configRoutes = require("./routes/config");
 const xpRoutes = require("./routes/xp");
 const ownerRoutes = require("./routes/owner");
+const commandsRoutes = require("./routes/commands");
 
 const app = express();
 const server = http.createServer(app);
@@ -57,6 +58,7 @@ app.use("/api/player", playerRoutes);
 app.use("/api/config", configRoutes);
 app.use("/api/xp", xpRoutes);
 app.use("/api/owner", ownerRoutes);
+app.use("/api/commands", commandsRoutes);
 
 // Public Bot Metadata Endpoint
 app.get("/api/overview", async (req, res) => {
