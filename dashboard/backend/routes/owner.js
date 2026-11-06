@@ -10,11 +10,11 @@ const router = express.Router();
 router.get("/overview", requireOwner, async (req, res) => {
   try {
     const [botInfo, activeSessions, total247, totalUsers, totalBlacklisted] = await Promise.all([
-      botBridge.getBotInfo(),
-      botBridge.getActiveSessions(),
-      TwoFourSeven.countDocuments(),
-      UserPreferences.countDocuments(),
-      Blacklist.countDocuments()
+      botBridge.getBotInfo().catch(() => ({})),
+      botBridge.getActiveSessions().catch(() => []),
+      TwoFourSeven.countDocuments().maxTimeMS(2500).catch(() => 0),
+      UserPreferences.countDocuments().maxTimeMS(2500).catch(() => 0),
+      Blacklist.countDocuments().maxTimeMS(2500).catch(() => 0)
     ]);
 
     res.json({
@@ -26,11 +26,11 @@ router.get("/overview", requireOwner, async (req, res) => {
       },
       bot: botInfo?.bot || {},
       database: {
-        total247Guilds: total247,
-        registeredListeners: totalUsers,
-        blacklistedEntities: totalBlacklisted
+        total247Guilds: Number(total247) || 0,
+        registeredListeners: Number(totalUsers) || 0,
+        blacklistedEntities: Number(totalBlacklisted) || 0
       },
-      activeMusicSessions: activeSessions
+      activeMusicSessions: Array.isArray(activeSessions) ? activeSessions : []
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

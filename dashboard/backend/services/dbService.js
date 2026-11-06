@@ -15,12 +15,16 @@ const Blacklist = require(path.join(schemaDir, "blacklist.js"));
 
 let isConnected = false;
 
+mongoose.set("bufferCommands", false);
+mongoose.set("autoIndex", false);
+
 async function initMongo() {
   if (isConnected || !config.mongoUri) return;
   try {
     await mongoose.connect(config.mongoUri, {
-      connectTimeoutMS: 30000,
-      socketTimeoutMS: 30000
+      connectTimeoutMS: 10000,
+      socketTimeoutMS: 15000,
+      serverSelectionTimeoutMS: 5000
     });
     isConnected = true;
     console.log("[Dashboard DB] Connected to existing TOGETHER MongoDB successfully.");
