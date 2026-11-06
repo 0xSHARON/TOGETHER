@@ -1,0 +1,74 @@
+import { type Readable } from "node:stream";
+import { type MUSIC_SOURCES, type LOOP_MODES } from "@lib/music/music.constants";
+
+export interface MusicBinaries {
+	/** Required: nothing can be resolved or streamed without it. */
+	ytDlp: string | null;
+	/** Optional: only a source that is not already Opus needs transcoding. */
+	ffmpeg: string | null;
+	/** What the chosen yt-dlp reports, which is a release date and so also its age. */
+	ytDlpVersion?: string | null;
+}
+
+export interface RemoteFormat {
+	format_id: string;
+	acodec?: string | null;
+	vcodec?: string | null;
+	ext?: string | null;
+	protocol?: string | null;
+	abr?: number | null;
+	/** The total bitrate, which is the audio's own for an audio-only format; some sources state only this. */
+	tbr?: number | null;
+	/** yt-dlp's rank for the audio's language: 10 for the video's original voice, 5 for its default, lower for a dub. */
+	language_preference?: number | null;
+}
+
+/** How the bytes reach Discord: the first two are passed through untouched, the third is re-encoded. */
+export type StreamShape = "webm-opus" | "ogg-opus" | "transcode";
+
+export interface StreamPlan {
+	formatId: string;
+	shape: StreamShape;
+}
+
+export type ProblemKind = "forbidden" | "bot-check" | "session" | "unavailable" | "drm" | "disk";
+
+export interface DownloadProblem {
+	kind: ProblemKind;
+	/** One sentence for the panel, written as advice rather than as an error. */
+	advice: string;
+}
+
+export type MusicSource = (typeof MUSIC_SOURCES)[number];
+
+export type Query =
+	| { kind: "url"; url: string; source: MusicSource }
+	/** `named` when the reader chose the service themselves, with `yt:` or `sc:`. */
+	| { kind: "search"; terms: string; source: MusicSource; named?: boolean };
+
+export interface Track {
+	/** Stable across a restart, so a panel left open still names the right thing. */
+	url: string;
+	title: string;
+	author: string | null;
+	durationMs: number | null;
+	thumbnail: string | null;
+	source: MusicSource;
+	requestedBy: string;
+}
+
+export type LoopMode = (typeof LOOP_MODES)[number];
+
+export interface QueueState {
+	tracks: Track[];
+	/** Which track is playing; -1 before anything has started. */
+	index: number;
+	loop: LoopMode;
+}
+
+export interface OpenStream {
+	stream: Readable;
+	plan: StreamPlan;
+	/** Kills the processes this opened; safe to call more than once. */
+	close: () => void;
+}

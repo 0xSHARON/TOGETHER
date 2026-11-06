@@ -1,0 +1,83 @@
+import { type CommandSummary, matchesSearch } from "@testify/shared";
+
+const CONFIGURABLE: Record<string, { path: (guildId: string) => string; screen: string }> = {
+	levelling: { path: (guildId) => `/guilds/${guildId}/levelling`, screen: "Levelling" },
+	rank: { path: (guildId) => `/guilds/${guildId}/levelling`, screen: "Levelling" },
+	leaderboard: { path: (guildId) => `/guilds/${guildId}/members`, screen: "Leaderboards" },
+	welcome: { path: (guildId) => `/guilds/${guildId}/welcome`, screen: "Welcome" },
+	birthday: { path: (guildId) => `/guilds/${guildId}/birthdays`, screen: "Birthdays" },
+	"audit-logging": { path: (guildId) => `/guilds/${guildId}/audit-log`, screen: "Audit logging" },
+	prefix: { path: (guildId) => `/guilds/${guildId}/settings`, screen: "Server settings" },
+	"anti-link": { path: (guildId) => `/guilds/${guildId}/settings`, screen: "Server settings" },
+	"auto-role": { path: (guildId) => `/guilds/${guildId}/settings`, screen: "Server settings" },
+	counting: { path: (guildId) => `/guilds/${guildId}/settings`, screen: "Server settings" },
+	"voice-stats": { path: (guildId) => `/guilds/${guildId}/settings`, screen: "Server settings" },
+	verify: { path: (guildId) => `/guilds/${guildId}/settings`, screen: "Server settings" },
+	"sticky-message": { path: (guildId) => `/guilds/${guildId}/sticky`, screen: "Sticky messages" },
+	"auto-responder": { path: (guildId) => `/guilds/${guildId}/auto-responders`, screen: "Auto-responders" },
+	schedule: { path: (guildId) => `/guilds/${guildId}/scheduled-messages`, screen: "Scheduled messages" },
+	idea: { path: (guildId) => `/guilds/${guildId}/ideas`, screen: "Idea board" },
+	starboard: { path: (guildId) => `/guilds/${guildId}/starboard`, screen: "Starboard" },
+	"temp-voice": { path: (guildId) => `/guilds/${guildId}/temp-voice`, screen: "Join to create" },
+	"role-menu": { path: (guildId) => `/guilds/${guildId}/role-menus`, screen: "Role menus" },
+	automod: { path: (guildId) => `/guilds/${guildId}/automod`, screen: "AutoMod" },
+	treasure: { path: (guildId) => `/guilds/${guildId}/treasure`, screen: "Treasure drops" },
+	music: { path: (guildId) => `/guilds/${guildId}/music`, screen: "Music system" },
+	casino: { path: (guildId) => `/guilds/${guildId}/casino`, screen: "Casino" },
+	ticket: { path: (guildId) => `/guilds/${guildId}/tickets`, screen: "Tickets" },
+	lottery: { path: (guildId) => `/guilds/${guildId}/lottery`, screen: "Lottery" },
+	giveaway: { path: (guildId) => `/guilds/${guildId}/giveaways`, screen: "Giveaways" },
+	"bot-stats-channel": { path: (guildId) => `/guilds/${guildId}/bot-stats`, screen: "Bot statistics" },
+	warn: { path: (guildId) => `/guilds/${guildId}/warnings`, screen: "Warnings" },
+	case: { path: (guildId) => `/guilds/${guildId}/cases`, screen: "Moderation cases" },
+	"raid-protection": { path: (guildId) => `/guilds/${guildId}/raid-protection`, screen: "Raid protection" },
+	kick: { path: (guildId) => `/guilds/${guildId}/members`, screen: "Members" },
+	ban: { path: (guildId) => `/guilds/${guildId}/members`, screen: "Members" },
+	unban: { path: (guildId) => `/guilds/${guildId}/bans`, screen: "Bans" },
+	lock: { path: (guildId) => `/guilds/${guildId}/channel-tools`, screen: "Channel tools" },
+	unlock: { path: (guildId) => `/guilds/${guildId}/channel-tools`, screen: "Channel tools" },
+	slowmode: { path: (guildId) => `/guilds/${guildId}/channel-tools`, screen: "Channel tools" },
+	announce: { path: (guildId) => `/guilds/${guildId}/announcements`, screen: "Announcements" },
+	say: { path: (guildId) => `/guilds/${guildId}/announcements`, screen: "Announcements" },
+	"member-count": { path: (guildId) => `/guilds/${guildId}/member-count`, screen: "Member count" },
+	"bot-notifications": { path: () => "/notifications", screen: "Notifications" },
+	"delete-my-data": { path: () => "/account", screen: "Your data" },
+};
+
+export interface CommandPlace {
+	path: string;
+	screen: string;
+}
+
+export function configurableAt(command: CommandSummary, guildId: string | null): CommandPlace | null {
+	const entry = CONFIGURABLE[command.name];
+	if (entry === undefined || guildId === null) return null;
+
+	return { path: entry.path(guildId), screen: entry.screen };
+}
+
+export function isConfigurable(command: CommandSummary): boolean {
+	return CONFIGURABLE[command.name] !== undefined;
+}
+
+export function coverage(commands: CommandSummary[]): { covered: number; total: number } {
+	return { covered: commands.filter(isConfigurable).length, total: commands.length };
+}
+
+export function filterCommands(
+	commands: CommandSummary[],
+	{ search, category }: { search: string; category: string | null },
+): CommandSummary[] {
+	return commands.filter(
+		(command) => (category === null || command.category === category) && matchesSearch(command, search),
+	);
+}
+
+export function groupByCategory(commands: CommandSummary[], categories: string[]): [string, CommandSummary[]][] {
+	return categories
+		.map((category): [string, CommandSummary[]] => [
+			category,
+			commands.filter((command) => command.category === category),
+		])
+		.filter(([, group]) => group.length > 0);
+}

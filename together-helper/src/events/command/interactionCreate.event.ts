@@ -1,0 +1,76 @@
+import { DiscordAPIError, Events, type Interaction, MessageFlags, RESTJSONErrorCodes } from "discord.js";
+import { parseCustomId } from "@core/button";
+import { runChecks } from "@core/checks";
+import { runButton, runCommand, toError } from "@core/errors";
+import { defineEvent } from "@core/event";
+import { countCommandUse, logCommandUse, recordCommandTime } from "@lib/bot";
+import { errorEmbed, refusalEmbed } from "@lib/discord";
+import { mentionNoticesAfterCommand, NOTICE_COMMAND, noticeHint } from "@lib/notices";
+
+/** The only `interactionCreate` listener. */
+export default defineEvent({
+	name: Events.InteractionCreate,
+	async run(client, interaction: Interaction) {
+		if (interaction.isAutocomplete()) {
+			const command = client.commands.get(interaction.commandName);
+			if (!command?.autocomplete) return;
+
+			try {
+				await command.autocomplete(interaction, client);
+			} catch (error) {
+				const command = interaction.commandName;
+
+				// Discord drops a keystroke's interaction when the next one arrives, so an answer crossing it is routine.
+				if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownInteraction) {
+					const ageMs = Date.now() - interaction.createdTimestamp;
+					client.logger.trace({ command, ageMs }, "Autocomplete answered an interaction that had already expired");
+				} else {
+					client.logger.error({ err: toError(error), command }, "Autocomplete failed");
+				}
+			}
+			return;
+		}
+
+		if (interaction.isChatInputCommand()) {
+			const command = client.commands.get(interaction.commandName);
+			if (!command) {
+				client.logger.warn({ command: interaction.commandName }, "Unknown slash command");
+				return;
+			}
+
+			const refusal = await runChecks(interaction, command, client);
+			if (refusal !== null) {
+				await interaction.reply({ embeds: [refusalEmbed(refusal)], flags: MessageFlags.Ephemeral });
+				return;
+			}
+
+			const started = Date.now();
+			const { ok, reference } = await runCommand(interaction, command, client);
+			const durationMs = Date.now() - started;
+			recordCommandTime(durationMs, ok);
+			const run = { surface: "slash", ok, reference, durationMs, channelId: interaction.channelId } as const;
+			countCommandUse(client, interaction, command, run);
+			logCommandUse(client, interaction, command, run);
+			mentionNoticesAfterCommand(interaction.user.id, client.logger, (unread) =>
+				interaction.followUp({ embeds: [noticeHint(unread, `/${NOTICE_COMMAND}`)], flags: MessageFlags.Ephemeral }),
+			);
+			return;
+		}
+
+		if (!interaction.isMessageComponent() && !interaction.isModalSubmit()) return;
+
+		const { id, action, args } = parseCustomId(interaction.customId);
+		const button = client.buttons.get(id);
+		if (!button) return;
+
+		if (button.ownerOnly === true && args.at(-1) !== undefined && args.at(-1) !== interaction.user.id) {
+			await interaction.reply({
+				embeds: [errorEmbed("Only the person who ran the command can use these.")],
+				flags: MessageFlags.Ephemeral,
+			});
+			return;
+		}
+
+		await runButton(interaction, () => button.run(interaction, { client, action, args }), client, id);
+	},
+});

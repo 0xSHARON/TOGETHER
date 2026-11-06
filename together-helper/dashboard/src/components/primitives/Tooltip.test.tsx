@@ -1,0 +1,139 @@
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { createRef } from "react";
+import { Tooltip } from "@/components/primitives/Tooltip";
+
+describe("Tooltip", () => {
+	/** The server switcher's Escape handed focus to a ref the tooltip had quietly replaced with its own. */
+	it("leaves the child's own ref pointing at it", () => {
+		const ref = createRef<HTMLButtonElement>();
+		render(
+			<Tooltip label="Every server you can configure">
+				<button ref={ref} type="button">
+					Servers
+				</button>
+			</Tooltip>,
+		);
+
+		expect(ref.current).toBe(screen.getByRole("button", { name: "Servers" }));
+	});
+
+	/** A tooltip only a mouse can reach is a tooltip most people never see. */
+	it("opens on keyboard focus, not only on hover", async () => {
+		render(
+			<Tooltip label="Every server you can configure">
+				<button type="button">Servers</button>
+			</Tooltip>,
+		);
+
+		await userEvent.tab();
+
+		expect(screen.getByRole("button", { name: "Servers" })).toHaveFocus();
+		await waitFor(() => {
+			expect(screen.getByText("Every server you can configure")).toBeInTheDocument();
+		});
+	});
+
+	/** It describes, it never names: a control labelled only by a tooltip is unreachable without a pointer. */
+	it("describes the control rather than naming it", async () => {
+		render(
+			<Tooltip label="Every server you can configure">
+				<button type="button">Servers</button>
+			</Tooltip>,
+		);
+
+		const trigger = screen.getByRole("button");
+		expect(trigger).toHaveAccessibleName("Servers");
+
+		await userEvent.tab();
+		await waitFor(() => {
+			expect(trigger).toHaveAttribute("aria-describedby");
+		});
+		// Still named by its own text, not by what the tooltip added.
+		expect(trigger).toHaveAccessibleName("Servers");
+	});
+
+	/** Tippy hides its box rather than unmounting it, so the fact that matters is the description being dropped. */
+	it("withdraws the description when focus leaves", async () => {
+		render(
+			<>
+				<Tooltip label="A description">
+					<button type="button">First</button>
+				</Tooltip>
+				<button type="button">Second</button>
+			</>,
+		);
+
+		const first = screen.getByRole("button", { name: "First" });
+
+		await userEvent.tab();
+		await waitFor(() => {
+			expect(first).toHaveAttribute("aria-describedby");
+		});
+
+		await userEvent.tab();
+		await waitFor(() => {
+			expect(first).not.toHaveAttribute("aria-describedby");
+		});
+	});
+
+	/** Escape closes the tooltip without moving focus (WCAG 2.2, 1.4.13). */
+	it("closes on Escape without moving focus", async () => {
+		render(
+			<Tooltip label="A description">
+				<button type="button">First</button>
+			</Tooltip>,
+		);
+
+		const trigger = screen.getByRole("button");
+
+		await userEvent.tab();
+		await waitFor(() => {
+			expect(trigger).toHaveAttribute("aria-describedby");
+		});
+
+		await userEvent.keyboard("{Escape}");
+
+		await waitFor(() => {
+			expect(trigger).not.toHaveAttribute("aria-describedby");
+		});
+		expect(trigger).toHaveFocus();
+	});
+
+	/** The same criterion's other half: the pointer has to be able to reach the box without it vanishing. */
+	it("lets the pointer reach the tooltip itself", async () => {
+		render(
+			<Tooltip label="A description">
+				<button type="button">First</button>
+			</Tooltip>,
+		);
+
+		await userEvent.hover(screen.getByRole("button"));
+		await waitFor(() => {
+			expect(screen.getByText("A description")).toBeInTheDocument();
+		});
+
+		await userEvent.hover(screen.getByText("A description"));
+
+		expect(screen.getByText("A description")).toBeInTheDocument();
+	});
+
+	/** Shown under a finger, the box stopped the mobile drawer scrolling mid-swipe; a tap already follows the link. */
+	it("stays shut for touch input", async () => {
+		render(
+			<Tooltip label="Every server you can configure">
+				<button type="button">Servers</button>
+			</Tooltip>,
+		);
+
+		fireEvent.touchStart(document);
+		screen.getByRole("button").focus();
+		await new Promise((resolve) => setTimeout(resolve, 500));
+
+		expect(screen.queryByText("Every server you can configure")).toBeNull();
+
+		// tippy remembers touch input module-wide until two mouse moves land close together.
+		fireEvent.mouseMove(document);
+		fireEvent.mouseMove(document);
+	});
+});

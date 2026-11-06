@@ -1,0 +1,44 @@
+import { type Guild, type GuildMember } from "discord.js";
+import { type Context } from "hono";
+import { notInGuild } from "@api/errors";
+import { type OauthConfig } from "@api/oauth";
+import { type Env } from "@config/env";
+import { type TestifyClient } from "@core/client";
+import { type DashboardSession } from "@database/models/dashboardSession.schema";
+
+export interface ApiBindings {
+	Variables: {
+		client: TestifyClient;
+		env: Env;
+		/** Null while the install is unfinished, which is a setup screen rather than an error. */
+		oauth: OauthConfig | null;
+		/** Set by the session middleware once one is proven. Absent means the caller is not signed in. */
+		session?: DashboardSession;
+		guild?: Guild;
+		/** Absent for a bot owner, who is not necessarily in the guild at all. */
+		member?: GuildMember;
+		isOwner?: boolean;
+	};
+}
+
+/** The guild `requireGuild` authorised, and the only one a handler may act on; without it the route is miswired. */
+export function guildOf(context: Context<ApiBindings>): Guild {
+	const guild = context.get("guild");
+	if (guild === undefined) throw notInGuild();
+
+	return guild;
+}
+
+export function guildIdOf(context: Context<ApiBindings>): string {
+	return guildOf(context).id;
+}
+
+/** The person reading, as the permission rules want them; a bot owner need not be in the server, so has none. */
+export function readerOf(context: Context<ApiBindings>): GuildMember | undefined {
+	return context.get("isOwner") === true ? undefined : context.get("member");
+}
+
+export function actorOf(context: Context<ApiBindings>): { id: string; name: string } {
+	const session = context.get("session");
+	return { id: session?.userId ?? "", name: session?.username ?? "a server manager" };
+}

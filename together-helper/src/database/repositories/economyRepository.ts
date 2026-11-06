@@ -1,0 +1,348 @@
+import { type PipelineStage } from "mongoose";
+import { ECONOMY, type EconomyCooldownKey } from "@config/constants";
+import { strings } from "@config/strings";
+import { UserFacingError } from "@core/errors";
+import { Economy, type EconomyAccount, type InventoryItem } from "@database/models/economy.schema";
+
+const LEAN = { lean: true as const, new: true as const };
+
+export async function getOrCreateAccount(guildId: string, userId: string): Promise<EconomyAccount> {
+	return Economy.findOneAndUpdate(
+		{ guildId, userId },
+		{ $setOnInsert: { guildId, userId, wallet: ECONOMY.startingWallet, bank: ECONOMY.startingBank } },
+		{ ...LEAN, upsert: true, setDefaultsOnInsert: true },
+	).exec() as Promise<EconomyAccount>;
+}
+
+export async function findAccount(guildId: string, userId: string): Promise<EconomyAccount | null> {
+	return Economy.findOne({ guildId, userId }).lean<EconomyAccount>().exec();
+}
+
+/** Throws a user-facing error when the account does not exist yet. */
+export async function requireAccount(guildId: string, userId: string): Promise<EconomyAccount> {
+	const account = await findAccount(guildId, userId);
+	if (!account) throw new UserFacingError(strings.economy.noAccount);
+	return account;
+}
+
+async function accountExists(guildId: string, userId: string): Promise<boolean> {
+	return (await Economy.exists({ guildId, userId })) !== null;
+}
+
+export async function createAccount(guildId: string, userId: string): Promise<EconomyAccount | null> {
+	if (await accountExists(guildId, userId)) return null;
+	return getOrCreateAccount(guildId, userId);
+}
+
+export async function deleteAccount(guildId: string, userId: string): Promise<boolean> {
+	const result = await Economy.deleteOne({ guildId, userId }).exec();
+	return result.deletedCount > 0;
+}
+
+export async function adjustWallet(guildId: string, userId: string, delta: number): Promise<EconomyAccount> {
+	await getOrCreateAccount(guildId, userId);
+	return Economy.findOneAndUpdate(
+		{ guildId, userId },
+		{ $inc: { wallet: delta } },
+		LEAN,
+	).exec() as Promise<EconomyAccount>;
+}
+
+export async function adjustBank(guildId: string, userId: string, delta: number): Promise<EconomyAccount> {
+	await getOrCreateAccount(guildId, userId);
+	return Economy.findOneAndUpdate(
+		{ guildId, userId },
+		{ $inc: { bank: delta } },
+		LEAN,
+	).exec() as Promise<EconomyAccount>;
+}
+
+/** The filter requires sufficient funds, so two concurrent spends cannot both succeed. */
+export async function debitWallet(guildId: string, userId: string, amount: number): Promise<EconomyAccount | null> {
+	return Economy.findOneAndUpdate({ guildId, userId, wallet: { $gte: amount } }, { $inc: { wallet: -amount } }, LEAN)
+		.lean<EconomyAccount>()
+		.exec();
+}
+
+async function debitBank(guildId: string, userId: string, amount: number): Promise<EconomyAccount | null> {
+	return Economy.findOneAndUpdate({ guildId, userId, bank: { $gte: amount } }, { $inc: { bank: -amount } }, LEAN)
+		.lean<EconomyAccount>()
+		.exec();
+}
+
+export async function deposit(guildId: string, userId: string, amount: number): Promise<EconomyAccount | null> {
+	const debited = await debitWallet(guildId, userId, amount);
+	if (!debited) return null;
+	return adjustBank(guildId, userId, amount);
+}
+
+export async function withdraw(guildId: string, userId: string, amount: number): Promise<EconomyAccount | null> {
+	const debited = await debitBank(guildId, userId, amount);
+	if (!debited) return null;
+	return adjustWallet(guildId, userId, amount);
+}
+
+/** The credit only happens once the debit has landed. */
+export async function transfer(guildId: string, fromId: string, toId: string, amount: number): Promise<boolean> {
+	await getOrCreateAccount(guildId, toId);
+	const debited = await debitWallet(guildId, fromId, amount);
+	if (!debited) return false;
+
+	try {
+		await adjustWallet(guildId, toId, amount);
+		return true;
+	} catch (error) {
+		// Put the money back rather than letting it vanish mid-transfer.
+		await adjustWallet(guildId, fromId, amount);
+		throw error;
+	}
+}
+
+const COOLDOWN_FIELDS = {
+	daily: "lastDaily",
+	work: "lastWorked",
+	rob: "lastRobbed",
+	heist: "lastHeist",
+	beg: "lastBegged",
+} as const satisfies Record<EconomyCooldownKey, keyof EconomyAccount>;
+
+export async function setCooldown(
+	guildId: string,
+	userId: string,
+	key: EconomyCooldownKey,
+	at: Date = new Date(),
+): Promise<void> {
+	await Economy.updateOne({ guildId, userId }, { $set: { [COOLDOWN_FIELDS[key]]: at } }).exec();
+}
+
+export async function incrementCounters(
+	guildId: string,
+	userId: string,
+	counters: Partial<Record<keyof EconomyAccount, number>>,
+): Promise<void> {
+	await Economy.updateOne({ guildId, userId }, { $inc: counters }).exec();
+}
+
+export type LeaderboardField = "wallet" | "bank" | "total";
+
+/** `_id` last so the order is total, since equal balances are the normal case. */
+export async function getLeaderboard(
+	guildId: string,
+	limit: number,
+	field: LeaderboardField = "total",
+	skip = 0,
+): Promise<(EconomyAccount & { total: number })[]> {
+	if (field === "total") {
+		return Economy.aggregate<EconomyAccount & { total: number }>([
+			{ $match: { guildId } },
+			{ $addFields: { total: { $add: ["$wallet", "$bank"] } } },
+			{ $sort: { total: -1, _id: 1 } },
+			{ $skip: skip },
+			{ $limit: limit },
+		]).exec();
+	}
+
+	const accounts = await Economy.find({ guildId })
+		.sort({ [field]: -1, _id: 1 })
+		.skip(skip)
+		.limit(limit)
+		.lean<EconomyAccount[]>()
+		.exec();
+
+	return accounts.map((account) => ({ ...account, total: account.wallet + account.bank }));
+}
+
+export async function countAccounts(guildId: string): Promise<number> {
+	return Economy.countDocuments({ guildId }).exec();
+}
+
+/** Where one account sits on the leaderboard, counted in the database rather than by paging through it. */
+export async function getEconomyRank(
+	guildId: string,
+	userId: string,
+	field: LeaderboardField = "total",
+): Promise<number | null> {
+	return (await getEconomyStanding(guildId, userId, field))?.rank ?? null;
+}
+
+/** Somebody's balances in one server and where they rank there, or null without an account. */
+export async function getEconomyStanding(
+	guildId: string,
+	userId: string,
+	field: LeaderboardField = "total",
+): Promise<(MoneyStanding & { rank: number }) | null> {
+	const account = await findAccount(guildId, userId);
+	if (!account) return null;
+
+	const standing = { userId, wallet: account.wallet, bank: account.bank, total: account.wallet + account.bank };
+	const [result] = await Economy.aggregate<{ ahead: number }>([
+		{ $match: { guildId } },
+		{ $addFields: { total: { $add: ["$wallet", "$bank"] } } },
+		{ $match: { [field]: { $gt: standing[field] } } },
+		{ $count: "ahead" },
+	]).exec();
+
+	return { ...standing, rank: (result?.ahead ?? 0) + 1 };
+}
+
+/** One person's money across several servers, added together. */
+export interface MoneyStanding {
+	userId: string;
+	wallet: number;
+	bank: number;
+	total: number;
+}
+
+/** Each person's accounts in these servers folded into one row, so the bot-wide board ranks people rather than accounts. */
+function combined(guildIds: readonly string[]): PipelineStage[] {
+	return [
+		{ $match: { guildId: { $in: [...guildIds] } } },
+		{ $group: { _id: "$userId", wallet: { $sum: "$wallet" }, bank: { $sum: "$bank" } } },
+		{ $addFields: { total: { $add: ["$wallet", "$bank"] } } },
+	];
+}
+
+export async function getGlobalLeaderboard(
+	guildIds: readonly string[],
+	limit: number,
+	field: LeaderboardField = "total",
+	skip = 0,
+): Promise<MoneyStanding[]> {
+	return Economy.aggregate<MoneyStanding>([
+		...combined(guildIds),
+		// `_id` is the user id here, which still makes the order total between equal balances.
+		{ $sort: { [field]: -1, _id: 1 } },
+		{ $skip: skip },
+		{ $limit: limit },
+		{ $project: { _id: 0, userId: "$_id", wallet: 1, bank: 1, total: 1 } },
+	]).exec();
+}
+
+export async function countGlobalAccounts(guildIds: readonly string[]): Promise<number> {
+	const [result] = await Economy.aggregate<{ people: number }>([...combined(guildIds), { $count: "people" }]).exec();
+
+	return result?.people ?? 0;
+}
+
+export async function getGlobalRank(
+	guildIds: readonly string[],
+	userId: string,
+	field: LeaderboardField = "total",
+): Promise<number | null> {
+	return (await getGlobalStanding(guildIds, userId, field))?.rank ?? null;
+}
+
+/** Somebody's balances added up across `guildIds` and where that ranks, or null with no account in any of them. */
+export async function getGlobalStanding(
+	guildIds: readonly string[],
+	userId: string,
+	field: LeaderboardField = "total",
+): Promise<(MoneyStanding & { rank: number }) | null> {
+	const [mine] = await Economy.aggregate<{ wallet: number; bank: number; total: number }>([
+		{ $match: { guildId: { $in: [...guildIds] }, userId } },
+		{ $group: { _id: "$userId", wallet: { $sum: "$wallet" }, bank: { $sum: "$bank" } } },
+		{ $addFields: { total: { $add: ["$wallet", "$bank"] } } },
+	]).exec();
+	if (mine === undefined) return null;
+
+	const [result] = await Economy.aggregate<{ ahead: number }>([
+		...combined(guildIds),
+		{ $match: { [field]: { $gt: mine[field] } } },
+		{ $count: "ahead" },
+	]).exec();
+
+	return { userId, wallet: mine.wallet, bank: mine.bank, total: mine.total, rank: (result?.ahead ?? 0) + 1 };
+}
+
+export async function getGuildTotals(
+	guildId: string,
+): Promise<{ accounts: number; wallet: number; bank: number; richest: EconomyAccount | null }> {
+	const [totals] = await Economy.aggregate<{ accounts: number; wallet: number; bank: number }>([
+		{ $match: { guildId } },
+		{ $group: { _id: null, accounts: { $sum: 1 }, wallet: { $sum: "$wallet" }, bank: { $sum: "$bank" } } },
+	]).exec();
+
+	const [richest] = await getLeaderboard(guildId, 1);
+
+	return {
+		accounts: totals?.accounts ?? 0,
+		wallet: totals?.wallet ?? 0,
+		bank: totals?.bank ?? 0,
+		richest: richest ?? null,
+	};
+}
+
+export async function addInventoryItem(
+	guildId: string,
+	userId: string,
+	item: Omit<InventoryItem, "purchasedAt"> & { purchasedAt?: Date },
+): Promise<EconomyAccount> {
+	const existing = await Economy.findOneAndUpdate(
+		{ guildId, userId, "inventory.itemId": item.itemId },
+		{ $inc: { "inventory.$.quantity": item.quantity } },
+		LEAN,
+	)
+		.lean<EconomyAccount>()
+		.exec();
+
+	if (existing) return existing;
+
+	return Economy.findOneAndUpdate(
+		{ guildId, userId },
+		{ $push: { inventory: { ...item, purchasedAt: item.purchasedAt ?? new Date() } } },
+		LEAN,
+	).exec() as Promise<EconomyAccount>;
+}
+
+/** Conditional removal, so an item cannot be consumed twice concurrently. */
+export async function removeInventoryItem(
+	guildId: string,
+	userId: string,
+	itemId: string,
+	quantity = 1,
+): Promise<EconomyAccount | null> {
+	const updated = await Economy.findOneAndUpdate(
+		{ guildId, userId, inventory: { $elemMatch: { itemId, quantity: { $gte: quantity } } } },
+		{ $inc: { "inventory.$.quantity": -quantity } },
+		LEAN,
+	)
+		.lean<EconomyAccount>()
+		.exec();
+
+	if (!updated) return null;
+
+	await Economy.updateOne({ guildId, userId }, { $pull: { inventory: { quantity: { $lte: 0 } } } }).exec();
+	return findAccount(guildId, userId);
+}
+
+export async function setFields(
+	guildId: string,
+	userId: string,
+	fields: Partial<EconomyAccount>,
+): Promise<EconomyAccount> {
+	return Economy.findOneAndUpdate(
+		{ guildId, userId },
+		{ $set: fields },
+		{ ...LEAN, upsert: true },
+	).exec() as Promise<EconomyAccount>;
+}
+
+/** Moves `lastDaily` on only from the value it was read at, so two claims racing cannot both be paid. */
+export async function claimDailySlot(
+	guildId: string,
+	userId: string,
+	readAt: Date | null,
+	at: Date,
+	streak: number,
+): Promise<boolean> {
+	const result = await Economy.updateOne(
+		{ guildId, userId, lastDaily: readAt },
+		{ $set: { lastDaily: at, dailyStreak: streak } },
+	).exec();
+	return result.modifiedCount === 1;
+}
+
+export async function resetGuild(guildId: string): Promise<number> {
+	const result = await Economy.deleteMany({ guildId }).exec();
+	return result.deletedCount;
+}

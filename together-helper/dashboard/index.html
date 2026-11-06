@@ -1,17 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TOGETHER HELPER // Mission Control</title>
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="color-scheme" content="light dark" />
+		<!-- Matches --color-background in each theme, so a phone's browser chrome is never a different colour to the page. -->
+		<meta name="theme-color" content="#f4f4f9" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#07070b" media="(prefers-color-scheme: dark)" />
 
+		<!-- Self-hosted, so no preconnect is needed — but the CSS has to parse before these are discovered otherwise. -->
+		<link rel="preload" href="/fonts/rubik-latin.woff2" as="font" type="font/woff2" crossorigin />
+		<!-- Unhashed and at the root, where home-screen tools that ignore these links look for them anyway. -->
+		<link rel="icon" type="image/png" sizes="256x256" href="/favicon.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/manifest.webmanifest" />
+		<title>TOGETHER HELPER</title>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="module" src="/src/main.tsx"></script>
+	</body>
+</html>

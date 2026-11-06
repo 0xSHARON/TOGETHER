@@ -1,0 +1,46 @@
+import { type Config } from "jest";
+
+const config: Config = {
+	displayName: "dashboard",
+	rootDir: ".",
+	// `jest-fixed-jsdom` keeps the fetch and stream globals MSW needs, which plain jsdom deletes.
+	testEnvironment: "jest-fixed-jsdom",
+	setupFilesAfterEnv: ["<rootDir>/src/test/setup.ts"],
+	transform: {
+		"^.+\\.[mc]?[tj]sx?$": ["@swc/jest", { jsc: { transform: { react: { runtime: "automatic" } } } }],
+		"\\.(?:md|example)$": "<rootDir>/src/test/rawText.cjs",
+	},
+	// These ship ESM only, so they are transformed rather than skipped with the rest of node_modules.
+	transformIgnorePatterns: [
+		`/node_modules/(?!(${[
+			"react-router",
+			"rettime",
+			"until-async",
+			"tagged-tag",
+			"headers-polyfill",
+			"set-cookie-parser",
+			"@open-draft/deferred-promise",
+			"@epic-web/invariant",
+			"marked",
+			"lowlight",
+			"devlop",
+		].join("|")})/)`,
+	],
+	moduleNameMapper: {
+		// Vite hands these over as text; `rawText.cjs` does the same for the files they name.
+		"^@repo/(.*)\\?raw$": "<rootDir>/../$1",
+		// discord-html-transcripts hoists React 18 to the root, so both are pinned to the workspace's React 19.
+		"^react$": "<rootDir>/node_modules/react",
+		"^react/(.*)$": "<rootDir>/node_modules/react/$1",
+		"^react-dom$": "<rootDir>/node_modules/react-dom",
+		"^react-dom/(.*)$": "<rootDir>/node_modules/react-dom/$1",
+		"^@/(.*)$": "<rootDir>/src/$1",
+		"^@testify/shared$": "<rootDir>/../shared/src/index.ts",
+		"^@testify/shared/(.*)$": "<rootDir>/../shared/src/$1",
+		"\\.css$": "<rootDir>/src/test/styleMock.ts",
+	},
+	collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/components/ui/**", "!src/main.tsx", "!src/**/*.d.ts"],
+	coverageThreshold: { global: { statements: 75, branches: 75, functions: 75, lines: 75 } },
+};
+
+export default config;

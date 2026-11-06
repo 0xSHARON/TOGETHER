@@ -1,0 +1,260 @@
+import { screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { http, HttpResponse } from "msw";
+import { AppShell } from "@/app/AppShell";
+import { RequireAuth } from "@/app/RequireAuth";
+import { hardRedirect } from "@/lib/redirect";
+import { aGuild, me } from "@/test/fixtures/session";
+import { renderWithProviders } from "@/test/renderWithProviders";
+import { server } from "@/test/setup";
+
+jest.mock("@/lib/redirect");
+
+describe("the app shell", () => {
+	/** A keyboard user should not tab through the whole sidebar to reach the page. */
+	it("starts with a skip link", () => {
+		renderWithProviders(<AppShell />, { path: "/guilds" });
+
+		expect(screen.getByRole("link", { name: /skip to content/i })).toHaveAttribute("href", "#content");
+	});
+
+	/** Language is the fourth card on the appearance page, and `/appearance` alone opens it at the first. */
+	it("sends the language button to the language setting rather than the top of the page", () => {
+		renderWithProviders(<AppShell />, { path: "/guilds" });
+
+		expect(screen.getByRole("link", { name: "English" })).toHaveAttribute("href", "/appearance#language");
+	});
+
+	describe("the server switcher", () => {
+		const second = { ...aGuild, id: "900000000000000009", name: "Second Server" };
+
+		beforeEach(() => {
+			server.use(http.get("/api/auth/me", () => HttpResponse.json({ ...me, guilds: [...me.guilds, second] })));
+		});
+
+		it("offers the same screen in every other server the bot is in", async () => {
+			const user = userEvent.setup();
+			renderWithProviders(<AppShell />, {
+				path: "/guilds/:guildId/levelling",
+				route: `/guilds/${aGuild.id}/levelling?tab=rewards`,
+			});
+
+			await user.click(await screen.findByRole("button", { name: "Test Server, change server" }));
+
+			const others = screen.getByRole("list", { name: "Your other servers" });
+			expect(within(others).getByRole("link", { name: "Second Server" })).toHaveAttribute(
+				"href",
+				`/guilds/${second.id}/levelling?tab=rewards`,
+			);
+			expect(within(others).queryByRole("link", { name: "Somewhere Else" })).not.toBeInTheDocument();
+			expect(screen.getByRole("link", { name: "All servers" })).toHaveAttribute("href", "/guilds");
+		});
+
+		it("closes on Escape and hands focus back", async () => {
+			const user = userEvent.setup();
+			renderWithProviders(<AppShell />, { path: "/guilds/:guildId", route: `/guilds/${aGuild.id}` });
+
+			const switcher = await screen.findByRole("button", { name: "Test Server, change server" });
+			await user.click(switcher);
+			await user.tab();
+			await user.keyboard("{Escape}");
+
+			expect(switcher).toHaveAttribute("aria-expanded", "false");
+			expect(switcher).toHaveFocus();
+		});
+	});
+
+	/** A collapsed section that hid the page you are on would leave no way back to its siblings. */
+	it("starts open when the current page is inside it", async () => {
+		renderWithProviders(<AppShell />, {
+			path: "/guilds/:guildId/treasure",
+			route: `/guilds/${aGuild.id}/treasure`,
+		});
+		await screen.findByRole("link", { name: "Overview" });
+
+		expect(screen.getByRole("button", { name: "Economy" })).toHaveAttribute("aria-expanded", "true");
+		expect(screen.getByRole("button", { name: "Moderation" })).toHaveAttribute("aria-expanded", "false");
+	});
+
+	/** `aria-controls` has to point at a list that exists. */
+	it("points each toggle at the list it opens", async () => {
+		renderWithProviders(<AppShell />, { path: "/guilds/:guildId", route: `/guilds/${aGuild.id}` });
+		await screen.findByRole("link", { name: "Overview" });
+
+		const controls = screen.getByRole("button", { name: "Moderation" }).getAttribute("aria-controls");
+
+		expect(controls).not.toBeNull();
+		expect(document.getElementById(controls ?? "")).not.toBeNull();
+	});
+
+	/** The sidebar holds screens, not a server's channels, which can run to hundreds. */
+	it("offers the server's channels as one Channels entry rather than listing them", async () => {
+		renderWithProviders(<AppShell />, { path: "/guilds/:guildId", route: `/guilds/${aGuild.id}` });
+		const sidebar = await screen.findByTestId("sidebar");
+
+		expect(await within(sidebar).findByRole("link", { name: "Channels" })).toHaveAttribute(
+			"href",
+			`/guilds/${aGuild.id}/channels`,
+		);
+		expect(within(sidebar).queryByRole("link", { name: /general/ })).toBeNull();
+	});
+
+	/** Every screen stays reachable whatever a section is set to — the rail has no toggles to open. */
+	it("keeps every screen in the drawer's markup", async () => {
+		renderWithProviders(<AppShell />, { path: "/guilds/:guildId", route: `/guilds/${aGuild.id}` });
+		await screen.findByRole("link", { name: "Overview" });
+
+		for (const name of ["Levelling", "Welcome", "AutoMod", "Audit log", "Sticky", "Treasure", "Music", "Settings"]) {
+			expect(screen.getByRole("link", { name })).toBeInTheDocument();
+		}
+	});
+
+	/** Hiding it is not access control — the API refuses too — but a manager has no use for the link. */
+	it("hides the owner console from someone who is not the bot owner", async () => {
+		renderWithProviders(<AppShell />, { path: "/guilds" });
+		await screen.findByRole("link", { name: "Servers" });
+
+		expect(screen.queryByRole("link", { name: "Owner console" })).toBeNull();
+	});
+
+	/** Without clearing the cache the next person at this browser sees the previous one's guild list. */
+	it("drops every cached answer when signing out", async () => {
+		const user = userEvent.setup();
+		server.use(http.post("/api/auth/logout", () => new HttpResponse(null, { status: 204 })));
+
+		const { client } = renderWithProviders(<AppShell />, { path: "/guilds" });
+		await screen.findByText("someone");
+
+		await user.click(screen.getByRole("button", { name: /sign out/i }));
+
+		await waitFor(() => {
+			expect(jest.mocked(hardRedirect)).toHaveBeenCalledWith("/sign-in");
+		});
+		expect(client.getQueryCache().getAll()).toHaveLength(0);
+	});
+
+	/** `hidden` is `display: none`, which would leave every nav link named nothing; jsdom computes no styles, so the class is what is asserted. */
+	it("hides the nav labels visually rather than removing them", async () => {
+		server.use(http.get("/api/auth/me", () => HttpResponse.json({ ...me, isOwner: true })));
+		renderWithProviders(<AppShell />, { path: "/guilds" });
+
+		// The owner link is the last to appear, so waiting on it means the whole nav is rendered.
+		const owner = await screen.findByRole("link", { name: "Owner console" });
+		const label = owner.querySelector("span:not([aria-hidden])");
+
+		expect(label).toHaveClass("sr-only");
+		expect(label).not.toHaveClass("hidden");
+	});
+});
+
+describe("the mobile menu", () => {
+	it("opens the drawer, and closes on Escape", async () => {
+		const user = userEvent.setup();
+		renderWithProviders(<AppShell />, { path: "/guilds" });
+		await screen.findByRole("link", { name: "Servers" });
+
+		const menu = screen.getByRole("button", { name: "Menu" });
+		await user.click(menu);
+
+		expect(menu).toHaveAttribute("aria-expanded", "true");
+		expect(screen.getByTestId("sidebar-drawer")).toBeInTheDocument();
+
+		await user.keyboard("{Escape}");
+
+		await waitFor(() => {
+			expect(screen.queryByTestId("sidebar-drawer")).toBeNull();
+		});
+	});
+
+	/** A drawer left open covers the page it was used to reach. */
+	it("closes when a link inside it is used", async () => {
+		const user = userEvent.setup();
+		renderWithProviders(<AppShell />, { path: "/guilds" });
+		await screen.findByRole("link", { name: "Servers" });
+
+		await user.click(screen.getByRole("button", { name: "Menu" }));
+		const drawer = screen.getByTestId("sidebar-drawer");
+
+		await user.click(within(drawer).getByRole("link", { name: "Servers" }));
+
+		await waitFor(() => {
+			expect(screen.queryByTestId("sidebar-drawer")).toBeNull();
+		});
+	});
+
+	/** Any tap inside the drawer used to close it, so a section could never be opened on a phone. */
+	it("stays open when a section toggle inside it is pressed", async () => {
+		const user = userEvent.setup();
+		renderWithProviders(<AppShell />, { path: "/guilds/:guildId", route: `/guilds/${aGuild.id}` });
+		await screen.findByRole("link", { name: "Overview" });
+
+		await user.click(screen.getByRole("button", { name: "Menu" }));
+		const drawer = screen.getByTestId("sidebar-drawer");
+		const moderation = within(drawer).getByRole("button", { name: "Moderation" });
+		await user.click(moderation);
+
+		expect(screen.getByTestId("sidebar-drawer")).toBeInTheDocument();
+		expect(moderation).toHaveAttribute("aria-expanded", "true");
+	});
+
+	/** The drawer could not scroll, so a swipe moved the page behind it and the drawer's foot was out of reach. */
+	it("scrolls itself and holds the page behind still while open", async () => {
+		const user = userEvent.setup();
+		renderWithProviders(<AppShell />, { path: "/guilds" });
+		await screen.findByRole("link", { name: "Servers" });
+
+		await user.click(screen.getByRole("button", { name: "Menu" }));
+		expect(screen.getByTestId("sidebar-drawer")).toHaveClass("overflow-y-auto");
+		expect(document.body.style.overflow).toBe("hidden");
+
+		await user.keyboard("{Escape}");
+		await waitFor(() => {
+			expect(screen.queryByTestId("sidebar-drawer")).toBeNull();
+		});
+		expect(document.body.style.overflow).toBe("");
+	});
+
+	/** Pinned to the drawer's foot, the account block left a band of nothing above it on a tall phone. */
+	it("follows the sections with the account block in the drawer, and pins it only on the desktop rail", async () => {
+		const user = userEvent.setup();
+		renderWithProviders(<AppShell />, { path: "/guilds" });
+		await screen.findByRole("link", { name: "Servers" });
+		const footOf = (nav: HTMLElement) => nav.lastElementChild;
+
+		expect(footOf(screen.getByTestId("sidebar"))).toHaveClass("mt-auto");
+
+		await user.click(screen.getByRole("button", { name: "Menu" }));
+		expect(footOf(screen.getByTestId("sidebar-drawer"))).not.toHaveClass("mt-auto");
+	});
+
+	it("puts focus back on the menu button when it is dismissed", async () => {
+		const user = userEvent.setup();
+		renderWithProviders(<AppShell />, { path: "/guilds" });
+		await screen.findByRole("link", { name: "Servers" });
+
+		const menu = screen.getByRole("button", { name: "Menu" });
+		await user.click(menu);
+		await user.click(screen.getByRole("button", { name: "Close the menu" }));
+
+		await waitFor(() => {
+			expect(menu).toHaveFocus();
+		});
+	});
+});
+
+describe("RequireAuth", () => {
+	/** 401 is a normal answer here — it means "show the sign-in screen", not "something broke". */
+	it("does not treat a signed-out visitor as an error", async () => {
+		server.use(
+			http.get("/api/auth/me", () =>
+				HttpResponse.json({ error: { code: "unauthenticated", message: "no" } }, { status: 401 }),
+			),
+		);
+
+		renderWithProviders(<RequireAuth />, { path: "/guilds" });
+
+		await waitFor(() => {
+			expect(document.body.textContent).not.toMatch(/something went wrong/i);
+		});
+	});
+});

@@ -1,0 +1,256 @@
+import { LOTTERY_FREQUENCIES, LOTTERY_LIMITS } from "@testify/shared";
+import { Coins, Snowflake, Ticket, Trash2, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { useParams } from "react-router";
+import { ErrorState } from "@/app/ErrorState";
+import {
+	ChannelPicker,
+	Field,
+	FIELD,
+	RowActions,
+	SavingIndicator,
+	savingStateOf,
+	SELECT,
+	SettingRows,
+	Warning,
+} from "@/components/form";
+import { Button, PageHeader, Skeleton, StatTile, Summary } from "@/components/primitives";
+import { useGuildOverview } from "@/features/guild-overview/useGuildOverview";
+import { useChannels } from "@/features/levelling/useLevelling";
+import { DrawHistory } from "@/features/lottery/components/DrawHistory";
+import { FREQUENCY_LABELS, RESCHEDULE_NOTES } from "@/features/lottery/lottery.labels";
+import {
+	type Draft,
+	draftOf,
+	draftProblem,
+	isDirty,
+	reschedules,
+	winnersWarning,
+} from "@/features/lottery/lottery.utils";
+import { useEndLottery, useLottery, useSaveLottery } from "@/features/lottery/useLottery";
+import { usePageTitle } from "@/hooks/usePageTitle";
+import { ApiError } from "@/lib/api";
+import { cn } from "@/lib/cn";
+import { dateAndTime } from "@/lib/datetime";
+import { formatNumber } from "@/lib/intl";
+import { oneOf } from "@/lib/oneOf";
+
+export function LotteryPage(): React.JSX.Element {
+	const { t } = useTranslation();
+	const { guildId = "" } = useParams();
+
+	const lottery = useLottery(guildId);
+	const channels = useChannels(guildId);
+	const overview = useGuildOverview(guildId);
+	const save = useSaveLottery(guildId);
+	const end = useEndLottery(guildId);
+
+	usePageTitle(t("lottery.title"), overview.data?.name);
+
+	const settings = lottery.data;
+	const [draft, setDraft] = useState<Draft | null>(null);
+	const [confirming, setConfirming] = useState(false);
+
+	useEffect(() => {
+		if (settings !== undefined) setDraft(draftOf(settings));
+	}, [settings]);
+
+	if (lottery.isError) return <ErrorState error={lottery.error} onRetry={() => void lottery.refetch()} />;
+	if (lottery.isPending || draft === null) return <Skeleton className="h-96 w-full" />;
+	if (settings === undefined) return <Skeleton className="h-96 w-full" />;
+
+	const problem = draftProblem(draft, t);
+	const dirty = isDirty(draft, settings);
+	const busy = save.isPending || end.isPending;
+	const warning = winnersWarning(draft, settings, t);
+
+	function set<K extends keyof Draft>(field: K, value: Draft[K]): void {
+		setDraft((current) => (current === null ? current : { ...current, [field]: value }));
+	}
+
+	return (
+		<>
+			<PageHeader
+				server={overview.data}
+				title={t("lottery.title")}
+				subtitle={t("lottery.subtitle")}
+				action={<SavingIndicator state={savingStateOf(busy, save.isSuccess && !dirty)} />}
+			/>
+
+			<Summary>
+				{!settings.enabled
+					? t("lottery.summaryOff")
+					: settings.frozen
+						? t("lottery.summaryFrozen", { pot: formatNumber(settings.prizePool) })
+						: settings.nextDrawAt === null
+							? t("lottery.summaryRunning", { pot: formatNumber(settings.prizePool) })
+							: t("lottery.summaryNext", {
+									pot: formatNumber(settings.prizePool),
+									when: dateAndTime(settings.nextDrawAt),
+								})}
+			</Summary>
+
+			{settings.enabled && (
+				<div className="grid gap-4 sm:grid-cols-3">
+					<StatTile icon={Coins} label={t("lottery.prizePool")} value={settings.prizePool} />
+					<StatTile icon={Ticket} label={t("lottery.ticketsSold")} value={settings.ticketsSold} />
+					<StatTile icon={Users} label={t("lottery.entrants")} value={settings.entrants} />
+				</div>
+			)}
+
+			<SettingRows
+				title={t("lottery.howTitle")}
+				description={<Trans i18nKey="lottery.howBody" components={{ command: <code /> }} />}
+			>
+				<ChannelPicker
+					label={t("lottery.announcements")}
+					hint={t("lottery.announcementsHint")}
+					channels={channels.data ?? []}
+					value={draft.announcementChannelId}
+					allowNone={false}
+					onChange={(id) => {
+						set("announcementChannelId", id);
+					}}
+				/>
+
+				<Field label={t("lottery.draw")} htmlFor="lottery-frequency" hint={t("lottery.drawHint")}>
+					<select
+						id="lottery-frequency"
+						className={cn(SELECT, "max-w-48")}
+						value={draft.frequency}
+						onChange={(event) => {
+							set("frequency", oneOf(LOTTERY_FREQUENCIES, event.target.value, "weekly"));
+						}}
+					>
+						{LOTTERY_FREQUENCIES.map((frequency) => (
+							<option key={frequency} value={frequency}>
+								{t(FREQUENCY_LABELS[frequency])}
+							</option>
+						))}
+					</select>
+				</Field>
+
+				<Field label={t("lottery.ticketPrice")} htmlFor="lottery-fee">
+					<input
+						id="lottery-fee"
+						type="number"
+						inputMode="numeric"
+						min={LOTTERY_LIMITS.minEntryFee}
+						max={LOTTERY_LIMITS.maxEntryFee}
+						value={draft.entryFee}
+						onChange={(event) => {
+							set("entryFee", Number(event.target.value));
+						}}
+						className={cn(FIELD, "max-w-40 tabular-nums")}
+					/>
+				</Field>
+
+				<Field label={t("lottery.winnersADraw")} htmlFor="lottery-winners">
+					<input
+						id="lottery-winners"
+						type="number"
+						inputMode="numeric"
+						min={LOTTERY_LIMITS.minWinners}
+						max={LOTTERY_LIMITS.maxWinners}
+						value={draft.maxWinners}
+						onChange={(event) => {
+							set("maxWinners", Number(event.target.value));
+						}}
+						className={cn(FIELD, "max-w-40 tabular-nums")}
+					/>
+				</Field>
+
+				<Field label={t("lottery.startingPot")} htmlFor="lottery-base" hint={t("lottery.startingPotHint")}>
+					<input
+						id="lottery-base"
+						type="number"
+						inputMode="numeric"
+						min={LOTTERY_LIMITS.minBasePool}
+						max={LOTTERY_LIMITS.maxBasePool}
+						value={draft.basePrizePool}
+						onChange={(event) => {
+							set("basePrizePool", Number(event.target.value));
+						}}
+						className={cn(FIELD, "max-w-40 tabular-nums")}
+					/>
+				</Field>
+
+				{warning !== null && <Warning>{warning}</Warning>}
+				{reschedules(draft, settings) && settings.enabled && <Warning>{t(RESCHEDULE_NOTES[draft.frequency])}</Warning>}
+				{problem !== null && <Warning>{problem}</Warning>}
+				{save.error !== null && (
+					<Warning>{save.error instanceof ApiError ? save.error.message : t("common.couldNotSave")}</Warning>
+				)}
+
+				<RowActions>
+					<Button
+						disabled={!dirty || problem !== null || busy}
+						onClick={() => {
+							save.mutate({
+								entryFee: draft.entryFee,
+								basePrizePool: draft.basePrizePool,
+								maxWinners: draft.maxWinners,
+								frequency: draft.frequency,
+								...(draft.announcementChannelId === null ? {} : { announcementChannelId: draft.announcementChannelId }),
+							});
+						}}
+					>
+						{settings.enabled ? t("common.saveChanges") : t("lottery.start")}
+					</Button>
+					{settings.enabled && (
+						<Button
+							variant="ghost"
+							disabled={busy}
+							onClick={() => {
+								save.mutate({ frozen: !settings.frozen });
+							}}
+						>
+							<Snowflake size={16} aria-hidden="true" /> {settings.frozen ? t("lottery.unfreeze") : t("lottery.freeze")}
+						</Button>
+					)}
+				</RowActions>
+			</SettingRows>
+
+			<DrawHistory draws={settings.history} nextDrawAt={settings.enabled ? settings.nextDrawAt : null} />
+
+			{settings.enabled && (
+				<SettingRows
+					title={t("lottery.endIt")}
+					description={t("lottery.endPot", { pot: formatNumber(settings.prizePool) })}
+				>
+					<RowActions>
+						<Button
+							variant="ghost"
+							disabled={busy}
+							onClick={() => {
+								setConfirming((was) => !was);
+							}}
+						>
+							<Trash2 size={16} aria-hidden="true" /> {t("lottery.endIt")}
+						</Button>
+					</RowActions>
+					{confirming && (
+						<RowActions>
+							<Warning>{t("lottery.cannotUndo")}</Warning>
+							<Button
+								variant="destructive"
+								disabled={busy}
+								onClick={() => {
+									end.mutate();
+									setConfirming(false);
+								}}
+							>
+								{t("lottery.yesEndIt")}
+							</Button>
+						</RowActions>
+					)}
+				</SettingRows>
+			)}
+
+			{end.error !== null && (
+				<Warning>{end.error instanceof ApiError ? end.error.message : t("common.couldNotEnd")}</Warning>
+			)}
+		</>
+	);
+}

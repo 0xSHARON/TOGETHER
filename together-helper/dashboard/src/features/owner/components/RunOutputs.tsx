@@ -1,0 +1,83 @@
+import { type CommandRunResult, type DroppedOutput } from "@testify/shared";
+import { Info } from "lucide-react";
+import { Trans, useTranslation } from "react-i18next";
+import { Warning } from "@/components/form";
+import { Card, CARD_HEADING } from "@/components/primitives";
+import { hexColour } from "@/features/owner/runner.utils";
+import { type TranslationKey } from "@/i18n";
+import { clockTime } from "@/lib/datetime";
+
+const DROPPED: Record<DroppedOutput, TranslationKey> = {
+	panel: "owner.droppedPanel",
+	buttons: "owner.droppedButtons",
+	attachment: "owner.droppedAttachment",
+};
+
+export function RunOutputs({ result }: { result: CommandRunResult }): React.JSX.Element {
+	const { t } = useTranslation();
+	return (
+		<Card className="flex flex-col gap-4">
+			<div className="flex flex-wrap items-baseline justify-between gap-2">
+				<h2 className={CARD_HEADING}>
+					<Trans
+						i18nKey="owner.replied"
+						values={{ command: result.subcommand === null ? result.command : `${result.command} ${result.subcommand}` }}
+						components={{ command: <span className="font-mono" /> }}
+					/>
+				</h2>
+				<time className="text-muted-foreground text-xs" dateTime={result.ranAt}>
+					{clockTime(result.ranAt)}
+				</time>
+			</div>
+
+			{result.outputs.length === 0 && <p className="text-muted-foreground text-sm">{t("owner.repliedNothing")}</p>}
+
+			{result.outputs.map((output, index) => {
+				if (output.kind === "text") {
+					return (
+						<p key={index} className="text-sm whitespace-pre-wrap">
+							{output.content}
+						</p>
+					);
+				}
+
+				if (output.kind === "dropped") {
+					return (
+						<p key={index} className="text-muted-foreground flex items-center gap-2 text-sm">
+							<Info size={15} aria-hidden="true" />
+							{t(DROPPED[output.what])}
+						</p>
+					);
+				}
+
+				const accent = hexColour(output.colour);
+
+				return (
+					<article
+						key={index}
+						className="border-border bg-muted/40 rounded-field border border-l-4 py-3 pr-4 pl-4"
+						{...(accent === null ? {} : { style: { borderLeftColor: accent } })}
+					>
+						{output.title !== null && <h3 className="text-sm font-semibold">{output.title}</h3>}
+						{output.description !== null && <p className="mt-1 text-sm whitespace-pre-wrap">{output.description}</p>}
+
+						{output.fields.length > 0 && (
+							<dl className="mt-3 grid gap-3 sm:grid-cols-2">
+								{output.fields.map((field) => (
+									<div key={field.name} className={field.inline ? "" : "sm:col-span-2"}>
+										<dt className="text-xs font-medium">{field.name}</dt>
+										<dd className="text-muted-foreground text-sm whitespace-pre-wrap">{field.value}</dd>
+									</div>
+								))}
+							</dl>
+						)}
+
+						{output.footer !== null && <p className="text-muted-foreground mt-3 text-xs">{output.footer}</p>}
+					</article>
+				);
+			})}
+
+			{result.degraded && <Warning>{t("owner.discordOnly")}</Warning>}
+		</Card>
+	);
+}

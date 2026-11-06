@@ -1,19 +1,138 @@
 {
-  "name": "together-helper",
-  "version": "1.0.0",
-  "description": "Companion and Support Guild Operations Assistant for TOGETHER Music Bot",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.6",
-    "discord-html-transcripts": "^3.2.0",
-    "discord.js": "^14.16.3",
-    "dotenv": "^16.4.5",
-    "express": "^5.3.0",
-    "mongoose": "^8.7.0",
-    "ms": "^2.1.3"
-  }
+	"name": "testify",
+	"version": "2.2.0",
+	"description": "Open source, multipurpose Discord bot written in TypeScript",
+	"main": "dist/index.js",
+	"license": "SEE LICENSE IN LICENSE",
+	"author": "Kkermit",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Kkkermit/Testify.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Kkkermit/Testify/issues"
+	},
+	"homepage": "https://github.com/Kkkermit/Testify#readme",
+	"keywords": [
+		"discord",
+		"discord-bot",
+		"discord.js",
+		"typescript",
+		"moderation",
+		"economy"
+	],
+	"engines": {
+		"node": ">=24.11.0"
+	},
+	"scripts": {
+		"audit": "better-npm-audit audit --level high",
+		"build": "npm run build:shared && npm run build:bot && npm run build:dashboard",
+		"build:bot": "tsup",
+		"build:dashboard": "npm run build --workspace dashboard && npm run verify:bundle",
+		"build:shared": "npm run build --workspace @testify/shared",
+		"check": "npm run typecheck && npm run lint && npm run format:check && npm run test",
+		"commands:clear": "tsx scripts/clearCommands.ts",
+		"commit": "tsx scripts/commitRunner.ts",
+		"dashboard:dev": "npm run dev --workspace dashboard",
+		"db:wipe": "tsx scripts/wipeDatabase.ts",
+		"db:wipe:dev": "tsx scripts/wipeDatabase.ts --dev",
+		"dev": "npm run build:shared && cross-env NODE_ENV=development tsx watch --clear-screen=false src/index.ts",
+		"dev:all": "tsx scripts/devAll.ts",
+		"docs:commands": "tsx scripts/generateCommandDocs.ts",
+		"docs:images": "tsx scripts/renderDocImages.ts",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"lint": "tsx scripts/lintRunner.ts",
+		"lint:fix": "tsx scripts/lintRunner.ts --fix",
+		"music:setup": "tsx scripts/setupMusic.ts",
+		"prepare": "husky && npm run build:shared",
+		"secret": "tsx scripts/createSecret.ts",
+		"setup": "tsx scripts/setupEnv.ts",
+		"start": "node dist/index.js",
+		"test": "jest --projects jest.config.ts dashboard/jest.config.ts",
+		"test:coverage": "jest --coverage && npm run test:coverage:dashboard",
+		"test:coverage:dashboard": "jest --config dashboard/jest.config.ts --coverage",
+		"test:watch": "jest --watch",
+		"typecheck": "tsc --noEmit && npm run typecheck --workspace @testify/dashboard",
+		"verify:bundle": "tsx scripts/verifyBundle.ts"
+	},
+	"lint-staged": {
+		"*.{ts,tsx,mts,cts,js,mjs,cjs}": [
+			"eslint --fix --no-warn-ignored",
+			"prettier --write"
+		],
+		"*.{json,md,yml,yaml,css,html}": [
+			"prettier --write"
+		]
+	},
+	"overrides": {
+		"glob": "$glob",
+		"test-exclude": "^7.0.1",
+		"serialize-javascript": "^7.1.3",
+		"brace-expansion": "^5.0.12",
+		"js-yaml": "^4.3.2",
+		"fast-uri": "^3.1.9",
+		"discord-html-transcripts": {
+			"undici": "^6.29.1"
+		},
+		"@istanbuljs/load-nyc-config": {
+			"js-yaml": "^3.15.1"
+		}
+	},
+	"dependencies": {
+		"@anthropic-ai/sdk": "0.128.0",
+		"@discordjs/voice": "0.19.2",
+		"@hono/node-server": "2.1.6",
+		"@napi-rs/canvas": "1.0.10",
+		"@testify/shared": "*",
+		"discord-giveaways": "6.0.1",
+		"discord-html-transcripts": "3.2.0",
+		"discord.js": "14.27.0",
+		"dotenv": "18.0.5",
+		"figlet": "1.11.4",
+		"gifenc": "1.0.3",
+		"glob": "13.0.6",
+		"hono": "4.13.12",
+		"mathjs": "15.2.0",
+		"mongoose": "8.24.1",
+		"pino": "10.3.1",
+		"pino-pretty": "13.1.3",
+		"prompts": "2.4.2",
+		"quickchart-js": "4.0.0",
+		"zod": "4.6.7"
+	},
+	"optionalDependencies": {
+		"ffmpeg-static": "5.3.0",
+		"youtube-dl-exec": "3.1.15"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "21.2.3",
+		"@eslint/js": "10.0.1",
+		"@swc/core": "1.16.13",
+		"@swc/jest": "0.2.39",
+		"@types/jest": "30.0.0",
+		"@types/node": "24.19.2",
+		"@types/prompts": "2.4.9",
+		"better-npm-audit": "3.11.0",
+		"cross-env": "10.1.0",
+		"eslint": "10.11.0",
+		"eslint-config-prettier": "10.1.8",
+		"eslint-import-resolver-typescript": "4.4.5",
+		"eslint-plugin-import-x": "4.17.1",
+		"husky": "9.1.7",
+		"jest": "30.4.2",
+		"lint-staged": "17.6.0",
+		"mongodb-memory-server": "11.2.0",
+		"prettier": "3.9.9",
+		"tsc-alias": "1.8.16",
+		"tsup": "9.0.0",
+		"tsx": "4.23.15",
+		"typescript": "5.9.3",
+		"typescript-eslint": "8.71.0",
+		"yaml": "2.9.1"
+	},
+	"workspaces": [
+		"shared",
+		"dashboard"
+	]
 }

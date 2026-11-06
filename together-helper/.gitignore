@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+coverage/
+
+# Environment
+.env
+.env.*
+!.env.example
+!.env.development.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+*.pid
+*.seed
+
+# Editors
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Caches
+.eslintcache
+.tsbuildinfo
+*.tsbuildinfo
+.swc/
+
+# Binaries `npm run music:setup` fetches. Platform-specific and ~30MB, so never committed.
+bin/

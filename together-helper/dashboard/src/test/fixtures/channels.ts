@@ -1,0 +1,82 @@
+import {
+	type AutoResponderList,
+	type ScheduledMessageList,
+	type BotStatsSettings,
+	type MemberCounts,
+	type OpenTicketList,
+	type StickyList,
+	type TempVoiceSettings,
+	type TicketSettings,
+} from "@testify/shared";
+
+export const ticketSettings: TicketSettings = {
+	enabled: true,
+	panelChannelId: "400000000000000001",
+	categoryId: "400000000000000005",
+	transcriptChannelId: "400000000000000002",
+	staffRoleId: "300000000000000003",
+	description: "Press the button below and we will be with you shortly.",
+	buttonLabel: "Create ticket",
+	posted: true,
+	openTickets: 3,
+};
+
+export const openTickets: OpenTicketList = {
+	canClose: true,
+	tickets: [
+		{
+			channelId: "400000000000000020",
+			channelName: "ticket-a1b2c3",
+			ticketId: "a1b2c3",
+			ownerId: "100000000000000002",
+			ownerName: "kate",
+			claimedById: "100000000000000001",
+			claimedByName: "someone",
+			isLocked: false,
+			openedAt: "2026-10-24T09:00:00.000Z",
+		},
+	],
+};
+
+export const botStatsSettings: BotStatsSettings = { channelId: null };
+
+export const memberCounts: MemberCounts = { total: 120, people: 108, bots: 12, joinedDay: 3, joinedWeek: 11 };
+
+export const stickyList: StickyList = {
+	limit: 25,
+	entries: [
+		{ channelId: "400000000000000001", message: "Read the rules", cap: 5, count: 3, posted: true, canSend: true },
+	],
+};
+
+export const tempVoiceSettings: TempVoiceSettings = {
+	enabled: true,
+	lobbyChannelId: "400000000000000003",
+	categoryId: null,
+	nameTemplate: "{user}'s channel",
+	userLimit: 0,
+	canManage: true,
+	active: 2,
+};
+
+export const autoResponderList: AutoResponderList = {
+	limit: 25,
+	responders: [
+		{ id: "a00000000000000000000001", trigger: "rules", match: "word", reply: "Read the rules in #rules." },
+		{ id: "a00000000000000000000002", trigger: "how do i get roles", match: "starts", reply: "Pick them in #roles." },
+	],
+};
+
+export const scheduledMessageList: ScheduledMessageList = {
+	limit: 10,
+	messages: [
+		{
+			id: "b00000000000000000000001",
+			channelId: "400000000000000001",
+			message: "Game night starts in an hour.",
+			repeat: "weekly",
+			nextAt: "2099-10-30T18:00:00.000Z",
+			canSend: true,
+		},
+	],
+};

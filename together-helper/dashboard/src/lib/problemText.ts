@@ -1,0 +1,55 @@
+import { type Problem, type ProblemCode } from "@testify/shared";
+import { type TFunction } from "i18next";
+import { type TranslationKey } from "@/i18n";
+
+const KEYS: Record<ProblemCode, TranslationKey> = {
+	"automod.word": "problem.automodWord",
+	"automod.mentionLimit": "problem.automodMentionLimit",
+	"giveaway.channel": "problem.giveawayChannel",
+	"giveaway.prize": "problem.giveawayPrize",
+	"giveaway.prizeLength": "problem.giveawayPrizeLength",
+	"giveaway.winners": "problem.giveawayWinners",
+	"giveaway.maxWinners": "problem.giveawayMaxWinners",
+	"giveaway.tooShort": "problem.giveawayTooShort",
+	"giveaway.tooLong": "problem.giveawayTooLong",
+	"lottery.channel": "problem.lotteryChannel",
+	"lottery.entryFee": "problem.lotteryEntryFee",
+	"money.amount": "problem.moneyAmount",
+	"money.tooLarge": "problem.moneyTooLarge",
+	"money.walletShort": "problem.moneyWalletShort",
+	"money.bankShort": "problem.moneyBankShort",
+	"warning.reason": "problem.warningReason",
+	"warning.reasonLength": "problem.warningReasonLength",
+	"sticky.channel": "problem.stickyChannel",
+	"sticky.duplicate": "problem.stickyDuplicate",
+	"sticky.message": "problem.stickyMessage",
+	"ticket.panelChannel": "problem.ticketPanelChannel",
+	"ticket.category": "problem.ticketCategory",
+	"ticket.transcriptChannel": "problem.ticketTranscriptChannel",
+	"ticket.staffRole": "problem.ticketStaffRole",
+	"treasure.messageRange": "problem.treasureMessageRange",
+	"treasure.amountRange": "problem.treasureAmountRange",
+	"casino.betRange": "problem.casinoBetRange",
+	"roleMenu.channel": "problem.roleMenuChannel",
+	"roleMenu.title": "problem.roleMenuTitle",
+	"roleMenu.roles": "problem.roleMenuRoles",
+	"roleMenu.tooManyRoles": "problem.roleMenuTooManyRoles",
+	"autoResponder.trigger": "problem.autoResponderTrigger",
+	"autoResponder.reply": "problem.autoResponderReply",
+	"autoResponder.duplicate": "problem.autoResponderDuplicate",
+	"schedule.channel": "problem.scheduleChannel",
+	"schedule.message": "problem.scheduleMessage",
+	"schedule.time": "problem.scheduleTime",
+	"schedule.past": "problem.schedulePast",
+	"schedule.tooFar": "problem.scheduleTooFar",
+	"notice.startPast": "problem.noticeStartPast",
+	"notice.startTooFar": "problem.noticeStartTooFar",
+	"notice.endBeforeStart": "problem.noticeEndBeforeStart",
+	"notice.endTooLong": "problem.noticeEndTooLong",
+};
+
+export function problemText(problem: Problem, t: TFunction): string;
+export function problemText(problem: Problem | null, t: TFunction): string | null;
+export function problemText(problem: Problem | null, t: TFunction): string | null {
+	return problem === null ? null : t(KEYS[problem.code], problem.values ?? {});
+}

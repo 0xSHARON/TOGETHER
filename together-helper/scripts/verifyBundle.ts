@@ -1,0 +1,149 @@
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { join, resolve } from "node:path";
+
+/** Fails on what only goes wrong in the built dashboard. */
+
+const DIST = resolve(process.cwd(), "dashboard", "dist");
+const ASSETS = join(DIST, "assets");
+const PUBLIC = resolve(process.cwd(), "dashboard", "public");
+
+const VERSION = /version\s*[=:]\s*[`"']([\d]+\.[\d]+\.[\d]+)[`"']/g;
+
+/**
+ * Identifiers only React ships beside its version, so another package's semver string is not taken for a second React.
+ */
+const REACT_NEIGHBOUR =
+	/useTransition|useFormStatus|useSyncExternalStore|rendererPackageName|react-dom|react\.transitional/;
+
+/** Either side, because the DevTools descriptor names the renderer after the version rather than before it. */
+const WINDOW = 220;
+
+export function reactVersionsIn(code: string): string[] {
+	const found = [...code.matchAll(VERSION)]
+		.filter((match) => REACT_NEIGHBOUR.test(near(code, match.index, match[0].length)))
+		.map(([, version]) => version)
+		.filter((version) => version !== undefined);
+
+	return [...new Set(found)].sort();
+}
+
+function near(code: string, index: number, length: number): string {
+	return code.slice(Math.max(0, index - WINDOW), index) + code.slice(index + length, index + length + WINDOW);
+}
+
+/** The variables Lightning CSS substitutes a `light-dark()` with when it compiles the function away. */
+const POLYFILLED = /--lightningcss-(?:light|dark)/;
+
+export function schemeProblem(css: string): string | null {
+	if (POLYFILLED.test(css)) return "`light-dark()` was compiled into variables rather than left to the browser.";
+	if (!css.includes("light-dark(")) return "No `light-dark()` survived the build, so the palette has one theme.";
+
+	return null;
+}
+
+export function filesUnder(root: string, prefix = ""): string[] {
+	if (!existsSync(root)) return [];
+
+	return readdirSync(root, { withFileTypes: true }).flatMap((entry) =>
+		entry.isDirectory() ? filesUnder(join(root, entry.name), join(prefix, entry.name)) : [join(prefix, entry.name)],
+	);
+}
+
+export function missingFrom(root: string, files: readonly string[]): string[] {
+	return files.filter((file) => !existsSync(join(root, file)));
+}
+
+const STATIC_OWNER_IMPORT = /(?:from|import)\s*["']\.\/OwnerPage-[\w-]+\.js["']/;
+
+export function ownerChunkProblem(files: Record<string, string>): string | null {
+	const chunks = Object.keys(files).filter((name) => /^OwnerPage-[\w-]+\.js$/.test(name));
+	if (chunks.length !== 1) return `Expected one owner console chunk, found ${String(chunks.length)}.`;
+
+	const importer = Object.entries(files).find(
+		([name, code]) => name.endsWith(".js") && !chunks.includes(name) && STATIC_OWNER_IMPORT.test(code),
+	);
+	return importer === undefined ? null : `${importer[0]} imports the owner console statically.`;
+}
+
+const MAP_POINTER = /[#@]\s*sourceMappingURL=/;
+
+export function sourceMapProblem(files: Record<string, string>): string | null {
+	const map = Object.keys(files).find((name) => name.endsWith(".map"));
+	if (map !== undefined) return `The build ships a source map, ${map}, which rebuilds the original code.`;
+
+	const pointer = Object.entries(files).find(([name, code]) => /\.(?:js|css)$/.test(name) && MAP_POINTER.test(code));
+	return pointer === undefined ? null : `${pointer[0]} points the browser at a source map.`;
+}
+
+function assetsMatching(extension: string): string {
+	return readdirSync(ASSETS)
+		.filter((file) => file.endsWith(extension))
+		.map((file) => readFileSync(join(ASSETS, file), "utf8"))
+		.join("\n");
+}
+
+function main(): void {
+	if (!existsSync(ASSETS)) {
+		console.error(`No build to check at ${ASSETS}. Run npm run build first.`);
+		process.exit(1);
+	}
+
+	const versions = reactVersionsIn(assetsMatching(".js"));
+
+	if (versions.length > 1) {
+		console.error(`The dashboard bundles ${String(versions.length)} copies of React: ${versions.join(", ")}.`);
+		console.error("Check resolve.dedupe and the react aliases in dashboard/vite.config.ts.");
+		process.exit(1);
+	}
+
+	const scheme = schemeProblem(assetsMatching(".css"));
+
+	if (scheme !== null) {
+		console.error(scheme);
+		console.error("Check build.cssTarget in dashboard/vite.config.ts.");
+		process.exit(1);
+	}
+
+	const owner = ownerChunkProblem(
+		Object.fromEntries(
+			readdirSync(ASSETS)
+				.filter((file) => file.endsWith(".js"))
+				.map((file) => [file, readFileSync(join(ASSETS, file), "utf8")]),
+		),
+	);
+
+	if (owner !== null) {
+		console.error(owner);
+		console.error("Check manualChunks in dashboard/vite.config.ts, and that only routes.tsx imports features/owner.");
+		process.exit(1);
+	}
+
+	const maps = sourceMapProblem(
+		Object.fromEntries(
+			filesUnder(DIST).map((file) => [file, /\.(?:js|css)$/.test(file) ? readFileSync(join(DIST, file), "utf8") : ""]),
+		),
+	);
+
+	if (maps !== null) {
+		console.error(maps);
+		console.error("Check build.sourcemap in dashboard/vite.config.ts.");
+		process.exit(1);
+	}
+
+	const publicFiles = filesUnder(PUBLIC);
+	const missing = missingFrom(DIST, publicFiles);
+
+	if (missing.length > 0) {
+		console.error(`The build left out ${missing.join(", ")} from dashboard/public.`);
+		console.error("Check publicDir in dashboard/vite.config.ts.");
+		process.exit(1);
+	}
+
+	console.log(`One copy of React in the bundle: ${versions[0] ?? "none found"}`);
+	console.log("`light-dark()` reaches the browser intact.");
+	console.log(`All ${String(publicFiles.length)} files from dashboard/public are in the build.`);
+	console.log("The owner console is its own chunk, loaded only on demand.");
+	console.log("No source maps: the browser gets only the minified bundle.");
+}
+
+if (require.main === module) main();

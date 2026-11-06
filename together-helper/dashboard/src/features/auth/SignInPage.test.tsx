@@ -1,0 +1,150 @@
+import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { http, HttpResponse } from "msw";
+import { SignInPage } from "@/features/auth/SignInPage";
+import { hardRedirect } from "@/lib/redirect";
+import { expectNoViolations } from "@/test/axe";
+import { botProfile } from "@/test/fixtures/session";
+import { siteInfo } from "@/test/fixtures/site";
+import { renderWithProviders } from "@/test/renderWithProviders";
+import { server } from "@/test/setup";
+
+// jsdom's own `location` cannot be redefined, so the redirect lives behind a helper and this mocks that.
+jest.mock("@/lib/redirect");
+
+const assign = jest.mocked(hardRedirect);
+
+describe("the sign-in page", () => {
+	/** Asking for less on the consent screen is a feature, so the page has to say what it asks for. */
+	it("names the two scopes and says it does not want an email", async () => {
+		renderWithProviders(<SignInPage />, { path: "/sign-in" });
+		await screen.findByRole("button", { name: /sign in with discord/i });
+
+		expect(screen.getByText("identify")).toBeInTheDocument();
+		expect(screen.getByText("guilds")).toBeInTheDocument();
+		expect(screen.getByText(/never asks for your email/i)).toBeInTheDocument();
+	});
+
+	/** A full page load, not a fetch: this is a redirect to Discord, not an API call. */
+	it("sends the browser to the login route, carrying where they were going", async () => {
+		const user = userEvent.setup();
+		renderWithProviders(<SignInPage />, { path: "/sign-in", route: "/sign-in?returnTo=%2Fguilds%2F1" });
+
+		await user.click(await screen.findByRole("button", { name: /sign in with discord/i }));
+
+		expect(assign).toHaveBeenCalledWith("/api/auth/login?returnTo=%2Fguilds%2F1");
+	});
+
+	/** Pressing Cancel on Discord's consent screen is not an error, and must not look like one. */
+	it("says plainly when the Discord sign-in was cancelled", async () => {
+		renderWithProviders(<SignInPage />, { path: "/sign-in", route: "/sign-in?denied=1" });
+
+		expect(await screen.findByText(/you cancelled the discord sign-in/i)).toBeInTheDocument();
+	});
+});
+
+describe("a half-configured install", () => {
+	beforeEach(() => {
+		server.use(
+			http.get("/api/auth/setup", () =>
+				HttpResponse.json({
+					configured: false,
+					missing: ["DISCORD_CLIENT_SECRET", "DASHBOARD_SESSION_SECRET"],
+					redirectUri: "http://localhost:5174/api/auth/callback",
+				}),
+			),
+		);
+	});
+
+	/** A half-configured install has to name each missing variable. */
+	it("lists exactly what is missing instead of offering a button that cannot work", async () => {
+		renderWithProviders(<SignInPage />, { path: "/sign-in" });
+
+		expect(await screen.findByText("DISCORD_CLIENT_SECRET")).toBeInTheDocument();
+		expect(screen.getByText("DASHBOARD_SESSION_SECRET")).toBeInTheDocument();
+		expect(screen.queryByRole("button", { name: /sign in with discord/i })).toBeNull();
+	});
+
+	it("points at the script that generates the secret", async () => {
+		renderWithProviders(<SignInPage />, { path: "/sign-in" });
+
+		expect(await screen.findByText(/npm run secret -- --write/)).toBeInTheDocument();
+	});
+});
+
+describe("the bot's own identity", () => {
+	// Every answer is remembered for the next visit, so one case's bot must not name the next case's.
+	afterEach(() => {
+		localStorage.removeItem("testify:botName");
+	});
+
+	/** A fork should look like its own bot without anybody editing CSS. */
+	it("shows the bot's name and avatar rather than a hardcoded brand", async () => {
+		server.use(http.get("/api/bot", () => HttpResponse.json({ ...botProfile, name: "Helper Bot" })));
+		const { container } = renderWithProviders(<SignInPage />, { path: "/sign-in" });
+
+		expect(await screen.findByRole("heading", { name: "Helper Bot" })).toBeInTheDocument();
+		await waitFor(() => {
+			expect(container.querySelector('img[src*="cdn.discordapp.com"]')).toBeInTheDocument();
+		});
+	});
+
+	/** The bot answers "connecting" for the first twenty-odd seconds; giving up after two retries left the fallback up for good. */
+	it("keeps asking while the bot connects, then shows its avatar", async () => {
+		let asked = 0;
+		server.use(
+			http.get("/api/bot", () => {
+				asked += 1;
+				return asked === 1
+					? HttpResponse.json({ error: { code: "bot_connecting", message: "Connecting." } }, { status: 503 })
+					: HttpResponse.json(botProfile);
+			}),
+		);
+
+		const { container } = renderWithProviders(<SignInPage />, { path: "/sign-in" });
+
+		await waitFor(
+			() => {
+				expect(container.querySelector('img[src*="cdn.discordapp.com"]')).toBeInTheDocument();
+			},
+			{ timeout: 5_000 },
+		);
+		expect(asked).toBe(2);
+	});
+
+	/** The profile is a separate request; the page must be usable whether or not it ever answers. */
+	it("still offers the sign-in button when the profile cannot be fetched", async () => {
+		server.use(
+			http.get("/api/bot", () =>
+				HttpResponse.json({ error: { code: "bot_connecting", message: "Connecting." } }, { status: 503 }),
+			),
+		);
+
+		renderWithProviders(<SignInPage />, { path: "/sign-in" });
+
+		expect(await screen.findByRole("button", { name: /sign in with discord/i })).toBeInTheDocument();
+		expect(screen.getByRole("heading", { level: 1, name: "Sign in" })).toBeInTheDocument();
+		// A bot called something else was named "Testify" for as long as it took to connect.
+		expect(screen.queryByText(/Testify/)).not.toBeInTheDocument();
+	});
+});
+
+describe("SignInPage accessibility", () => {
+	it("has no automatically detectable violations", async () => {
+		const { container } = renderWithProviders(<SignInPage />, { path: "/sign-in" });
+		await screen.findByRole("button", { name: /sign in with discord/i });
+
+		await expectNoViolations(container);
+	});
+});
+
+describe("a host with no dashboard", () => {
+	/** The website runs without a dashboard by default, so a sign-in link from anywhere must not lead to a refusal. */
+	it("says the dashboard is off rather than offering a sign-in that would be refused", async () => {
+		server.use(http.get("/api/site", () => HttpResponse.json({ ...siteInfo, dashboard: false })));
+		renderWithProviders(<SignInPage />, { path: "/sign-in" });
+
+		expect(await screen.findByRole("heading", { name: /the dashboard is off/i })).toBeInTheDocument();
+		expect(screen.queryByRole("button", { name: /sign in with discord/i })).toBeNull();
+	});
+});

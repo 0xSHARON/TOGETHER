@@ -1,0 +1,9 @@
+# The landing page, the docs and the legal pages are public and worth finding. Everything else is an admin panel
+# behind a sign-in, and each source file is read from GitHub on request, so neither is crawled.
+User-agent: *
+Allow: /$
+Allow: /docs
+Allow: /source-code$
+Allow: /terms
+Allow: /privacy
+Disallow: /

@@ -1,0 +1,230 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { type DashboardUser, type ManageableGuild } from "@testify/shared";
+import { FileText, LogOut, Palette, Search, ShieldQuestion, UserCog } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
+import { GuildSwitcher } from "@/app/layout/GuildSwitcher";
+import { SidebarLink } from "@/app/layout/SidebarLink";
+import { SidebarSection } from "@/app/layout/SidebarSection";
+import { GROUP_HEADING, ICON_SLOT, ROW } from "@/app/layout/sidebarStyles";
+import { BotMark } from "@/components/brand/BotMark";
+import { FlagIcon } from "@/components/brand/FlagIcon";
+import { Avatar, Tooltip } from "@/components/primitives";
+import { navigationFor, type NavAudience } from "@/config/navigation";
+import { shortcutLabel } from "@/features/search/quickSearch.utils";
+import { isLocale, type Locale, LOCALE_NAMES } from "@/i18n";
+import { api } from "@/lib/api";
+import { type BotLook, BUILT_IN_BOT_NAME } from "@/lib/brand";
+import { cn } from "@/lib/cn";
+import { hardRedirect } from "@/lib/redirect";
+
+const FOOTER_LINKS = [
+	{ to: "/account", labelKey: "nav.account", hintKey: "nav.accountHint" },
+	{ to: "/appearance", labelKey: "nav.appearance", hintKey: "nav.appearanceHint" },
+	{ to: "/terms", labelKey: "nav.terms", hintKey: "nav.termsHint" },
+	{ to: "/privacy", labelKey: "nav.privacy", hintKey: "nav.privacyHint" },
+] as const;
+
+const FOOTER_ICON = {
+	"/account": UserCog,
+	"/appearance": Palette,
+	"/terms": FileText,
+	"/privacy": ShieldQuestion,
+} as const;
+
+export function Sidebar({
+	user,
+	bot,
+	guild,
+	guilds = [],
+	isOwner,
+	expanded = false,
+	onNavigate,
+	onSearch,
+}: NavAudience & {
+	user: DashboardUser | null;
+	guilds?: readonly ManageableGuild[];
+	bot?: BotLook | undefined;
+	expanded?: boolean;
+	onNavigate?: () => void;
+	onSearch?: () => void;
+}): React.JSX.Element {
+	const { t, i18n } = useTranslation();
+	const active: Locale = isLocale(i18n.resolvedLanguage) ? i18n.resolvedLanguage : "en";
+	const queryClient = useQueryClient();
+	const label = (extra = ""): string => cn(expanded ? "" : "sr-only lg:not-sr-only", extra);
+
+	async function signOut(): Promise<void> {
+		await api.post("/auth/logout");
+		queryClient.clear();
+		hardRedirect("/sign-in");
+	}
+
+	return (
+		<nav
+			aria-label={t("nav.sections")}
+			onClick={(event) => {
+				if (event.target instanceof Element && event.target.closest("a") !== null) onNavigate?.();
+			}}
+			className={cnSidebar(expanded)}
+			data-testid={expanded ? "sidebar-drawer" : "sidebar"}
+		>
+			<Link to="/guilds" className={cn(ROW, "mb-4")}>
+				{/* Boxed to 18px like every other row icon, so the wordmark starts on the label column too. */}
+				<span aria-hidden="true" className={ICON_SLOT}>
+					<BotMark src={bot?.avatarUrl} name={bot?.name ?? null} size={22} />
+				</span>
+				<span className={label("font-display truncate text-[0.9375rem] font-semibold")}>
+					{bot?.name ?? BUILT_IN_BOT_NAME}
+				</span>
+			</Link>
+
+			{onSearch !== undefined && <SearchRow onSearch={onSearch} expanded={expanded} label={label} />}
+
+			{navigationFor({ guild, isOwner }).map((group, index) => {
+				const heading = group.headingKey === undefined ? group.heading : t(group.headingKey);
+
+				return (
+					<div key={heading ?? "global"} className={index > 0 ? "mt-4" : undefined}>
+						{heading !== undefined && (
+							<>
+								{/* At the icon-only width the rule carries the grouping, where there is no room for the words. */}
+								<hr className="border-border mx-2 mb-2 lg:hidden" />
+								{guild !== undefined && group.guildId === guild.id ? (
+									<GuildSwitcher guild={guild} guilds={guilds} expanded={expanded} />
+								) : (
+									<p
+										aria-hidden="true"
+										className={cn(GROUP_HEADING, "truncate px-2 pb-1", expanded ? "" : "hidden lg:block")}
+									>
+										{heading}
+									</p>
+								)}
+							</>
+						)}
+						<ul className="flex flex-col gap-1" {...(heading === undefined ? {} : { "aria-label": heading })}>
+							{group.items.map((item) => (
+								<li key={item.to}>
+									<SidebarLink item={item} expanded={expanded} />
+								</li>
+							))}
+							{(group.sections ?? []).map((section) => (
+								<SidebarSection key={section.labelKey} section={section} expanded={expanded} />
+							))}
+						</ul>
+					</div>
+				);
+			})}
+
+			{/* Pinned to the foot of the desktop rail; in the drawer it follows on, or a tall phone leaves a band of nothing above it. */}
+			<div className={cn("border-border flex flex-col gap-1 border-t pt-3", expanded ? "mt-4" : "mt-auto")}>
+				{user !== null && (
+					<div className={ROW}>
+						<span aria-hidden="true" className={ICON_SLOT}>
+							<Avatar name={user.username} url={user.avatarUrl} size={26} seed={user.id} />
+						</span>
+						<span className={label("truncate text-sm")}>{user.username}</span>
+					</div>
+				)}
+
+				{/* Rows rather than small links, because `hidden` at the icon-only width took these off the page entirely. */}
+				{FOOTER_LINKS.map(({ to, labelKey, hintKey }) => {
+					const Icon = FOOTER_ICON[to];
+					return (
+						<Tooltip key={to} label={t(hintKey)} placement="right">
+							<Link
+								to={to}
+								className={cn(
+									ROW,
+									"text-muted-foreground hover:text-foreground hover:bg-card/60 text-sm transition-colors duration-150",
+								)}
+							>
+								<Icon size={18} aria-hidden="true" className="shrink-0" />
+								<span className={label("truncate")}>{t(labelKey)}</span>
+							</Link>
+						</Tooltip>
+					);
+				})}
+
+				<Tooltip label={t("nav.languageHint")} placement="right">
+					<Link
+						to="/appearance#language"
+						className={cn(
+							ROW,
+							"text-muted-foreground hover:text-foreground hover:bg-card/60 text-sm transition-colors duration-150",
+						)}
+					>
+						<span aria-hidden="true" className={ICON_SLOT}>
+							<FlagIcon locale={active} />
+						</span>
+						<span className={label("truncate")} lang={active}>
+							{LOCALE_NAMES[active]}
+						</span>
+					</Link>
+				</Tooltip>
+
+				<Tooltip label={t("nav.signOutHint")} placement="right">
+					<button
+						type="button"
+						onClick={() => void signOut()}
+						className={cn(
+							ROW,
+							"text-muted-foreground hover:text-foreground hover:bg-card/60 text-sm transition-colors duration-150",
+						)}
+					>
+						<LogOut size={18} aria-hidden="true" className="shrink-0" />
+						<span className={label("truncate")}>{t("nav.signOut")}</span>
+					</button>
+				</Tooltip>
+			</div>
+		</nav>
+	);
+}
+
+function SearchRow({
+	onSearch,
+	expanded,
+	label,
+}: {
+	onSearch: () => void;
+	expanded: boolean;
+	label: (extra?: string) => string;
+}): React.JSX.Element {
+	const { t } = useTranslation();
+	const shortcut = shortcutLabel(navigator.userAgent);
+
+	return (
+		<Tooltip label={t("search.hint", { shortcut })} placement="right">
+			<button
+				type="button"
+				onClick={onSearch}
+				aria-keyshortcuts="Control+K Meta+K"
+				className={cn(
+					ROW,
+					"border-border text-muted-foreground hover:text-foreground hover:bg-card/60 mb-3 w-full border text-sm transition-colors duration-150",
+				)}
+			>
+				<Search size={18} aria-hidden="true" className="shrink-0" />
+				<span className={label("flex-1 truncate text-left")}>{t("search.open")}</span>
+				{/* A phone has no keyboard to press it on, so the drawer leaves it out. */}
+				<kbd
+					aria-hidden="true"
+					className={cn(
+						"border-border rounded-chip border px-1.5 font-mono text-[0.6875rem]",
+						expanded ? "hidden" : "hidden lg:inline",
+					)}
+				>
+					{shortcut}
+				</kbd>
+			</button>
+		</Tooltip>
+	);
+}
+
+/** Capped to the viewport in the rail — a flex child otherwise stretches to a container that grows with the page. */
+function cnSidebar(expanded: boolean): string {
+	const base = "border-border flex shrink-0 flex-col p-3";
+	return expanded
+		? `${base} bg-sidebar h-full w-64 overflow-y-auto overscroll-contain border-r`
+		: `${base} bg-sidebar scrollbar-none sticky top-0 hidden h-dvh w-16 overflow-y-auto border-r md:flex lg:w-60`;
+}

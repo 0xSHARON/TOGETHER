@@ -1,0 +1,79 @@
+import { balancesOf } from "@buttons/shop";
+import { defineButton } from "@core/button";
+import { requireAccount } from "@database/repositories/economyRepository";
+import {
+	amountPanel,
+	BALANCE_PANEL_ID,
+	balancePanel,
+	claimDaily,
+	dailyReady,
+	inventoryScreen,
+	shopScreen,
+} from "@lib/economy";
+
+export default defineButton({
+	id: BALANCE_PANEL_ID,
+	ownerOnly: true,
+
+	async run(interaction, context) {
+		if (interaction.guild === null) return;
+		if (!interaction.isButton()) return;
+
+		const guildId = interaction.guild.id;
+		const userId = interaction.user.id;
+		const account = await requireAccount(guildId, userId);
+
+		const view = (note?: string) => ({
+			wallet: account.wallet,
+			bank: account.bank,
+			username: interaction.user.username,
+			avatarUrl: interaction.user.displayAvatarURL(),
+			own: true,
+			dailyReady: dailyReady(account.lastDaily),
+			...(note !== undefined ? { note } : {}),
+		});
+
+		switch (context.action) {
+			case "daily": {
+				const result = await claimDaily(guildId, userId);
+				const updated = await requireAccount(guildId, userId);
+
+				await interaction.update(
+					balancePanel(
+						{
+							wallet: updated.wallet,
+							bank: updated.bank,
+							username: interaction.user.username,
+							avatarUrl: interaction.user.displayAvatarURL(),
+							own: true,
+							dailyReady: dailyReady(updated.lastDaily),
+							note: result.message,
+						},
+						userId,
+					),
+				);
+				return;
+			}
+
+			case "shop":
+				await interaction.update(shopScreen({ section: "items", from: "balance" }, balancesOf(account), userId));
+				return;
+
+			case "inv":
+				await interaction.update(inventoryScreen(account, interaction.user.username, userId));
+				return;
+
+			case "refresh":
+				await interaction.update(balancePanel(view(), userId));
+				return;
+
+			case "dep":
+			case "wit":
+				await interaction.update(amountPanel(context.action, account, userId, "balance"));
+				return;
+
+			default:
+				return;
+		}
+	},
+});

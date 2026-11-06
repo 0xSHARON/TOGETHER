@@ -1,0 +1,112 @@
+import { Types } from "mongoose";
+import roulette from "@buttons/roulette";
+import { checkCasinoPlay } from "@core/checks";
+import type * as Casino from "@lib/casino";
+
+jest.mock("@lib/casino", () => ({
+	...jest.requireActual<typeof Casino>("@lib/casino"),
+	placeBets: jest.fn(),
+	changeChip: jest.fn(() => Promise.resolve({ chip: 500, wallet: 1_200 })),
+	clearMyBets: jest.fn(),
+	spinNow: jest.fn(),
+	openRound: jest.fn(),
+	tableView: jest.fn((round: Parameters<typeof Casino.roundView>[0]) =>
+		Promise.resolve(jest.requireActual<typeof Casino>("@lib/casino").roundView(round, [17])),
+	),
+}));
+jest.mock("@core/checks", () => ({
+	...jest.requireActual<object>("@core/checks"),
+	checkCasinoPlay: jest.fn(() => Promise.resolve(null)),
+}));
+
+const { placeBets, openRound } = jest.requireMock("@lib/casino");
+
+const ROUND = "65f000000000000000000001";
+const GUILD = "111111111111111111";
+const PLAYER = "222222222222222222";
+
+const round = {
+	_id: new Types.ObjectId(ROUND),
+	guildId: GUILD,
+	channelId: "444444444444444444",
+	messageId: "555555555555555555",
+	hostId: PLAYER,
+	chip: 100,
+	status: "betting",
+	closesAt: null,
+	pocket: null,
+	players: {},
+	expiresAt: new Date(),
+	createdAt: new Date(),
+	updatedAt: new Date(),
+};
+
+function pressed(options: { modal?: Record<string, string> } = {}) {
+	return {
+		guildId: GUILD,
+		channelId: "444444444444444444",
+		message: { id: "555555555555555555" },
+		user: { id: PLAYER, username: "alice", globalName: null },
+		member: { displayName: "Alice" },
+		isButton: () => options.modal === undefined,
+		isModalSubmit: () => options.modal !== undefined,
+		isFromMessage: () => true,
+		fields: { getTextInputValue: (id: string) => options.modal?.[id] ?? "" },
+		update: jest.fn(() => Promise.resolve()),
+		reply: jest.fn(() => Promise.resolve()),
+		followUp: jest.fn(() => Promise.resolve()),
+		showModal: jest.fn(() => Promise.resolve()),
+		deferUpdate: jest.fn(() => Promise.resolve()),
+	};
+}
+
+const client = {} as never;
+const run = (interaction: ReturnType<typeof pressed>, action: string, args: string[]) =>
+	roulette.run(interaction as never, { client, action, args });
+
+beforeEach(() => {
+	jest.clearAllMocks();
+	placeBets.mockResolvedValue(round);
+	openRound.mockResolvedValue(round);
+});
+
+describe("the roulette table's buttons", () => {
+	/** Anybody in the channel may bet, so the handler must not be limited to the person who opened the table. */
+	it("is open to everybody, not only whoever opened the table", () => {
+		expect(roulette.ownerOnly).not.toBe(true);
+	});
+
+	it("refuses a player the casino would refuse, before any chip goes down", async () => {
+		jest.mocked(checkCasinoPlay).mockResolvedValueOnce("The casino is closed in this server.");
+
+		await expect(run(pressed(), "bet", [ROUND, "odd"])).rejects.toThrow(/closed/);
+		expect(placeBets).not.toHaveBeenCalled();
+	});
+
+	/** A new round goes on the same message, so the channel keeps one table rather than a stack of them. */
+	it("starts a new round on the same message from Play again", async () => {
+		const interaction = pressed();
+		await run(interaction, "again", ["250", "public"]);
+
+		expect(openRound).toHaveBeenCalledWith(
+			{ guildId: GUILD, channelId: "444444444444444444", messageId: "555555555555555555" },
+			{ userId: PLAYER, name: "Alice", private: false },
+			250,
+		);
+		expect(interaction.update).toHaveBeenCalled();
+	});
+
+	/** A private table's New round must not hand the table to whoever presses it. */
+	it("keeps a private table's new round private, and with its host", async () => {
+		await expect(run(pressed(), "again", ["250", "private", "999999999999999999"])).rejects.toThrow(/private/);
+		expect(openRound).not.toHaveBeenCalled();
+
+		await run(pressed(), "again", ["250", "private", PLAYER]);
+		expect(openRound).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ private: true }), 250);
+	});
+
+	it("refuses a second new round on a message that already has one starting", async () => {
+		openRound.mockResolvedValue(null);
+		await expect(run(pressed(), "again", ["250", "public"])).rejects.toThrow(/already starting/);
+	});
+});

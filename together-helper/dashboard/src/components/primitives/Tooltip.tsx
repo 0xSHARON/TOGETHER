@@ -1,0 +1,65 @@
+import { cloneElement, type RefCallback, useCallback, useEffect, useRef, type ReactElement, type Ref } from "react";
+import tippy, { type Instance, type Placement } from "tippy.js";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import "tippy.js/dist/tippy.css";
+
+/** Drives tippy.js directly, because `@tippyjs/react` reads `element.ref`, which React 19 removed. */
+export function Tooltip({
+	label,
+	placement = "top",
+	children,
+}: {
+	label: string;
+	placement?: Placement;
+	children: ReactElement<{ ref?: Ref<HTMLElement> }>;
+}): React.JSX.Element {
+	const anchorRef = useRef<HTMLElement>(null);
+	const reduced = usePrefersReducedMotion();
+
+	useEffect(() => {
+		const anchor = anchorRef.current;
+		if (anchor === null) return;
+
+		const instance: Instance = tippy(anchor, {
+			content: label,
+			theme: "testify",
+			placement,
+			// Slow to open so a passing pointer does not fire it, and slow to close so the pointer can reach the box (WCAG
+			// 2.2, 1.4.13).
+			delay: [350, 120],
+			interactive: true,
+			interactiveBorder: 8,
+			duration: reduced ? 0 : 120,
+			trigger: "mouseenter focusin",
+			aria: { content: "describedby", expanded: false },
+			// A tap already follows the link, and a box shown mid-swipe stops the drawer scrolling under the finger.
+			touch: false,
+			appendTo: () => document.body,
+		});
+
+		// tippy binds no key handler, so Escape is handled here (WCAG 2.2, 1.4.13).
+		const dismiss = (event: KeyboardEvent): void => {
+			if (event.key === "Escape") instance.hide();
+		};
+
+		document.addEventListener("keydown", dismiss);
+
+		return () => {
+			document.removeEventListener("keydown", dismiss);
+			instance.destroy();
+		};
+	}, [label, placement, reduced]);
+
+	// The child keeps its own ref too, or a caller that focuses its button finds nothing behind it.
+	const own = children.props.ref;
+	const ref = useCallback<RefCallback<HTMLElement>>(
+		(node) => {
+			anchorRef.current = node;
+			if (typeof own === "function") own(node);
+			else if (own !== null && own !== undefined) own.current = node;
+		},
+		[own],
+	);
+
+	return cloneElement(children, { ref });
+}

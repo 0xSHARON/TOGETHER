@@ -1,0 +1,22 @@
+import eightBall from "@commands/games/subcommands/eightBall.command";
+import fastType from "@commands/games/subcommands/fastType.command";
+import guessTheNumber from "@commands/games/subcommands/guessTheNumber.command";
+import guessThePokemon from "@commands/games/subcommands/guessThePokemon.command";
+import rockPaperScissors from "@commands/games/subcommands/rockPaperScissors.command";
+import wouldYouRather from "@commands/games/subcommands/wouldYouRather.command";
+import { asSubcommand, defineCommand } from "@core/command";
+
+export default defineCommand({
+	name: "game",
+	description: "Something to play.",
+	category: "games",
+
+	subcommands: [
+		asSubcommand(eightBall),
+		asSubcommand(fastType, ["fasttype"]),
+		asSubcommand(guessTheNumber, ["guessnumber"]),
+		asSubcommand(guessThePokemon, ["pokemon", "guesspokemon"]),
+		asSubcommand(rockPaperScissors),
+		asSubcommand(wouldYouRather, ["wyr"]),
+	],
+});

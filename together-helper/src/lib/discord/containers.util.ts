@@ -1,0 +1,96 @@
+import {
+	type ButtonBuilder,
+	type ColorResolvable,
+	ContainerBuilder,
+	MediaGalleryBuilder,
+	MediaGalleryItemBuilder,
+	MessageFlags,
+	resolveColor,
+	SectionBuilder,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
+	TextDisplayBuilder,
+	ThumbnailBuilder,
+} from "discord.js";
+import { type Category } from "@config/categories";
+import { categoryColour } from "@config/theme";
+import { type ContainerMessage, type ContainerPart } from "@lib/discord/discord.types";
+
+/** Components V2 — layout built from components rather than an embed. */
+
+/** Wraps a container into a payload that is safe to `reply()`, `update()` or `send()`. */
+export function containerMessage(container: ContainerBuilder): ContainerMessage {
+	return { components: [container], flags: MessageFlags.IsComponentsV2 };
+}
+
+/** For a panel showing text somebody typed, which would otherwise ping whoever it names when posted in the open. */
+export function withoutPings<Message extends object>(message: Message): Message & { allowedMentions: { parse: [] } } {
+	return { ...message, allowedMentions: { parse: [] } };
+}
+
+export function text(markdown: string): TextDisplayBuilder {
+	return new TextDisplayBuilder().setContent(markdown);
+}
+
+export function divider(options: { large?: boolean; spacer?: boolean } = {}): SeparatorBuilder {
+	return new SeparatorBuilder()
+		.setDivider(options.spacer !== true)
+		.setSpacing(options.large === true ? SeparatorSpacingSize.Large : SeparatorSpacingSize.Small);
+}
+
+/** Text with a button on the right — the layout an embed cannot do. */
+export function sectionWithButton(markdown: string, accessory: ButtonBuilder): SectionBuilder {
+	return new SectionBuilder().addTextDisplayComponents(text(markdown)).setButtonAccessory(accessory);
+}
+
+/** Text with a small image on the right, for album art and avatars. */
+export function sectionWithThumbnail(markdown: string, imageUrl: string, description?: string): SectionBuilder {
+	const thumbnail = new ThumbnailBuilder().setURL(imageUrl);
+	if (description !== undefined) thumbnail.setDescription(description);
+
+	return new SectionBuilder().addTextDisplayComponents(text(markdown)).setThumbnailAccessory(thumbnail);
+}
+
+/** One full-width image, for a drawn card; the description is what a screen reader says instead. */
+export function gallery(imageUrl: string, description?: string): MediaGalleryBuilder {
+	const item = new MediaGalleryItemBuilder().setURL(imageUrl);
+	if (description !== undefined) item.setDescription(description.slice(0, 1_024));
+
+	return new MediaGalleryBuilder().addItems(item);
+}
+
+/** A container coloured by category, or by `accent` when its stripe says how something turned out. */
+export function container(options: {
+	category?: Category;
+	accent?: ColorResolvable;
+	parts: ContainerPart[];
+}): ContainerBuilder {
+	const built = new ContainerBuilder();
+
+	if (options.accent !== undefined) built.setAccentColor(resolveNamed(options.accent));
+	else if (options.category !== undefined) built.setAccentColor(resolveAccent(options.category));
+
+	for (const part of options.parts) {
+		if (part instanceof TextDisplayBuilder) built.addTextDisplayComponents(part);
+		else if (part instanceof SectionBuilder) built.addSectionComponents(part);
+		else if (part instanceof SeparatorBuilder) built.addSeparatorComponents(part);
+		else if (part instanceof MediaGalleryBuilder) built.addMediaGalleryComponents(part);
+		else built.addActionRowComponents(part);
+	}
+
+	return built;
+}
+
+/** `setAccentColor` needs a number, but the theme stores named colours for embeds. */
+function resolveAccent(category: Category): number {
+	const colour = categoryColour(category);
+	return typeof colour === "number" ? colour : 0x5865f2;
+}
+
+function resolveNamed(colour: ColorResolvable): number {
+	try {
+		return resolveColor(colour);
+	} catch {
+		return 0x5865f2;
+	}
+}

@@ -1,0 +1,176 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, sep } from "node:path";
+import { Hono } from "hono";
+import { type ApiBindings } from "@api/context";
+import { dashboardBuilt, dashboardRoot, resolveAsset, serveDashboard } from "@api/static";
+
+let root: string;
+
+beforeEach(() => {
+	root = mkdtempSync(join(tmpdir(), "testify-dash-"));
+	mkdirSync(join(root, "assets"));
+	writeFileSync(join(root, "index.html"), "<!doctype html><div id=root></div>");
+	writeFileSync(join(root, "assets", "index-abc123.js"), "console.log(1)");
+	writeFileSync(join(root, "assets", "index-abc123.js.map"), '{"sources":["../src/main.tsx"]}');
+	writeFileSync(join(root, "robots.txt"), "User-agent: *\nDisallow: /\n");
+	writeFileSync(join(root, "apple-touch-icon.png"), "png");
+	writeFileSync(join(root, "manifest.webmanifest"), "{}");
+});
+
+afterEach(() => {
+	rmSync(root, { recursive: true, force: true });
+});
+
+describe("dashboardRoot", () => {
+	/** The root resolves outside the bot's own build output, so the built bot finds `dashboard/dist`. */
+	it("points outside the bot's own build output", () => {
+		const root = dashboardRoot();
+
+		expect(root.endsWith(join("dashboard", "dist"))).toBe(true);
+		expect(root).not.toContain(`${sep}dist${sep}dashboard`);
+	});
+});
+
+describe("resolveAsset", () => {
+	it("finds a built file", () => {
+		expect(resolveAsset(root, "/assets/index-abc123.js")).toBe(join(root, "assets", "index-abc123.js"));
+	});
+
+	/** The check is on the resolved path, because `..%2f` survives one decode. */
+	it("refuses anything that climbs out of the build directory", () => {
+		for (const path of ["/../.env", "/..%2f.env", "/assets/../../.env", "/%2e%2e/%2e%2e/.env"]) {
+			expect(resolveAsset(root, path)).toBeNull();
+		}
+	});
+
+	/** Containment uses `relative` rather than a string prefix, which breaks on a root ending in a separator. */
+	it("finds a built file whatever shape the root arrives in", () => {
+		expect(resolveAsset(`${root}/`, "/assets/index-abc123.js")).toBe(join(root, "assets", "index-abc123.js"));
+	});
+
+	it("still refuses a climb when the root ends in a separator", () => {
+		expect(resolveAsset(`${root}/`, "/../.env")).toBeNull();
+	});
+
+	it("refuses a path it cannot decode", () => {
+		expect(resolveAsset(root, "/%")).toBeNull();
+	});
+
+	/** A disk that ignores case, a trailing dot or a stream name would otherwise hand a file over under a name no check knows. */
+	it("answers only a name the build holds exactly", () => {
+		for (const path of ["/ASSETS/INDEX-ABC123.JS", "/assets/index-abc123.js.", "/assets/index-abc123.js::$DATA"]) {
+			expect(resolveAsset(root, path)).toBeNull();
+		}
+		expect(resolveAsset(root, "/assets/index-abc123.js", new Set(["assets/INDEX-abc123.js"]))).toBeNull();
+	});
+
+	it("returns nothing for a file that is not there", () => {
+		expect(resolveAsset(root, "/assets/nope.js")).toBeNull();
+	});
+
+	/** A client route has no extension, and must fall through to index.html rather than 404. */
+	it("does not treat an extensionless path as an asset", () => {
+		expect(resolveAsset(root, "/guilds/900000000000000001")).toBeNull();
+	});
+});
+
+describe("serveDashboard", () => {
+	function appFor(): Hono<ApiBindings> {
+		const app = new Hono<ApiBindings>();
+		app.get("/api/health", (context) => context.json({ ok: true }));
+		serveDashboard(app, root);
+
+		return app;
+	}
+
+	/** An admin panel has nothing worth indexing, and a crawler that finds one page finds the sign-in gate. */
+	it("serves robots.txt as readable text rather than a download", async () => {
+		const response = await appFor().request("/robots.txt");
+
+		expect(response.status).toBe(200);
+		expect(response.headers.get("content-type")).toContain("text/plain");
+		expect(await response.text()).toContain("Disallow: /");
+	});
+
+	it("serves a hashed asset with a long cache", async () => {
+		const response = await appFor().request("/assets/index-abc123.js");
+
+		expect(response.status).toBe(200);
+		expect(response.headers.get("cache-control")).toContain("immutable");
+		expect(response.headers.get("content-type")).toContain("text/javascript");
+	});
+
+	/** An icon keeps its name when its picture changes, so a year-long cache would pin the old one. */
+	it("caches an unhashed file for a day, not a year", async () => {
+		const response = await appFor().request("/apple-touch-icon.png");
+
+		expect(response.status).toBe(200);
+		expect(response.headers.get("content-type")).toBe("image/png");
+		expect(response.headers.get("cache-control")).toBe("public, max-age=86400");
+	});
+
+	it("serves the manifest as a manifest", async () => {
+		const response = await appFor().request("/manifest.webmanifest");
+
+		expect(response.headers.get("content-type")).toContain("application/manifest+json");
+	});
+
+	/** A home-screen icon fetched from `/favicon.ico` used to receive the page itself, with a 200. */
+	it("answers a missing file with a 404 rather than the page", async () => {
+		for (const path of ["/favicon.ico", "/apple-touch-icon-precomposed.png", "/assets/gone-abc123.js"]) {
+			const response = await appFor().request(path);
+
+			expect(response.status).toBe(404);
+			expect(await response.text()).not.toContain("id=root");
+		}
+	});
+
+	/** A file's address in the source browser ends in its extension, and a hard refresh on one must still open the page. */
+	it("hands a source file's address to the SPA, extension and all", async () => {
+		const response = await appFor().request("/source-code/src/core/loader.ts");
+
+		expect(response.status).toBe(200);
+		expect(await response.text()).toContain("id=root");
+	});
+
+	/** React Router owns every path the API does not, which is what makes a deep link work on a hard refresh. */
+	it("hands an unknown path to the SPA, uncached", async () => {
+		const response = await appFor().request("/guilds/900000000000000001/levelling");
+
+		expect(response.status).toBe(200);
+		expect(await response.text()).toContain("id=root");
+		expect(response.headers.get("cache-control")).toBe("no-cache");
+	});
+
+	/** A source map left in a build once let anybody browse the dashboard's original source tree in DevTools. */
+	it.each(["/assets/index-abc123.js.map", "/assets/index-abc123.js%2Emap", "/assets/./index-abc123.js.map"])(
+		"refuses a source map however its address is spelt: %s",
+		async (path) => {
+			const response = await appFor().request(path);
+
+			expect(response.status).toBe(404);
+			expect(await response.text()).not.toContain("main.tsx");
+		},
+	);
+
+	/** Otherwise a typo in an API path silently returns HTML and the client parses it as JSON. */
+	it("never answers an /api path with the SPA", async () => {
+		expect((await appFor().request("/api/nope")).status).toBe(404);
+	});
+
+	it("leaves the real API routes alone", async () => {
+		expect((await appFor().request("/api/health")).status).toBe(200);
+	});
+
+	/** A bot-only install has never run the dashboard build, and must not crash on start. */
+	it("registers nothing when the dashboard has not been built", async () => {
+		rmSync(join(root, "index.html"));
+		expect(dashboardBuilt(root)).toBe(false);
+
+		const app = new Hono<ApiBindings>();
+		serveDashboard(app, root);
+
+		expect((await app.request("/guilds")).status).toBe(404);
+	});
+});

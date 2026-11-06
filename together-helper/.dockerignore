@@ -1,0 +1,30 @@
+# Anything the image builds for itself, plus anything that must never reach a layer.
+node_modules
+**/node_modules
+dist
+**/dist
+coverage
+**/coverage
+
+# The image is configured through the environment and reads no .env at all. The one template kept is what the
+# website's configuration page is drawn from, and it reaches only the build stage.
+.env
+.env.*
+!.env.example
+
+.git
+.github
+.husky
+.vscode
+.claude
+# Only the Markdown the website bundles; the pictures stay out.
+docs/images
+docs/banner.png
+docs/dashboard/screenshots
+tests
+**/*.test.ts
+**/*.test.tsx
+Dockerfile
+.dockerignore
+docker-compose.yml
+*.log

@@ -1,0 +1,40 @@
+import { PermissionFlagsBits } from "discord.js";
+import { channelOption, defineCommand, inGuild, inTextChannel } from "@core/command";
+import { embed, reply } from "@lib/discord";
+import { DEFAULT_REASON, setLocked } from "@lib/moderation";
+
+export default defineCommand({
+	name: "unlock",
+	description: "Lets everyone send messages in a channel again.",
+	category: "moderation",
+	guildOnly: true,
+	permissions: [PermissionFlagsBits.ManageChannels],
+	botPermissions: [PermissionFlagsBits.ManageRoles],
+	options: [
+		{
+			name: "channel",
+			description: "The channel to unlock. Defaults to this one.",
+			type: "channel",
+		},
+		{ name: "reason", description: "Why the channel is being unlocked.", type: "string" },
+	],
+
+	async run(interaction) {
+		const guild = inGuild(interaction);
+		const channel = channelOption(interaction, "channel") ?? inTextChannel(interaction);
+		const reason = interaction.options.getString("reason") ?? DEFAULT_REASON;
+
+		await setLocked(channel, guild, false, `${interaction.user.username}: ${reason}`);
+
+		await reply(interaction, {
+			embeds: [
+				embed({
+					category: "moderation",
+					title: "🔓 Channel unlocked",
+					description: `${channel} has been unlocked.`,
+					fields: [{ name: "Reason", value: reason }],
+				}),
+			],
+		});
+	},
+});

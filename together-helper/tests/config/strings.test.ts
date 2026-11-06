@@ -1,0 +1,62 @@
+import { strings } from "@config/strings";
+
+/** No template renders `undefined` or `[object Object]` into chat. */
+type Leaf = string | ((...args: never[]) => string);
+
+function walk(value: unknown, path: string[] = []): [string, Leaf][] {
+	if (typeof value === "string" || typeof value === "function") return [[path.join("."), value as Leaf]];
+	if (value === null || typeof value !== "object") return [];
+
+	return Object.entries(value).flatMap(([key, child]) => walk(child, [...path, key]));
+}
+
+const leaves = walk(strings);
+
+const ARGUMENTS: Record<string, unknown[]> = {
+	"generic.unknownCommand": ["t?"],
+	"generic.blacklisted": ["spamming"],
+	"generic.cooldown": ["3 seconds"],
+	"generic.externalApi": ["TMDB"],
+	"generic.failure": ["`/leaderboard`", "K7Q2XD"],
+	"generic.serviceDown": ["TMDB"],
+	"permissions.userMissing": [["BanMembers", "KickMembers"]],
+	"permissions.botMissing": [["ManageRoles"]],
+	"economy.targetNoAccount": ["alice"],
+	"economy.insufficientWallet": [1234],
+	"economy.insufficientBank": [50],
+	"testPost.note": ["the welcome message", "Test Server"],
+};
+
+describe("strings", () => {
+	it("has copy to check", () => {
+		expect(leaves.length).toBeGreaterThan(20);
+	});
+
+	it("renders every line without a hole in it", () => {
+		const holed = leaves.filter(([name, leaf]) => {
+			const rendered =
+				typeof leaf === "function" ? (leaf as (...args: unknown[]) => string)(...(ARGUMENTS[name] ?? [1])) : leaf;
+
+			return typeof rendered !== "string" || rendered.length === 0 || /undefined|\[object Object\]|NaN/.test(rendered);
+		});
+
+		expect(holed.map(([name]) => name)).toEqual([]);
+	});
+
+	it("interpolates the values it is given", () => {
+		expect(strings.generic.unknownCommand("t?")).toContain("t?help");
+		expect(strings.generic.blacklisted("spamming")).toContain("spamming");
+		expect(strings.generic.externalApi("TMDB")).toContain("TMDB");
+	});
+
+	it("formats a missing-permission list as inline code", () => {
+		const rendered = strings.permissions.userMissing(["BanMembers", "KickMembers"]);
+
+		expect(rendered).toContain("`BanMembers`");
+		expect(rendered).toContain("`KickMembers`");
+	});
+
+	it("groups thousands in economy amounts, so 1234 does not read as 1234", () => {
+		expect(strings.economy.insufficientWallet(1234)).toContain("1,234");
+	});
+});

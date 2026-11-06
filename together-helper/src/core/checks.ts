@@ -1,0 +1,258 @@
+import { PermissionFlagsBits, PermissionsBitField } from "discord.js";
+import { theme } from "@config/theme";
+import { botName } from "@core/brand";
+import { type TestifyClient } from "@core/client";
+import { type Command, type CommandInput, type Subcommand } from "@core/command";
+import { findBlacklistEntry } from "@database/repositories/blacklistRepository";
+import { disabledGlobally, disabledInGuild } from "@database/repositories/commandToggleRepository";
+import { getMusicSettings } from "@database/repositories/musicSettingsRepository";
+import { reportOwnerAttempt } from "@lib/bot/ownerAudit.util";
+import { CASINO_COMMAND, CASINO_SETTINGS_SUBCOMMAND, CASINO_STATS_SUBCOMMAND } from "@lib/casino/casino.constants";
+import { casinoRefusal, readCasinoSettings } from "@lib/casino/casinoSettings.util";
+import { formatDuration, humanisePermission } from "@lib/format/format.util";
+import { MUSIC_SYSTEM_SUBCOMMAND } from "@lib/music/music.constants";
+import { musicRefusal, normaliseMusicSettings } from "@lib/music/musicSettings.util";
+import { type CasinoGame, isAlwaysEnabled, isCasinoGame } from "@testify/shared";
+
+export interface TitledRefusal {
+	title: string;
+	message: string;
+	fields?: { name: string; value: string }[];
+	/** A refusal is a notice by default; `error` is for one that is final. */
+	tone?: "notice" | "error";
+}
+
+export type CheckFailure = string | TitledRefusal | null;
+
+export function refusalText(refusal: string | TitledRefusal): string {
+	if (typeof refusal === "string") return refusal;
+
+	const fields = (refusal.fields ?? []).map((field) => `**${field.name}:** ${field.value}`);
+	return [`**${refusal.title}**`, refusal.message, ...fields].join("\n");
+}
+
+export const OWNER_ONLY_REFUSAL = "This command is only for the bot owner. The attempt has been logged.";
+
+const cooldowns = new Map<string, number>();
+
+/** Deleting your own data is not something the blacklist takes away; the blacklist entry itself is never deleted. */
+const OPEN_TO_THE_BLACKLISTED: ReadonlySet<string> = new Set(["delete-my-data"]);
+
+export async function runChecks(
+	interaction: CommandInput,
+	command: Command,
+	client: TestifyClient,
+): Promise<CheckFailure> {
+	// First, so an attempt is recorded and refused whatever else would have stopped it.
+	if (command.ownerOnly === true && !client.isOwner(interaction.user.id)) {
+		await reportOwnerAttempt(client, interaction, command);
+		return OWNER_ONLY_REFUSAL;
+	}
+
+	if (client.paused) return pausedRefusal();
+
+	const blacklisted = await findBlacklistEntry(interaction.user.id);
+	if (blacklisted && !OPEN_TO_THE_BLACKLISTED.has(command.name)) return blacklistRefusal(blacklisted);
+
+	const switchedOff = await checkSwitchedOff(command.name, interaction.guildId);
+	if (switchedOff !== null) return switchedOff;
+
+	const musicOff = await checkMusicSystem(interaction, command);
+	if (musicOff !== null) return musicOff;
+
+	const casinoClosed = await checkCasino(interaction, command);
+	if (casinoClosed !== null) return casinoClosed;
+
+	if (command.guildOnly && !interaction.guild) {
+		return "This command only works inside a server.";
+	}
+
+	if (command.nsfw) {
+		const channel = interaction.channel;
+		const isNsfw = channel !== null && "nsfw" in channel && channel.nsfw;
+		if (!isNsfw) return "This command only works in age-restricted channels.";
+	}
+
+	const member = interaction.member;
+	const needed = [...(command.permissions ?? []), ...(chosenSubcommand(interaction, command)?.permissions ?? [])];
+
+	if (needed.length > 0 && member !== null) {
+		const missing = permissionsOf(member).missing(new PermissionsBitField(needed));
+		if (missing.length > 0) {
+			return `You need these permissions: ${missing.map((p) => `\`${humanisePermission(p)}\``).join(", ")}`;
+		}
+	}
+
+	if (command.botPermissions?.length && interaction.guild?.members.me) {
+		const missing = interaction.guild.members.me.permissions.missing(new PermissionsBitField(command.botPermissions));
+		if (missing.length > 0) {
+			return `I need these permissions: ${missing.map((p) => `\`${humanisePermission(p)}\``).join(", ")}`;
+		}
+	}
+
+	return checkCooldown(interaction, command, client);
+}
+
+export function blacklistRefusal(entry: { reason: string; createdAt: Date }): TitledRefusal {
+	const since = Math.floor(new Date(entry.createdAt).getTime() / 1_000);
+
+	return {
+		title: `🚫 You are blocked from ${botName()}`,
+		message:
+			`The bot's owner has blocked your account, so you can no longer use ${botName()}. None of its commands, ` +
+			"buttons or menus will work for you, in this server or any other.",
+		fields: [
+			{ name: "Reason", value: entry.reason.trim() === "" ? "No reason was given." : entry.reason.slice(0, 1_000) },
+			{
+				name: "Blocked since",
+				value: Number.isFinite(since) ? `<t:${String(since)}:D> (<t:${String(since)}:R>)` : "Unknown",
+			},
+			{
+				name: "Think this is a mistake?",
+				value: "Only the bot's owner can lift a block. Server moderators and admins cannot.",
+			},
+		],
+		tone: "error",
+	};
+}
+
+function pausedRefusal(): string {
+	return `${botName()} is paused right now. The bot owner can resume it from the dashboard.`;
+}
+
+/** The gates a control anybody may press passes, since whoever posted it having passed them says nothing about them. */
+export async function checkOpenControl(
+	client: TestifyClient,
+	who: { userId: string; guildId: string },
+	command: string,
+): Promise<CheckFailure> {
+	if (client.paused) return pausedRefusal();
+
+	const blacklisted = await findBlacklistEntry(who.userId);
+	if (blacklisted) return blacklistRefusal(blacklisted);
+
+	return checkSwitchedOff(command, who.guildId);
+}
+
+/** The gates `/play` passes, for a control anybody may press to queue music. */
+export async function checkMusicControl(
+	client: TestifyClient,
+	who: { userId: string; guildId: string; member: CommandInput["member"] },
+): Promise<CheckFailure> {
+	const refused = await checkOpenControl(client, who, "play");
+	if (refused !== null) return refused;
+
+	const settings = normaliseMusicSettings(await getMusicSettings(who.guildId));
+
+	return musicRefusal(settings, {
+		roleIds: roleIdsOf(who.member),
+		manager: who.member !== null && permissionsOf(who.member).has(PermissionFlagsBits.ManageGuild),
+	});
+}
+
+export async function checkCasinoPlay(
+	client: TestifyClient,
+	who: { userId: string; guildId: string },
+	game: CasinoGame,
+): Promise<CheckFailure> {
+	const refused = await checkOpenControl(client, who, CASINO_COMMAND);
+	if (refused !== null) return refused;
+
+	return casinoRefusal(await readCasinoSettings(who.guildId), game);
+}
+
+/** Nobody bypasses a switch, the bot owner included. */
+async function checkSwitchedOff(name: string, guildId: string | null): Promise<CheckFailure> {
+	if (isAlwaysEnabled(name)) return null;
+
+	if ((await disabledGlobally()).includes(name)) {
+		return {
+			title: `${theme.emoji.maintenance} This command is under maintenance`,
+			message: `The bot's owner has switched \`/${name}\` off for now. It may come back in the future, so try again later.`,
+		};
+	}
+
+	if (guildId !== null && (await disabledInGuild(guildId)).includes(name)) {
+		return "That command is switched off in this server. Anybody with Manage Server can turn it back on.";
+	}
+
+	return null;
+}
+
+/** Which subcommand was used, or null — a command with no subcommands answers null the contract cannot express. */
+function chosenSubcommand(interaction: CommandInput, command: Command): Subcommand | null {
+	if (command.subcommands === undefined) return null;
+
+	const chosen: string | null = interaction.options.getSubcommand(false);
+
+	return command.subcommands.find((subcommand) => subcommand.name === chosen) ?? null;
+}
+
+/** Both shapes a member arrives in carry permissions, and only one of them is already a bitfield. */
+function permissionsOf(member: NonNullable<CommandInput["member"]>): PermissionsBitField {
+	return typeof member.permissions === "string"
+		? new PermissionsBitField(BigInt(member.permissions))
+		: new PermissionsBitField(member.permissions);
+}
+
+/** A slash interaction hands roles back as a manager; a raw API member hands back the ids themselves. */
+function roleIdsOf(member: CommandInput["member"]): string[] {
+	if (member === null) return [];
+	if (Array.isArray(member.roles)) return member.roles;
+
+	return [...member.roles.cache.keys()];
+}
+
+/**
+ * The music system's switch and DJ roles, gated here so no music command can forget them; `/music system` is the way
+ * back in.
+ */
+async function checkMusicSystem(interaction: CommandInput, command: Command): Promise<CheckFailure> {
+	if (command.category !== "music" || interaction.guildId === null) return null;
+
+	if (chosenSubcommand(interaction, command)?.name === MUSIC_SYSTEM_SUBCOMMAND) return null;
+
+	const settings = normaliseMusicSettings(await getMusicSettings(interaction.guildId));
+	const member = interaction.member;
+
+	return musicRefusal(settings, {
+		roleIds: roleIdsOf(member),
+		manager: member !== null && permissionsOf(member).has(PermissionFlagsBits.ManageGuild),
+	});
+}
+
+/** The casino's switch and its per-game switches; settings and stats stay reachable while it is closed. */
+async function checkCasino(interaction: CommandInput, command: Command): Promise<CheckFailure> {
+	if (command.name !== CASINO_COMMAND || interaction.guildId === null) return null;
+
+	const chosen = chosenSubcommand(interaction, command)?.name ?? null;
+	if (chosen === CASINO_SETTINGS_SUBCOMMAND || chosen === CASINO_STATS_SUBCOMMAND) return null;
+
+	return casinoRefusal(
+		await readCasinoSettings(interaction.guildId),
+		chosen !== null && isCasinoGame(chosen) ? chosen : null,
+	);
+}
+
+function checkCooldown(interaction: CommandInput, command: Command, client: TestifyClient): CheckFailure {
+	if (!command.cooldown || client.isOwner(interaction.user.id)) return null;
+
+	// Per guild, because the features a cooldown protects are per guild.
+	const key = `${interaction.guildId ?? "dm"}:${command.name}:${interaction.user.id}`;
+	const now = Date.now();
+	const readyAt = cooldowns.get(key) ?? 0;
+
+	if (readyAt > now) return `Slow down — try again in ${formatDuration(readyAt - now)}.`;
+
+	cooldowns.set(key, now + command.cooldown);
+	if (cooldowns.size > 5_000) {
+		for (const [entry, expiry] of cooldowns) if (expiry <= now) cooldowns.delete(entry);
+	}
+
+	return null;
+}
+
+/** Used by the tests, and by `/reset` when clearing state. */
+export function clearCooldowns(): void {
+	cooldowns.clear();
+}

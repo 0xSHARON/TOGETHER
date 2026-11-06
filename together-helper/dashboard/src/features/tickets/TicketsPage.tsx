@@ -1,0 +1,247 @@
+import { TICKET_LIMITS } from "@testify/shared";
+import { Power, Send } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useParams } from "react-router";
+import { ErrorState } from "@/app/ErrorState";
+import { LeaveGuard } from "@/app/LeaveGuard";
+import {
+	ChannelKindPicker,
+	ChannelPicker,
+	Field,
+	FIELD,
+	SavingIndicator,
+	savingStateOf,
+	FieldGroup,
+	postableChannels,
+	RowActions,
+	SELECT,
+	SettingRows,
+	Warning,
+} from "@/components/form";
+import { Button, PageHeader, Skeleton, Summary } from "@/components/primitives";
+import { useGuildOverview } from "@/features/guild-overview/useGuildOverview";
+import { useChannels, useRoles } from "@/features/levelling/useLevelling";
+import { OpenTicketsCard } from "@/features/tickets/OpenTicketsCard";
+import {
+	type Draft,
+	draftOf,
+	draftProblems,
+	isDirty,
+	staffRoleWarning,
+	ticketSummary,
+} from "@/features/tickets/tickets.utils";
+import { useDisableTickets, useSaveTickets, useTickets } from "@/features/tickets/useTickets";
+import { PostPreview } from "@/features/welcome/components/PostPreview";
+import { usePageTitle } from "@/hooks/usePageTitle";
+import { ApiError } from "@/lib/api";
+import { channelLabel } from "@/lib/channels";
+import { cn } from "@/lib/cn";
+import { markupWarning, sanitiseInput } from "@/lib/sanitise";
+
+export function TicketsPage(): React.JSX.Element {
+	const { t } = useTranslation();
+	const { guildId = "" } = useParams();
+
+	const tickets = useTickets(guildId);
+	const channels = useChannels(guildId);
+	const roles = useRoles(guildId);
+	const overview = useGuildOverview(guildId);
+	const save = useSaveTickets(guildId);
+	const disable = useDisableTickets(guildId);
+
+	usePageTitle(t("tickets.title"), overview.data?.name);
+
+	const settings = tickets.data;
+	const [draft, setDraft] = useState<Draft | null>(null);
+
+	useEffect(() => {
+		if (settings !== undefined) setDraft(draftOf(settings));
+	}, [settings]);
+
+	if (tickets.isError) return <ErrorState error={tickets.error} onRetry={() => void tickets.refetch()} />;
+	if (tickets.isPending || draft === null) return <Skeleton className="h-96 w-full" />;
+	if (settings === undefined) return <Skeleton className="h-96 w-full" />;
+
+	const problems = draftProblems(draft, t);
+	const blocked = problems.length > 0;
+	const dirty = isDirty(draft, settings);
+	const busy = save.isPending || disable.isPending;
+	const roleProblem = staffRoleWarning(roles.data ?? [], draft.staffRoleId, t);
+
+	function set<K extends keyof Draft>(field: K, value: Draft[K]): void {
+		setDraft((current) => (current === null ? current : { ...current, [field]: value }));
+	}
+
+	function patch(publish = false): void {
+		if (draft === null) return;
+		save.mutate({
+			panelChannelId: draft.panelChannelId ?? undefined,
+			categoryId: draft.categoryId ?? undefined,
+			transcriptChannelId: draft.transcriptChannelId ?? undefined,
+			staffRoleId: draft.staffRoleId ?? undefined,
+			description: sanitiseInput(draft.description),
+			buttonLabel: sanitiseInput(draft.buttonLabel),
+			...(publish ? { publish: true } : {}),
+		});
+	}
+
+	return (
+		<>
+			<LeaveGuard when={dirty && !busy} />
+			<PageHeader
+				server={overview.data}
+				title={t("tickets.title")}
+				subtitle={t("tickets.subtitle")}
+				action={<SavingIndicator state={savingStateOf(busy, save.isSuccess && !dirty)} />}
+			/>
+
+			<Summary>
+				{ticketSummary(settings, channelLabel(postableChannels(channels.data ?? []), settings.panelChannelId, t), t)}
+			</Summary>
+
+			{settings.enabled && <OpenTicketsCard guildId={guildId} />}
+
+			<SettingRows title={t("tickets.whereTitle")} description={t("tickets.whereBody")}>
+				<ChannelPicker
+					label={t("tickets.panelChannel")}
+					hint={t("tickets.panelChannelHint")}
+					channels={channels.data ?? []}
+					value={draft.panelChannelId}
+					allowNone={false}
+					onChange={(id) => {
+						set("panelChannelId", id);
+					}}
+				/>
+
+				<ChannelKindPicker
+					kind="category"
+					label={t("tickets.category")}
+					hint={t("tickets.categoryHint")}
+					noneLabel={t("tickets.chooseCategory")}
+					channels={channels.data ?? []}
+					value={draft.categoryId}
+					onChange={(id) => {
+						set("categoryId", id);
+					}}
+				/>
+
+				<ChannelPicker
+					label={t("tickets.transcripts")}
+					hint={t("tickets.transcriptsHint")}
+					channels={channels.data ?? []}
+					value={draft.transcriptChannelId}
+					allowNone={false}
+					onChange={(id) => {
+						set("transcriptChannelId", id);
+					}}
+				/>
+
+				<Field label={t("tickets.staffRole")} htmlFor="ticket-staff" hint={t("tickets.staffRoleHint")}>
+					<select
+						id="ticket-staff"
+						className={SELECT}
+						value={draft.staffRoleId ?? ""}
+						onChange={(event) => {
+							set("staffRoleId", event.target.value === "" ? null : event.target.value);
+						}}
+					>
+						<option value="">{t("tickets.chooseRole")}</option>
+						{(roles.data ?? []).map((role) => (
+							<option key={role.id} value={role.id}>
+								{role.name}
+							</option>
+						))}
+					</select>
+				</Field>
+
+				{roleProblem !== null && <Warning>{roleProblem}</Warning>}
+			</SettingRows>
+
+			<SettingRows
+				title={t("tickets.panelSays")}
+				description={settings.posted ? t("tickets.postAgain") : t("tickets.nothingPosted")}
+			>
+				<Field label={t("tickets.message")} htmlFor="ticket-description">
+					<textarea
+						id="ticket-description"
+						rows={3}
+						value={draft.description}
+						maxLength={TICKET_LIMITS.maxDescription}
+						onChange={(event) => {
+							set("description", event.target.value);
+						}}
+						className={cn(FIELD, "resize-y")}
+					/>
+				</Field>
+
+				<Field label={t("tickets.buttonLabel")} htmlFor="ticket-button">
+					<input
+						id="ticket-button"
+						value={draft.buttonLabel}
+						maxLength={TICKET_LIMITS.maxButtonLabel}
+						onChange={(event) => {
+							set("buttonLabel", event.target.value);
+						}}
+						className={cn(FIELD, "max-w-64")}
+					/>
+				</Field>
+
+				<FieldGroup label={t("common.preview")}>
+					<PostPreview text={draft.description} empty={t("common.previewEmpty")}>
+						<span className="bg-primary rounded-field mt-2 inline-block px-3 py-1.5 text-sm font-medium text-white">
+							{draft.buttonLabel}
+						</span>
+					</PostPreview>
+				</FieldGroup>
+
+				{markupWarning(draft.description) !== null && <Warning>{markupWarning(draft.description)}</Warning>}
+				{blocked && <Warning>{problems.join(" ")}</Warning>}
+				{save.error !== null && (
+					<Warning>{save.error instanceof ApiError ? save.error.message : t("common.couldNotSave")}</Warning>
+				)}
+
+				<RowActions>
+					<Button
+						disabled={!dirty || blocked || busy}
+						onClick={() => {
+							patch();
+						}}
+					>
+						{t("common.saveChanges")}
+					</Button>
+
+					<Button
+						variant="secondary"
+						disabled={blocked || busy}
+						onClick={() => {
+							patch(true);
+						}}
+					>
+						<Send size={16} aria-hidden="true" /> {settings.posted ? t("tickets.updatePanel") : t("tickets.postPanel")}
+					</Button>
+				</RowActions>
+			</SettingRows>
+
+			{settings.enabled && (
+				<SettingRows title={t("tickets.turnOff")} description={t("tickets.turnOffBody")}>
+					<RowActions>
+						<Button
+							variant="ghost"
+							disabled={busy}
+							onClick={() => {
+								disable.mutate();
+							}}
+						>
+							<Power size={16} aria-hidden="true" /> {t("tickets.turnOffAction")}
+						</Button>
+					</RowActions>
+				</SettingRows>
+			)}
+
+			{disable.error !== null && (
+				<Warning>{disable.error instanceof ApiError ? disable.error.message : t("common.couldNotSave")}</Warning>
+			)}
+		</>
+	);
+}
