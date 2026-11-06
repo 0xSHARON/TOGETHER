@@ -1,10 +1,17 @@
 const {
   ApplicationCommandOptionType,
-  PermissionsBitField,
-  EmbedBuilder
+  PermissionsBitField
 } = require("discord.js");
 const { WelcomeConfig } = require("../../schema");
 const config = require("../../config");
+const {
+  container,
+  separator,
+  text,
+  flags,
+  noticePayload,
+  COLORS
+} = require("../../utils/ui");
 
 module.exports = {
   name: "setwelcome",
@@ -33,7 +40,14 @@ module.exports = {
 
   async slashExecute(interaction, client) {
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageGuild) && !config.ownerIds.includes(interaction.user.id)) {
-      return interaction.reply({ content: "❌ You need `Manage Server` permissions to configure welcome messages.", ephemeral: true });
+      return interaction.reply(
+        noticePayload({
+          title: "Permission Denied",
+          description: "You need `Manage Server` permissions to configure welcome messages.",
+          emoji: "🚫",
+          tone: "danger"
+        }, true)
+      );
     }
 
     const channel = interaction.options.getChannel("channel");
@@ -51,18 +65,25 @@ module.exports = {
       { upsert: true, new: true }
     );
 
-    const embed = new EmbedBuilder()
-      .setColor(config.accentColor)
-      .setTitle("🎉 Welcome System Configured")
-      .setDescription(
-        `• **Announcement Channel:** ${channel.toString()}\n` +
-        `• **DM Welcome:** \`${dm ? "ENABLED" : "DISABLED"}\`\n\n` +
-        `**Message Preview:**\n>>> ${customMsg
-          .replace(/{user}/g, interaction.user.toString())
-          .replace(/{server}/g, interaction.guild.name)
-          .replace(/{count}/g, interaction.guild.memberCount)}`
+    const preview = customMsg
+      .replace(/{user}/g, interaction.user.toString())
+      .replace(/{server}/g, interaction.guild.name)
+      .replace(/{count}/g, interaction.guild.memberCount);
+
+    const card = container(COLORS.success)
+      .addTextDisplayComponents(text("## 🎉 Welcome Automation Configured"))
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(
+        text(
+          `• **Channel:** ${channel.toString()}\n` +
+          `• **DM Welcome:** \`${dm ? "ENABLED" : "DISABLED"}\`\n\n` +
+          `**Preview:**\n>>> ${preview}`
+        )
       );
 
-    return interaction.reply({ embeds: [embed] });
+    return interaction.reply({
+      components: [card],
+      flags: flags(false)
+    });
   }
 };

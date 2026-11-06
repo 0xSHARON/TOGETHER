@@ -40,4 +40,34 @@ console.log(`
 `);
 Logger.ready("System Initialized! Spawning Clusters...");
 
+// Auto-start TOGETHER Helper Bot alongside Music Bot
+const path = require("path");
+const fs = require("fs");
+const { fork } = require("child_process");
+
+function startTogetherHelper() {
+  const helperScript = path.join(__dirname, "together-helper", "src", "index.js");
+  if (!fs.existsSync(helperScript) || process.env.DISABLE_HELPER === "true") return;
+
+  Logger.system("Launching TOGETHER Helper Bot alongside Music Bot...");
+
+  const helperProcess = fork(helperScript, [], {
+    cwd: path.join(__dirname, "together-helper"),
+    env: { ...process.env },
+    stdio: "inherit"
+  });
+
+  helperProcess.on("exit", (code, signal) => {
+    if (signal === "SIGTERM" || signal === "SIGINT") return;
+    Logger.warn(`TOGETHER Helper Bot exited (code: ${code}). Auto-restarting in 5s...`);
+    setTimeout(startTogetherHelper, 5000);
+  });
+
+  process.on("exit", () => {
+    try { helperProcess.kill(); } catch {}
+  });
+}
+
+startTogetherHelper();
+
 manager.spawn({ timeout: -1 });

@@ -1,4 +1,6 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
+require("dotenv").config(); // Fallback to root .env if present
 
 module.exports = {
   token: process.env.BOT_TOKEN || "",
@@ -8,6 +10,7 @@ module.exports = {
   mongoUri: process.env.MONGODB_URL || "",
   ticketsCategoryId: process.env.TICKETS_CATEGORY_ID || "",
   supportGuildId: process.env.SUPPORT_GUILD_ID || "",
+  logChannelId: process.env.LOG_CHANNEL_ID || "1557621712948830388",
   color: "#FF1E38", // Neo-Brutalist Red Accent
   accentColor: "#00E676", // Neo Emerald Accent
   dashboardUrl: process.env.DASHBOARD_URL || "https://dash.together.dpdns.org",

@@ -1,10 +1,10 @@
 const {
   ApplicationCommandOptionType,
-  PermissionsBitField,
-  EmbedBuilder
+  PermissionsBitField
 } = require("discord.js");
 const { SuggestionConfig, BugReportConfig } = require("../../schema");
 const config = require("../../config");
+const { noticePayload } = require("../../utils/ui");
 
 module.exports = {
   name: "setchannel",
@@ -31,7 +31,14 @@ module.exports = {
 
   async slashExecute(interaction, client) {
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageGuild) && !config.ownerIds.includes(interaction.user.id)) {
-      return interaction.reply({ content: "❌ You need `Manage Server` permissions to configure helper channels.", ephemeral: true });
+      return interaction.reply(
+        noticePayload({
+          title: "Permission Denied",
+          description: "You need `Manage Server` permissions to configure helper channels.",
+          emoji: "🚫",
+          tone: "danger"
+        }, true)
+      );
     }
 
     const type = interaction.options.getString("type");
@@ -43,9 +50,14 @@ module.exports = {
         { channelId: channel.id, enabled: true },
         { upsert: true, new: true }
       );
-      return interaction.reply({
-        content: `✅ Suggestions channel updated to ${channel.toString()}! Members can now use \`/suggest\`.`
-      });
+      return interaction.reply(
+        noticePayload({
+          title: "Suggestions Channel Configured",
+          description: `Suggestions channel set to ${channel.toString()}! Users can now submit ideas via \`/suggest\`.`,
+          emoji: "💡",
+          tone: "success"
+        }, false)
+      );
     }
 
     if (type === "bugreports") {
@@ -54,9 +66,14 @@ module.exports = {
         { channelId: channel.id, enabled: true },
         { upsert: true, new: true }
       );
-      return interaction.reply({
-        content: `✅ Bug reports channel updated to ${channel.toString()}! Members can now use \`/bugreport\`.`
-      });
+      return interaction.reply(
+        noticePayload({
+          title: "Bug Reports Channel Configured",
+          description: `Bug reports channel set to ${channel.toString()}! Members can now report issues via \`/bugreport\`.`,
+          emoji: "🐛",
+          tone: "success"
+        }, false)
+      );
     }
   }
 };

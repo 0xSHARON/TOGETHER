@@ -1,13 +1,20 @@
 const {
   ChannelType,
   PermissionsBitField,
-  EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle
 } = require("discord.js");
 const { TicketConfig, Ticket } = require("../schema");
 const config = require("../config");
+const {
+  container,
+  separator,
+  text,
+  flags,
+  noticePayload,
+  COLORS
+} = require("../utils/ui");
 
 module.exports = {
   name: "interactionCreate",
@@ -20,12 +27,18 @@ module.exports = {
       try {
         await command.slashExecute(interaction, client);
       } catch (err) {
-        console.error(`[Command Error] ${interaction.commandName}:`, err);
+        if (client.logger) {
+          client.logger.error(`[Command Error] /${interaction.commandName}: ${err.stack || err.message}`);
+        }
         const replyFn = interaction.deferred || interaction.replied ? "editReply" : "reply";
-        await interaction[replyFn]({
-          content: `❌ Error executing command: ${err.message}`,
-          ephemeral: true
-        }).catch(() => {});
+        await interaction[replyFn](
+          noticePayload({
+            title: "Command Execution Error",
+            description: `An error occurred while executing \`/${interaction.commandName}\`:\n\`\`\`${err.message}\`\`\``,
+            emoji: "⚠️",
+            tone: "danger"
+          }, true)
+        ).catch(() => {});
       }
       return;
     }
@@ -46,9 +59,14 @@ module.exports = {
         });
 
         if (existing) {
-          return interaction.editReply({
-            content: `❌ You already have an open ticket in <#${existing.channelId}>!`
-          });
+          return interaction.editReply(
+            noticePayload({
+              title: "Ticket Already Open",
+              description: `You already have an active ticket in <#${existing.channelId}>! Please resolve it before opening another.`,
+              emoji: "⚠️",
+              tone: "warning"
+            }, true)
+          );
         }
 
         const cfg = await TicketConfig.findOne({ guildId: interaction.guild.id });
@@ -100,7 +118,6 @@ module.exports = {
 
         const chosenCategory = categoryTitles[category] || "General Support";
         const channelName = `ticket-${interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, "")}-${nextNum}`;
-
         const categoryIdToUse = cfg?.categoryId || config.ticketsCategoryId || null;
 
         const ticketChannel = await interaction.guild.channels.create({
@@ -126,43 +143,55 @@ module.exports = {
           { upsert: true }
         );
 
-        // Send Welcome Embed inside the newly created ticket channel
-        const welcomeTicketEmbed = new EmbedBuilder()
-          .setColor(config.color)
-          .setTitle(`📩 Support Ticket #${nextNum}`)
-          .setDescription(
-            `Hello ${interaction.user.toString()},\n\n` +
-            `Thank you for contacting **TOGETHER Support** regarding **${chosenCategory}**.\n\n` +
-            `• Please describe your problem in detail.\n` +
-            `• If reporting an audio error, mention which voice channel and song URL caused it.\n` +
-            `• A staff member will assist you shortly.`
+        // Send Components V2 Welcome Card inside the newly created ticket channel
+        const ticketCard = container(COLORS.brand)
+          .addTextDisplayComponents(
+            text(`## 📩 Support Ticket #${nextNum}\n*Category: ${chosenCategory}*`)
           )
-          .setFooter({ text: "Click Close Ticket when your issue has been resolved." })
-          .setTimestamp();
-
-        const closeRow = new ActionRowBuilder().addComponents(
-          new ButtonBuilder()
-            .setCustomId("ticket:close")
-            .setLabel("Close Ticket")
-            .setEmoji("🔒")
-            .setStyle(ButtonStyle.Danger)
-        );
+          .addSeparatorComponents(separator())
+          .addTextDisplayComponents(
+            text(
+              `Hello ${interaction.user.toString()},\n\n` +
+              `Thank you for reaching out to **TOGETHER Support**.\n\n` +
+              `• **Detail:** Please describe your inquiry or audio problem below.\n` +
+              `• **Context:** If reporting an audio lag or error, include the voice channel name and track link.\n` +
+              `• **Assistance:** A staff member will respond shortly.`
+            )
+          )
+          .addSeparatorComponents(separator())
+          .addActionRowComponents(
+            new ActionRowBuilder().addComponents(
+              new ButtonBuilder()
+                .setCustomId("ticket:close")
+                .setLabel("Close Ticket")
+                .setEmoji("🔒")
+                .setStyle(ButtonStyle.Danger)
+            )
+          );
 
         await ticketChannel.send({
           content: `${interaction.user.toString()} ${cfg?.staffRoleId ? `<@&${cfg.staffRoleId}>` : ""}`,
-          embeds: [welcomeTicketEmbed],
-          components: [closeRow]
+          components: [ticketCard],
+          flags: flags(false)
         });
 
-        return interaction.editReply({
-          content: `✅ Your ticket has been created! Head over to ${ticketChannel.toString()}.`
-        });
+        return interaction.editReply(
+          noticePayload({
+            title: "Support Ticket Created",
+            description: `Your ticket has been generated at ${ticketChannel.toString()}. Click to jump right in!`,
+            emoji: "🎫",
+            tone: "success"
+          }, true)
+        );
       }
 
       if (action === "close") {
+        const closeNotice = container(COLORS.danger)
+          .addTextDisplayComponents(text("### 🔒 Closing Ticket\nThis channel will be deleted in 5 seconds..."));
+
         await interaction.reply({
-          content: "🔒 Closing this ticket in 5 seconds...",
-          ephemeral: false
+          components: [closeNotice],
+          flags: flags(false)
         });
 
         await Ticket.findOneAndUpdate({ channelId: interaction.channel.id }, { status: "closed" });
