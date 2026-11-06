@@ -101,10 +101,12 @@ module.exports = {
         const chosenCategory = categoryTitles[category] || "General Support";
         const channelName = `ticket-${interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, "")}-${nextNum}`;
 
+        const categoryIdToUse = cfg?.categoryId || config.ticketsCategoryId || null;
+
         const ticketChannel = await interaction.guild.channels.create({
           name: channelName,
           type: ChannelType.GuildText,
-          parent: cfg?.categoryId || null,
+          parent: categoryIdToUse,
           permissionOverwrites
         });
 

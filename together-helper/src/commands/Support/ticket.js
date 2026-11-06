@@ -90,7 +90,7 @@ module.exports = {
         {
           panelChannelId: interaction.channel.id,
           panelMessageId: panelMsg.id,
-          categoryId: category?.id || null,
+          categoryId: category?.id || config.ticketsCategoryId || null,
           staffRoleId: staffRole?.id || null
         },
         { upsert: true, new: true }
