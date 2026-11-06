@@ -11,6 +11,7 @@ import MusicCardsPage from './pages/MusicCardsPage';
 import CommandsPage from './pages/CommandsPage';
 import OwnerPage from './pages/OwnerPage';
 import LoginPage from './pages/LoginPage';
+import SettingsPage from './pages/SettingsPage';
 
 export default function App() {
   return (
@@ -30,7 +31,7 @@ export default function App() {
             <Route path="/autoplay-247" element={<Autoplay247Page />} />
             <Route path="/cards" element={<MusicCardsPage />} />
             <Route path="/commands" element={<CommandsPage />} />
-            <Route path="/settings" element={<Autoplay247Page />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/owner" element={<OwnerPage />} />
           </Route>
 

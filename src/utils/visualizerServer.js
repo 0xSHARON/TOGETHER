@@ -466,6 +466,16 @@ function startVisualizerServer(client, preferredPort = 5050) {
       }));
     }
 
+    // ── API: Guilds Bot is Installed in (/api/bot-guilds) ───────────────────
+    if (pathname === "/api/bot-guilds" || pathname === "/api/guild-ids") {
+      res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-cache" });
+      const guildIds = client?.guilds?.cache ? Array.from(client.guilds.cache.keys()) : [];
+      return res.end(JSON.stringify({
+        total: guildIds.length,
+        guildIds,
+      }));
+    }
+
     // ── API: Full Bot Metadata, Owner & Command Directory (/api/bot-info) ───
     if (pathname === "/api/bot-info") {
       res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-cache" });

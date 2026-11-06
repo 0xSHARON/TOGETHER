@@ -3,9 +3,9 @@ require("dotenv").config({ path: path.resolve(__dirname, "../../../.env") });
 
 module.exports = {
   port: parseInt(process.env.DASHBOARD_PORT || "5080", 10),
-  jwtSecret: process.env.JWT_SECRET || "together_brutalist_jwt_secret_cyber_2026",
+  jwtSecret: process.env.JWT_SECRET || "OrglTijXPmBn3P8J7hVxsO00ElhLo0TG763JTdMPOiM",
   botApiUrl: process.env.BOT_API_URL || "http://127.0.0.1:5050",
-  botApiSecret: process.env.BOT_API_SECRET || "together_internal_secret_key_9918",
+  botApiSecret: process.env.BOT_API_SECRET || "V80f4E2V6SZhTIYQH4SK8h8y8bb8go49jf8y9O3WduU",
   clientId: process.env.DISCORD_CLIENT_ID || "863496211667484676",
   clientSecret: process.env.DISCORD_CLIENT_SECRET || "",
   redirectUri: process.env.DASHBOARD_REDIRECT_URI || "https://dash.together.dpdns.org/api/auth/callback",

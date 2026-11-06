@@ -28,6 +28,16 @@ class BotBridgeService {
     }
   }
 
+  async getBotGuildIds() {
+    try {
+      const resp = await axios.get(`${this.apiUrl}/api/bot-guilds`, { timeout: 4000 });
+      if (Array.isArray(resp.data?.guildIds)) {
+        return new Set(resp.data.guildIds);
+      }
+    } catch {}
+    return new Set();
+  }
+
   async getGuildPlayer(guildId) {
     try {
       const resp = await axios.get(`${this.apiUrl}/api/queue?guild=${encodeURIComponent(guildId)}`, { timeout: 4000 });
