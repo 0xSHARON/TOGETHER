@@ -197,15 +197,16 @@ class BotBridgeService {
   }
 
   async getGuildChannels(guildId) {
-    if (!guildId) return { textChannels: [], voiceChannels: [] };
+    if (!guildId) return { textChannels: [], voiceChannels: [], roles: [] };
     try {
       const resp = await axios.get(`${this.apiUrl}/api/guild-channels/${encodeURIComponent(guildId)}`, { timeout: 4000 });
       return {
         textChannels: Array.isArray(resp.data?.textChannels) ? resp.data.textChannels : [],
-        voiceChannels: Array.isArray(resp.data?.voiceChannels) ? resp.data.voiceChannels : []
+        voiceChannels: Array.isArray(resp.data?.voiceChannels) ? resp.data.voiceChannels : [],
+        roles: Array.isArray(resp.data?.roles) ? resp.data.roles : []
       };
     } catch {
-      return { textChannels: [], voiceChannels: [] };
+      return { textChannels: [], voiceChannels: [], roles: [] };
     }
   }
 

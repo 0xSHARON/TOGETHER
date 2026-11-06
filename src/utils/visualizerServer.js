@@ -791,6 +791,7 @@ function startVisualizerServer(client, preferredPort = 5050) {
       }
       const textChannels = [];
       const voiceChannels = [];
+      const roles = [];
       guild.channels.cache.forEach((c) => {
         if (!c) return;
         if (c.type === 2 || c.type === 13 || c.isVoiceBased?.()) {
@@ -799,10 +800,15 @@ function startVisualizerServer(client, preferredPort = 5050) {
           textChannels.push({ id: c.id, name: c.name, type: c.type });
         }
       });
+      guild.roles.cache.forEach((r) => {
+        if (!r || r.name === "@everyone") return;
+        roles.push({ id: r.id, name: r.name, color: r.hexColor, managed: r.managed });
+      });
       textChannels.sort((a, b) => a.name.localeCompare(b.name));
       voiceChannels.sort((a, b) => a.name.localeCompare(b.name));
+      roles.sort((a, b) => a.name.localeCompare(b.name));
       res.writeHead(200, { "Content-Type": "application/json" });
-      return res.end(JSON.stringify({ textChannels, voiceChannels }));
+      return res.end(JSON.stringify({ textChannels, voiceChannels, roles }));
     }
 
     // ── API: Check Top.gg Voter Access (/api/check-vote) ─────

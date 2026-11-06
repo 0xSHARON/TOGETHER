@@ -20,6 +20,7 @@ const Liked = require(path.join(schemaDir, "liked.js"));
 const Setup = require(path.join(schemaDir, "setup.js"));
 const Prefix = require(path.join(schemaDir, "prefix.js"));
 const Blacklist = require(path.join(schemaDir, "blacklist.js"));
+const DJRole = require(path.join(schemaDir, "djrole.js"));
 
 mongoose.set("autoIndex", false);
 mongoose.set("strictQuery", false);
@@ -82,5 +83,6 @@ module.exports = {
   Liked,
   Setup,
   Prefix,
-  Blacklist
+  Blacklist,
+  DJRole
 };

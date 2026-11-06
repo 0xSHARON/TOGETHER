@@ -13,6 +13,7 @@ const db3 = require("../../schema/setup");
 const { sendWebhook } = require("../../utils/webhooks");
 const { playPreviousTrack } = require("../../utils/previousTrack");
 const { setAutoplay, setLoopMode, stopPlaybackModes } = require("../../utils/playbackModes");
+const { checkDJ } = require("../../utils/djCheck");
 
 const { getGuildPrefix } = require("../../utils/botCache");
 
@@ -168,6 +169,24 @@ module.exports = {
 
             const container = new ContainerBuilder()
               .addTextDisplayComponents(errorDisplay);
+
+            return await interaction
+              .reply({
+                components: [container],
+                flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2,
+              })
+              .catch(() => { });
+          }
+        }
+
+        if (command.dj) {
+          const djStatus = await checkDJ(interaction.member, client, player);
+          if (!djStatus.allowed) {
+            const djDisplay = new TextDisplayBuilder()
+              .setContent(`**${client.emoji.cross || "❌"} This command is restricted to members with the <@&${djStatus.roleId}> role.**`);
+
+            const container = new ContainerBuilder()
+              .addTextDisplayComponents(djDisplay);
 
             return await interaction
               .reply({

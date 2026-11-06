@@ -13,6 +13,7 @@ const {
   isUserBlacklisted
 } = require("../../utils/botCache");
 const { sendWebhook } = require("../../utils/webhooks");
+const { checkDJ } = require("../../utils/djCheck");
 const cooldowns = new Map();
 
 module.exports = {
@@ -244,6 +245,22 @@ module.exports = {
         components: [container],
         flags: MessageFlags.IsComponentsV2
       }).catch(() => null);
+    }
+
+    if (command.dj) {
+      const djStatus = await checkDJ(message.member, client, player);
+      if (!djStatus.allowed) {
+        const djDisplay = new TextDisplayBuilder()
+          .setContent(`**${client.emoji.cross || "❌"} This command is restricted to members with the <@&${djStatus.roleId}> role.**`);
+
+        const container = new ContainerBuilder()
+          .addTextDisplayComponents(djDisplay);
+
+        return message.channel.send({
+          components: [container],
+          flags: MessageFlags.IsComponentsV2
+        }).catch(() => null);
+      }
     }
 
     try {

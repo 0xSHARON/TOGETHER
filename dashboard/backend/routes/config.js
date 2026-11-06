@@ -1,7 +1,7 @@
 const express = require("express");
 const { authenticateUser } = require("../middleware/auth");
 const { requireGuildPermission } = require("../middleware/guildAuth");
-const { TwoFourSeven, Setup, Prefix, ensureConnected, mongoose } = require("../services/dbService");
+const { TwoFourSeven, Setup, Prefix, DJRole, ensureConnected, mongoose } = require("../services/dbService");
 const botBridge = require("../services/botBridge");
 const config = require("../config");
 
@@ -14,11 +14,12 @@ router.get("/:guildId", authenticateUser, requireGuildPermission, async (req, re
 
     const isDbReady = mongoose.connection.readyState === 1;
 
-    const [twoFourSeven, setup, prefixDoc, channels, voterStatus] = await Promise.all([
+    const [twoFourSeven, setup, prefixDoc, djDoc, channels, voterStatus] = await Promise.all([
       isDbReady ? TwoFourSeven.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null) : null,
       isDbReady ? Setup.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null) : null,
       isDbReady ? Prefix.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null) : null,
-      botBridge.getGuildChannels(req.guildId).catch(() => ({ textChannels: [], voiceChannels: [] })),
+      isDbReady ? DJRole.findOne({ guildId: req.guildId }).maxTimeMS(2500).lean().catch(() => null) : null,
+      botBridge.getGuildChannels(req.guildId).catch(() => ({ textChannels: [], voiceChannels: [], roles: [] })),
       botBridge.checkVoterStatus(req.user.id).catch(() => ({ allowed: false, isOwner: false, isVoter: false }))
     ]);
 
@@ -38,7 +39,13 @@ router.get("/:guildId", authenticateUser, requireGuildPermission, async (req, re
           }
         : null,
       prefix: prefixDoc?.Prefix || ".",
-      channels: channels || { textChannels: [], voiceChannels: [] },
+      djRole: djDoc
+        ? {
+            roleId: djDoc.roleId,
+            enabled: djDoc.mode !== false
+          }
+        : { roleId: null, enabled: false },
+      channels: channels || { textChannels: [], voiceChannels: [], roles: [] },
       voterStatus: voterStatus || { allowed: false, isOwner: false, isVoter: false },
       topggVoteUrl: config.topggVoteUrl || "https://top.gg/bot/863496211667484676/vote"
     });
@@ -174,6 +181,59 @@ router.post("/:guildId/reset-prefix", authenticateUser, requireGuildPermission, 
     });
 
     res.json({ success: true, prefix: "." });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/config/:guildId/djrole -> Set or update DJ role configuration
+router.post("/:guildId/djrole", authenticateUser, requireGuildPermission, async (req, res) => {
+  const { roleId, enabled } = req.body;
+
+  try {
+    await ensureConnected().catch(() => {});
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ error: "Database is connecting. Please retry in a few moments." });
+    }
+
+    if (!roleId && enabled) {
+      return res.status(400).json({ error: "Please select a valid Discord role to enforce DJ mode." });
+    }
+
+    let doc;
+    if (!roleId || enabled === false) {
+      doc = await DJRole.findOneAndUpdate(
+        { guildId: req.guildId },
+        { mode: false, updatedAt: new Date() },
+        { upsert: true, new: true }
+      );
+    } else {
+      doc = await DJRole.findOneAndUpdate(
+        { guildId: req.guildId },
+        { roleId: String(roleId), mode: Boolean(enabled), updatedAt: new Date() },
+        { upsert: true, new: true }
+      );
+    }
+
+    // Dispatch audit log to Discord thread
+    botBridge.sendDashboardLog({
+      event: "DJROLE_UPDATE",
+      user: req.user,
+      guildId: req.guildId,
+      action: "DJ Role Configured",
+      details: enabled && roleId
+        ? `DJ Role set to <@&${roleId}> (Enforced: \`YES\`) by **${req.user.username}**.`
+        : `DJ Role restrictions disabled by **${req.user.username}**.`,
+      color: "#FF1E38"
+    });
+
+    res.json({
+      success: true,
+      djRole: {
+        roleId: doc.roleId,
+        enabled: doc.mode !== false
+      }
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

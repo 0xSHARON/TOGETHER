@@ -43,6 +43,12 @@ export default function SettingsPage() {
   const [msg247, setMsg247] = useState('');
   const [saving247, setSaving247] = useState(false);
 
+  // DJ Role states
+  const [djRoleId, setDjRoleId] = useState('');
+  const [djEnabled, setDjEnabled] = useState(false);
+  const [djMsg, setDjMsg] = useState('');
+  const [savingDj, setSavingDj] = useState(false);
+
   // 1. Fetch accessible mutual guilds
   useEffect(() => {
     fetchMutualGuilds();
@@ -90,6 +96,7 @@ export default function SettingsPage() {
     setLoadingConfig(true);
     setPrefixMsg('');
     setMsg247('');
+    setDjMsg('');
     try {
       const resp = await axios.get(`/api/config/${guildId}`, { withCredentials: true });
       setConfig(resp.data);
@@ -97,7 +104,9 @@ export default function SettingsPage() {
       setIs247(Boolean(resp.data?.twoFourSeven?.enabled));
       setVoiceId(resp.data?.twoFourSeven?.voiceId || '');
       setTextId(resp.data?.twoFourSeven?.textId || '');
-      setChannels(resp.data?.channels || { textChannels: [], voiceChannels: [] });
+      setDjRoleId(resp.data?.djRole?.roleId || '');
+      setDjEnabled(Boolean(resp.data?.djRole?.enabled));
+      setChannels(resp.data?.channels || { textChannels: [], voiceChannels: [], roles: [] });
       setVoterStatus(resp.data?.voterStatus || { allowed: false, isOwner: false, isVoter: false });
       if (resp.data?.topggVoteUrl) {
         setTopggVoteUrl(resp.data.topggVoteUrl);
@@ -172,6 +181,30 @@ export default function SettingsPage() {
       alert(err.response?.data?.error || err.message);
     } finally {
       setSaving247(false);
+    }
+  }
+
+  // DJ Role Handlers
+  async function handleSaveDjRole(enable) {
+    if (enable && !djRoleId) {
+      alert('Please select a Discord role to set as DJ Role.');
+      return;
+    }
+    setSavingDj(true);
+    setDjMsg('');
+    try {
+      const resp = await axios.post(
+        `/api/config/${selectedGuildId}/djrole`,
+        { roleId: djRoleId, enabled: enable },
+        { withCredentials: true }
+      );
+      setDjEnabled(Boolean(resp.data?.djRole?.enabled));
+      setDjMsg(enable ? 'DJ Role restrictions are now active!' : 'DJ Role restrictions disabled (free-for-all mode).');
+      await fetchGuildConfig(selectedGuildId);
+    } catch (err) {
+      alert(err.response?.data?.error || err.message);
+    } finally {
+      setSavingDj(false);
     }
   }
 
@@ -487,7 +520,87 @@ export default function SettingsPage() {
             </div>
           </BrutCard>
 
-          {/* SECTION 3: SETUP STATUS */}
+          {/* SECTION 3: DJ ROLE ENFORCEMENT */}
+          <BrutCard title="DJ ROLE CONTROLLER" subtitle="Restrict queue, skip, volume, and filter controls to authorized DJs">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-brutal-border pb-3">
+                <div>
+                  <span className="font-mono text-xs font-bold text-white uppercase block">
+                    STATUS: {djEnabled && djRoleId ? 'ACTIVE / RESTRICTED' : 'FREE FOR ALL'}
+                  </span>
+                  <span className="font-mono text-[11px] text-brutal-muted">
+                    {djEnabled && djRoleId
+                      ? 'Only DJs, server administrators, and solo listeners can skip/stop playback.'
+                      : 'Anyone in the voice channel can use playback commands.'}
+                  </span>
+                </div>
+                <span
+                  className={`font-mono text-xs font-black px-2 py-0.5 border ${
+                    djEnabled && djRoleId
+                      ? 'border-brutal-accent bg-brutal-accent/20 text-brutal-accent'
+                      : 'border-zinc-700 bg-zinc-900 text-zinc-400'
+                  }`}
+                >
+                  {djEnabled && djRoleId ? 'ENFORCED' : 'OFF'}
+                </span>
+              </div>
+
+              {djMsg && (
+                <div className="p-3 border-2 border-brutal-accent bg-black text-xs font-mono text-brutal-accent flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <span>{djMsg}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="block font-mono text-xs text-brutal-text font-bold mb-1 uppercase">
+                  SELECT DJ ROLE
+                </label>
+                <div className="relative">
+                  <select
+                    value={djRoleId}
+                    onChange={(e) => setDjRoleId(e.target.value)}
+                    disabled={savingDj}
+                    className="w-full bg-brutal-bg border-2 border-brutal-border p-2.5 font-mono text-xs text-brutal-text appearance-none cursor-pointer focus:outline-none focus:border-brutal-accent"
+                  >
+                    <option value="">-- No DJ Role (Free-for-all) --</option>
+                    {(channels.roles || []).map((r) => (
+                      <option key={r.id} value={r.id}>
+                        @{r.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brutal-muted pointer-events-none" />
+                </div>
+                <span className="text-[10px] text-brutal-muted mt-1 block font-mono">
+                  Members with this role (plus Admins and the Server Owner) will be the only users permitted to use /skip, /stop, /clear, and /filters.
+                </span>
+              </div>
+
+              <div className="pt-2 flex flex-wrap gap-3 font-mono">
+                <button
+                  type="button"
+                  disabled={savingDj || !djRoleId}
+                  onClick={() => handleSaveDjRole(true)}
+                  className="px-5 py-2.5 bg-brutal-accent text-black text-xs font-bold uppercase border-2 border-black shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {savingDj ? 'SAVING...' : 'SAVE & ENFORCE DJ ROLE'}
+                </button>
+                {djEnabled && (
+                  <button
+                    type="button"
+                    disabled={savingDj}
+                    onClick={() => handleSaveDjRole(false)}
+                    className="px-5 py-2.5 bg-red-950/40 text-red-400 text-xs font-bold uppercase border-2 border-red-600 hover:bg-red-600 hover:text-black transition-all disabled:opacity-40"
+                  >
+                    DISABLE DJ RESTRICTIONS
+                  </button>
+                )}
+              </div>
+            </div>
+          </BrutCard>
+
+          {/* SECTION 4: SETUP STATUS */}
           <BrutCard title="DEDICATED SONG REQUEST CHANNEL" subtitle="Automatic queue controller embed">
             <div className="font-mono text-xs space-y-2">
               <div className="flex items-center justify-between p-3 border border-brutal-border bg-brutal-bg">
