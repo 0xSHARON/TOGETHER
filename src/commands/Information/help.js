@@ -103,6 +103,10 @@ function linkRow(config) {
   if (isHttpUrl(config.links?.invite)) {
     buttons.push(new ButtonBuilder().setLabel("Invite TOGETHER").setEmoji(emoji.home).setURL(config.links.invite).setStyle(ButtonStyle.Link));
   }
+  const dashboardUrl = config.links?.dashboard || "https://dash.together.dpdns.org";
+  if (isHttpUrl(dashboardUrl)) {
+    buttons.push(new ButtonBuilder().setLabel("Dashboard").setEmoji(emoji.config || "🌐").setURL(dashboardUrl).setStyle(ButtonStyle.Link));
+  }
   return buttons.length ? new ActionRowBuilder().addComponents(buttons) : null;
 }
 

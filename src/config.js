@@ -28,6 +28,7 @@ const config = {
     BG: process.env.BACKGROUND_URL || "",
     support: process.env.SUPPORT_URL || "https://discord.gg/mUdGTs2Dw5",
     invite: process.env.INVITE_URL || "",
+    dashboard: process.env.DASHBOARD_URL || "https://dash.together.dpdns.org",
     Shafed_Billa: "TOGETHER",
     power: "developed by kajukatli.",
     vanity: process.env.VANITY_URL || "",
