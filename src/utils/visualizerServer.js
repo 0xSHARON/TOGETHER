@@ -593,6 +593,11 @@ function startVisualizerServer(client, preferredPort = 5050) {
       res.writeHead(200, { "Content-Type": "application/json" });
       return res.end(JSON.stringify(getGuildPlayerState(client, rawTarget)));
     }
+    if (pathname === "/api/queue" || pathname === "/api/player") {
+      const rawTarget = reqUrl.searchParams.get("guild") || reqUrl.searchParams.get("guildId") || "default";
+      res.writeHead(200, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify(getGuildPlayerState(client, rawTarget)));
+    }
 
     // ── API: Interactive Playback Control ─────────────────────
     if (pathname.startsWith("/api/player/") && pathname.endsWith("/control") && req.method === "POST") {

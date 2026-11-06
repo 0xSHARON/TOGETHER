@@ -67,6 +67,10 @@ app.get("/api/overview", async (req, res) => {
   const sessions = await botBridge.getActiveSessions();
   res.json({
     bot: botInfo?.bot || {},
+    owner: botInfo?.owner || {},
+    features: botInfo?.features || [],
+    commands: botInfo?.commands || {},
+    links: botInfo?.links || {},
     activePlayers: sessions.length,
     activeSessions: sessions
   });

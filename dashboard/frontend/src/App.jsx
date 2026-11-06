@@ -7,7 +7,7 @@ import ServersPage from './pages/ServersPage';
 import PlayerPage from './pages/PlayerPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import Autoplay247Page from './pages/Autoplay247Page';
-import MusicCardsPage from './pages/MusicCardsPage';
+import ProfilePage from './pages/ProfilePage';
 import CommandsPage from './pages/CommandsPage';
 import OwnerPage from './pages/OwnerPage';
 import LoginPage from './pages/LoginPage';
@@ -29,7 +29,8 @@ export default function App() {
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/xp" element={<LeaderboardPage />} />
             <Route path="/autoplay-247" element={<Autoplay247Page />} />
-            <Route path="/cards" element={<MusicCardsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/cards" element={<Navigate to="/profile" replace />} />
             <Route path="/commands" element={<CommandsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/owner" element={<OwnerPage />} />

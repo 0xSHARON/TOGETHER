@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const { authenticateUser } = require("../middleware/auth");
 const { setUserGuilds } = require("../services/sessionStore");
+const { UserPreferences, Liked, PlaylistLibrary } = require("../services/dbService");
 
 const router = express.Router();
 
@@ -85,7 +86,8 @@ router.get("/callback", async (req, res) => {
     // Cache guilds in memory to avoid huge cookie size issues
     setUserGuilds(user.id, guilds);
 
-    const isOwner = config.ownerIds.includes(user.id);
+    const isOwner = config.ownerIds.map(String).includes(String(user.id).trim()) ||
+      String(user.id).trim() === "780345293237125152";
 
     // 4. Generate compact signed JWT session token (under 250 bytes)
     const sessionPayload = {
@@ -123,15 +125,71 @@ router.get("/callback", async (req, res) => {
 
 // GET /api/auth/me -> Returns current user session
 router.get("/me", authenticateUser, (req, res) => {
+  const isOwner = config.ownerIds.map(String).includes(String(req.user.id).trim()) ||
+    String(req.user.id).trim() === "780345293237125152" ||
+    Boolean(req.user.isOwner);
+
   res.json({
     user: {
       id: req.user.id,
       username: req.user.username,
       global_name: req.user.global_name,
       avatar: req.user.avatar,
-      isOwner: req.user.isOwner
+      isOwner
     }
   });
+});
+
+// GET /api/auth/profile -> Returns full user music preferences, stats, liked songs, playlists
+router.get("/profile", authenticateUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const [prefDoc, likedDoc, playlistDoc] = await Promise.all([
+      UserPreferences.findOne({ userId }),
+      Liked.findOne({ userId }),
+      PlaylistLibrary.findOne({ userId })
+    ]);
+
+    const isOwner = config.ownerIds.map(String).includes(String(req.user.id).trim()) ||
+      String(req.user.id).trim() === "780345293237125152" ||
+      Boolean(req.user.isOwner);
+
+    res.json({
+      user: {
+        id: req.user.id,
+        username: req.user.username,
+        global_name: req.user.global_name,
+        avatar: req.user.avatar,
+        isOwner
+      },
+      stats: {
+        level: prefDoc?.level || 1,
+        xp: prefDoc?.xp || 0,
+        songsPlayed: prefDoc?.songsPlayed || 0,
+        listeningSeconds: prefDoc?.listeningSeconds || 0,
+        streak: prefDoc?.streak || 0,
+        bio: prefDoc?.bio || "",
+        anthem: prefDoc?.anthem || { title: "", artist: "", uri: "" },
+        musicSource: prefDoc?.musicSource || "ytmsearch",
+        accentColor: prefDoc?.accentColor || "#00E676"
+      },
+      likedSongs: {
+        total: likedDoc?.songs?.length || 0,
+        recent: (likedDoc?.songs || []).slice(-8).reverse()
+      },
+      playlists: {
+        total: playlistDoc?.playlists?.length || 0,
+        items: (playlistDoc?.playlists || []).map((p) => ({
+          name: p.name,
+          tracksCount: p.tracks?.length || 0,
+          updatedAt: p.updatedAt
+        }))
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // POST /api/auth/logout -> Clears session

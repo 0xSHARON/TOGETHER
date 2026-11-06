@@ -39,22 +39,82 @@ class BotBridgeService {
   }
 
   async getGuildPlayer(guildId) {
+    if (!guildId) return null;
     try {
-      const resp = await axios.get(`${this.apiUrl}/api/queue?guild=${encodeURIComponent(guildId)}`, { timeout: 4000 });
-      return resp.data;
-    } catch {
+      // 1. Primary: query /api/player/:guildId
+      const resp = await axios.get(`${this.apiUrl}/api/player/${encodeURIComponent(guildId)}`, { timeout: 4000 });
+      const data = resp.data;
+      if (!data) return null;
+
+      const hasTrack = Boolean(
+        data.title &&
+        data.title !== "Waiting for Music..." &&
+        !data.title.startsWith("No Music Playing") &&
+        data.title !== "TOGETHER Standby"
+      );
+
+      return {
+        guildId: data.guildId,
+        guildName: data.guildName || `Server (${guildId})`,
+        playing: Boolean(data.playing),
+        paused: Boolean(data.paused),
+        volume: typeof data.volume === "number" ? data.volume : 80,
+        position: data.position || 0,
+        duration: data.duration || 0,
+        loop: data.loop || "none",
+        autoplay: Boolean(data.autoplay),
+        current: hasTrack
+          ? {
+              title: data.title,
+              author: data.author || "Together Music",
+              thumbnail: data.thumbnail || "/logo.png",
+              duration: data.duration || 0,
+              position: data.position || 0
+            }
+          : null,
+        queue: Array.isArray(data.queue) ? data.queue : []
+      };
+    } catch (err) {
+      // Fallback: try active sessions query
+      try {
+        const sessions = await this.getActiveSessions();
+        const active = sessions.find((s) => s.guildId === guildId);
+        if (active) {
+          return {
+            guildId: active.guildId,
+            guildName: active.guildName,
+            playing: Boolean(active.playing),
+            paused: Boolean(active.paused),
+            volume: active.volume || 80,
+            position: active.position || 0,
+            duration: active.duration || 0,
+            loop: active.loop || "none",
+            autoplay: Boolean(active.autoplay),
+            current: {
+              title: active.title,
+              author: active.author,
+              thumbnail: active.thumbnail || "/logo.png",
+              duration: active.duration || 0,
+              position: active.position || 0
+            },
+            queue: []
+          };
+        }
+      } catch {}
       return null;
     }
   }
 
   async sendPlayerAction(guildId, action, payload = {}) {
     try {
+      // Try dedicated control route first
       const resp = await axios.post(
-        `${this.apiUrl}/api/player-action`,
+        `${this.apiUrl}/api/player/${encodeURIComponent(guildId)}/control`,
         {
-          guildId,
           action,
-          ...payload
+          position: payload.position,
+          value: payload.value,
+          query: payload.query
         },
         {
           headers: {
@@ -66,10 +126,29 @@ class BotBridgeService {
       );
       return resp.data;
     } catch (err) {
-      throw new Error(err.response?.data?.error || err.message || "Failed to dispatch player action");
+      // Fallback to /api/player-action
+      try {
+        const resp = await axios.post(
+          `${this.apiUrl}/api/player-action`,
+          {
+            guildId,
+            action,
+            ...payload
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "x-dashboard-secret": this.secret
+            },
+            timeout: 6000
+          }
+        );
+        return resp.data;
+      } catch (innerErr) {
+        throw new Error(err.response?.data?.error || err.message || "Failed to dispatch player action");
+      }
     }
   }
 }
 
 module.exports = new BotBridgeService();
-

@@ -5,7 +5,7 @@ import {
   Disc3, 
   ListMusic, 
   Server, 
-  Palette, 
+  User, 
   Radio, 
   Trophy, 
   Medal, 
@@ -25,20 +25,24 @@ export default function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
+  const isBotOwner = Boolean(
+    user?.isOwner ||
+    user?.id === '780345293237125152'
+  );
+
   const navItems = [
     { name: 'OVERVIEW', path: '/overview', icon: LayoutDashboard },
     { name: 'MUSIC PLAYER', path: '/player', icon: Disc3 },
-    { name: 'QUEUE', path: '/queue', icon: ListMusic },
     { name: 'SERVERS', path: '/servers', icon: Server },
-    { name: 'MUSIC CARDS', path: '/cards', icon: Palette },
-    { name: 'AUTOPLAY & 24/7', path: '/autoplay-247', icon: Radio },
+    { name: 'USER PROFILE', path: '/profile', icon: User },
+    { name: '24/7 & AUTOPLAY', path: '/autoplay-247', icon: Radio },
     { name: 'MUSIC XP', path: '/xp', icon: Trophy },
     { name: 'LEADERBOARD', path: '/leaderboard', icon: Medal },
     { name: 'COMMANDS', path: '/commands', icon: Terminal },
     { name: 'SETTINGS', path: '/settings', icon: Sliders },
   ];
 
-  if (user?.isOwner) {
+  if (isBotOwner) {
     navItems.push({ name: 'OWNER PANEL', path: '/owner', icon: ShieldAlert, owner: true });
   }
 
@@ -46,8 +50,8 @@ export default function DashboardLayout() {
     <div className="min-h-screen bg-brutal-bg text-brutal-text flex flex-col md:flex-row brutal-grid">
       {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between p-4 bg-brutal-surface border-b-2 border-brutal-border">
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 bg-brutal-accent animate-pulse border border-black inline-block"></span>
+        <div className="flex items-center gap-2.5">
+          <img src="/logo.png" alt="TOGETHER" className="w-7 h-7 object-contain" />
           <span className="font-display font-black text-xl tracking-wider text-brutal-text">TOGETHER // DASH</span>
         </div>
         <button 
@@ -64,17 +68,19 @@ export default function DashboardLayout() {
         mobileOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div>
-          {/* Brand Header */}
+          {/* Brand Header with Logo */}
           <div className="p-6 border-b-2 border-brutal-border bg-brutal-secondary">
             <div className="flex items-center gap-3">
-              <div className="w-4 h-4 bg-brutal-accent border border-black shadow-brutal-sm"></div>
-              <h1 className="font-display font-black text-2xl tracking-wider text-brutal-text">
-                TOGETHER
-              </h1>
+              <img src="/logo.png" alt="TOGETHER" className="w-9 h-9 object-contain shrink-0" />
+              <div>
+                <h1 className="font-display font-black text-2xl tracking-wider text-brutal-text leading-none">
+                  TOGETHER
+                </h1>
+                <p className="font-mono text-[9px] text-brutal-accent mt-1 uppercase tracking-widest font-black">
+                  24-BIT AUDIO OS
+                </p>
+              </div>
             </div>
-            <p className="font-mono text-[10px] text-brutal-muted mt-1 uppercase tracking-widest">
-              24-Bit Lossless Audio OS
-            </p>
           </div>
 
           {/* Navigation Links */}
@@ -91,7 +97,7 @@ export default function DashboardLayout() {
                     isActive
                       ? "bg-brutal-accent text-black border-black shadow-brutal-sm translate-x-1"
                       : "text-brutal-text border-transparent hover:border-brutal-border hover:bg-brutal-secondary",
-                    item.owner && !isActive && "text-brutal-danger"
+                    item.owner && !isActive && "text-red-400 border-red-950 bg-red-950/20"
                   )}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
@@ -106,16 +112,22 @@ export default function DashboardLayout() {
         <div className="p-4 border-t-2 border-brutal-border bg-brutal-secondary">
           {user ? (
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 overflow-hidden">
+              <div 
+                onClick={() => navigate('/profile')}
+                className="flex items-center gap-3 overflow-hidden cursor-pointer group"
+                title="View User Profile"
+              >
                 <img 
                   src={user.avatar} 
                   alt={user.username} 
-                  className="w-9 h-9 border-2 border-brutal-border object-cover shrink-0" 
+                  className="w-9 h-9 border-2 border-brutal-border group-hover:border-brutal-accent object-cover shrink-0 transition-colors" 
                 />
                 <div className="overflow-hidden">
-                  <p className="font-mono font-bold text-xs truncate text-brutal-text">{user.global_name}</p>
+                  <p className="font-mono font-bold text-xs truncate text-brutal-text group-hover:text-brutal-accent transition-colors">
+                    {user.global_name || user.username}
+                  </p>
                   <p className="font-mono text-[10px] text-brutal-accent uppercase">
-                    {user.isOwner ? "SYSTEM OWNER" : "AUTHENTICATED"}
+                    {isBotOwner ? "SYSTEM OWNER" : "AUTHENTICATED"}
                   </p>
                 </div>
               </div>
@@ -146,4 +158,3 @@ export default function DashboardLayout() {
     </div>
   );
 }
-
