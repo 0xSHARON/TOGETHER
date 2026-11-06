@@ -5,7 +5,7 @@ import { type ContainerMessage } from "@lib/discord/discord.types";
 import { embed } from "@lib/discord/embeds.util";
 import { settingsScreen, statusDot } from "@lib/settings/settingsScreen.util";
 import { STARBOARD_SETTINGS_ID } from "@lib/starboard/starboard.constants";
-import { STARBOARD_EMOJI, type StarboardSettings } from "@testify/shared";
+import { STARBOARD_EMOJI, type StarboardSettings } from "@together-helper/shared";
 
 /** What the repost needs from the starred message, read off it before anything is sent. */
 export interface StarredMessage {

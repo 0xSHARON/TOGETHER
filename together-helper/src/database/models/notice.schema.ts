@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { NOTICE_TONES, type NoticeTone } from "@testify/shared";
+import { NOTICE_TONES, type NoticeTone } from "@together-helper/shared";
 
 /** A note from the bot's owners to everybody who uses it; bot-wide, so no server is named. */
 export interface NoticeRecord {

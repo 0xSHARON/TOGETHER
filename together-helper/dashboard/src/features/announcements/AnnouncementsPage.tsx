@@ -1,4 +1,4 @@
-import { ANNOUNCEMENT_LIMITS, ANNOUNCEMENT_MENTIONS, ANNOUNCEMENT_STYLES, EMBED_COLOURS } from "@testify/shared";
+import { ANNOUNCEMENT_LIMITS, ANNOUNCEMENT_MENTIONS, ANNOUNCEMENT_STYLES, EMBED_COLOURS } from "@together-helper/shared";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

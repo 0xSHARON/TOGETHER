@@ -10,7 +10,7 @@ import {
 	setOwnBirthday,
 } from "@lib/birthdays";
 import { embed, reply } from "@lib/discord";
-import { MONTHS } from "@testify/shared";
+import { MONTHS } from "@together-helper/shared";
 
 export default defineCommand({
 	name: BIRTHDAY_COMMAND,

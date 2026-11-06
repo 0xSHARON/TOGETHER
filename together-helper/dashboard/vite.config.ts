@@ -23,7 +23,7 @@ export default defineConfig(({ command, mode }) => {
 			alias: {
 				"@": fileURLToPath(new URL("./src", import.meta.url)),
 				"@repo": fileURLToPath(new URL("..", import.meta.url)),
-				"@testify/shared": fileURLToPath(new URL("../shared/src/index.ts", import.meta.url)),
+				"@together-helper/shared": fileURLToPath(new URL("../shared/src/index.ts", import.meta.url)),
 				react: packageRoot("react"),
 				"react-dom": packageRoot("react-dom"),
 			},

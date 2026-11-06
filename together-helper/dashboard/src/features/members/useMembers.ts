@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import { type BoardPage, type BoardScope, type MemberBoard, type MoneySort } from "@testify/shared";
+import { type BoardPage, type BoardScope, type MemberBoard, type MoneySort } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

@@ -1,7 +1,7 @@
 import { type Guild, type GuildMember, type Role } from "discord.js";
 import { UserFacingError } from "@core/errors";
 import { grantProblem } from "@lib/roles/roleReach.util";
-import { type MemberRoles } from "@testify/shared";
+import { type MemberRoles } from "@together-helper/shared";
 
 /** A member's roles as the person reading may change them: only what they could hand out themselves in Discord. */
 

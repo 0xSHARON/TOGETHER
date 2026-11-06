@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { type ApiBindings } from "@api/context";
 import { requireAuth } from "@api/middleware/session";
 import { statusReport } from "@lib/bot";
-import { type StatusResponse } from "@testify/shared";
+import { type StatusResponse } from "@together-helper/shared";
 
 /** Reused briefly, so a page left open in several tabs costs one database ping rather than one each. */
 const FRESH_MS = 5_000;

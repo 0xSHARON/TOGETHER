@@ -1,4 +1,4 @@
-import { GIVEAWAY_POST, type GiveawayRow } from "@testify/shared";
+import { GIVEAWAY_POST, type GiveawayRow } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 import { ahead } from "@/lib/datetime";
 

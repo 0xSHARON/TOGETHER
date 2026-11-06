@@ -4,7 +4,7 @@ import { type ApiBindings, guildIdOf } from "@api/context";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { applyMusicSettings, readMusicSettings } from "@lib/music";
-import { musicPatch } from "@testify/shared";
+import { musicPatch } from "@together-helper/shared";
 
 export const music = new Hono<ApiBindings>();
 

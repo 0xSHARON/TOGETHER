@@ -1,4 +1,4 @@
-import { type GiveawayRow } from "@testify/shared";
+import { type GiveawayRow } from "@together-helper/shared";
 import {
 	canReroll,
 	durationMsOf,

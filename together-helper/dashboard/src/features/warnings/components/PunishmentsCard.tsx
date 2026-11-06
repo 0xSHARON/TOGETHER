@@ -1,4 +1,4 @@
-import { stepFromValue, stepValue, WARN_LIMITS, type WarnStep } from "@testify/shared";
+import { stepFromValue, stepValue, WARN_LIMITS, type WarnStep } from "@together-helper/shared";
 import { Minus, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ErrorState } from "@/app/ErrorState";

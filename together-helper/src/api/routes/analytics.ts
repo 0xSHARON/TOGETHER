@@ -43,7 +43,7 @@ import {
 	type UsageDay,
 	type UsageReport,
 	warningMatches,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** The owner console's read-only analytics. Everything here is behind `requireOwner`. */
 

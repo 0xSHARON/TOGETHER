@@ -7,7 +7,7 @@ import { button, row } from "@lib/discord/components.util";
 import { embed } from "@lib/discord/embeds.util";
 import { problemText } from "@lib/format/problemText.util";
 import { TICKET_ID } from "@lib/tickets/tickets.constants";
-import { type TicketPatch, type TicketSettings, ticketBlocked } from "@testify/shared";
+import { type TicketPatch, type TicketSettings, ticketBlocked } from "@together-helper/shared";
 
 const DEFAULT_DESCRIPTION = "Press the button below and we will be with you shortly.";
 const DEFAULT_LABEL = "Create ticket";

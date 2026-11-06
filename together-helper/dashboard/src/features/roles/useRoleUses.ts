@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import { type GuildRoleUses } from "@testify/shared";
+import { type GuildRoleUses } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

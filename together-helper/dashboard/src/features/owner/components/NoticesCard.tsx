@@ -6,7 +6,7 @@ import {
 	noticeInput,
 	type NoticeInput,
 	type NoticeTone,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { BellRing, Pencil, Send, Trash2 } from "lucide-react";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";

@@ -16,7 +16,7 @@ import {
 	bulkRolesBody,
 	bulkTimeoutBody,
 	directoryQuery,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** The member directory and the actions it takes on several members at once; mounted inside `members`, behind `requireGuild`. */
 export const directory = new Hono<ApiBindings>();

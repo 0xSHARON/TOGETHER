@@ -1,4 +1,4 @@
-import { availabilityOf, countSubcommands, toggleName } from "@testify/shared";
+import { availabilityOf, countSubcommands, toggleName } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { SearchX } from "lucide-react";
 import { useMemo, useState } from "react";

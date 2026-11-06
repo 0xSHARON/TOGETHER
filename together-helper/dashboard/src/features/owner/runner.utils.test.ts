@@ -1,4 +1,4 @@
-import { type CommandOptionSummary, type CommandSummary } from "@testify/shared";
+import { type CommandOptionSummary, type CommandSummary } from "@together-helper/shared";
 import { buildArgs, canRun, controlFor } from "./runner.utils";
 
 function option(overrides: Partial<CommandOptionSummary> = {}): CommandOptionSummary {

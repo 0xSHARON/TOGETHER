@@ -5,7 +5,7 @@ import { notFound } from "@api/errors";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { postBotStats, readBotStats, removeBotStats } from "@lib/info";
-import { botStatsPost } from "@testify/shared";
+import { botStatsPost } from "@together-helper/shared";
 
 export const botStats = new Hono<ApiBindings>();
 

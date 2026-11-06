@@ -1,4 +1,4 @@
-import { type ChangeKind, type ChangeSource, type ChangeVerb, type ChangeWindow } from "@testify/shared";
+import { type ChangeKind, type ChangeSource, type ChangeVerb, type ChangeWindow } from "@together-helper/shared";
 import { type BadgeTone } from "@/components/primitives/Badge";
 import { type TranslationKey } from "@/i18n";
 

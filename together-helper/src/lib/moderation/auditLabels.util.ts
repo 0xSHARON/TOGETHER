@@ -1,4 +1,4 @@
-import { type AuditEvent } from "@testify/shared";
+import { type AuditEvent } from "@together-helper/shared";
 
 /** How the Discord panel names each audit event, so a select reads as English rather than gateway constants. */
 

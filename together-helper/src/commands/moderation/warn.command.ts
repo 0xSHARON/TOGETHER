@@ -14,7 +14,7 @@ import {
 	warningActionText,
 	warnProblemText,
 } from "@lib/moderation";
-import { type WarnOutcome } from "@testify/shared";
+import { type WarnOutcome } from "@together-helper/shared";
 
 const USER_OPTION = { name: "user", description: "The member in question.", type: "user", required: true } as const;
 const WARN_ID_OPTION = {

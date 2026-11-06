@@ -6,7 +6,7 @@ import {
 	type MemberBoard,
 	MONEY_SORTS,
 	type MoneySort,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { type TranslationKey } from "@/i18n";
 import { oneOf } from "@/lib/oneOf";

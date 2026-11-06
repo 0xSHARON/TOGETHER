@@ -1,4 +1,4 @@
-import { type MemberDetail, MEMBER_TIMEOUT_MINUTES, WARNING_LIMITS, warningProblem } from "@testify/shared";
+import { type MemberDetail, MEMBER_TIMEOUT_MINUTES, WARNING_LIMITS, warningProblem } from "@together-helper/shared";
 import { Timer } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

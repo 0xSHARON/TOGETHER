@@ -4,7 +4,7 @@ import { type ApiBindings, guildOf } from "@api/context";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { applyStarboardSettings, readStarboardSettings } from "@lib/starboard";
-import { type StarboardPatch, starboardPatch } from "@testify/shared";
+import { type StarboardPatch, starboardPatch } from "@together-helper/shared";
 
 export const starboard = new Hono<ApiBindings>();
 

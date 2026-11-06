@@ -4,7 +4,7 @@ import { type ApiBindings, guildOf } from "@api/context";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { applyBirthdaySettings, readBirthdayOverview } from "@lib/birthdays";
-import { type BirthdayPatch, birthdayPatch } from "@testify/shared";
+import { type BirthdayPatch, birthdayPatch } from "@together-helper/shared";
 
 export const birthdays = new Hono<ApiBindings>();
 

@@ -2,7 +2,7 @@ import { type Context } from "hono";
 import { type ApiBindings } from "@api/context";
 import { toError } from "@core/errors";
 import { recordAudit } from "@database/repositories/dashboardAuditRepository";
-import { type RestorableAction, restorableFields } from "@testify/shared";
+import { type RestorableAction, restorableFields } from "@together-helper/shared";
 
 /**
  * Written after the change succeeds; a failed audit write is logged and the request still succeeds. Keep `before` and

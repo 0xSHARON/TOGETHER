@@ -1,4 +1,4 @@
-import { containsMarkup, discordTokens } from "@testify/shared";
+import { containsMarkup, discordTokens } from "@together-helper/shared";
 import DOMPurify from "dompurify";
 
 /** DOMPurify over a free-text box, with Discord's own markup kept; the API is the real boundary. */

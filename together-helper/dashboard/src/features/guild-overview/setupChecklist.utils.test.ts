@@ -1,4 +1,4 @@
-import { type SetupStepState } from "@testify/shared";
+import { type SetupStepState } from "@together-helper/shared";
 import { describeStep } from "@/features/guild-overview/setupChecklist.utils";
 
 function step(overrides: Partial<SetupStepState>): SetupStepState {

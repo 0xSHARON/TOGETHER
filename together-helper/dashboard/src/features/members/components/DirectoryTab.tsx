@@ -4,7 +4,7 @@ import {
 	DIRECTORY_LIMITS,
 	type DirectoryPage,
 	type DirectoryRow,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { ChevronLeft, ChevronRight, Users } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

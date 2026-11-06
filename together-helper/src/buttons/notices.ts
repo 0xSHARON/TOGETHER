@@ -14,7 +14,7 @@ import {
 	readNotice,
 	removeNotice,
 } from "@lib/notices";
-import { isScheduled, type Notice, NOTICE_LIMITS, NOTICE_TONES, type NoticeTone } from "@testify/shared";
+import { isScheduled, type Notice, NOTICE_LIMITS, NOTICE_TONES, type NoticeTone } from "@together-helper/shared";
 
 async function show(interaction: ComponentInteraction, panel: ContainerMessage): Promise<void> {
 	// A modal opened elsewhere cannot edit this message, so it answers privately.

@@ -1,4 +1,4 @@
-import { type RESTORABLE, type RestorableAction } from "@testify/shared";
+import { type RESTORABLE, type RestorableAction } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export const RESTORE_FIELD_LABELS: {

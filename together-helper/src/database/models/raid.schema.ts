@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { DEFAULT_RAID, RAID_LIMITS } from "@testify/shared";
+import { DEFAULT_RAID, RAID_LIMITS } from "@together-helper/shared";
 
 /** How a server holds back new accounts and where it hears about a spike in joins. Nothing about any member. */
 export interface RaidSettingsRecord {

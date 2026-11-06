@@ -14,7 +14,7 @@ import {
 	type ServerChangesPage,
 	type WarnLadder,
 	type WarningAdded,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const auditLogConfig: AuditLogConfigResponse = {
 	enabled: true,

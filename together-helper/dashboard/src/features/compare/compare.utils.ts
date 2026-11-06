@@ -1,4 +1,4 @@
-import { type FeatureStatus, type GuildOverview, type ManageableGuild } from "@testify/shared";
+import { type FeatureStatus, type GuildOverview, type ManageableGuild } from "@together-helper/shared";
 
 export const COMPARE_LIMITS = {
 	/** Past four columns a feature's sentence no longer fits beside its name on a laptop. */

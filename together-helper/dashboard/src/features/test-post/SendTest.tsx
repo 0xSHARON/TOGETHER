@@ -1,4 +1,4 @@
-import { type TestPost } from "@testify/shared";
+import { type TestPost } from "@together-helper/shared";
 import { Send } from "lucide-react";
 import { useId } from "react";
 import { useTranslation } from "react-i18next";

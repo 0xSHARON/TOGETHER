@@ -1,4 +1,4 @@
-import { type SourceFile } from "@testify/shared";
+import { type SourceFile } from "@together-helper/shared";
 import { ExternalLink } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";

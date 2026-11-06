@@ -8,7 +8,7 @@ import { daysUntil } from "@lib/birthdays/birthdays.util";
 import { readLottery } from "@lib/economy/lotteryActions.util";
 import { listGiveaways } from "@lib/giveaways/giveawayActions.util";
 import { nextAfter } from "@lib/scheduledMessages/scheduledMessages.util";
-import { type GuildWeek, WEEK_LIMITS, type WeekEvent } from "@testify/shared";
+import { type GuildWeek, WEEK_LIMITS, type WeekEvent } from "@together-helper/shared";
 
 /** The next seven days of what the bot will do in a server, read from what each feature already stores. */
 

@@ -4,7 +4,7 @@ import {
 	automodBlocked,
 	type AutomodCreate,
 	type AutomodPreset,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { Plus, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

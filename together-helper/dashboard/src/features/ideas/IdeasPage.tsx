@@ -1,4 +1,4 @@
-import { type IdeaFilter } from "@testify/shared";
+import { type IdeaFilter } from "@together-helper/shared";
 import { Lightbulb } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useParams, useSearchParams } from "react-router";

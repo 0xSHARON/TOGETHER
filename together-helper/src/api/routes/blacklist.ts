@@ -13,7 +13,7 @@ import {
 	removeFromBlacklist,
 } from "@database/repositories/blacklistRepository";
 import { blacklistProblem } from "@lib/moderation";
-import { blacklistAdd, type BlacklistRow, blacklistUserParam } from "@testify/shared";
+import { blacklistAdd, type BlacklistRow, blacklistUserParam } from "@together-helper/shared";
 
 export const blacklist = new Hono<ApiBindings>();
 

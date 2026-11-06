@@ -1,4 +1,4 @@
-import { BOARD_SCOPES, MEMBER_BOARDS, MONEY_SORTS } from "@testify/shared";
+import { BOARD_SCOPES, MEMBER_BOARDS, MONEY_SORTS } from "@together-helper/shared";
 import { Crosshair } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router";

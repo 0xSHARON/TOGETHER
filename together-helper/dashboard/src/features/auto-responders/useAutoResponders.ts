@@ -5,7 +5,7 @@ import {
 	type UseMutationResult,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type AutoResponderInput, type AutoResponderList } from "@testify/shared";
+import { type AutoResponderInput, type AutoResponderList } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

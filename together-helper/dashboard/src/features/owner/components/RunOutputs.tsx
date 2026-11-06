@@ -1,4 +1,4 @@
-import { type CommandRunResult, type DroppedOutput } from "@testify/shared";
+import { type CommandRunResult, type DroppedOutput } from "@together-helper/shared";
 import { Info } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 import { Warning } from "@/components/form";

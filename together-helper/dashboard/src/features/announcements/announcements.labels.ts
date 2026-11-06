@@ -1,4 +1,4 @@
-import { type EmbedColour } from "@testify/shared";
+import { type EmbedColour } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export const COLOUR_LABELS: Record<EmbedColour, TranslationKey> = {

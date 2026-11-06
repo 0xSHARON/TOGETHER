@@ -1,4 +1,4 @@
-import { type GuildUsageReport } from "@testify/shared";
+import { type GuildUsageReport } from "@together-helper/shared";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router";

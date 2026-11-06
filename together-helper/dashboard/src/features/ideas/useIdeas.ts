@@ -13,7 +13,7 @@ import {
 	type IdeaSettings,
 	type IdeaSettingsPatch,
 	type Paged,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

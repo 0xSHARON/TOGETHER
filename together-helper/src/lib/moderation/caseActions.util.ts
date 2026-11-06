@@ -22,7 +22,7 @@ import {
 	DELETED_USER_ID,
 	idFromQuery,
 	type ModCase,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** Numbered moderation cases: recorded wherever an action is taken, and read back with the warnings from before them. */
 

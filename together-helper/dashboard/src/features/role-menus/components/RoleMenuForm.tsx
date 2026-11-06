@@ -4,7 +4,7 @@ import {
 	roleMenuBlocked,
 	type RoleMenuBody,
 	type RoleSummary,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { Save } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

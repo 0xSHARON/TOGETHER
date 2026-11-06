@@ -1,6 +1,6 @@
 import { type Guild } from "discord.js";
 import { DAY_MS, WEEK_MS } from "@config/constants";
-import { type MemberCounts } from "@testify/shared";
+import { type MemberCounts } from "@together-helper/shared";
 
 interface Counted {
 	bot: boolean;

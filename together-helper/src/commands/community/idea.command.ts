@@ -2,7 +2,7 @@ import { PermissionFlagsBits } from "discord.js";
 import { defineCommand, inGuild } from "@core/command";
 import { reply, successEmbed } from "@lib/discord";
 import { IDEA_COMMAND, ideaLink, ideaSettingsPanel, readIdeaSettings, submitIdea } from "@lib/ideas";
-import { IDEA_LIMITS } from "@testify/shared";
+import { IDEA_LIMITS } from "@together-helper/shared";
 
 export default defineCommand({
 	name: IDEA_COMMAND,

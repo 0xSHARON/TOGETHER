@@ -9,7 +9,7 @@ import {
 	type RoleMenuList,
 	type StarboardSettings,
 	type WelcomeConfigResponse,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const levelConfig: LevelConfigResponse = {
 	enabled: true,

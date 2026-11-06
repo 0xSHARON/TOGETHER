@@ -7,7 +7,7 @@ import { requireGuild } from "@api/middleware/session";
 import { parseBody, parseParams } from "@api/validate";
 import { listSticky, removeSticky, setSticky } from "@database/repositories/stickyRepository";
 import { canPostIn } from "@lib/discord";
-import { STICKY_LIMITS, type StickyList, stickyChannelParam, stickyPut } from "@testify/shared";
+import { STICKY_LIMITS, type StickyList, stickyChannelParam, stickyPut } from "@together-helper/shared";
 
 export const sticky = new Hono<ApiBindings>();
 

@@ -7,7 +7,7 @@ import {
 	type DirectoryKind,
 	type DirectoryPage,
 	type DirectoryRow,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 import { oneOf } from "@/lib/oneOf";
 

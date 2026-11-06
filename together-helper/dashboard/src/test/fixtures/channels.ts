@@ -7,7 +7,7 @@ import {
 	type StickyList,
 	type TempVoiceSettings,
 	type TicketSettings,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const ticketSettings: TicketSettings = {
 	enabled: true,

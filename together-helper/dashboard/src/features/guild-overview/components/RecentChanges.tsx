@@ -1,4 +1,4 @@
-import { type GuildOverview } from "@testify/shared";
+import { type GuildOverview } from "@together-helper/shared";
 import { History } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Card, EmptyState } from "@/components/primitives";

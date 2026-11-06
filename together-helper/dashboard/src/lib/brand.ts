@@ -1,4 +1,4 @@
-import { DEFAULT_BOT_NAME } from "@testify/shared";
+import { DEFAULT_BOT_NAME } from "@together-helper/shared";
 
 const STORAGE_KEY = "together:botName";
 const LOOK_KEY = "together:botLook";

@@ -1,4 +1,4 @@
-import { LOTTERY_LIMITS, type LotteryFrequency, type LotterySettings, lotteryBlocked } from "@testify/shared";
+import { LOTTERY_LIMITS, type LotteryFrequency, type LotterySettings, lotteryBlocked } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { formatNumber } from "@/lib/intl";
 import { problemText } from "@/lib/problemText";

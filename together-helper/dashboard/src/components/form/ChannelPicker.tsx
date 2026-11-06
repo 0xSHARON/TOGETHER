@@ -1,4 +1,4 @@
-import { type ChannelSummary } from "@testify/shared";
+import { type ChannelSummary } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Field } from "@/components/form/Field";
 import { SELECT } from "@/components/form/fieldStyles";

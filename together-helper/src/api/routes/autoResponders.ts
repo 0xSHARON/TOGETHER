@@ -6,7 +6,7 @@ import { requireGuild } from "@api/middleware/session";
 import { parseBody, parseParams } from "@api/validate";
 import { findAutoResponder } from "@database/repositories/autoResponderRepository";
 import { addAutoResponder, editAutoResponder, readAutoResponders, removeAutoResponder } from "@lib/autoResponders";
-import { autoResponderInput, autoResponderParams } from "@testify/shared";
+import { autoResponderInput, autoResponderParams } from "@together-helper/shared";
 
 export const autoResponders = new Hono<ApiBindings>();
 

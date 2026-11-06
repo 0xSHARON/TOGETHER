@@ -4,7 +4,7 @@ import {
 	type SiteInfo,
 	type SourceFile,
 	type SourceTree,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const siteInfo: SiteInfo = {
 	dashboard: true,

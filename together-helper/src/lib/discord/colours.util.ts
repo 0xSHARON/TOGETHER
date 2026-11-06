@@ -1,4 +1,4 @@
-import { EMBED_COLOURS } from "@testify/shared";
+import { EMBED_COLOURS } from "@together-helper/shared";
 
 /** The colour palette offered by `/announce`, `/create embed` and the dashboard's composer alike. */
 export const COLOUR_CHOICES = EMBED_COLOURS.map((colour) => ({ name: colour.name, value: colour.value }));

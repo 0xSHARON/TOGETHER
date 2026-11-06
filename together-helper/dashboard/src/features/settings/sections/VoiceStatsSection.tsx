@@ -1,4 +1,4 @@
-import { type ChannelSummary, type VoiceStatsPatch, type VoiceStatsSetting } from "@testify/shared";
+import { type ChannelSummary, type VoiceStatsPatch, type VoiceStatsSetting } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { ChannelKindPicker, savingStateOf } from "@/components/form";
 import { Section } from "@/features/settings/components/Section";

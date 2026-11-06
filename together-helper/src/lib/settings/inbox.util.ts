@@ -13,7 +13,7 @@ import {
 	type PlaceRole,
 	WATCHED_PERMISSIONS,
 	type WatchedPermission,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** What needs a manager in one server, read from what each feature already stores; nothing new is kept. */
 

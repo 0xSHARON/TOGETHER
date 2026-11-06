@@ -13,7 +13,7 @@ import {
 	scheduleEditor,
 	scheduleHub,
 } from "@lib/scheduledMessages";
-import { SCHEDULE_LIMITS } from "@testify/shared";
+import { SCHEDULE_LIMITS } from "@together-helper/shared";
 
 async function show(interaction: ComponentInteraction, panel: ContainerMessage): Promise<void> {
 	// A modal opened elsewhere cannot edit this message, so it answers privately.

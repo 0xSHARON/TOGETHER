@@ -1,4 +1,4 @@
-import { type WatchedPermission } from "@testify/shared";
+import { type WatchedPermission } from "@together-helper/shared";
 import { AlertTriangle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/primitives";

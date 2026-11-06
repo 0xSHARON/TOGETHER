@@ -1,4 +1,4 @@
-import { type BypassPermission, type AuditEvent } from "@testify/shared";
+import { type BypassPermission, type AuditEvent } from "@together-helper/shared";
 
 export interface AntiLinkPanelState {
 	enabled: boolean;

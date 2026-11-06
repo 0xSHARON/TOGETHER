@@ -12,7 +12,7 @@ import { casinoRefusal, readCasinoSettings } from "@lib/casino/casinoSettings.ut
 import { formatDuration, humanisePermission } from "@lib/format/format.util";
 import { MUSIC_SYSTEM_SUBCOMMAND } from "@lib/music/music.constants";
 import { musicRefusal, normaliseMusicSettings } from "@lib/music/musicSettings.util";
-import { type CasinoGame, isAlwaysEnabled, isCasinoGame } from "@testify/shared";
+import { type CasinoGame, isAlwaysEnabled, isCasinoGame } from "@together-helper/shared";
 
 export interface TitledRefusal {
 	title: string;

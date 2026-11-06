@@ -10,7 +10,7 @@ import {
 	scheduleEditor,
 	scheduleHub,
 } from "@lib/scheduledMessages";
-import { SCHEDULE_LIMITS, SCHEDULE_REPEATS, type ScheduleRepeat } from "@testify/shared";
+import { SCHEDULE_LIMITS, SCHEDULE_REPEATS, type ScheduleRepeat } from "@together-helper/shared";
 
 const isRepeat = (value: string | null): value is ScheduleRepeat =>
 	(SCHEDULE_REPEATS as readonly (string | null)[]).includes(value);

@@ -29,7 +29,7 @@ import {
 	type RestorableAction,
 	type ServerSettings,
 	voiceStatsPatch,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 type ApiContext = Context<ApiBindings>;
 

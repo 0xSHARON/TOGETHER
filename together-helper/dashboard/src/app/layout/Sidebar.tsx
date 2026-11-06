@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { type DashboardUser, type ManageableGuild } from "@testify/shared";
+import { type DashboardUser, type ManageableGuild } from "@together-helper/shared";
 import { FileText, LogOut, Palette, Search, ShieldQuestion, UserCog } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";

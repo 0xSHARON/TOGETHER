@@ -5,7 +5,7 @@ import {
 	type UseMutationResult,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type MusicPatch, type MusicSettings } from "@testify/shared";
+import { type MusicPatch, type MusicSettings } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

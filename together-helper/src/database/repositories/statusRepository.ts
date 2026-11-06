@@ -1,5 +1,5 @@
 import { type StatusSample, StatusSamples } from "@database/models/statusSample.schema";
-import { STATUS_LIMITS } from "@testify/shared";
+import { STATUS_LIMITS } from "@together-helper/shared";
 
 export type SampleInput = Omit<StatusSample, "expiresAt">;
 

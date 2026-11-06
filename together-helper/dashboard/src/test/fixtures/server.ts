@@ -12,7 +12,7 @@ import {
 	type ServerSettings,
 	type SetupChecklist,
 	type VerificationConfigResponse,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { aGuild } from "@/test/fixtures/session";
 
 export const overview: GuildOverview = {

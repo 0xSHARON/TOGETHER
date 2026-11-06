@@ -1,4 +1,4 @@
-import { type ChannelSummary, type GuildWeek, type WeekEvent } from "@testify/shared";
+import { type ChannelSummary, type GuildWeek, type WeekEvent } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { channelLabel } from "@/lib/channels";
 import { weekdayDate } from "@/lib/datetime";

@@ -4,7 +4,7 @@ import { slotsSpin, slotsStill } from "@lib/canvas/slotMachine.util";
 import { type CoinSide, type DiceBet, type Reels, type Roll, type SlotSymbol } from "@lib/casino/casino.types";
 import { COINFLIP_RETURN, DICE_BET_LABELS, DICE_RETURNS, diceWins, flipCoin, rollDice } from "@lib/casino/chance.util";
 import { slotsReturn, spinSlots } from "@lib/casino/slots.util";
-import { type CasinoGame } from "@testify/shared";
+import { type CasinoGame } from "@together-helper/shared";
 
 /** The games settled in one go: the result is decided and paid first, and the picture shows what already happened. */
 

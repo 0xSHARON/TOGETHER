@@ -1,4 +1,4 @@
-import { BIRTHDAY_LIMITS, BIRTHDAY_PLACEHOLDERS } from "@testify/shared";
+import { BIRTHDAY_LIMITS, BIRTHDAY_PLACEHOLDERS } from "@together-helper/shared";
 import { Cake } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

@@ -12,7 +12,7 @@ import {
 	auditLogPutSchema,
 	collapseEnabled,
 	resolveEnabled,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const auditLog = new Hono<ApiBindings>();
 

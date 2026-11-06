@@ -1,6 +1,6 @@
 import { type PipelineStage } from "mongoose";
 import { CasinoStats } from "@database/models/casinoStats.schema";
-import { type CasinoGame } from "@testify/shared";
+import { type CasinoGame } from "@together-helper/shared";
 
 /** Casino totals, kept as running sums per player per game so a server's history is one aggregation. */
 

@@ -23,7 +23,7 @@ import {
 	fillTemplate,
 	isBirthday,
 	type UpcomingBirthday,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** A server's birthday posts: its settings, the birthdays members shared with it, and the one post they all make. */
 

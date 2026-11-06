@@ -1,4 +1,4 @@
-import { OWNER_GUILD_SORTS } from "@testify/shared";
+import { OWNER_GUILD_SORTS } from "@together-helper/shared";
 import { Clock, Cpu, Database, Server, Terminal, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router";

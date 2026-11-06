@@ -6,7 +6,7 @@ import { type ContainerMessage } from "@lib/discord/discord.types";
 import { settingsScreen, statusDot } from "@lib/settings/settingsScreen.util";
 import { GOODBYE_PANEL_ID } from "@lib/welcome/welcome.constants";
 import { PLACEHOLDER_HELP } from "@lib/welcome/welcome.util";
-import { type GoodbyeSettings, WELCOME_PLACEHOLDERS } from "@testify/shared";
+import { type GoodbyeSettings, WELCOME_PLACEHOLDERS } from "@together-helper/shared";
 
 const STYLE_LABELS = { text: "Plain message", embed: "Embed" } as const;
 

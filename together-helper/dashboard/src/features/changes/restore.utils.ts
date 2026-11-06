@@ -1,4 +1,4 @@
-import { type ChannelSummary, type ChangeRestore, type RoleSummary } from "@testify/shared";
+import { type ChannelSummary, type ChangeRestore, type RoleSummary } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { RESTORE_FIELD_LABELS } from "@/features/changes/restore.labels";
 import { permissionLabel } from "@/features/commands/permissions.labels";

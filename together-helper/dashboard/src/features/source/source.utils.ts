@@ -1,4 +1,4 @@
-import { type SourceEntry } from "@testify/shared";
+import { type SourceEntry } from "@together-helper/shared";
 import { formatUnit } from "@/lib/intl";
 
 export interface TreeIndex {

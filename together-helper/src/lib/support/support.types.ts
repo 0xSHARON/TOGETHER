@@ -1,4 +1,4 @@
-import { type SearchableEntry, type SupportTopic } from "@testify/shared";
+import { type SearchableEntry, type SupportTopic } from "@together-helper/shared";
 
 /** One thing the assistant can answer with: a written article, or a page generated from a command. */
 export interface SupportEntry extends SearchableEntry {

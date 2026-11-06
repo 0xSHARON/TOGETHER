@@ -1,4 +1,4 @@
-import { type CommandSummary, matchesSearch } from "@testify/shared";
+import { type CommandSummary, matchesSearch } from "@together-helper/shared";
 
 const CONFIGURABLE: Record<string, { path: (guildId: string) => string; screen: string }> = {
 	levelling: { path: (guildId) => `/guilds/${guildId}/levelling`, screen: "Levelling" },

@@ -38,7 +38,7 @@ import {
 	TREASURE_DEFAULTS,
 	TREASURE_LIMITS,
 	WELCOME_LIMITS,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** Every number an article quotes, read from the code, so an article cannot state a limit the bot no longer has. */
 export const FACTS: Readonly<Record<string, string>> = {

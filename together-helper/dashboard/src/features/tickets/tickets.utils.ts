@@ -1,4 +1,4 @@
-import { type RoleSummary, type TicketSettings, ticketMissing } from "@testify/shared";
+import { type RoleSummary, type TicketSettings, ticketMissing } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { problemText } from "@/lib/problemText";
 

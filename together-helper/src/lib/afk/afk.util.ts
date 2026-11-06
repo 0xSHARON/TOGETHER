@@ -4,7 +4,7 @@ import { UserFacingError } from "@core/errors";
 import { setAfk, type StoredAfk } from "@database/repositories/afkRepository";
 import { embed } from "@lib/discord/embeds.util";
 import { discordTime, escapeMarkdown, formatDurationLong } from "@lib/format/format.util";
-import { sanitiseLine } from "@testify/shared";
+import { sanitiseLine } from "@together-helper/shared";
 
 /** Away notes: set with `/afk`, shown to whoever mentions their member, and cleared when that member next speaks. */
 

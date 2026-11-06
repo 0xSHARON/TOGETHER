@@ -1,4 +1,4 @@
-import { type AuditEvent, type AuditGroup } from "@testify/shared";
+import { type AuditEvent, type AuditGroup } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export const EVENT_LABELS: Record<AuditEvent, { label: TranslationKey; describes: TranslationKey }> = {

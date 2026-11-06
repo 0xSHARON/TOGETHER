@@ -1,4 +1,4 @@
-import { type InsightDay } from "@testify/shared";
+import { type InsightDay } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { barHeight } from "@/features/insights/insights.utils";
 import { shortDate } from "@/lib/datetime";

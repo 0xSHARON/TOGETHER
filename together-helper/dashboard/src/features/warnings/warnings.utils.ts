@@ -6,7 +6,7 @@ import {
 	type WarnOutcome,
 	type WarnProblem,
 	type WarnStep,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { type BadgeTone } from "@/components/primitives";
 import { type TranslationKey } from "@/i18n";

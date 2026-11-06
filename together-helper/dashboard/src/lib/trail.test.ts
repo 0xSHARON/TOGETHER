@@ -53,9 +53,9 @@ describe("trailFor", () => {
 	it("reads a trail kept across a reload, and refuses anything that is not a docs or source page", () => {
 		rememberTrail("kept", { pathname: "/docs/setup", search: "", hash: "" });
 		sessionStorage.setItem(
-			"testify:trail",
+			"together-helper:trail",
 			JSON.stringify({
-				...JSON.parse(sessionStorage.getItem("testify:trail") ?? "{}"),
+				...JSON.parse(sessionStorage.getItem("together-helper:trail") ?? "{}"),
 				reloaded: { pathname: "/source-code", search: "", hash: "" },
 				offsite: { pathname: "//evil.example", search: "", hash: "" },
 				broken: "not a trail",

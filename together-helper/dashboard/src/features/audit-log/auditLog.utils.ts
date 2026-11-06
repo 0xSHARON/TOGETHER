@@ -5,7 +5,7 @@ import {
 	type AuditLogConfigResponse,
 	type AuditLogPut,
 	auditEventsIn,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { type TFunction } from "i18next";
 
 export type GroupState = "none" | "some" | "all";

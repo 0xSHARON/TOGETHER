@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { AUTO_RESPONDER_MATCHES, type AutoResponderMatch } from "@testify/shared";
+import { AUTO_RESPONDER_MATCHES, type AutoResponderMatch } from "@together-helper/shared";
 
 /** One trigger and the reply a server's managers wrote for it. */
 export interface AutoResponderRecord {

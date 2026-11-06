@@ -7,7 +7,7 @@ import {
 	type LevelRewardInput,
 	type RoleSummary,
 	type XpBoostInput,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

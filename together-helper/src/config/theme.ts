@@ -2,9 +2,9 @@ import { type ColorResolvable } from "discord.js";
 import { CATEGORIES, type Category } from "@config/categories";
 
 export const theme = {
-	author: "Kkermit",
-	repository: "https://github.com/Kkkermit/Testify",
-	supportServer: "https://discord.gg/xcMVwAVjSD",
+	author: "TOGETHER",
+	repository: "https://github.com/0xSHARON/TOGETHER/tree/main/together-helper",
+	supportServer: "https://discord.gg/mUdGTs2Dw5",
 
 	/** The only place a colour is written. Everything else names one of these. */
 	colours: {

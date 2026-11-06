@@ -1,5 +1,5 @@
 import { useMutation, useQuery, type UseMutationResult, type UseQueryResult } from "@tanstack/react-query";
-import { type CommandCatalogue, type CommandRunRequest, type CommandRunResult } from "@testify/shared";
+import { type CommandCatalogue, type CommandRunRequest, type CommandRunResult } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

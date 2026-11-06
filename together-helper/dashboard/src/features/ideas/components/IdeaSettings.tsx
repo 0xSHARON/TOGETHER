@@ -1,4 +1,4 @@
-import { type ChannelSummary, type IdeaSettings as Settings } from "@testify/shared";
+import { type ChannelSummary, type IdeaSettings as Settings } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { ChannelPicker, SettingRows, Toggle } from "@/components/form";
 

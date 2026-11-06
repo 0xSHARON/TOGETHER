@@ -8,7 +8,7 @@ import { parseBody } from "@api/validate";
 import { deleteLevelSettings, saveLevelSettings } from "@database/repositories/levelRepository";
 import { sortRewards } from "@lib/levelling";
 import { readLevelConfig } from "@lib/settings";
-import { boostsSchema, ignoresSchema, levellingPatchSchema, rewardsSchema } from "@testify/shared";
+import { boostsSchema, ignoresSchema, levellingPatchSchema, rewardsSchema } from "@together-helper/shared";
 
 export const levelling = new Hono<ApiBindings>();
 

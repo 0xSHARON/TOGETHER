@@ -1,4 +1,4 @@
-import { type RoleMenuBody } from "@testify/shared";
+import { type RoleMenuBody } from "@together-helper/shared";
 import { ListChecks } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

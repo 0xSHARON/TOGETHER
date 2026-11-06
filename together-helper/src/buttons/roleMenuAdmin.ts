@@ -20,7 +20,7 @@ import {
 	splitOffer,
 	takeDownRoleMenu,
 } from "@lib/roles";
-import { ROLE_MENU_LIMITS, roleMenuBody } from "@testify/shared";
+import { ROLE_MENU_LIMITS, roleMenuBody } from "@together-helper/shared";
 
 async function show(interaction: ComponentInteraction, panel: ContainerMessage): Promise<void> {
 	// A modal opened elsewhere cannot edit this message, so it answers privately.

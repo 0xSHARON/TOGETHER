@@ -1,4 +1,4 @@
-import { type Notice, type NoticeFeed } from "@testify/shared";
+import { type Notice, type NoticeFeed } from "@together-helper/shared";
 import { screen, waitFor, within } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { NoticeBanner } from "@/features/notices/components/NoticeBanner";

@@ -1,4 +1,4 @@
-import { type ChannelSummary } from "@testify/shared";
+import { type ChannelSummary } from "@together-helper/shared";
 import { render, screen } from "@testing-library/react";
 import { ChannelKindPicker } from "@/components/form/ChannelKindPicker";
 

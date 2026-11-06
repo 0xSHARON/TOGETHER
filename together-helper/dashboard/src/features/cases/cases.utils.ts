@@ -1,4 +1,4 @@
-import { type CaseAction, CASE_ACTIONS } from "@testify/shared";
+import { type CaseAction, CASE_ACTIONS } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 import { formatUnit } from "@/lib/intl";
 

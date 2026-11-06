@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { SCHEDULE_REPEATS, type ScheduleRepeat } from "@testify/shared";
+import { SCHEDULE_REPEATS, type ScheduleRepeat } from "@together-helper/shared";
 
 /** A message a server's managers asked the bot to post later, once or on repeat. */
 export interface ScheduledMessageRecord {

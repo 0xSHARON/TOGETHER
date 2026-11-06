@@ -1,5 +1,5 @@
 import { monitorEventLoopDelay } from "node:perf_hooks";
-import { STATUS_LIMITS } from "@testify/shared";
+import { STATUS_LIMITS } from "@together-helper/shared";
 
 /** How long the process takes to get round to things: event-loop delay, and how long commands take to answer. */
 

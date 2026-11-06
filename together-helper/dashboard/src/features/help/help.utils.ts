@@ -4,7 +4,7 @@ import {
 	SUPPORT_TOPICS,
 	type SupportSearch,
 	type SupportTopic,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { type LucideIcon } from "lucide-react";
 import { allNavItems, navigationFor, type NavGroup } from "@/config/navigation";
 import { type TranslationKey } from "@/i18n";

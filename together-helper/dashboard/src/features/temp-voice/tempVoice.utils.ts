@@ -1,4 +1,4 @@
-import { TEMP_VOICE_LIMITS, type TempVoiceSettings } from "@testify/shared";
+import { TEMP_VOICE_LIMITS, type TempVoiceSettings } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 
 export function userLimitFrom(raw: string): number | null {

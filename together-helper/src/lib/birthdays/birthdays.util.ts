@@ -1,5 +1,5 @@
 import { DAY_MS } from "@config/constants";
-import { MONTHS } from "@testify/shared";
+import { MONTHS } from "@together-helper/shared";
 
 /** Which birthdays fall today and which come next, in UTC, as arithmetic every case of which is a test. */
 

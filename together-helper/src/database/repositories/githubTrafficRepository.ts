@@ -1,6 +1,6 @@
 import { DAY_MS } from "@config/constants";
 import { GitHubTrafficDay, type GitHubTrafficDayRecord } from "@database/models/githubTraffic.schema";
-import { SITE_LIMITS, type TrafficDay } from "@testify/shared";
+import { SITE_LIMITS, type TrafficDay } from "@together-helper/shared";
 
 /** GitHub restates a day until it is over, so each answer replaces what was kept for that day. */
 export async function keepTrafficDays(days: readonly TrafficDay[], now = Date.now()): Promise<void> {

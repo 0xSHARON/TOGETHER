@@ -1,9 +1,9 @@
 import { type TreasureConfigSettings } from "@database/models/treasure.schema";
 import { getTreasureConfig, saveTreasureConfig } from "@database/repositories/treasureRepository";
 import { problemText } from "@lib/format/problemText.util";
-import { TREASURE_DEFAULTS, type TreasurePatch, type TreasureSettings, treasureProblem } from "@testify/shared";
+import { TREASURE_DEFAULTS, type TreasurePatch, type TreasureSettings, treasureProblem } from "@together-helper/shared";
 
-export { TREASURE_LIMITS, treasureProblem } from "@testify/shared";
+export { TREASURE_LIMITS, treasureProblem } from "@together-helper/shared";
 
 /** Falls back to the defaults so an unconfigured guild still renders a full panel. */
 export function normaliseTreasure(config: TreasureConfigSettings | null): TreasureSettings {

@@ -1,6 +1,6 @@
 import { type ContentfulStatusCode } from "hono/utils/http-status";
 import { botName } from "@core/brand";
-import { type ApiErrorBody } from "@testify/shared";
+import { type ApiErrorBody } from "@together-helper/shared";
 
 export interface ApiIssue {
 	path: string;

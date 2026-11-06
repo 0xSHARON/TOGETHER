@@ -1,4 +1,4 @@
-import { AUDIT_EVENTS } from "@testify/shared";
+import { AUDIT_EVENTS } from "@together-helper/shared";
 import { auditSummary, draftFrom, saveBlocked, setGroup, toggleEvent } from "@/features/audit-log/auditLog.utils";
 import { t } from "@/test/english";
 

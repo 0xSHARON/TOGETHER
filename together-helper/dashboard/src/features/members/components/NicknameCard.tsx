@@ -1,4 +1,4 @@
-import { MEMBER_ACTION_LIMITS, type MemberDetail } from "@testify/shared";
+import { MEMBER_ACTION_LIMITS, type MemberDetail } from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Field, RowActions, SettingRows } from "@/components/form";

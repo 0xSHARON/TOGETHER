@@ -1,4 +1,4 @@
-import { type Notice } from "@testify/shared";
+import { type Notice } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Badge, Card, CARD_HEADING } from "@/components/primitives";
 import { NOTICE_TONE_BADGES, NOTICE_TONE_LABELS, wasEdited } from "@/features/notices/notices.utils";

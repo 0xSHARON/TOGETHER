@@ -6,7 +6,7 @@ import { canPostIn } from "@lib/discord/channels.util";
 import { embed } from "@lib/discord/embeds.util";
 import { discordTime } from "@lib/format/format.util";
 import { holdUntil, joinWatch, type JoinWatch, type Spike, type WatchedJoin } from "@lib/raid/raid.util";
-import { accountAgeDays, DEFAULT_RAID, type RaidOverview, type RaidPatch, type RaidSettings } from "@testify/shared";
+import { accountAgeDays, DEFAULT_RAID, type RaidOverview, type RaidPatch, type RaidSettings } from "@together-helper/shared";
 
 /** A server's raid protection: its settings, the hold on a young account, and what staff are told. */
 

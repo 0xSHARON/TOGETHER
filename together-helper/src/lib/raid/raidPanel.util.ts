@@ -6,7 +6,7 @@ import { type ContainerMessage } from "@lib/discord/discord.types";
 import { RAID_PANEL_ID } from "@lib/raid/raid.constants";
 import { hasWork } from "@lib/raid/raidActions.util";
 import { settingsScreen, type ScreenRow, statusDot } from "@lib/settings/settingsScreen.util";
-import { type RaidOverview } from "@testify/shared";
+import { type RaidOverview } from "@together-helper/shared";
 
 const days = (count: number): string => `${String(count)} ${count === 1 ? "day" : "days"}`;
 const minutes = (count: number): string => (count === 1 ? "minute" : `${String(count)} minutes`);

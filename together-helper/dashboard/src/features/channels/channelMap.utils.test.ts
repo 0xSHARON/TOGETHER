@@ -1,4 +1,4 @@
-import { type ChannelSummary } from "@testify/shared";
+import { type ChannelSummary } from "@together-helper/shared";
 import { channelTree, featuresIn } from "@/features/channels/channelMap.utils";
 import { guildPlaces } from "@/test/fixtures/server";
 

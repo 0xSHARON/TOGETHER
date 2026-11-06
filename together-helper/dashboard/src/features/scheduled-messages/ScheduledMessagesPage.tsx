@@ -1,4 +1,4 @@
-import { SCHEDULE_LIMITS, scheduleBlocked, type ScheduledMessage } from "@testify/shared";
+import { SCHEDULE_LIMITS, scheduleBlocked, type ScheduledMessage } from "@together-helper/shared";
 import { CalendarClock, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

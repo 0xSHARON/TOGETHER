@@ -5,7 +5,7 @@ import { requireAuth } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { toError } from "@core/errors";
 import { recordDashboardView, recordScreenView } from "@database/repositories/usageRepository";
-import { screenView } from "@testify/shared";
+import { screenView } from "@together-helper/shared";
 
 /** The one write any signed-in manager makes; reading the counts back stays owner-only. */
 export const screens = new Hono<ApiBindings>();

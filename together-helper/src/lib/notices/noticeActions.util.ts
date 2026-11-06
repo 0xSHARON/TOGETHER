@@ -23,7 +23,7 @@ import {
 	type NoticePatch,
 	noticeTimingBlocked,
 	unreadNotices,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** The one path a notification is posted, changed or read, whether from Discord or from the dashboard. */
 

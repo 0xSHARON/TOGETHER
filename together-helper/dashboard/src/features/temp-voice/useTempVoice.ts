@@ -5,7 +5,7 @@ import {
 	type UseMutationResult,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type TempVoicePatch, type TempVoiceSettings } from "@testify/shared";
+import { type TempVoicePatch, type TempVoiceSettings } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

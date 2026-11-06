@@ -1,4 +1,4 @@
-import { type BotStatsSettings, type ChannelSummary } from "@testify/shared";
+import { type BotStatsSettings, type ChannelSummary } from "@together-helper/shared";
 
 type Placement = { kind: "none" } | { kind: "posted" } | { kind: "gone" };
 

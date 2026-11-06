@@ -1,7 +1,7 @@
 import { ActivityType, type PresenceStatusData } from "discord.js";
 import { type TestifyClient } from "@core/client";
 import { toError } from "@core/errors";
-import { type BotControlState, type GatewayState } from "@testify/shared";
+import { type BotControlState, type GatewayState } from "@together-helper/shared";
 
 /** Pausing and resuming the bot without ending the process the dashboard is served from. */
 

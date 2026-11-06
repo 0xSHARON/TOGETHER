@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { DEFAULT_PREFIX } from "@testify/shared";
+import { DEFAULT_PREFIX } from "@together-helper/shared";
 import { framesFor, menuFor, paletteFrom, prefixLine } from "@/features/site/composer.utils";
 import { SCENES } from "@/features/site/landing.content";
 

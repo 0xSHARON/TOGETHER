@@ -1,4 +1,4 @@
-import { type ServerFacts } from "@testify/shared";
+import { type ServerFacts } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Card, DataList } from "@/components/primitives";
 import { VERIFICATION_LABELS } from "@/features/insights/insights.utils";

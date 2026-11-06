@@ -11,7 +11,7 @@ beforeEach(() => {
 
 afterEach(async () => {
 	document.documentElement.removeAttribute("data-motion");
-	localStorage.removeItem("testify:locale");
+	localStorage.removeItem("together-helper:locale");
 	await i18next.changeLanguage("en");
 });
 
@@ -26,7 +26,7 @@ describe("the site's header", () => {
 		// Once in the header and once in the footer, both now in German.
 		expect(await screen.findAllByRole("link", { name: "Doku" })).toHaveLength(2);
 		expect(screen.getAllByRole("link", { name: "Quellcode" })).toHaveLength(2);
-		expect(localStorage.getItem("testify:locale")).toBe("de");
+		expect(localStorage.getItem("together-helper:locale")).toBe("de");
 	});
 
 	/** Theme and language belong to the reader, so the website reaches them without an account. */

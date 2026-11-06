@@ -4,7 +4,7 @@ import { type ApiBindings, guildOf } from "@api/context";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { applyGoodbye, readGoodbye } from "@lib/welcome";
-import { type GoodbyePatch, goodbyePatch } from "@testify/shared";
+import { type GoodbyePatch, goodbyePatch } from "@together-helper/shared";
 
 export const goodbye = new Hono<ApiBindings>();
 

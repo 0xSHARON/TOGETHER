@@ -1,4 +1,4 @@
-import { type RoleSummary, type TicketSettings } from "@testify/shared";
+import { type RoleSummary, type TicketSettings } from "@together-helper/shared";
 import { draftOf, draftProblems, staffRoleWarning, ticketSummary } from "@/features/tickets/tickets.utils";
 import { t } from "@/test/english";
 

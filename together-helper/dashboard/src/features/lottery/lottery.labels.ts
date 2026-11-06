@@ -1,4 +1,4 @@
-import { type LotteryFrequency } from "@testify/shared";
+import { type LotteryFrequency } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export const FREQUENCY_LABELS: Record<LotteryFrequency, TranslationKey> = {

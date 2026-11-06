@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IDEA_STATUSES, type IdeaStatus } from "@testify/shared";
+import { IDEA_STATUSES, type IdeaStatus } from "@together-helper/shared";
 
 /** Whether a server's idea board is on, where it posts, and the number the next idea takes. */
 export interface IdeaSettingsRecord {

@@ -1,4 +1,4 @@
-import { type WeekEvent } from "@testify/shared";
+import { type WeekEvent } from "@together-helper/shared";
 import { CalendarClock, CalendarDays, Cake, Gift, type LucideIcon, Ticket } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router";

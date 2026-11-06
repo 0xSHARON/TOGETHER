@@ -5,7 +5,7 @@ import {
 	type UseMutationResult,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type RoleMenuBody, type RoleMenuList } from "@testify/shared";
+import { type RoleMenuBody, type RoleMenuList } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

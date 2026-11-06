@@ -12,7 +12,7 @@ import {
 	TEMP_VOICE_SETTINGS_ID,
 	tempVoiceSettingsPanel,
 } from "@lib/tempVoice";
-import { TEMP_VOICE_LIMITS, type TempVoiceSettings } from "@testify/shared";
+import { TEMP_VOICE_LIMITS, type TempVoiceSettings } from "@together-helper/shared";
 
 export default recordsSettings(
 	["temp-voice.update"],

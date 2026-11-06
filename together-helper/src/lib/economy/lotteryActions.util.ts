@@ -1,7 +1,7 @@
 import { type LotteryRecord } from "@database/models/lottery.schema";
 import { getLottery, intervalFor, saveLottery } from "@database/repositories/lotteryRepository";
 import { problemText } from "@lib/format/problemText.util";
-import { type LotteryPatch, type LotterySettings, lotteryBlocked } from "@testify/shared";
+import { type LotteryPatch, type LotterySettings, lotteryBlocked } from "@together-helper/shared";
 
 const DEFAULTS = { entryFee: 100, basePrizePool: 0, maxWinners: 1, frequency: "weekly" } as const;
 

@@ -1,4 +1,4 @@
-import { STARBOARD_LIMITS, type StarboardSettings } from "@testify/shared";
+import { STARBOARD_LIMITS, type StarboardSettings } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 
 export function thresholdFrom(raw: string): number | null {

@@ -12,7 +12,7 @@ import {
 	type CasinoPatch,
 	type CasinoSettings,
 	casinoProblem,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export { CASINO_GAMES, CASINO_LIMITS };
 

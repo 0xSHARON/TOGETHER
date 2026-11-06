@@ -1,4 +1,4 @@
-import { type MemberMove } from "@testify/shared";
+import { type MemberMove } from "@together-helper/shared";
 import { Link } from "react-router";
 import { DividedList } from "@/components/primitives";
 import { INLINE_TARGET } from "@/components/primitives/targetStyles";

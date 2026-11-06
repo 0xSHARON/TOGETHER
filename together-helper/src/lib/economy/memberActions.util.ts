@@ -43,7 +43,7 @@ import {
 	type MoneySort,
 	pageOfRank,
 	storedStep,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export interface BoardEntry {
 	userId: string;

@@ -1,4 +1,4 @@
-import { type SourceEntry } from "@testify/shared";
+import { type SourceEntry } from "@together-helper/shared";
 import { ChevronRight, FileText, Folder, FolderOpen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

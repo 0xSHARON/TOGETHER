@@ -1,5 +1,5 @@
 import { SECOND_MS } from "@config/constants";
-import { AUTO_RESPONDER_LIMITS, type AutoResponder, type AutoResponderMatch, triggerKey } from "@testify/shared";
+import { AUTO_RESPONDER_LIMITS, type AutoResponder, type AutoResponderMatch, triggerKey } from "@together-helper/shared";
 
 /** Which responder a message sets off, and whether it may answer in that channel yet. */
 

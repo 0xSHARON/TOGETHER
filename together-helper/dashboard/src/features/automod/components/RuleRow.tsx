@@ -1,4 +1,4 @@
-import { type AutomodAction, type AutomodRuleSummary } from "@testify/shared";
+import { type AutomodAction, type AutomodRuleSummary } from "@together-helper/shared";
 import { Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Toggle } from "@/components/form";

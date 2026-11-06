@@ -1,4 +1,4 @@
-import { type AnalyticsWindow } from "@testify/shared";
+import { type AnalyticsWindow } from "@together-helper/shared";
 import { ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router";

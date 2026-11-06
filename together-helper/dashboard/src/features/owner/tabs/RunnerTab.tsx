@@ -1,4 +1,4 @@
-import { type CommandOptionSummary } from "@testify/shared";
+import { type CommandOptionSummary } from "@together-helper/shared";
 import { Play, Terminal } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

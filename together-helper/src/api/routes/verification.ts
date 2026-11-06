@@ -16,7 +16,7 @@ import {
 	roleTooHigh,
 	type VerifyConfig,
 } from "@lib/settings";
-import { type VerificationConfigResponse, type VerificationPatch, verificationPatchSchema } from "@testify/shared";
+import { type VerificationConfigResponse, type VerificationPatch, verificationPatchSchema } from "@together-helper/shared";
 
 export const verification = new Hono<ApiBindings>();
 

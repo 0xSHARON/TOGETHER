@@ -7,7 +7,7 @@ import {
 	type SupportCatalogueEntry,
 	type SupportIndex,
 	type SupportReply,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 const CHECKED_AT = "2026-09-23T12:00:00.000Z";
 

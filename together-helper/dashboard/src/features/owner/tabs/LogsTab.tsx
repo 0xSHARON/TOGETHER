@@ -1,4 +1,4 @@
-import { LOG_LEVELS, LOG_LEVEL_RANK, type LogFeed, type ReportedLogLevel } from "@testify/shared";
+import { LOG_LEVELS, LOG_LEVEL_RANK, type LogFeed, type ReportedLogLevel } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { Pause, Play } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";

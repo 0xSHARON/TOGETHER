@@ -1,4 +1,4 @@
-import { type ChannelSummary, SCHEDULE_LIMITS, type ScheduleRepeat } from "@testify/shared";
+import { type ChannelSummary, SCHEDULE_LIMITS, type ScheduleRepeat } from "@together-helper/shared";
 import { type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { ChannelPicker, Field, FIELD, SELECT } from "@/components/form";

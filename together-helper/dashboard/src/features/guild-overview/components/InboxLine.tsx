@@ -1,4 +1,4 @@
-import { inboxCount } from "@testify/shared";
+import { inboxCount } from "@together-helper/shared";
 import { Inbox } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";

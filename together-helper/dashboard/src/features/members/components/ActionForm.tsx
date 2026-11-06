@@ -7,7 +7,7 @@ import {
 	WARN_LIMITS,
 	WARNING_LIMITS,
 	warningProblem,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Field, RowActions, Warning } from "@/components/form";

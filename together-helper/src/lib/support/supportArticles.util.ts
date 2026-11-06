@@ -8,7 +8,7 @@ import { assetPath } from "@core/paths";
 import { formatDurationLong, humanisePermission } from "@lib/format/format.util";
 import { type SupportContext, type SupportEntry } from "@lib/support/support.types";
 import { fillFacts, unknownFacts } from "@lib/support/supportFacts.util";
-import { isSupportTopic, plainLine, SUPPORT_ARTICLE_ID, SUPPORT_LIMITS } from "@testify/shared";
+import { isSupportTopic, plainLine, SUPPORT_ARTICLE_ID, SUPPORT_LIMITS } from "@together-helper/shared";
 
 /** The written help articles in `assets/support`, and a page for every command anybody may run. */
 

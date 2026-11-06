@@ -1,4 +1,4 @@
-import { fillTemplate, type WelcomeStyle } from "@testify/shared";
+import { fillTemplate, type WelcomeStyle } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { PostPreview } from "@/features/welcome/components/PostPreview";
 

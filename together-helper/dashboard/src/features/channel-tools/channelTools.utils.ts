@@ -1,4 +1,4 @@
-import { SLOWMODE_SECONDS, type ToolChannel } from "@testify/shared";
+import { SLOWMODE_SECONDS, type ToolChannel } from "@together-helper/shared";
 import { formatUnit } from "@/lib/intl";
 
 const MINUTE = 60;

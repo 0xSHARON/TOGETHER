@@ -1,4 +1,4 @@
-import { CHANGE_LIMITS, CHANGE_SOURCES, CHANGE_WINDOWS, type ChangeSource, type ChangeWindow } from "@testify/shared";
+import { CHANGE_LIMITS, CHANGE_SOURCES, CHANGE_WINDOWS, type ChangeSource, type ChangeWindow } from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";

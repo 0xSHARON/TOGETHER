@@ -1,4 +1,4 @@
-# Testify and a MongoDB to keep its data in.
+# TOGETHER HELPER and a MongoDB to keep its data in.
 #
 #   cp .env.example .env    # fill it in, or run `npm run setup`
 #   docker compose up -d
@@ -9,7 +9,7 @@
 services:
   bot:
     build: .
-    image: testify:local
+    image: together-helper:local
     restart: unless-stopped
     # Node as PID 1 reaps no orphans; the bot's own SIGTERM handler still runs either way.
     init: true
@@ -21,7 +21,7 @@ services:
         condition: service_healthy
     environment:
       # `mongo` is this compose network's hostname for the database below.
-      MONGODB_URI: ${MONGODB_URI:-mongodb://mongo:27017/testify}
+      MONGODB_URI: ${MONGODB_URI:-mongodb://mongo:27017/together-helper}
       DISCORD_TOKEN: ${DISCORD_TOKEN:?set DISCORD_TOKEN in .env}
       DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID:?set DISCORD_CLIENT_ID in .env}
       DISCORD_OWNER_IDS: ${DISCORD_OWNER_IDS:?set DISCORD_OWNER_IDS in .env}

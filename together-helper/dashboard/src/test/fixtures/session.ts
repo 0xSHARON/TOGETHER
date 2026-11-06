@@ -4,7 +4,7 @@ import {
 	type ManageableGuild,
 	type MeResponse,
 	type SetupStatus,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const healthy: HealthResponse = { ok: true, uptimeMs: 65_000, discord: "ready", database: "connected" };
 

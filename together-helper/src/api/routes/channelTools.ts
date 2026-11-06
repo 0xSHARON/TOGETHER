@@ -7,7 +7,7 @@ import { requirePermission } from "@api/middleware/reach";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody, parseParams } from "@api/validate";
 import { DEFAULT_REASON, readChannelTools, setLocked, setSlowmode, textChannelOf, toolChannel } from "@lib/moderation";
-import { channelToolParams, channelToolPatch } from "@testify/shared";
+import { channelToolParams, channelToolPatch } from "@together-helper/shared";
 
 export const channelTools = new Hono<ApiBindings>();
 

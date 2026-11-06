@@ -1,4 +1,4 @@
-import { type BirthdaySettings } from "@testify/shared";
+import { type BirthdaySettings } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 
 export function birthdaySummary(

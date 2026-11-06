@@ -6,7 +6,7 @@ import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { disableWelcome, saveWelcome } from "@database/repositories/welcomeRepository";
 import { readWelcomeConfig } from "@lib/settings";
-import { type WelcomePatch, welcomePatchSchema } from "@testify/shared";
+import { type WelcomePatch, welcomePatchSchema } from "@together-helper/shared";
 
 export const welcome = new Hono<ApiBindings>();
 

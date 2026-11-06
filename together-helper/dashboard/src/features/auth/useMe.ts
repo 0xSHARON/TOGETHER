@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import { type MeResponse, type SetupStatus } from "@testify/shared";
+import { type MeResponse, type SetupStatus } from "@together-helper/shared";
 import { api, ApiError } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

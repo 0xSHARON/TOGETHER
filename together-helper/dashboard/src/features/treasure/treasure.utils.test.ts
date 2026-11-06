@@ -1,4 +1,4 @@
-import { type TreasureSettings } from "@testify/shared";
+import { type TreasureSettings } from "@together-helper/shared";
 import { describeRate, draftOf, draftProblem, toMilliseconds, toMinutes } from "@/features/treasure/treasure.utils";
 import { t } from "@/test/english";
 

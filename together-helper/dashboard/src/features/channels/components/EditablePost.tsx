@@ -1,4 +1,4 @@
-import { type TestPost, type WelcomePlaceholder, type WelcomeStyle } from "@testify/shared";
+import { type TestPost, type WelcomePlaceholder, type WelcomeStyle } from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Warning } from "@/components/form";

@@ -1,4 +1,4 @@
-import { type CommandAvailability, type CommandSummary } from "@testify/shared";
+import { type CommandAvailability, type CommandSummary } from "@together-helper/shared";
 import { ChevronRight, Lock, Shield } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";

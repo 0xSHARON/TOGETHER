@@ -3,7 +3,7 @@ import { defineCommand, inGuild } from "@core/command";
 import { UserFacingError } from "@core/errors";
 import { embed, reply, successEmbed } from "@lib/discord";
 import { createAutomodRule, listAutomodRules } from "@lib/moderation";
-import { AUTOMOD_LIMITS } from "@testify/shared";
+import { AUTOMOD_LIMITS } from "@together-helper/shared";
 
 export default defineCommand({
 	name: "automod",

@@ -1,4 +1,4 @@
-import { type MemberSoftban } from "@testify/shared";
+import { type MemberSoftban } from "@together-helper/shared";
 import { ShieldAlert } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button, Card } from "@/components/primitives";

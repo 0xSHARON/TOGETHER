@@ -6,7 +6,7 @@ import {
 	type UseMutationResult,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type CaseAction, type CasePage, type CasePatch, type CaseSettings } from "@testify/shared";
+import { type CaseAction, type CasePage, type CasePatch, type CaseSettings } from "@together-helper/shared";
 import { caseSearch } from "@/features/cases/cases.utils";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";

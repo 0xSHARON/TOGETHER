@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { DEFAULT_GOODBYE_MESSAGE, GOODBYE_STYLES, type GoodbyeStyle } from "@testify/shared";
+import { DEFAULT_GOODBYE_MESSAGE, GOODBYE_STYLES, type GoodbyeStyle } from "@together-helper/shared";
 
 /** Whether a server says goodbye when somebody leaves, where, and in what words. */
 export interface GoodbyeSettingsRecord {

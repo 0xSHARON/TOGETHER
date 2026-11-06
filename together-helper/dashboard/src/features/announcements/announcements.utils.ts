@@ -5,7 +5,7 @@ import {
 	type AnnouncementStyle,
 	type EmbedColour,
 	type TestPost,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { type TranslationKey } from "@/i18n";
 import { sanitiseInput } from "@/lib/sanitise";

@@ -1,4 +1,4 @@
-import { type CaseAction, CASE_LIMITS, type ModCase } from "@testify/shared";
+import { type CaseAction, CASE_LIMITS, type ModCase } from "@together-helper/shared";
 import { Gavel } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

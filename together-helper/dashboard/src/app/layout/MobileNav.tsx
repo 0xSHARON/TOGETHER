@@ -1,4 +1,4 @@
-import { type DashboardUser, type ManageableGuild } from "@testify/shared";
+import { type DashboardUser, type ManageableGuild } from "@together-helper/shared";
 import { Menu, Search, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";

@@ -1,4 +1,4 @@
-import { SETTINGS_LIMITS } from "@testify/shared";
+import { SETTINGS_LIMITS } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { formatNumber } from "@/lib/intl";
 

@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { CASE_ACTIONS, type CaseAction } from "@testify/shared";
+import { CASE_ACTIONS, type CaseAction } from "@together-helper/shared";
 
 export interface ModCaseRecord {
 	guildId: string;

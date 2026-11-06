@@ -1,4 +1,4 @@
-import { DELETED_USER_NAME } from "@testify/shared";
+import { DELETED_USER_NAME } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 
 /** A name as a record stores it, in the reader's own words for somebody who deleted their data. */

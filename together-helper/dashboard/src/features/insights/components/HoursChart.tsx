@@ -1,4 +1,4 @@
-import { busiestHour } from "@testify/shared";
+import { busiestHour } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { barHeight, hourLabel } from "@/features/insights/insights.utils";
 import { formatNumber } from "@/lib/intl";

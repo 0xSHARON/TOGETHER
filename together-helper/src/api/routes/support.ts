@@ -5,7 +5,7 @@ import { requireAuth } from "@api/middleware/session";
 import { parseBody, parseParams } from "@api/validate";
 import { DEFAULT_PREFIX } from "@config/constants";
 import { supportContext, supportDesk } from "@lib/support";
-import { supportArticleParams, type SupportIndex, supportQuestion, type SupportReply } from "@testify/shared";
+import { supportArticleParams, type SupportIndex, supportQuestion, type SupportReply } from "@together-helper/shared";
 
 /** The help articles, public because the docs show them to somebody who has not signed in. */
 export const supportArticles = new Hono<ApiBindings>();

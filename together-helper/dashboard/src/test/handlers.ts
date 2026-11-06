@@ -1,4 +1,4 @@
-import { type SupportReply, type WarnLadder } from "@testify/shared";
+import { type SupportReply, type WarnLadder } from "@together-helper/shared";
 import { http, HttpResponse } from "msw";
 import {
 	botStatus,

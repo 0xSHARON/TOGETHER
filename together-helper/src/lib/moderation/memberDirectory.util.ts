@@ -11,7 +11,7 @@ import {
 	idFromQuery,
 	JOINED_WITHIN_MS,
 	type MemberBlock,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** Everybody in a server, read live from Discord a page at a time, so a server of 100,000 is never fetched whole. */
 

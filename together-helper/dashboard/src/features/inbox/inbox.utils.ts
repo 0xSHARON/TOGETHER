@@ -1,4 +1,4 @@
-import { type ChannelSummary, type GuildInbox, inboxCount, type InboxChannelProblem } from "@testify/shared";
+import { type ChannelSummary, type GuildInbox, inboxCount, type InboxChannelProblem } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { featureLabel } from "@/features/guild-overview/featureStatus.labels";
 import { channelLabel } from "@/lib/channels";

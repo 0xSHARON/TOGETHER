@@ -1,4 +1,4 @@
-import { type SetupStep, type SetupStepState } from "@testify/shared";
+import { type SetupStep, type SetupStepState } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 type StepAction = "start" | "create" | "choose" | null;
@@ -29,7 +29,7 @@ export function describeStep(step: SetupStepState): TranslationKey {
 	return step.createsChannel ? "checklist.auditCreate" : "checklist.auditReuse";
 }
 
-const HIDDEN_KEY = "testify:setupHidden";
+const HIDDEN_KEY = "together-helper:setupHidden";
 
 function hiddenGuilds(): string[] {
 	try {

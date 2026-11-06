@@ -1,4 +1,4 @@
-import { type RaidSettings } from "@testify/shared";
+import { type RaidSettings } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 
 export function numberIn(raw: string, min: number, max: number): number | null {

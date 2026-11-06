@@ -1,5 +1,5 @@
 import { useMutation, type UseMutationResult, useQuery, type UseQueryResult } from "@tanstack/react-query";
-import { type SupportCatalogueEntry, type SupportIndex, type SupportReply, SupportSearch } from "@testify/shared";
+import { type SupportCatalogueEntry, type SupportIndex, type SupportReply, SupportSearch } from "@together-helper/shared";
 import { useMemo } from "react";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";

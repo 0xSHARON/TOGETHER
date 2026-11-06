@@ -1,5 +1,5 @@
 import { type UseQueryResult } from "@tanstack/react-query";
-import { type ChannelSummary, type FeatureStatus, type GuildOverview, type ManageableGuild } from "@testify/shared";
+import { type ChannelSummary, type FeatureStatus, type GuildOverview, type ManageableGuild } from "@together-helper/shared";
 import { Columns3 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

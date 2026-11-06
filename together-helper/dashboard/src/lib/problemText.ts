@@ -1,4 +1,4 @@
-import { type Problem, type ProblemCode } from "@testify/shared";
+import { type Problem, type ProblemCode } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { type TranslationKey } from "@/i18n";
 

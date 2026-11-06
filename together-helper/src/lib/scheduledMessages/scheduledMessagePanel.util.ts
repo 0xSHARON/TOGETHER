@@ -7,7 +7,7 @@ import { discordTime, escapeMarkdown, truncate } from "@lib/format/format.util";
 import { SCHEDULE_PANEL_ID } from "@lib/scheduledMessages/scheduledMessages.constants";
 import { REPEAT_LABELS } from "@lib/scheduledMessages/scheduledMessages.util";
 import { settingsScreen, type ScreenAction, type ScreenRow } from "@lib/settings/settingsScreen.util";
-import { SCHEDULE_LIMITS, type ScheduledMessage } from "@testify/shared";
+import { SCHEDULE_LIMITS, type ScheduledMessage } from "@together-helper/shared";
 
 type QuietPanel = ContainerMessage & { allowedMentions: { parse: [] } };
 

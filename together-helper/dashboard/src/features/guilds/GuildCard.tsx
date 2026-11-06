@@ -1,4 +1,4 @@
-import { inviteUrl, type ManageableGuild } from "@testify/shared";
+import { inviteUrl, type ManageableGuild } from "@together-helper/shared";
 import { Lock, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";

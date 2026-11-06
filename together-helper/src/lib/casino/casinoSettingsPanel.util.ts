@@ -14,7 +14,7 @@ import { slotsReturnToPlayer } from "@lib/casino/slots.util";
 import { button, row } from "@lib/discord/components.util";
 import { container, containerMessage, divider, text } from "@lib/discord/containers.util";
 import { type ContainerMessage, type ContainerPart } from "@lib/discord/discord.types";
-import { type CasinoGame, type CasinoSettings } from "@testify/shared";
+import { type CasinoGame, type CasinoSettings } from "@together-helper/shared";
 
 /** The casino's switch, its games and its limits, applied the moment each control is used. */
 

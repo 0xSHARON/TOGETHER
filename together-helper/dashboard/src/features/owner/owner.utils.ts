@@ -9,7 +9,7 @@ import {
 	type OwnerGuildFilter,
 	type OwnerGuildSort,
 	type ReportedLogLevel,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 import { dayAndMonth } from "@/lib/datetime";
 import { formatPercent, formatUnit } from "@/lib/intl";

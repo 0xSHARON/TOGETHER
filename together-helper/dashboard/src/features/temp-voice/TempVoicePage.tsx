@@ -1,4 +1,4 @@
-import { TEMP_VOICE_LIMITS, type TempVoicePatch } from "@testify/shared";
+import { TEMP_VOICE_LIMITS, type TempVoicePatch } from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";

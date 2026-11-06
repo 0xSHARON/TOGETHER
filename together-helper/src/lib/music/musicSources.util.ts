@@ -1,7 +1,7 @@
 import { UserFacingError } from "@core/errors";
 import { getBotSettings, saveBotSettings, type StoredBotSettings } from "@database/repositories/botSettingsRepository";
 import { type MusicSource, type Query } from "@lib/music/music.types";
-import { DEFAULT_MUSIC_SOURCES, type MusicSourceChoice, type MusicSourceSetting } from "@testify/shared";
+import { DEFAULT_MUSIC_SOURCES, type MusicSourceChoice, type MusicSourceSetting } from "@together-helper/shared";
 
 /** Which services the player takes music from, as the bot's owner chose for every server at once. */
 

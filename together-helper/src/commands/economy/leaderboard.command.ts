@@ -2,7 +2,7 @@ import { type TestifyClient } from "@core/client";
 import { type CommandInput, defineCommand, inGuild } from "@core/command";
 import { reply } from "@lib/discord";
 import { type BoardKind, boardMessage } from "@lib/economy";
-import { type BoardScope, type MoneySort } from "@testify/shared";
+import { type BoardScope, type MoneySort } from "@together-helper/shared";
 
 async function show(interaction: CommandInput, client: TestifyClient, kind: BoardKind): Promise<void> {
 	const guild = inGuild(interaction);

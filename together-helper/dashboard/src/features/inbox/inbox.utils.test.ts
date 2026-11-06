@@ -1,4 +1,4 @@
-import { type ChannelSummary, type GuildInbox } from "@testify/shared";
+import { type ChannelSummary, type GuildInbox } from "@together-helper/shared";
 import { channelProblemText, inboxSummary, moreThan } from "@/features/inbox/inbox.utils";
 import { t } from "@/test/english";
 

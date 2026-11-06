@@ -1,4 +1,4 @@
-import { type ArticleBlock, articleBlocks, type ArticleSpan } from "@testify/shared";
+import { type ArticleBlock, articleBlocks, type ArticleSpan } from "@together-helper/shared";
 import { Lightbulb } from "lucide-react";
 import { useMemo } from "react";
 import { Link } from "react-router";

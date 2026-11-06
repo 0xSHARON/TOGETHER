@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { ROLE_MENU_MODES, type RoleMenuMode } from "@testify/shared";
+import { ROLE_MENU_MODES, type RoleMenuMode } from "@together-helper/shared";
 
 /** A message members press to pick their own roles from a list a manager chose. */
 export interface RoleMenuRecord {

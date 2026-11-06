@@ -1,4 +1,4 @@
-import { type GoodbyeSettings, WELCOME_STYLES, type WelcomeConfigResponse, type WelcomeStyle } from "@testify/shared";
+import { type GoodbyeSettings, WELCOME_STYLES, type WelcomeConfigResponse, type WelcomeStyle } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { type TranslationKey } from "@/i18n";
 

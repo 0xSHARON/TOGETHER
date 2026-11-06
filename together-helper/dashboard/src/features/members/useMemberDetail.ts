@@ -14,7 +14,7 @@ import {
 	type MoneyBody,
 	type NicknameBody,
 	type TimeoutBody,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

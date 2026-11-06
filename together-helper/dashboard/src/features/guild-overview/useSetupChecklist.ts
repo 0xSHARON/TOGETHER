@@ -5,7 +5,7 @@ import {
 	useQueryClient,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type SetupChecklist, type SetupStep } from "@testify/shared";
+import { type SetupChecklist, type SetupStep } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

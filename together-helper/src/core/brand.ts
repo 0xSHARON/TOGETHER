@@ -1,4 +1,4 @@
-import { resolveBotName } from "@testify/shared";
+import { resolveBotName } from "@together-helper/shared";
 
 /** The bot's display name, for every surface that has no client to ask, such as an embed's footer. */
 

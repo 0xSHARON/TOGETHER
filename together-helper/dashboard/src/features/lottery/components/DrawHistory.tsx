@@ -1,4 +1,4 @@
-import { type LotteryDrawSummary } from "@testify/shared";
+import { type LotteryDrawSummary } from "@together-helper/shared";
 import { History } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Card, CARD_HEADING, EmptyState } from "@/components/primitives";

@@ -1,4 +1,4 @@
-import { type ChannelSummary, type RoleSummary } from "@testify/shared";
+import { type ChannelSummary, type RoleSummary } from "@together-helper/shared";
 import { EyeOff, Gift, Settings2, Zap } from "lucide-react";
 import { type TabDefinition } from "@/components/primitives";
 

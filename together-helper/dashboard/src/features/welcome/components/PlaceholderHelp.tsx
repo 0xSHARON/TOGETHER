@@ -1,4 +1,4 @@
-import { WELCOME_PLACEHOLDERS, type WelcomePlaceholder } from "@testify/shared";
+import { WELCOME_PLACEHOLDERS, type WelcomePlaceholder } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "@/components/primitives";
 import { PLACEHOLDER_LABELS } from "@/features/welcome/welcome.labels";

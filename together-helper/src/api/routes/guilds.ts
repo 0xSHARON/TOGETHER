@@ -64,7 +64,7 @@ import {
 	type Paged,
 	pagination,
 	type RoleSummary,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const guilds = new Hono<ApiBindings>();
 

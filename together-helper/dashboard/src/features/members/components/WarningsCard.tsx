@@ -1,4 +1,4 @@
-import { WARNING_LIMITS, type MemberDetail, warningProblem } from "@testify/shared";
+import { WARNING_LIMITS, type MemberDetail, warningProblem } from "@together-helper/shared";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

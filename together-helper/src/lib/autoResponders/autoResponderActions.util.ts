@@ -18,7 +18,7 @@ import {
 	problem,
 	sanitiseLine,
 	sanitiseText,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** Adding, changing and removing a server's responders: the one path the panel and the dashboard both take. */
 

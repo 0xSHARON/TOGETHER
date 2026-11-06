@@ -1,4 +1,4 @@
-import { LOTTERY_FREQUENCIES, LOTTERY_LIMITS } from "@testify/shared";
+import { LOTTERY_FREQUENCIES, LOTTERY_LIMITS } from "@together-helper/shared";
 import { Coins, Snowflake, Ticket, Trash2, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";

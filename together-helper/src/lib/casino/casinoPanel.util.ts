@@ -13,7 +13,7 @@ import { button, row } from "@lib/discord/components.util";
 import { container, containerMessage, divider, gallery, text } from "@lib/discord/containers.util";
 import { type ContainerMessageWithFiles, type ContainerPart } from "@lib/discord/discord.types";
 import { formatDurationLong, formatNumber } from "@lib/format/format.util";
-import { type CasinoGame } from "@testify/shared";
+import { type CasinoGame } from "@together-helper/shared";
 
 /** Every casino message, as pure functions of the game's state, so the first render and every update match. */
 

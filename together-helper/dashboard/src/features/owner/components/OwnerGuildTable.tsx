@@ -1,4 +1,4 @@
-import { type OwnerGuildFilter, type OwnerGuildRow, type OwnerGuildSort } from "@testify/shared";
+import { type OwnerGuildFilter, type OwnerGuildRow, type OwnerGuildSort } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Avatar, Badge, CELL, CELL_NUM, DataTable, LARGE_ONLY, TH, TH_NUM, WIDE_ONLY } from "@/components/primitives";
 import { cn } from "@/lib/cn";

@@ -6,7 +6,7 @@ import { container, containerMessage, divider, sectionWithButton, text } from "@
 import { type ContainerMessage, type ContainerPart } from "@lib/discord/discord.types";
 import { ROLE_MENU_ADMIN_ID, ROLE_MENU_ID } from "@lib/roles/roles.constants";
 import { settingsScreen, type ScreenAction, type ScreenRow } from "@lib/settings/settingsScreen.util";
-import { ROLE_MENU_LIMITS } from "@testify/shared";
+import { ROLE_MENU_LIMITS } from "@together-helper/shared";
 
 /** A role on a menu as one member sees it: whether they hold it, and whether the bot can hand it out at all. */
 export interface OfferedRole {

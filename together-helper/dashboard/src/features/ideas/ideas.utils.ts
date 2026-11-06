@@ -1,4 +1,4 @@
-import { IDEA_STATUSES, type IdeaFilter, type IdeaSettings } from "@testify/shared";
+import { IDEA_STATUSES, type IdeaFilter, type IdeaSettings } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 
 const FILTERS: readonly IdeaFilter[] = ["all", ...IDEA_STATUSES];

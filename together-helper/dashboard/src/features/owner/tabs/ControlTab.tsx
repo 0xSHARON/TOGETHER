@@ -1,4 +1,4 @@
-import { BOT_IDENTITY_LIMITS, MUSIC_SOURCE_CHOICES, type MusicSourceChoice, SHUTDOWN_PHRASE } from "@testify/shared";
+import { BOT_IDENTITY_LIMITS, MUSIC_SOURCE_CHOICES, type MusicSourceChoice, SHUTDOWN_PHRASE } from "@together-helper/shared";
 import { Pause, Play, Power } from "lucide-react";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";

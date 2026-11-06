@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { STATUS_LEVELS, type StatusLevel } from "@testify/shared";
+import { STATUS_LEVELS, type StatusLevel } from "@together-helper/shared";
 
 /** One heartbeat every few minutes, so a stretch with none is how the status page knows the bot was off. */
 export interface StatusSample {

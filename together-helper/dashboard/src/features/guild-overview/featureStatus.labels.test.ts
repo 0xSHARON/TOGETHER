@@ -1,4 +1,4 @@
-import { type FeatureDetail } from "@testify/shared";
+import { type FeatureDetail } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { describeDetail } from "@/features/guild-overview/featureStatus.labels";
 import { i18next } from "@/i18n";

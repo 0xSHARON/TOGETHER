@@ -1,4 +1,4 @@
-import { type AutomodPreset } from "@testify/shared";
+import { type AutomodPreset } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export const PRESET_LABELS: Record<AutomodPreset, { label: TranslationKey; describes: TranslationKey }> = {

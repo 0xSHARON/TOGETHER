@@ -15,7 +15,7 @@ import { sweepTempVoice } from "@jobs/tempVoiceSweep.util";
 import { flushCommandLog, startEventLoopMonitor, watchDiscordApi } from "@lib/bot";
 import { CASINO_TIMING, spinOverdueRounds } from "@lib/casino";
 import { flushActivity } from "@lib/info";
-import { STATUS_LIMITS } from "@testify/shared";
+import { STATUS_LIMITS } from "@together-helper/shared";
 
 export default defineEvent({
 	name: Events.ClientReady,

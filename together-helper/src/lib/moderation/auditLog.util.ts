@@ -4,9 +4,9 @@ import { type TestifyClient } from "@core/client";
 import { toError } from "@core/errors";
 import { getAuditLogConfig } from "@database/repositories/auditLogRepository";
 import { embed } from "@lib/discord/embeds.util";
-import { AUDIT_EVENTS, type AuditEvent } from "@testify/shared";
+import { AUDIT_EVENTS, type AuditEvent } from "@together-helper/shared";
 
-/** The event list lives in `@testify/shared`, so the dashboard's checklist and this dispatch cannot drift. */
+/** The event list lives in `@together-helper/shared`, so the dashboard's checklist and this dispatch cannot drift. */
 export { AUDIT_EVENTS, type AuditEvent };
 
 /** The log's colour language: green appeared, red went, amber changed, dark red a moderator acted. */

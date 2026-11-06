@@ -1,4 +1,4 @@
-import { type Notice } from "@testify/shared";
+import { type Notice } from "@together-helper/shared";
 import { timingChange, type TimingDraft, timingDraftOf } from "@/features/owner/noticeTiming.utils";
 import { toLocalInput } from "@/features/scheduled-messages/scheduledMessages.utils";
 

@@ -1,4 +1,4 @@
-import { MEMBER_ACTION_LIMITS, type MemberRoles } from "@testify/shared";
+import { MEMBER_ACTION_LIMITS, type MemberRoles } from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CheckList, RowActions, SettingRows, Warning } from "@/components/form";

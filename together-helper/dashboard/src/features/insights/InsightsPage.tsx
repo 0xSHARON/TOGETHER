@@ -1,4 +1,4 @@
-import { averagePerDay, INSIGHT_WINDOWS, type InsightWindow } from "@testify/shared";
+import { averagePerDay, INSIGHT_WINDOWS, type InsightWindow } from "@together-helper/shared";
 import { MessageSquare, UserMinus, UserPlus, Users } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

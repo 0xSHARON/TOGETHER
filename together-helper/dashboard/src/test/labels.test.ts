@@ -6,7 +6,7 @@ import {
 	type RestorableAction,
 	SUPPORT_TOPICS,
 	WELCOME_PLACEHOLDERS,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { EVENT_LABELS, GROUP_LABELS } from "@/features/audit-log/auditLog.labels";
 import { PRESET_LABELS } from "@/features/automod/automod.labels";
 import { RESTORE_FIELD_LABELS } from "@/features/changes/restore.labels";

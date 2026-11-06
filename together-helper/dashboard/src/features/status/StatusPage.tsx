@@ -1,4 +1,4 @@
-import { type StatusLevel, type StatusResponse } from "@testify/shared";
+import { type StatusLevel, type StatusResponse } from "@together-helper/shared";
 import {
 	AlertTriangle,
 	CheckCircle2,

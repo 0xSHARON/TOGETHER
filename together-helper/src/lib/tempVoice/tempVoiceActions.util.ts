@@ -27,7 +27,7 @@ import {
 	tempChannelName,
 	type TempVoicePatch,
 	type TempVoiceSettings,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 const NEEDED = [PermissionFlagsBits.ManageChannels, PermissionFlagsBits.MoveMembers];
 

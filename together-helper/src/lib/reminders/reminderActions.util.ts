@@ -6,7 +6,7 @@ import { parseDuration } from "@lib/format/duration.util";
 import { formatDurationLong } from "@lib/format/format.util";
 import { deliveredText } from "@lib/reminders/reminderPanel.util";
 import { REMINDER_LIMITS } from "@lib/reminders/reminders.constants";
-import { sanitiseText } from "@testify/shared";
+import { sanitiseText } from "@together-helper/shared";
 
 /** How far ahead a reminder is due, refused with advice rather than guessed at. */
 export function reminderDelay(input: string): number {

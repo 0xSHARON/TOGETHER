@@ -1,4 +1,4 @@
-import { type RoleSummary, type RoleUse, type RoleUseKind } from "@testify/shared";
+import { type RoleSummary, type RoleUse, type RoleUseKind } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { type TranslationKey } from "@/i18n";
 import { formatNumber } from "@/lib/intl";

@@ -10,8 +10,8 @@
 		"paths": {
 			"@/*": ["./src/*"],
 			"@repo/*": ["../*"],
-			"@testify/shared": ["../shared/src/index.ts"],
-			"@testify/shared/*": ["../shared/src/*"]
+			"@together-helper/shared": ["../shared/src/index.ts"],
+			"@together-helper/shared/*": ["../shared/src/*"]
 		},
 
 		"strict": true,

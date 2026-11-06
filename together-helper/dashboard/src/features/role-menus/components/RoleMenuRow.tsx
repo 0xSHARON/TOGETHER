@@ -1,4 +1,4 @@
-import { type ChannelSummary, type RoleMenuEntry, type RoleSummary } from "@testify/shared";
+import { type ChannelSummary, type RoleMenuEntry, type RoleSummary } from "@together-helper/shared";
 import { Pencil, Send, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Warning } from "@/components/form";

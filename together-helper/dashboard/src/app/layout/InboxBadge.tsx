@@ -1,4 +1,4 @@
-import { inboxCount } from "@testify/shared";
+import { inboxCount } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { useInbox } from "@/features/inbox/useInbox";
 import { cn } from "@/lib/cn";

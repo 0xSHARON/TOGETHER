@@ -5,7 +5,7 @@ export type Motion = (typeof MOTIONS)[number];
 
 export const MOTION: Preference<Motion> = {
 	attribute: "data-motion",
-	storageKey: "testify:motion",
+	storageKey: "together-helper:motion",
 	options: MOTIONS,
 	fallback: "system",
 };

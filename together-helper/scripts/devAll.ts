@@ -110,7 +110,7 @@ function main(): void {
 	});
 	if (shared.status !== 0) {
 		process.stderr.write(`${shared.stdout.toString()}${shared.stderr.toString()}`);
-		print(["Run `npm run build:shared` on its own to see why."], "error", "Could not build @testify/shared");
+		print(["Run `npm run build:shared` on its own to see why."], "error", "Could not build @together-helper/shared");
 		process.exit(1);
 	}
 

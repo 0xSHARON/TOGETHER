@@ -1,4 +1,4 @@
-import { type AutomodRuleSummary } from "@testify/shared";
+import { type AutomodRuleSummary } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 
 export function automodSummary(rules: readonly Pick<AutomodRuleSummary, "enabled">[], t: TFunction): string {

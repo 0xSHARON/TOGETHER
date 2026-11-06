@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { type ApiBindings, guildOf } from "@api/context";
 import { requireGuild } from "@api/middleware/session";
 import { readMemberCounts } from "@lib/info";
-import { type MemberCounts } from "@testify/shared";
+import { type MemberCounts } from "@together-helper/shared";
 
 export const memberCount = new Hono<ApiBindings>();
 

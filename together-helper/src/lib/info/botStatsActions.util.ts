@@ -4,7 +4,7 @@ import { UserFacingError } from "@core/errors";
 import { type FixedStatsMessage } from "@database/models/botStats.schema";
 import { getFixedStats, removeFixedStats, setFixedStats } from "@database/repositories/botStatsRepository";
 import { botStatsEmbed } from "@lib/info/statsEmbed.util";
-import { type BotStatsSettings } from "@testify/shared";
+import { type BotStatsSettings } from "@together-helper/shared";
 
 /** Where the statistics message lives, shared by `/bot-stats-channel` and the dashboard. */
 

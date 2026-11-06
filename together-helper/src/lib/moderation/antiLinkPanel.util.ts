@@ -6,11 +6,11 @@ import { humanisePermission } from "@lib/format/format.util";
 import { ANTILINK_PANEL_ID } from "@lib/moderation/moderation.constants";
 import { type AntiLinkPanelState } from "@lib/moderation/moderation.types";
 import { settingsScreen } from "@lib/settings/settingsScreen.util";
-import { BYPASS_PERMISSIONS, type BypassPermission, DEFAULT_BYPASS, isBypassPermission } from "@testify/shared";
+import { BYPASS_PERMISSIONS, type BypassPermission, DEFAULT_BYPASS, isBypassPermission } from "@together-helper/shared";
 
 /** Link removal, configured from one screen rather than `enable`/`disable`/`status`. */
 
-/** The permissions worth offering as a bypass live in `@testify/shared`, so the web form offers the same four. */
+/** The permissions worth offering as a bypass live in `@together-helper/shared`, so the web form offers the same four. */
 export { BYPASS_PERMISSIONS, type BypassPermission, DEFAULT_BYPASS, isBypassPermission };
 
 export function antiLinkPanel(state: AntiLinkPanelState, ownerId: string): ContainerMessage {

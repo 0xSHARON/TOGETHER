@@ -24,7 +24,7 @@ import {
 	musicSourcesPatch,
 	type OwnerGuildDetail,
 	shutdownRequest,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const control = new Hono<ApiBindings>();
 

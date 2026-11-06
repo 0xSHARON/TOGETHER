@@ -20,7 +20,7 @@ import {
 	subcommandsOf,
 } from "@core/command";
 import { UserFacingError } from "@core/errors";
-import { type CommandRunRequest, type RunOutput } from "@testify/shared";
+import { type CommandRunRequest, type RunOutput } from "@together-helper/shared";
 
 /** Running a command from the dashboard, for owner commands on an opt-in allowlist only. */
 

@@ -1,4 +1,4 @@
-import { TEMP_VOICE_LIMITS } from "@testify/shared";
+import { TEMP_VOICE_LIMITS } from "@together-helper/shared";
 import { nameTemplateFrom, userLimitFrom, tempVoiceSummary } from "@/features/temp-voice/tempVoice.utils";
 import { i18next } from "@/i18n";
 

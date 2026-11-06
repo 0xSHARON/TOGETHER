@@ -23,12 +23,12 @@ export type Accent = PresetAccent | "custom";
 /** Plum is the base palette in `index.css`, so choosing it removes the attribute rather than restating it. */
 export const ACCENT: Preference<Accent> = {
 	attribute: "data-accent",
-	storageKey: "testify:accent",
+	storageKey: "together-helper:accent",
 	options: [...ACCENTS, "custom"],
 	fallback: "plum",
 };
 
-export const CUSTOM_COLOUR_KEY = "testify:accent-colour";
+export const CUSTOM_COLOUR_KEY = "together-helper:accent-colour";
 
 export function storedCustomColour(): string | null {
 	try {

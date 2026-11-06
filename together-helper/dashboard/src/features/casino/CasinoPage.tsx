@@ -1,4 +1,4 @@
-import { CASINO_GAMES } from "@testify/shared";
+import { CASINO_GAMES } from "@together-helper/shared";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";

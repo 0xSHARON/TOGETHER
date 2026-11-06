@@ -1,7 +1,7 @@
 import { isValidObjectId, type Types } from "mongoose";
 import { CACHE } from "@config/constants";
 import { AutoResponderEntry, type AutoResponderRecord } from "@database/models/autoResponder.schema";
-import { type AutoResponder, type AutoResponderInput, triggerKey } from "@testify/shared";
+import { type AutoResponder, type AutoResponderInput, triggerKey } from "@together-helper/shared";
 
 type Row = AutoResponderRecord & { _id: Types.ObjectId };
 

@@ -4,7 +4,7 @@ import { UserFacingError } from "@core/errors";
 import { modalForm, pickedChannelId } from "@lib/discord";
 import { recordsSettings } from "@lib/settings";
 import { applyGoodbye, farewellFor, GOODBYE_PANEL_ID, goodbyePanel, readGoodbye } from "@lib/welcome";
-import { GOODBYE_STYLES, type GoodbyeStyle, sanitiseText, WELCOME_LIMITS } from "@testify/shared";
+import { GOODBYE_STYLES, type GoodbyeStyle, sanitiseText, WELCOME_LIMITS } from "@together-helper/shared";
 
 const isStyle = (value: string | undefined): value is GoodbyeStyle =>
 	(GOODBYE_STYLES as readonly string[]).includes(value ?? "");

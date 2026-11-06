@@ -34,7 +34,7 @@ import {
 	type FeatureStatus,
 	type Place,
 	type PlaceRole,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** What the overview says about each feature and where it works: one read each, through the repositories the panels use. */
 

@@ -1,4 +1,4 @@
-import { type SupportArticleLink, type SupportReply, SUPPORT_LIMITS } from "@testify/shared";
+import { type SupportArticleLink, type SupportReply, SUPPORT_LIMITS } from "@together-helper/shared";
 import { MessageCircleQuestion, Search } from "lucide-react";
 import { type FormEvent, type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";

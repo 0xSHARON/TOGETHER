@@ -1,4 +1,4 @@
-import { type ChannelSummary, type RoleSummary } from "@testify/shared";
+import { type ChannelSummary, type RoleSummary } from "@together-helper/shared";
 import { describeValue, restoreLines } from "@/features/changes/restore.utils";
 import { t } from "@/test/english";
 

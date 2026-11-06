@@ -1,7 +1,7 @@
 import { type PipelineStage } from "mongoose";
 import { type CommandRunRecord, CommandRuns } from "@database/models/commandRuns.schema";
 import { since, type Surface } from "@database/repositories/usageRepository";
-import { RUN_RETENTION_DAYS } from "@testify/shared";
+import { RUN_RETENTION_DAYS } from "@together-helper/shared";
 
 /** Who ran which command in a server, for the owner console. Runs in a direct message are never written. */
 

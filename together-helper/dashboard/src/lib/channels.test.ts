@@ -1,4 +1,4 @@
-import { type ChannelSummary } from "@testify/shared";
+import { type ChannelSummary } from "@together-helper/shared";
 import { channelLabel, seenChannels } from "@/lib/channels";
 import { t } from "@/test/english";
 

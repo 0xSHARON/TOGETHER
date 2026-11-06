@@ -44,7 +44,7 @@ import {
 	type MeResponse,
 	returnTo as returnToSchema,
 	type SetupStatus,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 type ApiContext = Context<ApiBindings>;
 

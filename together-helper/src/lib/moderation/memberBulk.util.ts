@@ -2,7 +2,7 @@ import { type Guild, type GuildMember } from "discord.js";
 import { type TestifyClient } from "@core/client";
 import { toError } from "@core/errors";
 import { moderationBlock } from "@lib/moderation/moderationActions.util";
-import { type BulkOutcome, type BulkSkip } from "@testify/shared";
+import { type BulkOutcome, type BulkSkip } from "@together-helper/shared";
 
 /** One action on several members: each in turn, each answered for, and nobody ever acted on who should not be. */
 

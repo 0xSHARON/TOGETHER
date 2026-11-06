@@ -6,7 +6,7 @@ import { notInGuild } from "@api/errors";
 import { requireGuild } from "@api/middleware/session";
 import { parseParams } from "@api/validate";
 import { readSetupChecklist, runSetupStep, type SetupActor } from "@lib/settings";
-import { type SetupStep, setupStepParams } from "@testify/shared";
+import { type SetupStep, setupStepParams } from "@together-helper/shared";
 
 type ApiContext = Context<ApiBindings>;
 

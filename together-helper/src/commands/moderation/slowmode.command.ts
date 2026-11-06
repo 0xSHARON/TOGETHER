@@ -4,7 +4,7 @@ import { UserFacingError } from "@core/errors";
 import { reply, successEmbed } from "@lib/discord";
 import { formatDurationLong, parseDuration } from "@lib/format";
 import { setSlowmode } from "@lib/moderation";
-import { CHANNEL_TOOL_LIMITS } from "@testify/shared";
+import { CHANNEL_TOOL_LIMITS } from "@together-helper/shared";
 
 export default defineCommand({
 	name: "slowmode",

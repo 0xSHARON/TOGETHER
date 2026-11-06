@@ -14,7 +14,7 @@ import {
 	type MemberMove,
 	type ServerFacts,
 	type VerificationLevel,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** A server's insights: what Discord says about it, and what the bot has counted there. */
 

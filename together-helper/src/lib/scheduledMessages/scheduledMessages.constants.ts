@@ -1,5 +1,5 @@
 import { MINUTE_MS } from "@config/constants";
-import { SCHEDULE_LIMITS } from "@testify/shared";
+import { SCHEDULE_LIMITS } from "@together-helper/shared";
 
 export const SCHEDULE_COMMAND = "schedule";
 

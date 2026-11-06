@@ -1,4 +1,4 @@
-import { type ChangeRestore, stillAsLeft } from "@testify/shared";
+import { type ChangeRestore, stillAsLeft } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Warning } from "@/components/form";

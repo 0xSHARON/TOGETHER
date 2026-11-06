@@ -5,7 +5,7 @@ import {
 	type UseMutationResult,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type OpenTicketList, type TicketPatch, type TicketSettings } from "@testify/shared";
+import { type OpenTicketList, type TicketPatch, type TicketSettings } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

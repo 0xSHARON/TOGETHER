@@ -6,7 +6,7 @@ import { requirePermission } from "@api/middleware/reach";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody, parseQuery } from "@api/validate";
 import { applyCaseSettings, readCases, readCaseSettings } from "@lib/moderation";
-import { casePatch, caseQuery } from "@testify/shared";
+import { casePatch, caseQuery } from "@together-helper/shared";
 
 export const cases = new Hono<ApiBindings>();
 

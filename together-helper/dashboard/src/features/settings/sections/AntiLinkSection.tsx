@@ -1,4 +1,4 @@
-import { BYPASS_LABELS, BYPASS_PERMISSIONS, type AntiLinkPatch, type AntiLinkSetting } from "@testify/shared";
+import { BYPASS_LABELS, BYPASS_PERMISSIONS, type AntiLinkPatch, type AntiLinkSetting } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Field, savingStateOf, SELECT, Toggle } from "@/components/form";
 import { Section } from "@/features/settings/components/Section";

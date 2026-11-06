@@ -10,9 +10,9 @@ beforeEach(() => {
 /** Stored choices apply before the app mounts, not only once the appearance page is opened. */
 describe("applying stored preferences before the app mounts", () => {
 	it("marks the page with every choice that was remembered", () => {
-		window.localStorage.setItem("testify:theme", "light");
-		window.localStorage.setItem("testify:accent", "teal");
-		window.localStorage.setItem("testify:motion", "reduced");
+		window.localStorage.setItem("together-helper:theme", "light");
+		window.localStorage.setItem("together-helper:accent", "teal");
+		window.localStorage.setItem("together-helper:motion", "reduced");
 
 		applyStoredPreferences();
 
@@ -31,7 +31,7 @@ describe("applying stored preferences before the app mounts", () => {
 	});
 
 	it("ignores a stored value that is not one of the options", () => {
-		window.localStorage.setItem("testify:accent", "aubergine");
+		window.localStorage.setItem("together-helper:accent", "aubergine");
 
 		applyStoredPreferences();
 
@@ -40,8 +40,8 @@ describe("applying stored preferences before the app mounts", () => {
 
 	/** A colour of somebody's own is worn from the first screen, not only once Appearance is opened. */
 	it("wears a remembered colour of the reader's own", () => {
-		window.localStorage.setItem("testify:accent", "custom");
-		window.localStorage.setItem("testify:accent-colour", "#4338ca");
+		window.localStorage.setItem("together-helper:accent", "custom");
+		window.localStorage.setItem("together-helper:accent-colour", "#4338ca");
 
 		applyStoredPreferences();
 
@@ -53,8 +53,8 @@ describe("applying stored preferences before the app mounts", () => {
 
 	/** Storage holds whatever was last written to it, and a value reaching a style property must be a colour. */
 	it("ignores a remembered colour that is not one, and falls back to plum", () => {
-		window.localStorage.setItem("testify:accent", "custom");
-		window.localStorage.setItem("testify:accent-colour", "red; background: url(x)");
+		window.localStorage.setItem("together-helper:accent", "custom");
+		window.localStorage.setItem("together-helper:accent-colour", "red; background: url(x)");
 
 		applyStoredPreferences();
 

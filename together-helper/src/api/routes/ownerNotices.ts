@@ -4,7 +4,7 @@ import { type ApiBindings } from "@api/context";
 import { requireOwner } from "@api/middleware/session";
 import { parseBody, parseParams } from "@api/validate";
 import { allNotices, changeNotice, postNotice, readNotice, removeNotice } from "@lib/notices";
-import { noticeInput, noticeParams, noticePatch } from "@testify/shared";
+import { noticeInput, noticeParams, noticePatch } from "@together-helper/shared";
 
 export const ownerNotices = new Hono<ApiBindings>();
 

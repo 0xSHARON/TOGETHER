@@ -18,7 +18,7 @@ describe("a colour of the reader's own", () => {
 
 		expect(accepted).toBe(false);
 		expect(result.current.colour).toBeNull();
-		expect(window.localStorage.getItem("testify:accent-colour")).toBeNull();
+		expect(window.localStorage.getItem("together-helper:accent-colour")).toBeNull();
 		expect(document.documentElement.getAttribute("style") ?? "").toBe("");
 	});
 
@@ -36,7 +36,7 @@ describe("a colour of the reader's own", () => {
 		});
 
 		expect(result.current.colour).toBe("#4338ca");
-		expect(window.localStorage.getItem("testify:accent-colour")).toBe("#4338ca");
+		expect(window.localStorage.getItem("together-helper:accent-colour")).toBe("#4338ca");
 		expect(document.documentElement.style.getPropertyValue("--custom-primary-light")).toBe("#4338ca");
 	});
 });

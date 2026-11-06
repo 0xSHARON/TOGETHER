@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
 
-# Testify — the bot, and the dashboard it serves from the same process.
-# Build:  docker build -t testify .
-# Run:    docker compose up -d      (see docker-compose.yml and docs/hosting.md)
+# TOGETHER HELPER — the bot, and the dashboard it serves from the same process.
+# Build:  docker build -t together-helper .
+# Run:    docker run -d --net=host --env-file .env --name together-helper together-helper
 
 ARG NODE_VERSION=24-bookworm-slim
 
@@ -53,7 +53,7 @@ RUN apt-get update \
 COPY package.json package-lock.json ./
 COPY shared/package.json ./shared/
 COPY dashboard/package.json ./dashboard/
-RUN npm ci --omit=dev --ignore-scripts --workspace @testify/shared --include-workspace-root \
+RUN npm ci --omit=dev --ignore-scripts --workspace @together-helper/shared --include-workspace-root \
 	&& npm cache clean --force
 
 COPY --from=build /app/dist ./dist

@@ -5,7 +5,7 @@ import { badRequest } from "@api/errors";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { applyCasinoSettings, CASINO_GAME_LABELS, readCasinoSettings } from "@lib/casino";
-import { type CasinoPatch, casinoPatch, isCasinoGame } from "@testify/shared";
+import { type CasinoPatch, casinoPatch, isCasinoGame } from "@together-helper/shared";
 
 export const casino = new Hono<ApiBindings>();
 

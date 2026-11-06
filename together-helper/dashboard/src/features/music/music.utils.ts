@@ -1,4 +1,4 @@
-import { type MusicSettings, type RoleSummary } from "@testify/shared";
+import { type MusicSettings, type RoleSummary } from "@together-helper/shared";
 
 /** A role deleted since is still stored, and a picker of live roles alone would drop it. */
 export function missingRoleIds(settings: Pick<MusicSettings, "djRoleIds">, roles: RoleSummary[]): string[] {

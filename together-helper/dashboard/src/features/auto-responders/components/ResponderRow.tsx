@@ -1,4 +1,4 @@
-import { type AutoResponder, autoResponderBlocked, type AutoResponderInput } from "@testify/shared";
+import { type AutoResponder, autoResponderBlocked, type AutoResponderInput } from "@together-helper/shared";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

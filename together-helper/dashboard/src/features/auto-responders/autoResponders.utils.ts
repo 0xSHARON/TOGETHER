@@ -1,4 +1,4 @@
-import { AUTO_RESPONDER_MATCHES, type AutoResponderMatch } from "@testify/shared";
+import { AUTO_RESPONDER_MATCHES, type AutoResponderMatch } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export const MATCH_LABELS: Record<AutoResponderMatch, TranslationKey> = {

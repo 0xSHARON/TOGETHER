@@ -1,4 +1,4 @@
-import { type TrafficDay } from "@testify/shared";
+import { type TrafficDay } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Card, CARD_HEADING, Skeleton, UsageBars } from "@/components/primitives";

@@ -1,4 +1,4 @@
-import { type LotterySettings } from "@testify/shared";
+import { type LotterySettings } from "@together-helper/shared";
 import { draftOf, draftProblem, reschedules, winnersWarning } from "@/features/lottery/lottery.utils";
 import { t } from "@/test/english";
 

@@ -1,4 +1,4 @@
-import { SCHEDULE_REPEATS, type ScheduledMessage, type ScheduleRepeat } from "@testify/shared";
+import { SCHEDULE_REPEATS, type ScheduledMessage, type ScheduleRepeat } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { type TranslationKey } from "@/i18n";
 import { dateAndTime } from "@/lib/datetime";

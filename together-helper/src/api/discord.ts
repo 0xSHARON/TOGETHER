@@ -1,6 +1,6 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { ApiProblem, UpstreamProblem } from "@api/errors";
-import { type DashboardUser } from "@testify/shared";
+import { type DashboardUser } from "@together-helper/shared";
 
 /** Discord's OAuth2 endpoints; the browser never holds a token or the client secret. */
 

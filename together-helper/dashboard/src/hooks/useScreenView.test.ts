@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { SCREEN_ROUTES } from "@testify/shared";
+import { SCREEN_ROUTES } from "@together-helper/shared";
 import { routePattern, screenView } from "@/hooks/useScreenView";
 
 /** Only the route pattern is sent, so no server or member id reaches the database. */

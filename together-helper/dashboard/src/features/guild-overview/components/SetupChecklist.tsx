@@ -1,4 +1,4 @@
-import { type SetupStep, type SetupStepState } from "@testify/shared";
+import { type SetupStep, type SetupStepState } from "@together-helper/shared";
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

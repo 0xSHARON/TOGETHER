@@ -1,4 +1,4 @@
-import { type ManageableGuild } from "@testify/shared";
+import { type ManageableGuild } from "@together-helper/shared";
 
 const KEPT_PARAMS = ["tab"] as const;
 

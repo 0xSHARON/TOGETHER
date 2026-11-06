@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 import { UserFacingError } from "@core/errors";
 import { readerSees } from "@lib/discord/channels.util";
-import { type ChannelToolList, type ToolChannel } from "@testify/shared";
+import { type ChannelToolList, type ToolChannel } from "@together-helper/shared";
 
 /** Locking a channel and its slowmode: the one path `/lock`, `/unlock`, `/slowmode` and the dashboard share. */
 

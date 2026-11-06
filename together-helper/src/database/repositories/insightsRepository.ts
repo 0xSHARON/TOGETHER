@@ -7,7 +7,7 @@ import {
 	ServerDays,
 } from "@database/models/insights.schema";
 import { dayKey } from "@database/repositories/usageRepository";
-import { INSIGHTS_LIMITS } from "@testify/shared";
+import { INSIGHTS_LIMITS } from "@together-helper/shared";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

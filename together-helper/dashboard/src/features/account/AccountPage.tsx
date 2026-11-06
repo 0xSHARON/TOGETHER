@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { confirmsName } from "@testify/shared";
+import { confirmsName } from "@together-helper/shared";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

@@ -10,7 +10,7 @@ import {
 	readCasinoSettings,
 } from "@lib/casino";
 import { errorEmbed, modalForm } from "@lib/discord";
-import { type CasinoPatch, isCasinoGame } from "@testify/shared";
+import { type CasinoPatch, isCasinoGame } from "@together-helper/shared";
 
 export default defineButton({
 	id: CASINO_SETTINGS_ID,

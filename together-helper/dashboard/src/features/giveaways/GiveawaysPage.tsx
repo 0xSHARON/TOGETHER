@@ -1,4 +1,4 @@
-import { GIVEAWAY_LIMITS, giveawayProblem } from "@testify/shared";
+import { GIVEAWAY_LIMITS, giveawayProblem } from "@together-helper/shared";
 import { Gift, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

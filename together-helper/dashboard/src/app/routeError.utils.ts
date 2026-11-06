@@ -15,7 +15,7 @@ export function classifyRouteError(error: unknown): RouteFailure {
 	return "crash";
 }
 
-const RELOADED_AT = "testify:staleReloadAt";
+const RELOADED_AT = "together-helper:staleReloadAt";
 const RELOAD_WINDOW_MS = 30_000;
 
 /** True at most once per window, so a chunk that is genuinely missing shows the screen instead of reloading for ever. */

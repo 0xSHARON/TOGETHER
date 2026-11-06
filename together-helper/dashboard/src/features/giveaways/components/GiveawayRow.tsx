@@ -1,4 +1,4 @@
-import { type ChannelSummary, type GiveawayRow as Row } from "@testify/shared";
+import { type ChannelSummary, type GiveawayRow as Row } from "@together-helper/shared";
 import { Dices, Square, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Badge, Button, CARD_HEADING, cardClass } from "@/components/primitives";

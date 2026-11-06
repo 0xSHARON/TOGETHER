@@ -1,4 +1,4 @@
-import { DEFAULT_PREFIX } from "@testify/shared";
+import { DEFAULT_PREFIX } from "@together-helper/shared";
 import { Hash, PlusCircle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";

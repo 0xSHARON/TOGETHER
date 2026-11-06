@@ -1,4 +1,4 @@
-import { type MusicSettings, type RoleSummary } from "@testify/shared";
+import { type MusicSettings, type RoleSummary } from "@together-helper/shared";
 import { accessOf, missingRoleIds } from "@/features/music/music.utils";
 
 function settings(overrides: Partial<MusicSettings> = {}): MusicSettings {

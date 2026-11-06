@@ -5,7 +5,7 @@ import { UserFacingError } from "@core/errors";
 import { getTicketByChannel, getTicketSetup, listOpenTickets } from "@database/repositories/ticketRepository";
 import { embed } from "@lib/discord/embeds.util";
 import { closeTicket } from "@lib/tickets/ticketFlow.util";
-import { type OpenTicketList } from "@testify/shared";
+import { type OpenTicketList } from "@together-helper/shared";
 
 /** The tickets still open in a server, for the dashboard, and closing one the way its Close button does. */
 

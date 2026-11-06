@@ -9,7 +9,7 @@ import {
 	type NicknameBody,
 	type TimeoutBody,
 	type WarningAdded,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import {
 	useBan,
 	useChangeMoney,

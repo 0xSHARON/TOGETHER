@@ -1,4 +1,4 @@
-import { confirmsName, type MemberDetail, type MemberWarning } from "@testify/shared";
+import { confirmsName, type MemberDetail, type MemberWarning } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { dateAndTime, shortDate } from "@/lib/datetime";
 import { formatNumber } from "@/lib/intl";

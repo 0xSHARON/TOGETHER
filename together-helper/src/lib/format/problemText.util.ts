@@ -1,6 +1,6 @@
-import { type Problem, type ProblemCode } from "@testify/shared";
+import { type Problem, type ProblemCode } from "@together-helper/shared";
 
-/** The English sentence for a refusal `@testify/shared` names, so the rule lives there and the wording here. */
+/** The English sentence for a refusal `@together-helper/shared` names, so the rule lives there and the wording here. */
 
 const SENTENCES: Record<ProblemCode, (values: Record<string, number>) => string> = {
 	"automod.word": () => "Type the word or phrase to block.",

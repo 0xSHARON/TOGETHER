@@ -1,4 +1,4 @@
-import { RAID_LIMITS, type RaidPatch } from "@testify/shared";
+import { RAID_LIMITS, type RaidPatch } from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";

@@ -1,4 +1,4 @@
-import { type MemberDetail } from "@testify/shared";
+import { type MemberDetail } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Avatar, Badge, Card, CARD_HEADING, Figure } from "@/components/primitives";
 import { softbanActive, statsOf } from "@/features/members/memberDetail.utils";

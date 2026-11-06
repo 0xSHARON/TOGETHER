@@ -1,4 +1,4 @@
-import { type ChannelSummary, type CommandSummary, type ManageableGuild } from "@testify/shared";
+import { type ChannelSummary, type CommandSummary, type ManageableGuild } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { Columns3, FileText, Hash, type LucideIcon, Palette, ShieldQuestion, Terminal, Volume2 } from "lucide-react";
 import { allNavItems, type NavAudience, navigationFor } from "@/config/navigation";

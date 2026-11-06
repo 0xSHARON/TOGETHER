@@ -6,7 +6,7 @@ export type Theme = (typeof THEMES)[number];
 /** `system` removes the attribute, so `color-scheme: light dark` follows the browser before any script runs. */
 export const THEME: Preference<Theme> = {
 	attribute: "data-theme",
-	storageKey: "testify:theme",
+	storageKey: "together-helper:theme",
 	options: THEMES,
 	fallback: "system",
 };

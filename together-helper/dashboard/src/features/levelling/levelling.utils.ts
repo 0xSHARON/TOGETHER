@@ -1,4 +1,4 @@
-import { LEVEL_LIMITS } from "@testify/shared";
+import { LEVEL_LIMITS } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { type GeneralSettings, TABS, type Tab } from "@/features/levelling/levelling.types";
 import { oneOf } from "@/lib/oneOf";

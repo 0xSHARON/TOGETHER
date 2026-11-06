@@ -18,7 +18,7 @@ import {
 	SUPPORT_LIMITS,
 	type SupportReply,
 	SupportSearch,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** Answers a question with a vetted article or with nothing, and checks every answer for secrets on the way out. */
 

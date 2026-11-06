@@ -1,4 +1,4 @@
-import { MUSIC_LIMITS } from "@testify/shared";
+import { MUSIC_LIMITS } from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";

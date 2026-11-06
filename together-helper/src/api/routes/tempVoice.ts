@@ -6,7 +6,7 @@ import { requirePermission } from "@api/middleware/reach";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { applyTempVoiceSettings, makeLobby, readTempVoiceSettings } from "@lib/tempVoice";
-import { type TempVoicePatch, tempVoicePatch } from "@testify/shared";
+import { type TempVoicePatch, tempVoicePatch } from "@together-helper/shared";
 
 export const tempVoice = new Hono<ApiBindings>();
 

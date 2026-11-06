@@ -7,7 +7,7 @@ import { container, containerMessage, divider, text } from "@lib/discord/contain
 import { type ContainerMessage, type ContainerPart } from "@lib/discord/discord.types";
 import { IDEA_ID, IDEA_SETTINGS_ID } from "@lib/ideas/ideas.constants";
 import { settingsScreen, statusDot } from "@lib/settings/settingsScreen.util";
-import { type IdeaSettings, type IdeaStatus } from "@testify/shared";
+import { type IdeaSettings, type IdeaStatus } from "@together-helper/shared";
 
 const seconds = (date: Date): string => String(Math.floor(date.getTime() / 1_000));
 

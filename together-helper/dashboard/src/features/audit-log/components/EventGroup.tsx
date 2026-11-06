@@ -1,4 +1,4 @@
-import { type AuditEvent, type AuditGroup, auditEventsIn } from "@testify/shared";
+import { type AuditEvent, type AuditGroup, auditEventsIn } from "@together-helper/shared";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { CHECK_ROW } from "@/components/form";

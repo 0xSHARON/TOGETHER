@@ -1,4 +1,4 @@
-import { type RoleSummary } from "@testify/shared";
+import { type RoleSummary } from "@together-helper/shared";
 import { deletedRoleIds, rolesSummary, useText } from "@/features/roles/roles.utils";
 import { t } from "@/test/english";
 

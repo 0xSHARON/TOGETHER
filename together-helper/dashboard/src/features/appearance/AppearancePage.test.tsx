@@ -84,7 +84,7 @@ describe("choosing an accent", () => {
 
 		await user.click(screen.getByRole("button", { name: "Teal" }));
 		expect(root).toHaveAttribute("data-accent", "teal");
-		expect(window.localStorage.getItem("testify:accent-colour")).toBe("#4338ca");
+		expect(window.localStorage.getItem("together-helper:accent-colour")).toBe("#4338ca");
 		expect(screen.queryByText("In use")).toBeNull();
 	});
 
@@ -113,7 +113,7 @@ describe("choosing an accent", () => {
 		expect(screen.getByText(/That isn’t a colour this page can read/)).toBeInTheDocument();
 		expect(document.documentElement.hasAttribute("data-accent")).toBe(false);
 		expect(document.documentElement.getAttribute("style") ?? "").toBe("");
-		expect(window.localStorage.getItem("testify:accent-colour")).toBeNull();
+		expect(window.localStorage.getItem("together-helper:accent-colour")).toBeNull();
 	});
 
 	/** The picker's value can be set by a script as well as by the browser, so it is read like anything typed. */
@@ -124,7 +124,7 @@ describe("choosing an accent", () => {
 
 		// The browser turns a value that is not a colour into black before the page ever reads it.
 		expect(document.documentElement.getAttribute("style") ?? "").not.toMatch(/url|red|background/);
-		expect(window.localStorage.getItem("testify:accent-colour") ?? "#000000").toMatch(/^#[0-9a-f]{6}$/);
+		expect(window.localStorage.getItem("together-helper:accent-colour") ?? "#000000").toMatch(/^#[0-9a-f]{6}$/);
 	});
 
 	it("says so when what was typed is not a colour, and leaves the accent alone", async () => {
@@ -168,7 +168,7 @@ describe("arriving from the sidebar's language button", () => {
 describe("AppearancePage accessibility", () => {
 	/** With a colour of the reader's own, so its samples and read-outs are part of the page being checked. */
 	it("has no automatically detectable violations", async () => {
-		window.localStorage.setItem("testify:accent-colour", "#4338ca");
+		window.localStorage.setItem("together-helper:accent-colour", "#4338ca");
 		const { container } = render();
 		await group("Theme");
 		expect(screen.getByText("rgb(67, 56, 202)")).toBeInTheDocument();

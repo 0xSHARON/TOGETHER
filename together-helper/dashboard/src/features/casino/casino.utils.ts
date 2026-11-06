@@ -1,4 +1,4 @@
-import { CASINO_GAMES, CASINO_LIMITS, type CasinoGame, type CasinoSettings, casinoProblem } from "@testify/shared";
+import { CASINO_GAMES, CASINO_LIMITS, type CasinoGame, type CasinoSettings, casinoProblem } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { type TranslationKey } from "@/i18n";
 import { problemText } from "@/lib/problemText";

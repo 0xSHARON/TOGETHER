@@ -3,7 +3,7 @@ import { type TestifyClient } from "@core/client";
 import { toError } from "@core/errors";
 import { recordAudit } from "@database/repositories/dashboardAuditRepository";
 import { SETTING_READERS } from "@lib/settings/settingsReaders.util";
-import { RESTORABLE, type RestorableAction, restorableFields, sameValue } from "@testify/shared";
+import { RESTORABLE, type RestorableAction, restorableFields, sameValue } from "@together-helper/shared";
 
 /** Settings changed with a command or a panel in Discord, recorded beside the dashboard's own so Changes is whole. */
 

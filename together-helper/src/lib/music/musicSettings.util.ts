@@ -3,7 +3,7 @@ import {
 	saveMusicSettings,
 	type StoredMusicSettings,
 } from "@database/repositories/musicSettingsRepository";
-import { MUSIC_LIMITS, type MusicPatch, type MusicSettings } from "@testify/shared";
+import { MUSIC_LIMITS, type MusicPatch, type MusicSettings } from "@together-helper/shared";
 
 /** Who is allowed to drive the player in a server, and whether it runs there at all. */
 

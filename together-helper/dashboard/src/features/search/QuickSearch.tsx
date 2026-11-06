@@ -1,4 +1,4 @@
-import { type ManageableGuild } from "@testify/shared";
+import { type ManageableGuild } from "@together-helper/shared";
 import { Search } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";

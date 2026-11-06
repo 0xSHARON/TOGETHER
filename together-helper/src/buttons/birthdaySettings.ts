@@ -4,7 +4,7 @@ import { UserFacingError } from "@core/errors";
 import { applyBirthdaySettings, BIRTHDAY_PANEL_ID, birthdaySettingsPanel, readBirthdayOverview } from "@lib/birthdays";
 import { modalForm, pickedChannelId } from "@lib/discord";
 import { recordsSettings } from "@lib/settings";
-import { BIRTHDAY_LIMITS, sanitiseText } from "@testify/shared";
+import { BIRTHDAY_LIMITS, sanitiseText } from "@together-helper/shared";
 
 export default recordsSettings(
 	["birthdays.update"],

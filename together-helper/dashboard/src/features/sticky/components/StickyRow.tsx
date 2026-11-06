@@ -1,4 +1,4 @@
-import { STICKY_LIMITS, type ChannelSummary, type StickyEntry, type StickyPut } from "@testify/shared";
+import { STICKY_LIMITS, type ChannelSummary, type StickyEntry, type StickyPut } from "@together-helper/shared";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

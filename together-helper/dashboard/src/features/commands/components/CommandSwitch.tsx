@@ -1,4 +1,4 @@
-import { type CommandAvailability } from "@testify/shared";
+import { type CommandAvailability } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { SwitchTrack } from "@/components/form/SwitchTrack";
 import { INLINE_TARGET } from "@/components/primitives/targetStyles";

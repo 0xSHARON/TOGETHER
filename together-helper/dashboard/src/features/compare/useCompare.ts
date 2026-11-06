@@ -1,5 +1,5 @@
 import { useQueries, type UseQueryResult } from "@tanstack/react-query";
-import { type ChannelSummary, type GuildOverview } from "@testify/shared";
+import { type ChannelSummary, type GuildOverview } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

@@ -4,7 +4,7 @@ import { version as discordVersion } from "discord.js";
 import { theme } from "@config/theme";
 import { type TestifyClient } from "@core/client";
 import { repoRoot } from "@core/paths";
-import { type RuntimeInfo } from "@testify/shared";
+import { type RuntimeInfo } from "@together-helper/shared";
 
 /** What the bot is running as, for the owner console's runtime card. */
 

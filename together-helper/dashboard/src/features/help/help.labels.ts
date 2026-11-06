@@ -1,4 +1,4 @@
-import { type SupportTopic } from "@testify/shared";
+import { type SupportTopic } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export const TOPIC_LABELS: Record<SupportTopic, TranslationKey> = {

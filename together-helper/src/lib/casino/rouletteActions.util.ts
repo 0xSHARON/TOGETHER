@@ -33,7 +33,7 @@ import {
 } from "@lib/casino/rouletteRound.util";
 import { resolveAmount } from "@lib/format/amount.util";
 import { escapeMarkdown, formatNumber } from "@lib/format/format.util";
-import { type CasinoSettings } from "@testify/shared";
+import { type CasinoSettings } from "@together-helper/shared";
 
 /** The shared roulette round's money and timing: stakes go as chips land, one spin, and everybody paid from it. */
 

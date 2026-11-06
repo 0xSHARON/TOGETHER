@@ -1,5 +1,5 @@
 {
-	"name": "@testify/dashboard",
+	"name": "@together-helper/dashboard",
 	"version": "2.2.0",
 	"private": true,
 	"type": "module",
@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"@tanstack/react-query": "5.104.0",
-		"@testify/shared": "*",
+		"@together-helper/shared": "*",
 		"clsx": "2.1.1",
 		"dompurify": "3.4.17",
 		"highlight.js": "11.11.1",

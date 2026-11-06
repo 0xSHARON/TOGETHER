@@ -1,4 +1,4 @@
-import { type ChannelSummary, GOODBYE_STYLES, type GoodbyeSettings as Goodbye } from "@testify/shared";
+import { type ChannelSummary, GOODBYE_STYLES, type GoodbyeSettings as Goodbye } from "@together-helper/shared";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ErrorState } from "@/app/ErrorState";

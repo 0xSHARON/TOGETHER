@@ -1,4 +1,4 @@
-import { type MemberCounts } from "@testify/shared";
+import { type MemberCounts } from "@together-helper/shared";
 
 export function shareOf(part: number, whole: number): number {
 	if (whole <= 0) return 0;

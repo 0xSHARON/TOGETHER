@@ -6,7 +6,7 @@ import { requireGuild } from "@api/middleware/session";
 import { parseBody, parseParams } from "@api/validate";
 import { deleteTicketSetup } from "@database/repositories/ticketRepository";
 import { applyTickets, closeTicketFrom, normaliseTicketSetup, readOpenTickets, readTickets } from "@lib/tickets";
-import { openTicketParams, ticketPatch } from "@testify/shared";
+import { openTicketParams, ticketPatch } from "@together-helper/shared";
 
 export const tickets = new Hono<ApiBindings>();
 

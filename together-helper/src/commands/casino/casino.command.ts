@@ -28,7 +28,7 @@ import {
 	startHiLoHand,
 } from "@lib/casino";
 import { reply } from "@lib/discord";
-import { isCasinoGame } from "@testify/shared";
+import { isCasinoGame } from "@together-helper/shared";
 
 const AMOUNT: CommandOption = {
 	name: "amount",

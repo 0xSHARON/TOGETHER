@@ -1,4 +1,4 @@
-import { BIRTHDAY_LIMITS, BIRTHDAY_PLACEHOLDERS, type ChannelSummary, type FeaturePlaces } from "@testify/shared";
+import { BIRTHDAY_LIMITS, BIRTHDAY_PLACEHOLDERS, type ChannelSummary, type FeaturePlaces } from "@together-helper/shared";
 import { useId } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";

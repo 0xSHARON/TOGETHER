@@ -1,6 +1,6 @@
 import { isValidObjectId, type Types } from "mongoose";
 import { Idea, type IdeaRecord, IdeaSettingsConfig, type IdeaSettingsRecord } from "@database/models/idea.schema";
-import { type IdeaFilter, type IdeaStatus } from "@testify/shared";
+import { type IdeaFilter, type IdeaStatus } from "@together-helper/shared";
 
 export type StoredIdeaSettings = Pick<IdeaSettingsRecord, "enabled" | "channelId">;
 

@@ -10,7 +10,7 @@ import {
 import { canPostIn } from "@lib/discord/channels.util";
 import { type OfferedRole, roleMenuPost } from "@lib/roles/roleMenuPanel.util";
 import { pickProblem } from "@lib/roles/roleReach.util";
-import { ROLE_MENU_LIMITS, type RoleMenuList } from "@testify/shared";
+import { ROLE_MENU_LIMITS, type RoleMenuList } from "@together-helper/shared";
 
 /** Posting, moving and taking down a menu, and handing a member the roles they picked. */
 

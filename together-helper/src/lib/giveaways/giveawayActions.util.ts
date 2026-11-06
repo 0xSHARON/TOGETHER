@@ -4,7 +4,7 @@ import { UserFacingError } from "@core/errors";
 import { Giveaway, type GiveawayRecord } from "@database/models/giveaway.schema";
 import { requireSendable } from "@lib/discord/channelPick.util";
 import { giveaways } from "@lib/giveaways/giveaways.util";
-import { GIVEAWAY_POST, type GiveawayRow } from "@testify/shared";
+import { GIVEAWAY_POST, type GiveawayRow } from "@together-helper/shared";
 
 export interface StartGiveaway {
 	channelId: string;

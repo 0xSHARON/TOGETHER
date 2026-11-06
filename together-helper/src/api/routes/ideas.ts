@@ -6,7 +6,7 @@ import { requireGuild } from "@api/middleware/session";
 import { parseBody, parseParams, parseQuery } from "@api/validate";
 import { listIdeas } from "@database/repositories/ideaRepository";
 import { applyIdeaSettings, decideOnIdea, readIdeaSettings, removeIdea, toIdeaRow } from "@lib/ideas";
-import { ideaDecision, ideaListQuery, ideaParams, type IdeaRow, ideaSettingsPatch, type Paged } from "@testify/shared";
+import { ideaDecision, ideaListQuery, ideaParams, type IdeaRow, ideaSettingsPatch, type Paged } from "@together-helper/shared";
 
 export const ideas = new Hono<ApiBindings>();
 

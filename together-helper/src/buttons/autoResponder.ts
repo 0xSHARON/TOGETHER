@@ -13,7 +13,7 @@ import {
 	removeAutoResponder,
 } from "@lib/autoResponders";
 import { type ContainerMessage, modalForm } from "@lib/discord";
-import { AUTO_RESPONDER_LIMITS, type AutoResponder } from "@testify/shared";
+import { AUTO_RESPONDER_LIMITS, type AutoResponder } from "@together-helper/shared";
 
 async function show(interaction: ComponentInteraction, panel: ContainerMessage): Promise<void> {
 	// A modal opened elsewhere cannot edit this message, so it answers privately.

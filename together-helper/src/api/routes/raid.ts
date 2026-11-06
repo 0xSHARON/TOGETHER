@@ -6,7 +6,7 @@ import { requirePermission } from "@api/middleware/reach";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { applyRaidSettings, readRaidOverview } from "@lib/raid";
-import { type RaidPatch, raidPatch } from "@testify/shared";
+import { type RaidPatch, raidPatch } from "@together-helper/shared";
 
 export const raid = new Hono<ApiBindings>();
 

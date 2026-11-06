@@ -1,5 +1,5 @@
 import { DAY_MS, MINUTE_MS } from "@config/constants";
-import { RAID_LIMITS, type RaidSettings } from "@testify/shared";
+import { RAID_LIMITS, type RaidSettings } from "@together-helper/shared";
 
 /** The rules of raid protection, with the clock passed in: when an account is held, and when joins are a spike. */
 

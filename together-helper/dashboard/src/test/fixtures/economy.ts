@@ -1,4 +1,4 @@
-import { type CasinoSettings, type LotterySettings, type TreasureSettings } from "@testify/shared";
+import { type CasinoSettings, type LotterySettings, type TreasureSettings } from "@together-helper/shared";
 
 export const lotterySettings: LotterySettings = {
 	enabled: true,

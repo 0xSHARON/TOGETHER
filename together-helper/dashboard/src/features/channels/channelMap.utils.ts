@@ -1,4 +1,4 @@
-import { type ChannelSummary, type FeaturePlaces } from "@testify/shared";
+import { type ChannelSummary, type FeaturePlaces } from "@together-helper/shared";
 
 export type VisibleChannel = ChannelSummary & { name: string };
 

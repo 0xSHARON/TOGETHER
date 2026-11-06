@@ -5,7 +5,7 @@ import {
 	useQueryClient,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type ChangeRestore, RESTORABLE, type Restorable } from "@testify/shared";
+import { type ChangeRestore, RESTORABLE, type Restorable } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

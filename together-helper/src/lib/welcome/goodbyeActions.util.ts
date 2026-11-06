@@ -4,7 +4,7 @@ import { toError, UserFacingError } from "@core/errors";
 import { getGoodbyeSettings, saveGoodbyeSettings } from "@database/repositories/goodbyeRepository";
 import { canPostIn } from "@lib/discord/channels.util";
 import { embed } from "@lib/discord/embeds.util";
-import { DEFAULT_GOODBYE_MESSAGE, fillTemplate, type GoodbyePatch, type GoodbyeSettings } from "@testify/shared";
+import { DEFAULT_GOODBYE_MESSAGE, fillTemplate, type GoodbyePatch, type GoodbyeSettings } from "@together-helper/shared";
 
 /** Saying goodbye when somebody leaves: the settings, and the one message the event, the preview and the dashboard share. */
 

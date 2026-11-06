@@ -1,4 +1,4 @@
-import { type OwnerGuildDetail } from "@testify/shared";
+import { type OwnerGuildDetail } from "@together-helper/shared";
 import { BarChart3, ExternalLink, LogOut, X } from "lucide-react";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";

@@ -1,4 +1,4 @@
-import { STATUS_LIMITS, type ServiceCheck, type StatusLevel } from "@testify/shared";
+import { STATUS_LIMITS, type ServiceCheck, type StatusLevel } from "@together-helper/shared";
 
 /** What each outside service did the last few times the bot called it, recorded as it happens rather than probed. */
 

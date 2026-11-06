@@ -1,4 +1,4 @@
-import { type StatusDay } from "@testify/shared";
+import { type StatusDay } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { dayFill, percent } from "@/features/status/status.utils";
 import { cn } from "@/lib/cn";

@@ -1,4 +1,4 @@
-import { type ManageableGuild } from "@testify/shared";
+import { type ManageableGuild } from "@together-helper/shared";
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";

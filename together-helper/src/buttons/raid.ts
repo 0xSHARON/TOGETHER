@@ -4,7 +4,7 @@ import { UserFacingError } from "@core/errors";
 import { modalForm, pickedChannelId } from "@lib/discord";
 import { applyRaidSettings, RAID_PANEL_ID, raidPanel, readRaidOverview, wholeNumber } from "@lib/raid";
 import { recordsSettings } from "@lib/settings";
-import { RAID_LIMITS, type RaidPatch } from "@testify/shared";
+import { RAID_LIMITS, type RaidPatch } from "@together-helper/shared";
 
 export default recordsSettings(
 	["raid.update"],

@@ -1,4 +1,4 @@
-import { type LogLine } from "@testify/shared";
+import { type LogLine } from "@together-helper/shared";
 import { ScrollText } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "@/components/primitives";

@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import { UserFacingError } from "@core/errors";
 import { embed } from "@lib/discord/embeds.util";
-import { type AnnouncementMentions, type AnnouncementStyle } from "@testify/shared";
+import { type AnnouncementMentions, type AnnouncementStyle } from "@together-helper/shared";
 
 /** A message posted as the bot, from `/announce` or the dashboard: the one place that decides who it pings. */
 

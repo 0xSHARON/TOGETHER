@@ -23,7 +23,7 @@ import {
 	type IdeaSettingsPatch,
 	type IdeaStatus,
 	sanitiseText,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** Posting, voting on and deciding ideas, shared by `/idea`, the buttons on each post and the dashboard. */
 

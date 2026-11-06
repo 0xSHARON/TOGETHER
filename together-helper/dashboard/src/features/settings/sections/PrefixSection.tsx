@@ -1,4 +1,4 @@
-import { type PrefixPatch, type PrefixSetting } from "@testify/shared";
+import { type PrefixPatch, type PrefixSetting } from "@together-helper/shared";
 import { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Field, FIELD, savingStateOf, Toggle, Warning } from "@/components/form";

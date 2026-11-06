@@ -26,8 +26,8 @@ const config: Config = {
 	moduleNameMapper: {
 		...aliasesFromTsconfig(),
 		// Tests read the shared workspace's source, so editing it needs no build.
-		"^@testify/shared$": "<rootDir>/shared/src/index.ts",
-		"^@testify/shared/(.*)$": "<rootDir>/shared/src/$1",
+		"^@together-helper/shared$": "<rootDir>/shared/src/index.ts",
+		"^@together-helper/shared/(.*)$": "<rootDir>/shared/src/$1",
 	},
 	transform: {
 		"^.+\\.tsx?$": [

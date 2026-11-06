@@ -5,7 +5,7 @@ import { container, containerMessage, divider, text } from "@lib/discord/contain
 import { type ContainerMessage, type ContainerPart } from "@lib/discord/discord.types";
 import { MUSIC_ID } from "@lib/music/music.constants";
 import { MUSIC_LIMITS } from "@lib/music/musicSettings.util";
-import { type MusicSettings } from "@testify/shared";
+import { type MusicSettings } from "@together-helper/shared";
 
 /** Whether the music system runs in this server, and which roles may drive it. */
 

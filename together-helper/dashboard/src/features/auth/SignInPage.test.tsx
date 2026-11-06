@@ -75,7 +75,7 @@ describe("a half-configured install", () => {
 describe("the bot's own identity", () => {
 	// Every answer is remembered for the next visit, so one case's bot must not name the next case's.
 	afterEach(() => {
-		localStorage.removeItem("testify:botName");
+		localStorage.removeItem("together-helper:botName");
 	});
 
 	/** A fork should look like its own bot without anybody editing CSS. */

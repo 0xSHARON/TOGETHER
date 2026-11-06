@@ -1,4 +1,4 @@
-import { STICKY_LIMITS, stickyBlocked, type StickyEntry } from "@testify/shared";
+import { STICKY_LIMITS, stickyBlocked, type StickyEntry } from "@together-helper/shared";
 import { Pin, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

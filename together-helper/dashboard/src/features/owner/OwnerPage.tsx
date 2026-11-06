@@ -1,4 +1,4 @@
-import { type AnalyticsWindow, type ReportedLogLevel } from "@testify/shared";
+import { type AnalyticsWindow, type ReportedLogLevel } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router";
 import { PageHeader, TabBar, TabContent } from "@/components/primitives";

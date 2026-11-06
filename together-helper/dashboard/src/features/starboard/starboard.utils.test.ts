@@ -1,4 +1,4 @@
-import { STARBOARD_LIMITS } from "@testify/shared";
+import { STARBOARD_LIMITS } from "@together-helper/shared";
 import { starboardSummary, thresholdFrom } from "@/features/starboard/starboard.utils";
 import { i18next } from "@/i18n";
 

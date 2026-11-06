@@ -35,7 +35,7 @@ import {
 	moneyProblem,
 	nicknameBody,
 	timeoutBody,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const members = new Hono<ApiBindings>();
 

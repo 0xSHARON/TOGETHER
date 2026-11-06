@@ -10,7 +10,7 @@ import {
 	type OwnerGuildDetail,
 	type RuntimeInfo,
 	type UsageReport,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { aGuild } from "@/test/fixtures/session";
 
 export const botControl: BotControlState = { gateway: "online", since: null, guilds: 3, pingMs: 42 };

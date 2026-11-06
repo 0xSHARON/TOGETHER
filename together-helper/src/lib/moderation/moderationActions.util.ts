@@ -3,7 +3,7 @@ import { strings } from "@config/strings";
 import { asMember, type CommandInput } from "@core/command";
 import { UserFacingError } from "@core/errors";
 import { embed } from "@lib/discord/embeds.util";
-import { type MemberBlock } from "@testify/shared";
+import { type MemberBlock } from "@together-helper/shared";
 
 /** Why this moderator may not act on this target, as a code, or null; every surface asks here. */
 export function moderationBlock(moderator: GuildMember, target: GuildMember, botId?: string): MemberBlock | null {

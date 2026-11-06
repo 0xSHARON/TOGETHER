@@ -5,7 +5,7 @@ import { forbidden } from "@api/errors";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { announcementMessage, mentionProblem, sendableChannel } from "@lib/moderation";
-import { type AnnouncementSent, announcementBody } from "@testify/shared";
+import { type AnnouncementSent, announcementBody } from "@together-helper/shared";
 
 export const announcements = new Hono<ApiBindings>();
 

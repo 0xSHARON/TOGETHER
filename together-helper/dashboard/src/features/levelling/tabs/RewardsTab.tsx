@@ -1,4 +1,4 @@
-import { LEVEL_LIMITS, type LevelRewardInput } from "@testify/shared";
+import { LEVEL_LIMITS, type LevelRewardInput } from "@together-helper/shared";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

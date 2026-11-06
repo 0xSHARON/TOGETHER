@@ -1,4 +1,4 @@
-import { type FeatureCount, type FeatureDetail, type WatchedPermission } from "@testify/shared";
+import { type FeatureCount, type FeatureDetail, type WatchedPermission } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { permissionLabel } from "@/features/commands/permissions.labels";
 import { type TranslationKey } from "@/i18n";

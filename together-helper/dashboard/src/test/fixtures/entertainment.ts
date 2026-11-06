@@ -1,4 +1,4 @@
-import { type GiveawayList, type MusicSettings } from "@testify/shared";
+import { type GiveawayList, type MusicSettings } from "@together-helper/shared";
 
 export const musicSettings: MusicSettings = {
 	enabled: true,

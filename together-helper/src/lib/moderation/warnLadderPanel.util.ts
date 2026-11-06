@@ -5,7 +5,7 @@ import { container, containerMessage, divider, text } from "@lib/discord/contain
 import { type ContainerMessage, type ContainerPart } from "@lib/discord/discord.types";
 import { WARN_LADDER_ID } from "@lib/moderation/moderation.constants";
 import { stepLabel } from "@lib/moderation/warnActions.util";
-import { WARN_LIMITS, WARN_STEP_CHOICES, type WarnLadder, stepValue } from "@testify/shared";
+import { WARN_LIMITS, WARN_STEP_CHOICES, type WarnLadder, stepValue } from "@together-helper/shared";
 
 /** What each warning does, one menu per warning number, applied the moment a choice is made. */
 

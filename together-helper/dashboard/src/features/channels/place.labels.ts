@@ -1,4 +1,4 @@
-import { type PlaceRole } from "@testify/shared";
+import { type PlaceRole } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export const ROLE_LABELS: Record<PlaceRole, TranslationKey> = {

@@ -1,6 +1,6 @@
 import { defineButton } from "@core/button";
 import { boardMessage, LEADERBOARD_ID } from "@lib/economy";
-import { BOARD_SCOPES, MONEY_SORTS } from "@testify/shared";
+import { BOARD_SCOPES, MONEY_SORTS } from "@together-helper/shared";
 
 export default defineButton({
 	id: LEADERBOARD_ID,

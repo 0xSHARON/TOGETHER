@@ -7,7 +7,7 @@ import {
 	type Guild,
 	PermissionFlagsBits,
 } from "discord.js";
-import { type AutomodAction, type AutomodCreate, type AutomodPreset, type AutomodRuleSummary } from "@testify/shared";
+import { type AutomodAction, type AutomodCreate, type AutomodPreset, type AutomodRuleSummary } from "@together-helper/shared";
 
 /** Discord's AutoMod: nothing here is stored by the bot, so Discord is the only source of truth. */
 

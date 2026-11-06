@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import { type RepositoryStanding, type RepositoryTraffic, type SourceFile, type SourceTree } from "@testify/shared";
+import { type RepositoryStanding, type RepositoryTraffic, type SourceFile, type SourceTree } from "@together-helper/shared";
 import { api, ApiError } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

@@ -6,7 +6,7 @@ export interface Trail {
 	hash: string;
 }
 
-const STORAGE_KEY = "testify:trail";
+const STORAGE_KEY = "together-helper:trail";
 const KEPT = 50;
 const remembered = new Map<string, Trail>();
 

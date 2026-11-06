@@ -1,7 +1,7 @@
 import { isValidObjectId, type Types } from "mongoose";
 import { CACHE, DAY_MS } from "@config/constants";
 import { BotNotice, NoticeReader, type NoticeReaderRecord, type NoticeRecord } from "@database/models/notice.schema";
-import { type Notice, NOTICE_LIMITS, type NoticeInput, type NoticePatch } from "@testify/shared";
+import { type Notice, NOTICE_LIMITS, type NoticeInput, type NoticePatch } from "@together-helper/shared";
 
 /** Written before notifications could end, a record has no `endsAt` at all. */
 type Row = Omit<NoticeRecord, "endsAt"> & { _id: Types.ObjectId; endsAt?: Date | null };

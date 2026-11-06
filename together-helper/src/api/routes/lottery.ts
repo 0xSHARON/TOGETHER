@@ -6,7 +6,7 @@ import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { deleteLottery } from "@database/repositories/lotteryRepository";
 import { applyLottery, normaliseLottery, readLottery } from "@lib/economy";
-import { lotteryPatch } from "@testify/shared";
+import { lotteryPatch } from "@together-helper/shared";
 
 export const lottery = new Hono<ApiBindings>();
 

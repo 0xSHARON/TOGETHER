@@ -5,7 +5,7 @@ import { UserFacingError } from "@core/errors";
 import { findIdea, voteOnIdea } from "@database/repositories/ideaRepository";
 import { modalForm } from "@lib/discord";
 import { decideOnIdea, IDEA_COMMAND, IDEA_ID, ideaPost } from "@lib/ideas";
-import { IDEA_LIMITS, ideaDecision, type IdeaStatus } from "@testify/shared";
+import { IDEA_LIMITS, ideaDecision, type IdeaStatus } from "@together-helper/shared";
 
 const DECISIONS: Record<string, IdeaStatus> = { accept: "accepted", decline: "declined", reopen: "open" };
 

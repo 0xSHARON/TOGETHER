@@ -1,4 +1,4 @@
-import { type NoticeTone } from "@testify/shared";
+import { type NoticeTone } from "@together-helper/shared";
 import { type BadgeTone } from "@/components/primitives/Badge";
 import { type TranslationKey } from "@/i18n";
 

@@ -1,4 +1,4 @@
-import { type ChannelSummary, type FeaturePlaces } from "@testify/shared";
+import { type ChannelSummary, type FeaturePlaces } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { DividedList, HoverChevron } from "@/components/primitives";

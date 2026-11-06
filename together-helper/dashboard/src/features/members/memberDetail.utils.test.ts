@@ -1,4 +1,4 @@
-import { type MemberDetail } from "@testify/shared";
+import { type MemberDetail } from "@together-helper/shared";
 import { clearConfirmed, memberSummary, softbanActive, warningSummary } from "@/features/members/memberDetail.utils";
 import { t } from "@/test/english";
 

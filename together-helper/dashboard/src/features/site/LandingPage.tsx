@@ -14,7 +14,7 @@ const commandList = `
 | \`/verify\` | Role-based member verification |
 | \`/automod\` | Configure automated anti-spam and moderation |
 `;
-import { inviteUrl } from "@testify/shared";
+import { inviteUrl } from "@together-helper/shared";
 import { ArrowRight } from "lucide-react";
 import { useMemo } from "react";
 import { Trans, useTranslation } from "react-i18next";

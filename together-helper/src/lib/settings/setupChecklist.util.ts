@@ -22,7 +22,7 @@ import {
 	type SetupChecklist,
 	type SetupStep,
 	type SetupStepState,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** Who pressed the button: a bot owner may not be a member, and is held to nothing a member is. */
 export interface SetupActor {

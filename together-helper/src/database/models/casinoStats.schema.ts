@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { CASINO_GAMES, type CasinoGame } from "@testify/shared";
+import { CASINO_GAMES, type CasinoGame } from "@together-helper/shared";
 
 /** One player's running totals at one game in one server, added to as each game settles. */
 export interface CasinoStatsRecord {

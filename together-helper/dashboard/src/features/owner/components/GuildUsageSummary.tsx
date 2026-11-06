@@ -1,4 +1,4 @@
-import { errorRate, type GuildUsageReport } from "@testify/shared";
+import { errorRate, type GuildUsageReport } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { Avatar, Card, Figure, UsageBars } from "@/components/primitives";
 import { categoryLabel } from "@/features/commands/categories.labels";

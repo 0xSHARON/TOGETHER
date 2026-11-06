@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { DEFAULT_BIRTHDAY_MESSAGE } from "@testify/shared";
+import { DEFAULT_BIRTHDAY_MESSAGE } from "@together-helper/shared";
 
 export interface BirthdaySettingsRecord {
 	guildId: string;

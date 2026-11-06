@@ -1,4 +1,4 @@
-import { type ManageableGuild } from "@testify/shared";
+import { type ManageableGuild } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export function filterGuilds(guilds: ManageableGuild[], search: string): ManageableGuild[] {

@@ -2,7 +2,7 @@ import { type GuildMember, PermissionFlagsBits } from "discord.js";
 import { defineButton } from "@core/button";
 import { UserFacingError } from "@core/errors";
 import { readWarnLadder, stepLabel, WARN_LADDER_ID, warnLadderPanel, writeWarnLadder } from "@lib/moderation";
-import { stepFromValue, WARN_LIMITS, type WarnStep } from "@testify/shared";
+import { stepFromValue, WARN_LIMITS, type WarnStep } from "@together-helper/shared";
 
 const STALE = "That step has changed since this panel was drawn. Open it again with `/warn punishments`.";
 

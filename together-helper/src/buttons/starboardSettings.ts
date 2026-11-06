@@ -10,7 +10,7 @@ import {
 	STARBOARD_SETTINGS_ID,
 	starboardSettingsPanel,
 } from "@lib/starboard";
-import { STARBOARD_LIMITS } from "@testify/shared";
+import { STARBOARD_LIMITS } from "@together-helper/shared";
 
 export default recordsSettings(
 	["starboard.update"],

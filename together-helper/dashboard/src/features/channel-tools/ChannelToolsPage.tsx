@@ -1,4 +1,4 @@
-import { type ToolChannel } from "@testify/shared";
+import { type ToolChannel } from "@together-helper/shared";
 import { Lock } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

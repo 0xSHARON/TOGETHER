@@ -18,7 +18,7 @@ import {
 	type StatusLevel,
 	STATUS_LIMITS,
 	type StatusResponse,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** How healthy the bot is right now, and how it has been over the last month. */
 

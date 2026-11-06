@@ -6,7 +6,7 @@ import { getPrefix } from "@database/repositories/prefixRepository";
 import { dashboardUrl } from "@lib/bot";
 import { reply } from "@lib/discord";
 import { choiceName, suggestionName, supportContext, supportDesk, supportScreen } from "@lib/support";
-import { SUPPORT_LIMITS, supportQuestion, type SupportReply } from "@testify/shared";
+import { SUPPORT_LIMITS, supportQuestion, type SupportReply } from "@together-helper/shared";
 
 /** An autocomplete choice's value is capped at 100 characters, so a longer question could not survive being picked. */
 const QUESTION_MAX = 100;

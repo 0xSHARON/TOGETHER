@@ -33,7 +33,7 @@ import { TempChannel, TempVoiceSettingsConfig } from "@database/models/tempVoice
 import { Ticket } from "@database/models/tickets.schema";
 import { TreasureConfig } from "@database/models/treasure.schema";
 import { PendingVerify, VerifyConfig } from "@database/models/verification.schema";
-import { DELETED_USER_ID, DELETED_USER_NAME } from "@testify/shared";
+import { DELETED_USER_ID, DELETED_USER_NAME } from "@together-helper/shared";
 
 /** `delete` drops the record, `remove` takes the id off a list, `anonymise` swaps it for `DELETED_USER_ID`. */
 export type Erasure = "delete" | "remove" | "anonymise" | "keep";

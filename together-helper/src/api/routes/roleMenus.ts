@@ -14,7 +14,7 @@ import {
 	type StoredRoleMenu,
 } from "@database/repositories/roleMenuRepository";
 import { changeRoleMenu, offerProblem, publishRoleMenu, readRoleMenus, takeDownRoleMenu } from "@lib/roles";
-import { ROLE_MENU_LIMITS, roleMenuBody, roleMenuParams } from "@testify/shared";
+import { ROLE_MENU_LIMITS, roleMenuBody, roleMenuParams } from "@together-helper/shared";
 
 export const roleMenus = new Hono<ApiBindings>();
 

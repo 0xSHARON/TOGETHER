@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { TEMP_VOICE_LIMITS } from "@testify/shared";
+import { TEMP_VOICE_LIMITS } from "@together-helper/shared";
 
 /** Which voice channel is a server's lobby, and how the channels it makes are set up. */
 export interface TempVoiceSettingsRecord {

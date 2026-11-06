@@ -1,11 +1,11 @@
 import { LEVELLING } from "@config/constants";
 import { type LevelReward, type LevelSettings, type XpBoost } from "@database/models/levelling.schema";
 import { type LevelConfig } from "@lib/levelling/levelling.types";
-import { LEVEL_LIMITS } from "@testify/shared";
+import { LEVEL_LIMITS } from "@together-helper/shared";
 
 /** The levelling rules, with no database or Discord objects, so every decision is unit-testable. */
 
-// Declared in `@testify/shared` so the dashboard validates against the same numbers.
+// Declared in `@together-helper/shared` so the dashboard validates against the same numbers.
 export { LEVEL_LIMITS };
 
 /** What a guild gets before anyone configures anything. */

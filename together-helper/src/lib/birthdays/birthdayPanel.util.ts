@@ -5,7 +5,7 @@ import { channelSelect, row } from "@lib/discord/components.util";
 import { withoutPings } from "@lib/discord/containers.util";
 import { type ContainerMessage } from "@lib/discord/discord.types";
 import { settingsScreen, statusDot } from "@lib/settings/settingsScreen.util";
-import { type BirthdaySettings } from "@testify/shared";
+import { type BirthdaySettings } from "@together-helper/shared";
 
 export function birthdaySettingsPanel(
 	settings: BirthdaySettings,

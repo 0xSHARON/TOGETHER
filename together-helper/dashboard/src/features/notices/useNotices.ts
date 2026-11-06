@@ -5,7 +5,7 @@ import {
 	useQueryClient,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type NoticeFeed } from "@testify/shared";
+import { type NoticeFeed } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

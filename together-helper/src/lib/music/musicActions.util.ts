@@ -11,7 +11,7 @@ import { addTracks } from "@lib/music/musicQueue.util";
 import { findSession, type MusicSession, sessionFor } from "@lib/music/musicSession.util";
 import { MusicProblemError, resolveTracks } from "@lib/music/musicSource.util";
 import { allowsSource, fallsBackToSoundCloud, readMusicSources, withinSources } from "@lib/music/musicSources.util";
-import { type MusicSourceChoice } from "@testify/shared";
+import { type MusicSourceChoice } from "@together-helper/shared";
 
 /** What `/play`, the `/music` subcommands and the panel buttons all need, written once. */
 

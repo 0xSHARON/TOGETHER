@@ -1,4 +1,4 @@
-import { isScreenRoute, type ScreenView } from "@testify/shared";
+import { isScreenRoute, type ScreenView } from "@together-helper/shared";
 import { useEffect } from "react";
 import { useLocation, useParams } from "react-router";
 import { api } from "@/lib/api";

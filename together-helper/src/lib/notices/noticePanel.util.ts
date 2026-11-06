@@ -8,7 +8,7 @@ import { embed } from "@lib/discord/embeds.util";
 import { escapeMarkdown, truncate } from "@lib/format/format.util";
 import { NOTICE_PANEL_ID } from "@lib/notices/notices.constants";
 import { settingsScreen, type ScreenAction } from "@lib/settings/settingsScreen.util";
-import { isScheduled, type Notice, NOTICE_LIMITS, NOTICE_TONES, type NoticeTone } from "@testify/shared";
+import { isScheduled, type Notice, NOTICE_LIMITS, NOTICE_TONES, type NoticeTone } from "@together-helper/shared";
 
 type QuietPanel = ContainerMessage & { allowedMentions: { parse: [] } };
 

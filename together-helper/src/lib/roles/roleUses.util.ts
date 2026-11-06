@@ -6,7 +6,7 @@ import { listRoleMenus } from "@database/repositories/roleMenuRepository";
 import { getTicketSetup } from "@database/repositories/ticketRepository";
 import { getVerifyConfig } from "@database/repositories/verificationRepository";
 import { normaliseSettings } from "@lib/levelling/levelling.util";
-import { type GuildRoleUses, type RoleUse } from "@testify/shared";
+import { type GuildRoleUses, type RoleUse } from "@together-helper/shared";
 
 /** What gives or reads each role in a server, one read per feature through the repositories its panels use. */
 export async function readRoleUses(guildId: string): Promise<GuildRoleUses> {

@@ -1,4 +1,4 @@
-import { type RoleUse } from "@testify/shared";
+import { type RoleUse } from "@together-helper/shared";
 import { Shield } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router";

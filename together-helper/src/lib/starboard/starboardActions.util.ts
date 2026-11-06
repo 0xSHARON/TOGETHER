@@ -27,7 +27,7 @@ import {
 import { canPostIn } from "@lib/discord/channels.util";
 import { VOTER_PAGE } from "@lib/starboard/starboard.constants";
 import { starboardPost, starLine, starsFrom, type StarredMessage } from "@lib/starboard/starboardPanel.util";
-import { STARBOARD_EMOJI, STARBOARD_LIMITS, type StarboardPatch, type StarboardSettings } from "@testify/shared";
+import { STARBOARD_EMOJI, STARBOARD_LIMITS, type StarboardPatch, type StarboardSettings } from "@together-helper/shared";
 
 export async function readStarboardSettings(guild: Guild): Promise<StarboardSettings> {
 	const [stored, posts] = await Promise.all([getStarboardSettings(guild.id), countStarPosts(guild.id)]);

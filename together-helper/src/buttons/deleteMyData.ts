@@ -9,7 +9,7 @@ import {
 	eraseDone,
 	erasePanel,
 } from "@lib/account";
-import { confirmsName } from "@testify/shared";
+import { confirmsName } from "@together-helper/shared";
 
 export default defineButton({
 	id: ERASE_PANEL_ID,

@@ -1,4 +1,4 @@
-import { type ServerChange } from "@testify/shared";
+import { type ServerChange } from "@together-helper/shared";
 import { RotateCcw } from "lucide-react";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";

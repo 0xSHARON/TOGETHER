@@ -1,5 +1,5 @@
 import { DAY_MS, WEEK_MS } from "@config/constants";
-import { SCHEDULE_REPEATS, type ScheduleRepeat } from "@testify/shared";
+import { SCHEDULE_REPEATS, type ScheduleRepeat } from "@together-helper/shared";
 
 /** When a scheduled message posts next, in plain arithmetic so every case is a test rather than a wait. */
 

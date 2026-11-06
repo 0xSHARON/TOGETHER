@@ -1,6 +1,6 @@
 import { type Guild, PermissionFlagsBits } from "discord.js";
 import { listActiveSoftbans } from "@database/repositories/moderationRepository";
-import { BAN_LIMITS, type BanEntry, type BanPage } from "@testify/shared";
+import { BAN_LIMITS, type BanEntry, type BanPage } from "@together-helper/shared";
 
 /** A server's bans as Discord holds them, newest softbans marked, searched and paged for the dashboard. */
 

@@ -1,4 +1,4 @@
-import { WARN_LIMITS, WARN_STEP_CHOICES, type WarnStep } from "@testify/shared";
+import { WARN_LIMITS, WARN_STEP_CHOICES, type WarnStep } from "@together-helper/shared";
 import { actionOf, addStep, outcomeText, stepText, warningsSummary } from "@/features/warnings/warnings.utils";
 import { t } from "@/test/english";
 

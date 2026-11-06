@@ -32,7 +32,7 @@ import {
 	SETTINGS_LIMITS,
 	type VerificationConfigResponse,
 	type WelcomeConfigResponse,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** No record means off, so an absent one becomes a disabled config with defaults; `normaliseWelcome` migrates old ones. */
 export async function readWelcomeConfig(guildId: string): Promise<WelcomeConfigResponse> {

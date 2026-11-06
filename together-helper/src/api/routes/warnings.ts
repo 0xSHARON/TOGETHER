@@ -24,7 +24,7 @@ import {
 	type WarningAdded,
 	warningsQuery,
 	warnLadderPut,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const warnings = new Hono<ApiBindings>();
 

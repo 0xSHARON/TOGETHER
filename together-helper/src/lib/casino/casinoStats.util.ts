@@ -3,7 +3,7 @@ import { type CasinoStandout, type CasinoStatsReport } from "@database/repositor
 import { CASINO_GAME_EMOJI, CASINO_GAME_LABELS } from "@lib/casino/casinoSettings.util";
 import { embed } from "@lib/discord/embeds.util";
 import { discordTime, formatNumber } from "@lib/format/format.util";
-import { CASINO_GAMES, type CasinoGame } from "@testify/shared";
+import { CASINO_GAMES, type CasinoGame } from "@together-helper/shared";
 
 /** The `/casino stats` card: a server's whole casino, or one game in it, with the reader's own record. */
 

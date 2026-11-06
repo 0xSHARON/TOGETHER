@@ -6,7 +6,7 @@ import { badRequest, notFound } from "@api/errors";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody, parseParams } from "@api/validate";
 import { deleteGiveaway, endGiveaway, listGiveaways, rerollGiveaway, startGiveaway } from "@lib/giveaways";
-import { type GiveawayList, giveawayParams, giveawayStart } from "@testify/shared";
+import { type GiveawayList, giveawayParams, giveawayStart } from "@together-helper/shared";
 
 export const giveaways = new Hono<ApiBindings>();
 

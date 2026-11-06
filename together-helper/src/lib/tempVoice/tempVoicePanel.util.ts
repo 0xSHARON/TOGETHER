@@ -4,7 +4,7 @@ import { channelSelect, row } from "@lib/discord/components.util";
 import { type ContainerMessage } from "@lib/discord/discord.types";
 import { channelValue, settingsScreen, statusDot } from "@lib/settings/settingsScreen.util";
 import { TEMP_VOICE_SETTINGS_ID } from "@lib/tempVoice/tempVoice.constants";
-import { TEMP_VOICE_LOBBY_NAME, type TempVoiceSettings } from "@testify/shared";
+import { TEMP_VOICE_LOBBY_NAME, type TempVoiceSettings } from "@together-helper/shared";
 
 export function tempVoiceSettingsPanel(settings: TempVoiceSettings, ownerId: string, note?: string): ContainerMessage {
 	const status = settings.enabled

@@ -5,7 +5,7 @@ import {
 	type CommandOptionSummary,
 	type CommandSummary,
 	type SubcommandSummary,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** Turns the live command registry into the shape the dashboard reads. */
 

@@ -1,4 +1,4 @@
-import { LEVEL_LIMITS, type XpBoostInput } from "@testify/shared";
+import { LEVEL_LIMITS, type XpBoostInput } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { SELECT, RoleChecklist, savingStateOf } from "@/components/form";
 import { DividedList } from "@/components/primitives";

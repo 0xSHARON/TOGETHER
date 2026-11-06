@@ -5,7 +5,7 @@ import { birthdayPost } from "@lib/birthdays/birthdayActions.util";
 import { announcementMessage } from "@lib/moderation/announcements.util";
 import { farewellFor } from "@lib/welcome/goodbyeActions.util";
 import { greetingFor } from "@lib/welcome/welcomeActions.util";
-import { type TestPost } from "@testify/shared";
+import { type TestPost } from "@together-helper/shared";
 
 /** "Send me a test": a draft built by the same function as the real post, sent to the person asking and nobody else. */
 

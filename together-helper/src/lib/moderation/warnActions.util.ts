@@ -26,7 +26,7 @@ import {
 	type WarnStep,
 	warningMatches,
 	warnStep,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** Issuing a warning and carrying out the step it lands on, for `/warn`, the dashboard and the link filter alike. */
 

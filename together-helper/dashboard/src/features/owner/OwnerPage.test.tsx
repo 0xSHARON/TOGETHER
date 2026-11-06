@@ -1,4 +1,4 @@
-import { type OwnerGuildRow, type OwnerStats, type Paged } from "@testify/shared";
+import { type OwnerGuildRow, type OwnerStats, type Paged } from "@together-helper/shared";
 import { screen, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { OWNER_TABS } from "@/features/owner/owner.types";

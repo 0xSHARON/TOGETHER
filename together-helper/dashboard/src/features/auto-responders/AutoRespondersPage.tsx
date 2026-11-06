@@ -3,7 +3,7 @@ import {
 	type AutoResponder,
 	autoResponderBlocked,
 	type AutoResponderInput,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { MessageSquareReply, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

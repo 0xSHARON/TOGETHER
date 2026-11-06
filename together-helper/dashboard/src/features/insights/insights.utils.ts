@@ -1,4 +1,4 @@
-import { type InsightWindow, type VerificationLevel } from "@testify/shared";
+import { type InsightWindow, type VerificationLevel } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export const VERIFICATION_LABELS: Record<VerificationLevel, TranslationKey> = {

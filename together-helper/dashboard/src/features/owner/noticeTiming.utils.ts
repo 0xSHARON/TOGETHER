@@ -1,4 +1,4 @@
-import { isScheduled, type Notice, noticeTimingBlocked, problem, type Problem } from "@testify/shared";
+import { isScheduled, type Notice, noticeTimingBlocked, problem, type Problem } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { fromLocalInput, toLocalInput } from "@/features/scheduled-messages/scheduledMessages.utils";
 

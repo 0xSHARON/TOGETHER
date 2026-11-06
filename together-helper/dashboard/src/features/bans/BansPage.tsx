@@ -1,4 +1,4 @@
-import { BAN_LIMITS, type BanEntry, WARNING_LIMITS } from "@testify/shared";
+import { BAN_LIMITS, type BanEntry, WARNING_LIMITS } from "@together-helper/shared";
 import { Ban } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

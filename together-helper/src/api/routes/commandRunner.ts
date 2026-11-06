@@ -17,7 +17,7 @@ import {
 	commandRunRequest,
 	type RunOutput,
 	type CommandCatalogue,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 export const commandRunner = new Hono<ApiBindings>();
 

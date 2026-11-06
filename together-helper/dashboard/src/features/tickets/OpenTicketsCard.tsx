@@ -1,4 +1,4 @@
-import { type OpenTicket } from "@testify/shared";
+import { type OpenTicket } from "@together-helper/shared";
 import { Ticket } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

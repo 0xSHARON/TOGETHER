@@ -1,4 +1,4 @@
-import { MEMBER_LIMITS, type MemberDetail, MONEY_PURSES, type MoneyPurse, moneyProblem } from "@testify/shared";
+import { MEMBER_LIMITS, type MemberDetail, MONEY_PURSES, type MoneyPurse, moneyProblem } from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Field, FieldGroup, RowActions, SettingRows, Warning } from "@/components/form";

@@ -1,4 +1,4 @@
-import { WARN_LIMITS } from "@testify/shared";
+import { WARN_LIMITS } from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ErrorState } from "@/app/ErrorState";

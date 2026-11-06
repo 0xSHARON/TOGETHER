@@ -1,4 +1,4 @@
-import { type FeatureStatus, type GuildOverview, type ManageableGuild } from "@testify/shared";
+import { type FeatureStatus, type GuildOverview, type ManageableGuild } from "@together-helper/shared";
 import {
 	chosenFrom,
 	comparable,

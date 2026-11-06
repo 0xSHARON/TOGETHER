@@ -6,7 +6,7 @@ import {
 	type UseMutationResult,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type BanPage, type UnbanBody } from "@testify/shared";
+import { type BanPage, type UnbanBody } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

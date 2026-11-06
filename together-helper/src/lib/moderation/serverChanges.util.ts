@@ -10,7 +10,7 @@ import {
 	type ServerChange,
 	type ServerChangesPage,
 	restoreOf,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** One list of a server's changes, from the dashboard's own records and from Discord's audit log. */
 

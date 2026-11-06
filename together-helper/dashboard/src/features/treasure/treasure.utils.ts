@@ -1,4 +1,4 @@
-import { TREASURE_LIMITS, type TreasureSettings, treasureProblem } from "@testify/shared";
+import { TREASURE_LIMITS, type TreasureSettings, treasureProblem } from "@together-helper/shared";
 import { type TFunction } from "i18next";
 import { formatNumber } from "@/lib/intl";
 import { problemText } from "@/lib/problemText";

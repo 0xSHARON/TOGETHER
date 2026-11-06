@@ -1,4 +1,4 @@
-import { type ApiErrorBody } from "@testify/shared";
+import { type ApiErrorBody } from "@together-helper/shared";
 
 const BASE = "/api";
 const CSRF_COOKIE = "dash_csrf";

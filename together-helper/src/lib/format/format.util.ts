@@ -1,6 +1,6 @@
 import { escapeMarkdown as djsEscapeMarkdown } from "discord.js";
 import { DAY_MS, HOUR_MS, MINUTE_MS, SECOND_MS } from "@config/constants";
-import { DELETED_USER_ID, DELETED_USER_NAME } from "@testify/shared";
+import { DELETED_USER_ID, DELETED_USER_NAME } from "@together-helper/shared";
 
 /** Compact duration: "2h 5m 3s". */
 export function formatDuration(ms: number): string {

@@ -21,7 +21,7 @@ import {
 	startBlackjack,
 	startHiLoHand,
 } from "@lib/casino";
-import { type CasinoGame, isCasinoGame } from "@testify/shared";
+import { type CasinoGame, isCasinoGame } from "@together-helper/shared";
 
 const stale = (): UserFacingError =>
 	new UserFacingError("That button no longer knows what it was for. Start a new game.");

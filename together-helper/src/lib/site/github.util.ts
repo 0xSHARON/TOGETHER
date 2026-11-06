@@ -14,7 +14,7 @@ import {
 	type SourceFile,
 	type SourceTree,
 	type TrafficDay,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** What the website reads from GitHub: only when a page asks, an hour at a time, and nothing secret is ever sent. */
 

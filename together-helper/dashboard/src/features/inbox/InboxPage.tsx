@@ -1,4 +1,4 @@
-import { inboxCount } from "@testify/shared";
+import { inboxCount } from "@together-helper/shared";
 import { Inbox as InboxIcon, Lightbulb, LifeBuoy, type LucideIcon, ShieldAlert } from "lucide-react";
 import { type ReactNode } from "react";
 import { useTranslation } from "react-i18next";

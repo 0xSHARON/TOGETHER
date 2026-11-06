@@ -5,7 +5,7 @@ import { badRequest } from "@api/errors";
 import { requireGuild } from "@api/middleware/session";
 import { parseBody } from "@api/validate";
 import { applyTreasure, readTreasure, resetTreasure } from "@lib/economy";
-import { treasurePatch } from "@testify/shared";
+import { treasurePatch } from "@together-helper/shared";
 
 export const treasure = new Hono<ApiBindings>();
 

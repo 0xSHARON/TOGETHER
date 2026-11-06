@@ -7,7 +7,7 @@ import { requireGuild } from "@api/middleware/session";
 import { parseBody, parseParams } from "@api/validate";
 import { botName } from "@core/brand";
 import { canManageAutomod, createAutomodRule, listAutomodRules } from "@lib/moderation";
-import { type AutomodRules, automodCreate, automodPatch, automodRuleParam } from "@testify/shared";
+import { type AutomodRules, automodCreate, automodPatch, automodRuleParam } from "@together-helper/shared";
 
 export const automod = new Hono<ApiBindings>();
 

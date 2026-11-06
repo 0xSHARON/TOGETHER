@@ -1,4 +1,4 @@
-import { type HistoryLevel, type StatusDay, type StatusLevel } from "@testify/shared";
+import { type HistoryLevel, type StatusDay, type StatusLevel } from "@together-helper/shared";
 import { type BadgeTone } from "@/components/primitives";
 import { type TranslationKey } from "@/i18n";
 import { formatPercent, formatUnit } from "@/lib/intl";

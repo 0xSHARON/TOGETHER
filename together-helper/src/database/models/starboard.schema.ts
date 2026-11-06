@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { STARBOARD_LIMITS } from "@testify/shared";
+import { STARBOARD_LIMITS } from "@together-helper/shared";
 
 /** Whether a server's starboard is on, where it reposts, and how many ⭐ it takes. */
 export interface StarboardSettingsRecord {

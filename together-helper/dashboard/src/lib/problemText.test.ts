@@ -1,4 +1,4 @@
-import { PROBLEM_CODES, moneyProblem } from "@testify/shared";
+import { PROBLEM_CODES, moneyProblem } from "@together-helper/shared";
 import { problemText } from "@/lib/problemText";
 import { t } from "@/test/english";
 

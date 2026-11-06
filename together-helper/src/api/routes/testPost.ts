@@ -8,7 +8,7 @@ import { parseBody } from "@api/validate";
 import { MINUTE_MS } from "@config/constants";
 import { strings } from "@config/strings";
 import { sendTestPost } from "@lib/settings";
-import { TEST_POST_LIMITS, testPostBody } from "@testify/shared";
+import { TEST_POST_LIMITS, testPostBody } from "@together-helper/shared";
 
 export const testPost = new Hono<ApiBindings>();
 

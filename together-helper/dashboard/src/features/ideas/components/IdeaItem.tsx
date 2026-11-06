@@ -1,4 +1,4 @@
-import { IDEA_LIMITS, type IdeaDecision, type IdeaRow } from "@testify/shared";
+import { IDEA_LIMITS, type IdeaDecision, type IdeaRow } from "@together-helper/shared";
 import { Check, ExternalLink, RotateCcw, ThumbsDown, ThumbsUp, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

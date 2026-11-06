@@ -1,4 +1,4 @@
-import { type ChannelSummary, type CountingPatch, type CountingSetting } from "@testify/shared";
+import { type ChannelSummary, type CountingPatch, type CountingSetting } from "@together-helper/shared";
 import { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { ChannelPicker, Field, FIELD, FieldGroup, savingStateOf, Toggle, Warning } from "@/components/form";

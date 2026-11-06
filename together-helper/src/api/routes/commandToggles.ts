@@ -9,7 +9,7 @@ import {
 	GLOBAL_SCOPE,
 	setDisabled,
 } from "@database/repositories/commandToggleRepository";
-import { ALWAYS_ENABLED, type CommandToggleState, commandTogglePut } from "@testify/shared";
+import { ALWAYS_ENABLED, type CommandToggleState, commandTogglePut } from "@together-helper/shared";
 
 type ApiContext = Context<ApiBindings>;
 

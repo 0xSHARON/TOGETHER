@@ -1,4 +1,4 @@
-import { type ChannelSummary, type RoleSummary, VERIFY_LIMITS, verificationBlocked } from "@testify/shared";
+import { type ChannelSummary, type RoleSummary, VERIFY_LIMITS, verificationBlocked } from "@together-helper/shared";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChannelPicker, Field, FIELD, RowActions, savingStateOf, SELECT, Toggle, Warning } from "@/components/form";

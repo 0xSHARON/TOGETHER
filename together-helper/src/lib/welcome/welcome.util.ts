@@ -9,11 +9,11 @@ import {
 	WELCOME_PLACEHOLDERS,
 	type WelcomePlaceholder,
 	WELCOME_STYLES,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** The rules of the welcome system, with no Discord objects in sight. */
 
-// Declared in `@testify/shared` so the dashboard's form validates against the same rules.
+// Declared in `@together-helper/shared` so the dashboard's form validates against the same rules.
 export {
 	DEFAULT_WELCOME_MESSAGE,
 	fillTemplate,

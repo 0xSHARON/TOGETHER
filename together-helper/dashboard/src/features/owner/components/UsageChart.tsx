@@ -1,4 +1,4 @@
-import { type UsageDay } from "@testify/shared";
+import { type UsageDay } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { shortDay } from "@/features/owner/owner.utils";
 import { formatNumber } from "@/lib/intl";

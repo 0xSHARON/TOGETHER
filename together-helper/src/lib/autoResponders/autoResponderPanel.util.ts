@@ -7,7 +7,7 @@ import { container, containerMessage, divider, text, withoutPings } from "@lib/d
 import { type ContainerMessage, type ContainerPart } from "@lib/discord/discord.types";
 import { escapeMarkdown, formatDurationLong, truncate } from "@lib/format/format.util";
 import { settingsScreen, type ScreenAction } from "@lib/settings/settingsScreen.util";
-import { AUTO_RESPONDER_LIMITS, type AutoResponder } from "@testify/shared";
+import { AUTO_RESPONDER_LIMITS, type AutoResponder } from "@together-helper/shared";
 
 type QuietPanel = ContainerMessage & { allowedMentions: { parse: [] } };
 

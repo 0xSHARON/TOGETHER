@@ -1,4 +1,4 @@
-import { type WelcomePlaceholder } from "@testify/shared";
+import { type WelcomePlaceholder } from "@together-helper/shared";
 import { type TranslationKey } from "@/i18n";
 
 export const PLACEHOLDER_LABELS: Record<WelcomePlaceholder, TranslationKey> = {

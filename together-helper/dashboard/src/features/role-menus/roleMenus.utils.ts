@@ -4,7 +4,7 @@ import {
 	type RoleMenuEntry,
 	type RoleMenuMode,
 	type RoleSummary,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { type TFunction } from "i18next";
 
 export interface RoleMenuDraft {

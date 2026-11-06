@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
-import { NICKNAME_MAX, type GuildNickname, type NicknamePatch } from "@testify/shared";
+import { NICKNAME_MAX, type GuildNickname, type NicknamePatch } from "@together-helper/shared";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Field, FIELD, savingStateOf, Warning } from "@/components/form";

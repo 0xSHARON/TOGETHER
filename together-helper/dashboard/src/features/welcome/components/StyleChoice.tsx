@@ -1,4 +1,4 @@
-import { type WelcomeStyle } from "@testify/shared";
+import { type WelcomeStyle } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { RadioCard } from "@/components/form";
 import { STYLE_LABELS } from "@/features/welcome/welcome.utils";

@@ -21,7 +21,7 @@ import {
 	standingOnBoard,
 } from "@lib/economy/memberActions.util";
 import { formatNumber, ordinal } from "@lib/format/format.util";
-import { BOARD_SCOPES, type BoardScope, MONEY_SORT_LABELS, MONEY_SORTS, type MoneySort } from "@testify/shared";
+import { BOARD_SCOPES, type BoardScope, MONEY_SORT_LABELS, MONEY_SORTS, type MoneySort } from "@together-helper/shared";
 
 /** The leaderboards as one picture: the top ten, the reader's own place, and buttons to change what is ranked. */
 

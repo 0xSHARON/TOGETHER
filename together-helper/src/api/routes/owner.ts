@@ -14,7 +14,7 @@ import { getCounting } from "@database/repositories/countingRepository";
 import { getLevelSettings } from "@database/repositories/levelRepository";
 import { dashboardTallies, guildTallies } from "@database/repositories/usageRepository";
 import { getWelcome } from "@database/repositories/welcomeRepository";
-import { ownerGuildQuery, type OwnerGuildRow, type OwnerGuildSort, type OwnerStats, type Paged } from "@testify/shared";
+import { ownerGuildQuery, type OwnerGuildRow, type OwnerGuildSort, type OwnerStats, type Paged } from "@together-helper/shared";
 
 export const owner = new Hono<ApiBindings>();
 

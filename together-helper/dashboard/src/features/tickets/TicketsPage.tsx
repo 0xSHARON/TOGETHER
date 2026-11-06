@@ -1,4 +1,4 @@
-import { TICKET_LIMITS } from "@testify/shared";
+import { TICKET_LIMITS } from "@together-helper/shared";
 import { Power, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

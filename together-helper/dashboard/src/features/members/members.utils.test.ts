@@ -1,4 +1,4 @@
-import { type BoardPage } from "@testify/shared";
+import { type BoardPage } from "@together-helper/shared";
 import {
 	boardFrom,
 	columnsFor,

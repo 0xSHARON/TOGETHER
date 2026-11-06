@@ -1,4 +1,4 @@
-import { type StatusBucket } from "@testify/shared";
+import { type StatusBucket } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { barHeight, HISTORY_FILL, HISTORY_LABEL, millis } from "@/features/status/status.utils";
 import { cn } from "@/lib/cn";

@@ -4,7 +4,7 @@ import { button, linkButton, row } from "@lib/discord/components.util";
 import { container, containerMessage, divider, sectionWithButton, text } from "@lib/discord/containers.util";
 import { type ContainerMessage, type ContainerPart } from "@lib/discord/discord.types";
 import { SUPPORT_PANEL_ID } from "@lib/support/support.constants";
-import { linkTarget, type SupportArticleLink, type SupportReply, type SupportTopic } from "@testify/shared";
+import { linkTarget, type SupportArticleLink, type SupportReply, type SupportTopic } from "@together-helper/shared";
 
 /** The support answer as a Discord message: the article, then a button beside each related one. */
 

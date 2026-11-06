@@ -16,7 +16,7 @@ import {
 	type NoticeInput,
 	type NoticePatch,
 	type OwnerGuildDetail,
-} from "@testify/shared";
+} from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

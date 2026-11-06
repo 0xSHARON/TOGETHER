@@ -18,7 +18,7 @@ import {
 } from "@lib/music/musicSearch.util";
 import { resolveTracks } from "@lib/music/musicSource.util";
 import { fallsBackToSoundCloud, readMusicSources, withinSources } from "@lib/music/musicSources.util";
-import { type MusicSourceChoice } from "@testify/shared";
+import { type MusicSourceChoice } from "@together-helper/shared";
 
 /** `/play`'s autocomplete: what it would play for the text so far, from whichever services the owner allows. */
 

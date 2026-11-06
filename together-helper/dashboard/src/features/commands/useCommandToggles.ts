@@ -5,7 +5,7 @@ import {
 	type UseMutationResult,
 	type UseQueryResult,
 } from "@tanstack/react-query";
-import { type CommandToggleState, type CommandTogglePut } from "@testify/shared";
+import { type CommandToggleState, type CommandTogglePut } from "@together-helper/shared";
 import { api } from "@/lib/api";
 import { keys } from "@/lib/queries";
 

@@ -1,4 +1,4 @@
-import { WELCOME_LIMITS, WELCOME_PLACEHOLDERS, type WelcomePlaceholder } from "@testify/shared";
+import { WELCOME_LIMITS, WELCOME_PLACEHOLDERS, type WelcomePlaceholder } from "@together-helper/shared";
 import { type ReactNode, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Field, FIELD, Warning } from "@/components/form";

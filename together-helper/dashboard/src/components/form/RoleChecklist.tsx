@@ -1,4 +1,4 @@
-import { type RoleSummary } from "@testify/shared";
+import { type RoleSummary } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { CheckList, type CheckItem } from "@/components/form/CheckList";
 import { RoleSwatch } from "@/components/form/RoleSwatch";

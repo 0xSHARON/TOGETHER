@@ -1,4 +1,4 @@
-import { type RoleMenuEntry, type RoleSummary } from "@testify/shared";
+import { type RoleMenuEntry, type RoleSummary } from "@together-helper/shared";
 import { draftOf, offerBlocked, roleMenuSummary } from "@/features/role-menus/roleMenus.utils";
 import { i18next } from "@/i18n";
 

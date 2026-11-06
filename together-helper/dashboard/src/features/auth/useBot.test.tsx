@@ -1,4 +1,4 @@
-import { DEFAULT_BOT_NAME } from "@testify/shared";
+import { DEFAULT_BOT_NAME } from "@together-helper/shared";
 import { screen, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { useTranslation } from "react-i18next";
@@ -49,7 +49,7 @@ describe("the bot's name", () => {
 		await waitFor(() => {
 			expect(rememberedBotName()).toBe("Helper");
 		});
-		localStorage.removeItem("testify:botName");
+		localStorage.removeItem("together-helper:botName");
 	});
 });
 
@@ -60,13 +60,13 @@ function Face(): React.JSX.Element {
 
 describe("the bot's face", () => {
 	afterEach(() => {
-		localStorage.removeItem("testify:botLook");
+		localStorage.removeItem("together-helper:botLook");
 	});
 
 	/** With `dev:all` the bot restarts on every save, and the sign-in screen showed a built-in shield until it was back. */
 	it("is the picture it last gave while the API is not answering", async () => {
 		localStorage.setItem(
-			"testify:botLook",
+			"together-helper:botLook",
 			JSON.stringify({
 				avatarUrl: "https://cdn.discordapp.com/avatars/1/old.png",
 				bannerUrl: null,
@@ -110,7 +110,7 @@ describe("the bot's face", () => {
 	/** Storage is whatever was last written to it, so only Discord's own CDN is ever drawn from it. */
 	it("refuses a remembered picture that is not on Discord's CDN", () => {
 		localStorage.setItem(
-			"testify:botLook",
+			"together-helper:botLook",
 			JSON.stringify({
 				avatarUrl: "https://evil.example/a.png",
 				bannerUrl: "http://cdn.discordapp.com/b.png",

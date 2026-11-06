@@ -1,4 +1,4 @@
-import { type LevelBody, MEMBER_LIMITS, type MemberDetail } from "@testify/shared";
+import { type LevelBody, MEMBER_LIMITS, type MemberDetail } from "@together-helper/shared";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Field, RowActions, SettingRows, Warning } from "@/components/form";

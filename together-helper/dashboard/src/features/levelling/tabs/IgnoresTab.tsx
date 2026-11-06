@@ -1,4 +1,4 @@
-import { LEVEL_LIMITS } from "@testify/shared";
+import { LEVEL_LIMITS } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { CheckList, postableChannels, RoleChecklist, savingStateOf } from "@/components/form";
 import { Refusal } from "@/features/levelling/components/Refusal";

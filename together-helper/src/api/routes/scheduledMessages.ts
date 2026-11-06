@@ -6,7 +6,7 @@ import { requireGuild } from "@api/middleware/session";
 import { parseBody, parseParams } from "@api/validate";
 import { findSchedule } from "@database/repositories/scheduledMessageRepository";
 import { addSchedule, changeSchedule, readSchedules, removeSchedule } from "@lib/scheduledMessages";
-import { type ScheduledMessageInput, scheduledMessageInput, scheduledMessageParams } from "@testify/shared";
+import { type ScheduledMessageInput, scheduledMessageInput, scheduledMessageParams } from "@together-helper/shared";
 
 export const scheduledMessages = new Hono<ApiBindings>();
 

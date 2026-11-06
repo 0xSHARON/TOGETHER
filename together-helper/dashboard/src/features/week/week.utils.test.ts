@@ -1,4 +1,4 @@
-import { type WeekEvent } from "@testify/shared";
+import { type WeekEvent } from "@together-helper/shared";
 import { eventDetail, groupByDay } from "@/features/week/week.utils";
 import { weekdayDate } from "@/lib/datetime";
 import { t } from "@/test/english";

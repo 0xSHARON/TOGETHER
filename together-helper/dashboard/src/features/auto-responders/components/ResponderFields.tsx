@@ -1,4 +1,4 @@
-import { AUTO_RESPONDER_LIMITS, type AutoResponderInput } from "@testify/shared";
+import { AUTO_RESPONDER_LIMITS, type AutoResponderInput } from "@together-helper/shared";
 import { type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Field, FIELD, SELECT } from "@/components/form";

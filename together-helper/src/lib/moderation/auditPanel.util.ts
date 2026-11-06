@@ -6,7 +6,7 @@ import { type ContainerMessage, type ContainerPart } from "@lib/discord/discord.
 import { AUDIT_EVENT_LABELS } from "@lib/moderation/auditLabels.util";
 import { AUDIT_PANEL_ID } from "@lib/moderation/moderation.constants";
 import { type AuditDraft, type AuditPanelState } from "@lib/moderation/moderation.types";
-import { AUDIT_EVENTS, type AuditEvent, collapseEnabled, isAuditEvent, resolveEnabled } from "@testify/shared";
+import { AUDIT_EVENTS, type AuditEvent, collapseEnabled, isAuditEvent, resolveEnabled } from "@together-helper/shared";
 
 /** Audit logging, as a panel you click rather than a list you type. */
 

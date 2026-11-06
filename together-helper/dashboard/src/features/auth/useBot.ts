@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import { type BotIdentity } from "@testify/shared";
+import { type BotIdentity } from "@together-helper/shared";
 import { useEffect, useMemo } from "react";
 import { nameTheBot } from "@/i18n";
 import { api, ApiError } from "@/lib/api";

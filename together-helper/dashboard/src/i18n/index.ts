@@ -22,7 +22,7 @@ export const LOCALE_NAMES: Record<Locale, string> = {
 	ru: "Русский",
 };
 
-const LOCALE_STORAGE_KEY = "testify:locale";
+const LOCALE_STORAGE_KEY = "together-helper:locale";
 
 const BOT_NAMED = "botNamed";
 

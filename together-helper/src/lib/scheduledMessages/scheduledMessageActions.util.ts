@@ -22,7 +22,7 @@ import {
 	type ScheduledMessage,
 	type ScheduledMessageList,
 	scheduleTimeBlocked,
-} from "@testify/shared";
+} from "@together-helper/shared";
 
 /** Scheduling, changing and posting a server's messages: the one path the panel, the dashboard and the job take. */
 

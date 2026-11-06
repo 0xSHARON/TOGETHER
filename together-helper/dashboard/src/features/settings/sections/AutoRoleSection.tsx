@@ -1,4 +1,4 @@
-import { SETTINGS_LIMITS, type AutoRolePut, type AutoRoleSetting, type RoleSummary } from "@testify/shared";
+import { SETTINGS_LIMITS, type AutoRolePut, type AutoRoleSetting, type RoleSummary } from "@together-helper/shared";
 import { useTranslation } from "react-i18next";
 import { RoleChecklist, savingStateOf, Warning } from "@/components/form";
 import { Section } from "@/features/settings/components/Section";
