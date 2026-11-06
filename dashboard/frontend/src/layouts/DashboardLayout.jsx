@@ -13,8 +13,7 @@ import {
   LogOut, 
   ExternalLink,
   Menu,
-  X,
-  Crown
+  X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import clsx from 'clsx';
@@ -42,7 +41,6 @@ export default function DashboardLayout() {
     { name: 'LEADERBOARD', path: '/leaderboard', icon: Medal },
     { name: 'COMMANDS', path: '/commands', icon: Terminal },
     { name: 'SETTINGS', path: '/settings', icon: Sliders },
-    { name: 'PREMIUM PASS', path: '/premium', icon: Crown, premium: true },
   ];
 
   if (isBotOwner) {
@@ -101,8 +99,7 @@ export default function DashboardLayout() {
                     isActive
                       ? "bg-brutal-accent text-black border-black shadow-brutal-sm translate-x-1"
                       : "text-brutal-text border-transparent hover:border-brutal-border hover:bg-brutal-secondary",
-                    item.owner && !isActive && "text-red-400 border-red-950 bg-red-950/20",
-                    item.premium && !isActive && "text-amber-400 border-amber-900/50 bg-amber-950/20 hover:border-amber-500"
+                    item.owner && !isActive && "text-red-400 border-red-950 bg-red-950/20"
                   )}
                 >
                   <Icon className="w-4 h-4 shrink-0" />

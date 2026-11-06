@@ -27,8 +27,7 @@ import {
   LogOut,
   Disc,
   MessageSquare,
-  Users,
-  QrCode
+  Users
 } from 'lucide-react';
 import { BrutCard, StatBox, BrutButton } from '../components/Brutalist';
 
@@ -69,63 +68,13 @@ export default function OwnerPage() {
   const [reloadingCommands, setReloadingCommands] = useState(false);
   const [reloadResult, setReloadResult] = useState(null);
 
-  // UPI Direct Orders State
-  const [upiOrders, setUpiOrders] = useState([]);
-  const [upiOrdersLoading, setUpiOrdersLoading] = useState(false);
-  const [upiReviewingId, setUpiReviewingId] = useState(null);
-  const [upiStatusMsg, setUpiStatusMsg] = useState('');
-
   const terminalEndRef = useRef(null);
 
   useEffect(() => {
     fetchOwnerData();
     fetchServersList();
     fetchBlacklist();
-    fetchUpiOrders();
   }, []);
-
-  async function fetchUpiOrders() {
-    setUpiOrdersLoading(true);
-    try {
-      const resp = await axios.get('/api/premium/upi/admin/orders', { withCredentials: true });
-      if (Array.isArray(resp.data?.orders)) {
-        setUpiOrders(resp.data.orders);
-      }
-    } catch (e) {
-      console.warn("Failed to load UPI admin orders:", e.message);
-    } finally {
-      setUpiOrdersLoading(false);
-    }
-  }
-
-  async function handleReviewUpi(orderId, action) {
-    let reason = "";
-    if (action === "reject") {
-      reason = window.prompt("Reason for rejection (e.g. Payment not received / invalid UTR):", "Invalid UTR or payment not received");
-      if (!reason) return;
-    } else {
-      if (!window.confirm(`Confirm APPROVAL for order ${orderId}? This will generate and assign an activation key.`)) {
-        return;
-      }
-    }
-
-    setUpiReviewingId(orderId);
-    setUpiStatusMsg('');
-    try {
-      const resp = await axios.post('/api/premium/upi/admin/review', {
-        orderId,
-        action,
-        reason
-      }, { withCredentials: true });
-
-      setUpiStatusMsg(resp.data?.message || `Order ${action}ed successfully.`);
-      await fetchUpiOrders();
-    } catch (err) {
-      alert(`Action failed: ${err.response?.data?.error || err.message}`);
-    } finally {
-      setUpiReviewingId(null);
-    }
-  }
 
   // Poll Discord logs every 4 seconds to maintain live stream
   useEffect(() => {
@@ -474,18 +423,6 @@ export default function OwnerPage() {
         >
           <Layers className="w-3.5 h-3.5" />
           <span>COMMAND OPS & RELOAD</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('upi')}
-          className={`px-4 py-2 text-xs font-black uppercase border-2 transition-all flex items-center gap-1.5 ${
-            activeTab === 'upi'
-              ? 'border-emerald-400 bg-emerald-400 text-black shadow-brutal-sm'
-              : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white hover:border-zinc-700'
-          }`}
-        >
-          <QrCode className="w-3.5 h-3.5" />
-          <span>UPI ORDERS ({upiOrders.filter(o => o.status === 'pending').length > 0 ? `⚠️ ${upiOrders.filter(o => o.status === 'pending').length} PENDING` : upiOrders.length})</span>
         </button>
       </div>
 
@@ -1214,154 +1151,6 @@ export default function OwnerPage() {
                     <span className="text-zinc-400 text-[11px]">Inspect specific guild permissions & stats.</span>
                   </div>
                 </div>
-              </div>
-            </div>
-          </BrutCard>
-        </div>
-      )}
-
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {/* TAB 5: UPI DIRECT ORDERS & UTR VERIFICATION                   */}
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {activeTab === 'upi' && (
-        <div className="space-y-6 animate-fade-in">
-          <BrutCard 
-            title="UPI DIRECT ORDERS & UTR VERIFICATION DESK" 
-            subtitle="Verify submitted 12-digit UTR reference numbers and approve premium activation keys"
-            badge={`${upiOrders.filter(o => o.status === 'pending').length} PENDING APPROVAL`}
-          >
-            <div className="space-y-6">
-              {upiStatusMsg && (
-                <div className="p-3 bg-zinc-900 border-2 border-brutal-accent text-emerald-300 text-xs flex items-center justify-between">
-                  <span>{upiStatusMsg}</span>
-                  <button onClick={() => setUpiStatusMsg('')} className="text-zinc-400 hover:text-white">✕</button>
-                </div>
-              )}
-
-              {/* UPI Orders Summary Stats */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
-                <div className="p-4 bg-brutal-secondary border-2 border-brutal-border shadow-brutal-sm">
-                  <span className="text-brutal-muted uppercase text-[10px] font-bold">TOTAL SUBMISSIONS</span>
-                  <p className="font-black text-2xl text-white mt-1">{upiOrders.length}</p>
-                </div>
-                <div className="p-4 bg-brutal-secondary border-2 border-brutal-border shadow-brutal-sm">
-                  <span className="text-amber-400 uppercase text-[10px] font-bold">PENDING REVIEW</span>
-                  <p className="font-black text-2xl text-amber-400 mt-1">
-                    {upiOrders.filter(o => o.status === 'pending').length}
-                  </p>
-                </div>
-                <div className="p-4 bg-brutal-secondary border-2 border-brutal-border shadow-brutal-sm">
-                  <span className="text-emerald-400 uppercase text-[10px] font-bold">TOTAL APPROVED REVENUE</span>
-                  <p className="font-black text-2xl text-brutal-accent mt-1">
-                    ₹{upiOrders.filter(o => o.status === 'approved').reduce((acc, o) => acc + (o.amount || 0), 0).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Toolbar */}
-              <div className="flex justify-between items-center bg-black p-3 border-2 border-black">
-                <span className="text-xs text-zinc-300 font-bold uppercase">
-                  UPI TRANSACTION LEDGER ({upiOrders.length})
-                </span>
-                <button
-                  onClick={fetchUpiOrders}
-                  disabled={upiOrdersLoading}
-                  className="px-3 py-1 bg-zinc-900 border border-zinc-700 text-xs text-zinc-300 hover:text-white font-bold flex items-center gap-1.5"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 ${upiOrdersLoading ? 'animate-spin text-brutal-accent' : ''}`} />
-                  <span>REFRESH LEDGER</span>
-                </button>
-              </div>
-
-              {/* UPI Orders Table */}
-              <div className="border-2 border-brutal-border bg-brutal-secondary overflow-x-auto">
-                <table className="w-full text-left font-mono text-xs">
-                  <thead>
-                    <tr className="border-b-2 border-brutal-border bg-black/60 text-brutal-muted uppercase text-[10px]">
-                      <th className="py-3 px-4">ORDER ID</th>
-                      <th className="py-3 px-4">BUYER</th>
-                      <th className="py-3 px-4">PLAN</th>
-                      <th className="py-3 px-4">AMOUNT</th>
-                      <th className="py-3 px-4">UTR REFERENCE</th>
-                      <th className="py-3 px-4">STATUS</th>
-                      <th className="py-3 px-4 text-right">ACTION</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-800">
-                    {upiOrders.length === 0 ? (
-                      <tr>
-                        <td colSpan={7} className="py-12 text-center text-zinc-500">
-                          {upiOrdersLoading ? "FETCHING UPI LEDGER..." : "NO UPI ORDERS SUBMITTED YET."}
-                        </td>
-                      </tr>
-                    ) : (
-                      upiOrders.map((ord, idx) => (
-                        <tr key={ord.orderId || idx} className="hover:bg-zinc-900/60 transition-colors">
-                          <td className="py-3 px-4 font-bold text-white select-all">{ord.orderId}</td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-2">
-                              <img 
-                                src={ord.userAvatar || "/logo.png?v=2"} 
-                                alt={ord.username} 
-                                className="w-6 h-6 rounded-full object-cover border border-zinc-700 bg-black"
-                                onError={(e) => { e.currentTarget.src = "/logo.png?v=2"; }}
-                              />
-                              <div>
-                                <span className="font-bold text-zinc-200 block truncate max-w-[120px]">{ord.username}</span>
-                                <span className="text-[10px] text-zinc-500 block select-all">{ord.userId}</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-3 px-4 text-zinc-300 font-semibold">{ord.planName}</td>
-                          <td className="py-3 px-4 font-bold text-brutal-accent">₹{ord.amount}</td>
-                          <td className="py-3 px-4 font-mono font-bold text-amber-400 select-all">{ord.utr}</td>
-                          <td className="py-3 px-4">
-                            {ord.status === 'approved' ? (
-                              <span className="px-2 py-0.5 bg-emerald-950 text-emerald-300 border border-emerald-600 font-bold text-[10px] uppercase">
-                                APPROVED
-                              </span>
-                            ) : ord.status === 'rejected' ? (
-                              <span className="px-2 py-0.5 bg-red-950 text-red-300 border border-red-600 font-bold text-[10px] uppercase" title={ord.rejectionReason}>
-                                REJECTED
-                              </span>
-                            ) : (
-                              <span className="px-2 py-0.5 bg-amber-950 text-amber-300 border border-amber-600 font-bold text-[10px] uppercase flex items-center gap-1 w-fit">
-                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                                PENDING
-                              </span>
-                            )}
-                          </td>
-                          <td className="py-3 px-4 text-right">
-                            {ord.status === 'pending' ? (
-                              <div className="flex items-center justify-end gap-1.5">
-                                <button
-                                  onClick={() => handleReviewUpi(ord.orderId, 'approve')}
-                                  disabled={upiReviewingId === ord.orderId}
-                                  className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-black font-black text-[10px] uppercase border border-black shadow-brutal-sm transition-all"
-                                >
-                                  {upiReviewingId === ord.orderId ? "..." : "✅ APPROVE"}
-                                </button>
-                                <button
-                                  onClick={() => handleReviewUpi(ord.orderId, 'reject')}
-                                  disabled={upiReviewingId === ord.orderId}
-                                  className="px-2.5 py-1 bg-red-950 hover:bg-red-800 text-red-200 border border-red-700 font-bold text-[10px] uppercase transition-all"
-                                >
-                                  ❌ REJECT
-                                </button>
-                              </div>
-                            ) : ord.generatedCode ? (
-                              <span className="font-mono text-[11px] font-bold text-amber-400 select-all" title="Issued Code">
-                                {ord.generatedCode}
-                              </span>
-                            ) : (
-                              <span className="text-zinc-500 text-[10px]">CLOSED</span>
-                            )}
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
               </div>
             </div>
           </BrutCard>
