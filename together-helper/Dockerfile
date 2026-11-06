@@ -12,10 +12,10 @@ WORKDIR /app
 
 # `prepare` runs husky, which needs a .git this context does not carry — and an install
 # script is not something a build should run unreviewed. `build:shared` is invoked below.
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json* ./
 COPY shared/package.json ./shared/
 COPY dashboard/package.json ./dashboard/
-RUN npm ci --ignore-scripts
+RUN npm install --ignore-scripts
 
 COPY tsconfig.json tsup.config.ts ./
 COPY scripts ./scripts
@@ -50,10 +50,10 @@ RUN apt-get update \
 
 # The dashboard workspace is build-time only: at runtime the API serves its compiled assets as
 # static files, so its React tree never has to be installed.
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json* ./
 COPY shared/package.json ./shared/
 COPY dashboard/package.json ./dashboard/
-RUN npm ci --omit=dev --ignore-scripts --workspace @together-helper/shared --include-workspace-root \
+RUN npm install --omit=dev --ignore-scripts --workspace @together-helper/shared --include-workspace-root \
 	&& npm cache clean --force
 
 COPY --from=build /app/dist ./dist
