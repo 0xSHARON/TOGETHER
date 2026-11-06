@@ -255,6 +255,18 @@ function getGuildPlayerState(client, targetId) {
 }
 
 /**
+ * Safe broadcaster to notify connected listeners & sync player updates
+ */
+function broadcastVisualizerState(player) {
+  if (!player) return;
+  try {
+    if (player.manager?.client?.emit) {
+      player.manager.client.emit("playerUpdate", player);
+    }
+  } catch {}
+}
+
+/**
  * Returns all active streaming sessions across Discord guilds
  */
 function getAllActiveSessions(client) {
@@ -1353,4 +1365,5 @@ module.exports = {
   getAllActiveSessions,
   getBotInfo,
   resolveGuildId,
+  broadcastVisualizerState,
 };

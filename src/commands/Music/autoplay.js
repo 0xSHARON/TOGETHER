@@ -71,7 +71,9 @@ module.exports = {
 
     try {
       const { broadcastVisualizerState } = require("../../utils/visualizerServer");
-      broadcastVisualizerState(player);
+      if (typeof broadcastVisualizerState === "function") {
+        broadcastVisualizerState(player);
+      }
     } catch {}
 
     const statusDisplay = new TextDisplayBuilder()

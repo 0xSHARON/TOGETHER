@@ -138,7 +138,9 @@ async function attemptAutoplay(client, player) {
 
         try {
             const { broadcastVisualizerState } = require("./visualizerServer");
-            broadcastVisualizerState(player);
+            if (typeof broadcastVisualizerState === "function") {
+                broadcastVisualizerState(player);
+            }
         } catch {}
     } catch (err) {
         client.logger?.log(`[Autoplay] Error: ${err.message}`, "error");
