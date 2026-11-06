@@ -1,8 +1,7 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const { authenticateUser } = require("../middleware/auth");
 const { requireGuildPermission } = require("../middleware/guildAuth");
-const { TwoFourSeven, Setup, Prefix, ensureConnected } = require("../services/dbService");
+const { TwoFourSeven, Setup, Prefix, ensureConnected, mongoose } = require("../services/dbService");
 const botBridge = require("../services/botBridge");
 const config = require("../config");
 

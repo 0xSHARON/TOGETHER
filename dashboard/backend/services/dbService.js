@@ -1,6 +1,14 @@
 const path = require("path");
-const mongoose = require("mongoose");
 const config = require("../config");
+
+// Ensure we load the EXACT same Mongoose instance that src/schema models are registered on
+let mongoose;
+try {
+  const rootMongoosePath = path.resolve(__dirname, "../../../node_modules/mongoose");
+  mongoose = require(rootMongoosePath);
+} catch {
+  mongoose = require("mongoose");
+}
 
 // Load existing bot models from root schemas
 const schemaDir = path.resolve(__dirname, "../../../src/schema");
@@ -65,6 +73,7 @@ async function ensureConnected() {
 }
 
 module.exports = {
+  mongoose,
   initMongo,
   ensureConnected,
   TwoFourSeven,
