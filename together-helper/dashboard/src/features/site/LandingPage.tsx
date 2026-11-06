@@ -1,4 +1,19 @@
-import commandList from "@repo/docs/commands.md?raw";
+const commandList = `
+| Command | Description |
+|:---|:---|
+| \`/help\` | View all available bot commands and categories |
+| \`/ban\` | Ban a disruptive user from the server |
+| \`/kick\` | Kick a user from the server |
+| \`/timeout\` | Time out a user for a given duration |
+| \`/warn\` | Issue a formal warning to a member |
+| \`/clear\` | Purge multiple messages from a channel |
+| \`/ticket\` | Open a support ticket |
+| \`/giveaway\` | Start an interactive giveaway |
+| \`/rank\` | Check your level and XP rank |
+| \`/leaderboard\` | View the server leaderboard |
+| \`/verify\` | Role-based member verification |
+| \`/automod\` | Configure automated anti-spam and moderation |
+`;
 import { inviteUrl } from "@testify/shared";
 import { ArrowRight } from "lucide-react";
 import { useMemo } from "react";
