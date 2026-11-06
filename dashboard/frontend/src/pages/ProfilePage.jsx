@@ -2,38 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { 
   ImageIcon, 
-  Edit3, 
   RefreshCw, 
-  Download, 
-  CheckCircle2, 
-  Sparkles,
-  Disc3,
-  Palette
+  Download
 } from 'lucide-react';
-import { BrutButton } from '../components/Brutalist';
 import { useAuth } from '../context/AuthContext';
-
-const COLOR_PRESETS = [
-  { name: 'Discord Red', color: '#FF1E38' },
-  { name: 'Neon Green', color: '#00E676' },
-  { name: 'Cyber Cyan', color: '#00E5FF' },
-  { name: 'Amber Gold', color: '#FFD600' },
-  { name: 'Electric Violet', color: '#D500F9' },
-  { name: 'Pure White', color: '#FFFFFF' }
-];
 
 export default function ProfilePage() {
   const { user } = useAuth();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // Edit Modal/Panel State
-  const [editing, setEditing] = useState(false);
-  const [editBio, setEditBio] = useState('');
-  const [editColor, setEditColor] = useState('#FF1E38');
-  const [editAnthem, setEditAnthem] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [saveMsg, setSaveMsg] = useState('');
   const [bannerKey, setBannerKey] = useState(Date.now());
   const [bannerLoading, setBannerLoading] = useState(true);
 
@@ -45,36 +22,10 @@ export default function ProfilePage() {
     try {
       const resp = await axios.get('/api/auth/profile', { withCredentials: true });
       setProfileData(resp.data);
-      if (resp.data?.stats) {
-        setEditBio(resp.data.stats.bio || '');
-        setEditColor(resp.data.stats.accentColor || '#FF1E38');
-        setEditAnthem(resp.data.stats.anthem?.title || '');
-      }
     } catch (err) {
       console.error('Failed to load profile:', err);
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function handleSaveProfile(e) {
-    e.preventDefault();
-    setSaving(true);
-    setSaveMsg('');
-    try {
-      await axios.post('/api/auth/profile', {
-        bio: editBio,
-        accentColor: editColor,
-        anthem: editAnthem
-      }, { withCredentials: true });
-      setSaveMsg('Profile synchronized with Discord successfully!');
-      await fetchProfile();
-      setBannerKey(Date.now());
-      setTimeout(() => setEditing(false), 1200);
-    } catch (err) {
-      alert(err.response?.data?.error || err.message);
-    } finally {
-      setSaving(false);
     }
   }
 
@@ -116,13 +67,6 @@ export default function ProfilePage() {
 
           <div className="flex flex-wrap items-center gap-2">
             <button
-              onClick={() => setEditing(!editing)}
-              className="px-3 py-1.5 bg-black border-2 border-brutal-border hover:border-brutal-accent text-white font-bold text-xs uppercase shadow-brutal-sm flex items-center gap-1.5 transition-all"
-            >
-              <Edit3 className="w-3.5 h-3.5 text-brutal-accent" />
-              <span>{editing ? 'CLOSE EDITOR' : 'EDIT PROFILE'}</span>
-            </button>
-            <button
               onClick={handleRefreshBanner}
               className="px-3 py-1.5 bg-zinc-900 border border-zinc-700 hover:border-white text-zinc-300 hover:text-white text-xs font-bold flex items-center gap-1.5 transition-all"
               title="Re-render Discord canvas"
@@ -143,90 +87,6 @@ export default function ProfilePage() {
             </a>
           </div>
         </div>
-
-        {/* Edit Form Drawer */}
-        {editing && (
-          <form onSubmit={handleSaveProfile} className="p-4 sm:p-6 border-b-2 border-brutal-accent bg-black space-y-4">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-              <span className="font-bold text-xs text-brutal-accent uppercase tracking-wider flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                CUSTOMIZE DISCORD MUSIC PROFILE
-              </span>
-              {saveMsg && (
-                <span className="text-xs text-emerald-400 flex items-center gap-1 font-bold">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  {saveMsg}
-                </span>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-              <div>
-                <label className="block text-zinc-400 mb-1 font-bold">CUSTOM BIO (MAX 80 CHARS)</label>
-                <input
-                  type="text"
-                  maxLength={80}
-                  value={editBio}
-                  onChange={(e) => setEditBio(e.target.value)}
-                  placeholder="e.g. 24/7 Lo-Fi enthusiast"
-                  className="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white font-mono focus:outline-none focus:border-brutal-accent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-zinc-400 mb-1 font-bold">ACCENT COLOR (HEX)</label>
-                <div className="flex gap-2">
-                  <input
-                    type="color"
-                    value={editColor}
-                    onChange={(e) => setEditColor(e.target.value)}
-                    className="w-10 h-9 border border-zinc-700 bg-transparent cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={editColor}
-                    onChange={(e) => setEditColor(e.target.value)}
-                    className="flex-1 bg-zinc-900 border border-zinc-700 p-2 text-white font-mono uppercase"
-                  />
-                </div>
-                {/* Color Preset Swatches */}
-                <div className="flex items-center gap-1.5 mt-2">
-                  {COLOR_PRESETS.map((p) => (
-                    <button
-                      key={p.color}
-                      type="button"
-                      onClick={() => setEditColor(p.color)}
-                      className={`w-5 h-5 border ${editColor.toUpperCase() === p.color ? 'border-white scale-110' : 'border-zinc-700'} transition-all`}
-                      style={{ backgroundColor: p.color }}
-                      title={p.name}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-zinc-400 mb-1 font-bold">SIGNATURE ANTHEM</label>
-                <input
-                  type="text"
-                  value={editAnthem}
-                  onChange={(e) => setEditAnthem(e.target.value)}
-                  placeholder="e.g. Starboy - The Weeknd"
-                  className="w-full bg-zinc-900 border border-zinc-700 p-2.5 text-white font-mono focus:outline-none focus:border-brutal-accent"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="submit"
-                disabled={saving}
-                className="px-4 py-2 bg-brutal-accent text-black font-black text-xs uppercase border border-black shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5"
-              >
-                {saving ? 'SYNCHRONIZING...' : 'SAVE & APPLY TO DISCORD'}
-              </button>
-            </div>
-          </form>
-        )}
 
         {/* High-Resolution Discord Canvas Banner Image */}
         <div className="relative bg-zinc-950 aspect-[1200/675] w-full overflow-hidden flex items-center justify-center">
