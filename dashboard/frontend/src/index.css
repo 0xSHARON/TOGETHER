@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  background-color: #0B0B0B;
+  color: #F5F5F5;
+}
+
+body {
+  margin: 0;
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #0B0B0B;
+  color: #F5F5F5;
+  overflow-x: hidden;
+}
+
+/* Custom Neo-Brutalist scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #151515;
+}
+::-webkit-scrollbar-thumb {
+  background: #373737;
+  border: 1px solid #0B0B0B;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00E676;
+}
+
+/* Technical Brutalist patterns */
+.brutal-grid {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, rgba(55, 55, 55, 0.2) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(55, 55, 55, 0.2) 1px, transparent 1px);
+}
+
+.brutal-hazard {
+  background: repeating-linear-gradient(
+    -45deg,
+    #FF1E38,
+    #FF1E38 8px,
+    #000000 8px,
+    #000000 16px
+  );
+}
+
+.brutal-hazard-emerald {
+  background: repeating-linear-gradient(
+    -45deg,
+    #00E676,
+    #00E676 8px,
+    #000000 8px,
+    #000000 16px
+  );
+}
