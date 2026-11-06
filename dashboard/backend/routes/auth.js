@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const { authenticateUser, isBotOwner } = require("../middleware/auth");
 const { setUserGuilds } = require("../services/sessionStore");
-const { UserPreferences, Liked, PlaylistLibrary } = require("../services/dbService");
+const { UserPreferences, Liked, PlaylistLibrary, ensureConnected } = require("../services/dbService");
 const botBridge = require("../services/botBridge");
 
 const router = express.Router();
@@ -159,6 +159,7 @@ function computeRealBadges(pref, likedCount) {
 // GET /api/auth/profile -> Returns full user music preferences, stats, liked songs, playlists
 router.get("/profile", authenticateUser, async (req, res) => {
   try {
+    await ensureConnected().catch(() => {});
     const userId = req.user.id;
 
     const [prefDoc, likedDoc, playlistDoc] = await Promise.all([
@@ -216,6 +217,7 @@ router.get("/profile", authenticateUser, async (req, res) => {
 // POST /api/auth/profile -> Updates user custom bio, accentColor, and signature anthem
 router.post("/profile", authenticateUser, async (req, res) => {
   try {
+    await ensureConnected().catch(() => {});
     const { bio, accentColor, anthem } = req.body;
     const updates = {};
     if (typeof bio === "string") updates.bio = bio.trim().slice(0, 80);

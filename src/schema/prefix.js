@@ -7,7 +7,6 @@ const Prefix = new Schema(
     oldPrefix: String,
   },
   {
-    bufferCommands: false,
     autoIndex: false,
   }
 );

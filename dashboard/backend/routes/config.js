@@ -1,7 +1,8 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const { authenticateUser } = require("../middleware/auth");
 const { requireGuildPermission } = require("../middleware/guildAuth");
-const { TwoFourSeven, Setup, Prefix } = require("../services/dbService");
+const { TwoFourSeven, Setup, Prefix, ensureConnected } = require("../services/dbService");
 const botBridge = require("../services/botBridge");
 const config = require("../config");
 
@@ -10,10 +11,14 @@ const router = express.Router();
 // GET /api/config/:guildId -> Get 24/7, Setup channel, prefix, guild channels, and voter status
 router.get("/:guildId", authenticateUser, requireGuildPermission, async (req, res) => {
   try {
+    await ensureConnected().catch(() => {});
+
+    const isDbReady = mongoose.connection.readyState === 1;
+
     const [twoFourSeven, setup, prefixDoc, channels, voterStatus] = await Promise.all([
-      TwoFourSeven.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null),
-      Setup.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null),
-      Prefix.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null),
+      isDbReady ? TwoFourSeven.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null) : null,
+      isDbReady ? Setup.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null) : null,
+      isDbReady ? Prefix.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null) : null,
       botBridge.getGuildChannels(req.guildId).catch(() => ({ textChannels: [], voiceChannels: [] })),
       botBridge.checkVoterStatus(req.user.id).catch(() => ({ allowed: false, isOwner: false, isVoter: false }))
     ]);
@@ -58,6 +63,11 @@ router.post("/:guildId/247", authenticateUser, requireGuildPermission, async (re
       });
     }
 
+    await ensureConnected().catch(() => {});
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ error: "Database is connecting. Please retry in a few moments." });
+    }
+
     if (!enabled) {
       await TwoFourSeven.deleteOne({ Guild: req.guildId }).maxTimeMS(2500).catch(() => {});
 
@@ -81,7 +91,7 @@ router.post("/:guildId/247", authenticateUser, requireGuildPermission, async (re
     const doc = await TwoFourSeven.findOneAndUpdate(
       { Guild: req.guildId },
       { TextId: String(textId).trim(), VoiceId: String(voiceId).trim() },
-      { upsert: true, new: true, maxTimeMS: 2500 }
+      { upsert: true, returnDocument: "after", maxTimeMS: 2500 }
     );
 
     // Dispatch audit log to Discord thread
@@ -114,13 +124,18 @@ router.post("/:guildId/prefix", authenticateUser, requireGuildPermission, async 
   }
 
   try {
+    await ensureConnected().catch(() => {});
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ error: "Database is connecting. Please retry in a few moments." });
+    }
+
     const existing = await Prefix.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null);
     const oldPrefix = existing?.Prefix || ".";
 
     const doc = await Prefix.findOneAndUpdate(
       { Guild: req.guildId },
       { Prefix: cleanPrefix, oldPrefix },
-      { upsert: true, new: true, maxTimeMS: 2500 }
+      { upsert: true, returnDocument: "after", maxTimeMS: 2500 }
     );
 
     // Dispatch audit log to Discord thread
@@ -142,6 +157,11 @@ router.post("/:guildId/prefix", authenticateUser, requireGuildPermission, async 
 // POST /api/config/:guildId/reset-prefix -> Reset prefix back to default '.'
 router.post("/:guildId/reset-prefix", authenticateUser, requireGuildPermission, async (req, res) => {
   try {
+    await ensureConnected().catch(() => {});
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ error: "Database is connecting. Please retry in a few moments." });
+    }
+
     await Prefix.deleteOne({ Guild: req.guildId }).maxTimeMS(2500).catch(() => {});
 
     // Dispatch audit log to Discord thread

@@ -1,7 +1,7 @@
 const express = require("express");
 const { authenticateUser } = require("../middleware/auth");
 const { requireGuildPermission } = require("../middleware/guildAuth");
-const { TwoFourSeven } = require("../services/dbService");
+const { TwoFourSeven, ensureConnected } = require("../services/dbService");
 const botBridge = require("../services/botBridge");
 
 const router = express.Router();
@@ -9,6 +9,7 @@ const router = express.Router();
 // GET /api/player/:guildId -> Fetch player, queue, current track & filters
 router.get("/:guildId", authenticateUser, requireGuildPermission, async (req, res) => {
   try {
+    await ensureConnected().catch(() => {});
     const [data, twoFourSeven] = await Promise.all([
       botBridge.getGuildPlayer(req.guildId),
       TwoFourSeven.findOne({ Guild: req.guildId }).maxTimeMS(2000).lean().catch(() => null)

@@ -55,7 +55,9 @@ const apiLimiter = rateLimit({
 app.use("/api/", apiLimiter);
 
 // Connect to existing MongoDB
-initMongo();
+initMongo().catch((err) => {
+  console.error("[Dashboard DB] Initial connect warning:", err.message);
+});
 
 // Register API Routes
 app.use("/api/auth", authRoutes);
