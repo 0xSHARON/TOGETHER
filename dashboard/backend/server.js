@@ -19,6 +19,7 @@ const ownerRoutes = require("./routes/owner");
 const commandsRoutes = require("./routes/commands");
 
 const app = express();
+app.set("trust proxy", 1);
 const server = http.createServer(app);
 
 // Initialize Socket.IO with CORS
