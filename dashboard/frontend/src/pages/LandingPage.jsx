@@ -531,23 +531,6 @@ export default function LandingPage() {
         </div>
 
         {/* Bottom Callout Banner */}
-        <div className="border-2 border-brutal-border bg-black p-6 shadow-brutal flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Terminal className="w-8 h-8 text-brutal-accent shrink-0" />
-            <div>
-              <h4 className="font-display font-black text-lg text-white uppercase">NEED MORE AUDIO CONTROLS?</h4>
-              <p className="font-mono text-xs text-zinc-400">
-                Explore all {commands.length || 69} audio filters, DJ controls, and utility tools in the full catalog.
-              </p>
-            </div>
-          </div>
-          <Link
-            to="/commands"
-            className="px-5 py-2.5 bg-brutal-accent text-black font-mono font-bold text-xs uppercase border-2 border-black shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all shrink-0"
-          >
-            OPEN FULL COMMAND REGISTRY →
-          </Link>
-        </div>
       </section>
 
       {/* Creator Showcase */}
