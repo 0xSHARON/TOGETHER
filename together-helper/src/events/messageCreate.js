@@ -44,6 +44,18 @@ module.exports = {
       if (command && typeof command.prefixExecute === "function") {
         try {
           await command.prefixExecute(message, args, client);
+
+          const { dispatchLogThread } = require("../utils/webhooks");
+          const cmdEmbed = new EmbedBuilder()
+            .setColor("#00E676")
+            .setAuthor({
+              name: `${message.author.tag} (${message.author.id})`,
+              iconURL: message.author.displayAvatarURL({ dynamic: true })
+            })
+            .setTitle("📜 Prefix Command Executed")
+            .setDescription(`• **Command:** \`${matchedPrefix}${commandName}\`\n• **Channel:** <#${message.channel.id}>\n• **Server:** \`${message.guild?.name}\``)
+            .setTimestamp();
+          dispatchLogThread(client, "cmdrun", cmdEmbed);
         } catch (err) {
           console.error(`[Prefix Command Error] ${commandName}:`, err);
           await message.reply(

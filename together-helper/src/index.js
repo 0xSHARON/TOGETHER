@@ -1,3 +1,31 @@
+// Early Warning Suppression
+process.on("warning", (warning) => {
+  if (warning.name === "DeprecationWarning" && warning.message.includes("The ready event has been renamed to clientReady")) {
+    return;
+  }
+});
+
+const util = require("util");
+const consoleStreamer = require("./utils/consoleStreamer");
+const { initAllLogThreads, dispatchLogThread } = require("./utils/webhooks");
+const { EmbedBuilder } = require("discord.js");
+
+// Intercept console stdout/stderr to mirror into Discord #console-logs thread
+const origLog = console.log;
+const origError = console.error;
+
+console.log = function () {
+  origLog.apply(console, arguments);
+  const formatted = util.format.apply(util, arguments);
+  consoleStreamer.write(formatted);
+};
+
+console.error = function () {
+  origError.apply(console, arguments);
+  const formatted = util.format.apply(util, arguments);
+  consoleStreamer.write(formatted);
+};
+
 const {
   Client,
   GatewayIntentBits,
@@ -55,8 +83,50 @@ client.once("ready", async () => {
     status: "online"
   });
 
-  // Deploy Slash commands
+  // 1. Initialize Discord Console Streamer
+  try {
+    consoleStreamer.init(client);
+    console.log("[ConsoleStreamer] Connected to Discord thread.");
+  } catch (err) {
+    console.error("[ConsoleStreamer Error]", err);
+  }
+
+  // 2. Pre-create and verify log threads in channel 1568284208533864498
+  try {
+    console.log(`[LogThreads] Initializing dedicated log threads in #${config.logChannelId}...`);
+    await initAllLogThreads(client);
+    console.log("[LogThreads] All log threads verified and active.");
+  } catch (err) {
+    console.error("[LogThreads Error]", err);
+  }
+
+  // 3. Deploy Slash commands
   await loadCommands(client);
+});
+
+// Error handling with Discord thread logging
+process.on("unhandledRejection", (reason, p) => {
+  console.error("[Unhandled Rejection]", reason);
+  try {
+    const errorEmbed = new EmbedBuilder()
+      .setColor("#ED4245")
+      .setTitle("⚠️ Unhandled Promise Rejection")
+      .setDescription(`\`\`\`js\n${String(reason?.stack || reason).slice(0, 4000)}\n\`\`\``)
+      .setTimestamp();
+    dispatchLogThread(client, "error", errorEmbed);
+  } catch {}
+});
+
+process.on("uncaughtException", (err, origin) => {
+  console.error("[Uncaught Exception]", err);
+  try {
+    const errorEmbed = new EmbedBuilder()
+      .setColor("#ED4245")
+      .setTitle("🚨 Uncaught Exception")
+      .setDescription(`**Origin:** \`${origin}\`\n\`\`\`js\n${String(err?.stack || err).slice(0, 3900)}\n\`\`\``)
+      .setTimestamp();
+    dispatchLogThread(client, "error", errorEmbed);
+  } catch {}
 });
 
 // Bootstrap Bot

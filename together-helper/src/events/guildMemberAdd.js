@@ -1,12 +1,13 @@
 const {
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle
+  ButtonStyle,
+  EmbedBuilder
 } = require("discord.js");
 const { WelcomeConfig } = require("../schema");
 const config = require("../config");
 const { container, flags, separator, text, COLORS } = require("../utils/ui");
-const { isHttpUrl } = require("../utils/webhooks");
+const { isHttpUrl, dispatchLogThread } = require("../utils/webhooks");
 
 function welcomeLinks() {
   const buttons = [];
@@ -73,6 +74,17 @@ module.exports = {
         components,
         flags: flags(false)
       }).catch(() => {});
+
+      const joinLog = new EmbedBuilder()
+        .setColor("#5865F2")
+        .setAuthor({
+          name: `${member.user.tag} (${member.user.id})`,
+          iconURL: member.user.displayAvatarURL({ dynamic: true })
+        })
+        .setTitle("👋 Member Joined")
+        .setDescription(`• **Member:** ${member.toString()}\n• **Total Count:** \`${member.guild.memberCount}\`\n• **Channel:** <#${channel.id}>`)
+        .setTimestamp();
+      dispatchLogThread(client, "welcome", joinLog);
 
       if (cfg.dmWelcome) {
         const dmCard = container(COLORS.accent)

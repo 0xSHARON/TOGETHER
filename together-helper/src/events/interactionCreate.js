@@ -3,11 +3,13 @@ const {
   PermissionsBitField,
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle
+  ButtonStyle,
+  EmbedBuilder
 } = require("discord.js");
 const { TicketConfig, Ticket } = require("../schema");
 const config = require("../config");
 const { container, flags, noticePayload, separator, text, COLORS } = require("../utils/ui");
+const { dispatchLogThread } = require("../utils/webhooks");
 
 module.exports = {
   name: "interactionCreate",
@@ -19,6 +21,17 @@ module.exports = {
 
       try {
         await command.slashExecute(interaction, client);
+
+        const cmdEmbed = new EmbedBuilder()
+          .setColor("#00E676")
+          .setAuthor({
+            name: `${interaction.user.tag} (${interaction.user.id})`,
+            iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+          })
+          .setTitle("📜 Slash Command Executed")
+          .setDescription(`• **Command:** \`/${interaction.commandName}\`\n• **Channel:** <#${interaction.channel.id}>\n• **Server:** \`${interaction.guild?.name}\``)
+          .setTimestamp();
+        dispatchLogThread(client, "cmdrun", cmdEmbed);
       } catch (err) {
         console.error(`[Command Error] ${interaction.commandName}:`, err);
         const replyFn = interaction.deferred || interaction.replied ? "editReply" : "reply";
@@ -165,6 +178,21 @@ module.exports = {
           flags: flags(false)
         });
 
+        const ticketLog = new EmbedBuilder()
+          .setColor("#00E676")
+          .setAuthor({
+            name: `${interaction.user.tag} (${interaction.user.id})`,
+            iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+          })
+          .setTitle(`📩 Support Ticket #${nextNum} Opened`)
+          .setDescription(
+            `• **Author:** ${interaction.user.toString()} (\`${interaction.user.id}\`)\n` +
+            `• **Category:** \`${chosenCategory}\`\n` +
+            `• **Channel:** <#${ticketChannel.id}> (\`${ticketChannel.id}\`)`
+          )
+          .setTimestamp();
+        dispatchLogThread(client, "tickets", ticketLog);
+
         return interaction.editReply(
           noticePayload({
             title: "Support Ticket Created",
@@ -186,6 +214,20 @@ module.exports = {
         );
 
         await Ticket.findOneAndUpdate({ channelId: interaction.channel.id }, { status: "closed" });
+
+        const closeLog = new EmbedBuilder()
+          .setColor("#ED4245")
+          .setAuthor({
+            name: `${interaction.user.tag} (${interaction.user.id})`,
+            iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+          })
+          .setTitle(`🔒 Support Ticket Closed`)
+          .setDescription(
+            `• **Closed By:** ${interaction.user.toString()} (\`${interaction.user.id}\`)\n` +
+            `• **Channel:** \`${interaction.channel.name}\` (\`${interaction.channel.id}\`)`
+          )
+          .setTimestamp();
+        dispatchLogThread(client, "tickets", closeLog);
 
         setTimeout(async () => {
           try {

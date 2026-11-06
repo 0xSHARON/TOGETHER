@@ -1,10 +1,12 @@
 const {
   ApplicationCommandOptionType,
-  PermissionsBitField
+  PermissionsBitField,
+  EmbedBuilder
 } = require("discord.js");
 const { BugReportConfig } = require("../../schema");
 const config = require("../../config");
 const { container, flags, noticePayload, separator, text, COLORS } = require("../../utils/ui");
+const { dispatchLogThread } = require("../../utils/webhooks");
 
 module.exports = {
   name: "bugreport",
@@ -64,6 +66,17 @@ module.exports = {
       components: [card],
       flags: flags(false)
     });
+
+    const bugLog = new EmbedBuilder()
+      .setColor("#ED4245")
+      .setAuthor({
+        name: `${interaction.user.tag} (${interaction.user.id})`,
+        iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+      })
+      .setTitle("🐛 Bug Report Dispatched")
+      .setDescription(`• **Reporter:** ${interaction.user.toString()}\n• **Channel:** <#${targetChannel.id}>\n• **Issue:**\n> ${issue}\n\n• **Steps:**\n\`\`\`${reproduce}\`\`\``)
+      .setTimestamp();
+    dispatchLogThread(client, "bugreports", bugLog);
 
     return interaction.reply(
       noticePayload({

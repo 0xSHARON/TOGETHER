@@ -9,6 +9,7 @@ module.exports = {
   mongoUri: process.env.MONGODB_URL || "",
   ticketsCategoryId: process.env.TICKETS_CATEGORY_ID || "",
   supportGuildId: process.env.SUPPORT_GUILD_ID || "",
+  logChannelId: process.env.LOG_CHANNEL_ID || "1568284208533864498",
   color: "#FF1E38", // Neo-Brutalist Red Accent
   accentColor: "#00E676", // Neo Emerald Accent
   dashboardUrl: process.env.DASHBOARD_URL || "https://dash.together.dpdns.org",

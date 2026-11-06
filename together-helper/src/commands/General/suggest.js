@@ -1,10 +1,12 @@
 const {
   ApplicationCommandOptionType,
-  PermissionsBitField
+  PermissionsBitField,
+  EmbedBuilder
 } = require("discord.js");
 const { SuggestionConfig } = require("../../schema");
 const config = require("../../config");
 const { container, flags, noticePayload, separator, text, COLORS } = require("../../utils/ui");
+const { dispatchLogThread } = require("../../utils/webhooks");
 
 module.exports = {
   name: "suggest",
@@ -58,6 +60,17 @@ module.exports = {
 
     await msg.react("👍").catch(() => {});
     await msg.react("👎").catch(() => {});
+
+    const sugLog = new EmbedBuilder()
+      .setColor("#00E676")
+      .setAuthor({
+        name: `${interaction.user.tag} (${interaction.user.id})`,
+        iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+      })
+      .setTitle("💡 Suggestion Submitted")
+      .setDescription(`• **Author:** ${interaction.user.toString()}\n• **Channel:** <#${targetChannel.id}>\n• **Idea:**\n> ${idea}`)
+      .setTimestamp();
+    dispatchLogThread(client, "suggestions", sugLog);
 
     return interaction.reply(
       noticePayload({
