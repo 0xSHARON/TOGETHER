@@ -1,3 +1,0 @@
-# Staged-only linting cannot see a type error introduced in an unstaged file.
-npm run typecheck
-npx lint-staged

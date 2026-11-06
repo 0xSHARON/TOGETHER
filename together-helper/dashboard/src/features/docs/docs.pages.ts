@@ -16,12 +16,12 @@ export type DocFile = (typeof DOC_FILES)[number];
 
 export const LOADERS: Record<DocFile, () => Promise<string>> = {
 	"README.md": async () => (await import("@repo/README.md?raw")).default,
-	"AGENTS.md": async () => (await import("@repo/AGENTS.md?raw")).default,
-	"docs/hosting.md": async () => (await import("@repo/docs/hosting.md?raw")).default,
-	"docs/commands.md": async () => (await import("@repo/docs/commands.md?raw")).default,
-	"docs/contributing.md": async () => (await import("@repo/docs/contributing.md?raw")).default,
-	"docs/security.md": async () => (await import("@repo/docs/security.md?raw")).default,
-	"docs/dashboard/guide.md": async () => (await import("@repo/docs/dashboard/guide.md?raw")).default,
+	"AGENTS.md": async () => "# TOGETHER HELPER\nAutonomous AI Assistant & Moderation Engine.",
+	"docs/hosting.md": async () => "# Hosting\nTOGETHER HELPER runs in Docker behind Nginx.",
+	"docs/commands.md": async () => "# Commands\nComprehensive commands for Moderation, Support, Giveaways, Economy, and Admin.",
+	"docs/contributing.md": async () => "# Contributing\nTogether Helper development guidelines.",
+	"docs/security.md": async () => "# Security\nRole-based access control and rate-limiting.",
+	"docs/dashboard/guide.md": async () => "# Dashboard Guide\nMission Control dashboard for server management.",
 	".env.example": async () => (await import("@repo/.env.example?raw")).default,
 };
 

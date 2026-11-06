@@ -1,7 +1,7 @@
 import { DEFAULT_BOT_NAME } from "@testify/shared";
 
-const STORAGE_KEY = "testify:botName";
-const LOOK_KEY = "testify:botLook";
+const STORAGE_KEY = "together:botName";
+const LOOK_KEY = "together:botLook";
 
 export interface BotLook {
 	name: string | null;
