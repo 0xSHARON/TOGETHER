@@ -110,6 +110,17 @@ async function attemptAutoplay(client, player) {
         }
 
         if (!foundTrack) {
+            // Robust continuous discovery fallback: artist or related genre search
+            const fallbackQuery = lastTrack.author ? `${lastTrack.author} songs` : `${lastTrack.title} mix`;
+            try {
+                const res = await player.search(fallbackQuery, {
+                    requester: client.user
+                });
+                foundTrack = selectAutoplayCandidate(lastTrack, res?.tracks || [], recent) || (res?.tracks?.find(t => t?.title && t.title !== lastTrack.title)) || null;
+            } catch { }
+        }
+
+        if (!foundTrack) {
             client.logger?.log(`[Autoplay] No related tracks found for "${lastTrack.title}" in guild ${player.guildId}`, "debug");
             player.data?.delete("autoplayInProgress");
             return;

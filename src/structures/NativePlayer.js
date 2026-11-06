@@ -200,6 +200,16 @@ class NativePlayer {
 
       if (this.queue.length > 0) {
         await this.play();
+        if (this.data.get("autoplay") && this.queue.length === 0) {
+          setTimeout(() => {
+            try {
+              if (this.data.get("autoplay") && this.queue.length === 0) {
+                const { attemptAutoplay } = require("../utils/playerUtils");
+                attemptAutoplay(this.manager.client, this).catch(() => {});
+              }
+            } catch {}
+          }, 800);
+        }
       } else if (this.data.get("autoplay")) {
         this._isLoadingAutoplay = true;
         try {
@@ -213,6 +223,14 @@ class NativePlayer {
 
         if (this.queue.length > 0) {
           await this.play();
+          setTimeout(() => {
+            try {
+              if (this.data.get("autoplay") && this.queue.length === 0) {
+                const { attemptAutoplay } = require("../utils/playerUtils");
+                attemptAutoplay(this.manager.client, this).catch(() => {});
+              }
+            } catch {}
+          }, 800);
         } else if (!this.playing && !this.queue.current) {
           this.queue.current = null;
           this.manager.emit("playerEmpty", this);

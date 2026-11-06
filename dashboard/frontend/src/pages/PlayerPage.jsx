@@ -241,6 +241,13 @@ export default function PlayerPage() {
       return;
     }
 
+    if (playerData && playerData.userInVoice === false) {
+      setSearchSuggestions([]);
+      setShowDropdown(false);
+      setSearchLoading(false);
+      return;
+    }
+
     // Direct stream URLs don't need text search autocomplete
     if (/^https?:\/\//i.test(trimmed)) {
       setSearchSuggestions([]);
@@ -256,6 +263,11 @@ export default function PlayerPage() {
           `/api/player/${guildId}/search?q=${encodeURIComponent(trimmed)}`,
           { withCredentials: true }
         );
+        if (resp.data?.inVoice === false) {
+          setSearchSuggestions([]);
+          setShowDropdown(false);
+          return;
+        }
         const tracks = resp.data?.tracks || [];
         setSearchSuggestions(tracks);
         setShowDropdown(tracks.length > 0);
@@ -295,6 +307,10 @@ export default function PlayerPage() {
 
   function executeSelectTrack(track, playNow = false) {
     if (!track) return;
+    if (playerData && playerData.userInVoice === false) {
+      alert("You must be connected to a voice channel in this server to play or enqueue music.");
+      return;
+    }
     const query = track.uri || `${track.title} ${track.author}`;
     sendAction('play', { query, playNow });
     setShowDropdown(false);
@@ -303,6 +319,10 @@ export default function PlayerPage() {
 
   function executeDirectPlay(url, playNow = false) {
     if (!url.trim()) return;
+    if (playerData && playerData.userInVoice === false) {
+      alert("You must be connected to a voice channel in this server to play or enqueue music.");
+      return;
+    }
     sendAction('play', { query: url.trim(), playNow });
     setSearchQuery('');
   }
@@ -320,6 +340,10 @@ export default function PlayerPage() {
   function handleSearchPlay(e) {
     e.preventDefault();
     if (!searchQuery.trim()) return;
+    if (playerData && playerData.userInVoice === false) {
+      alert("You must be connected to a voice channel in this server to play or enqueue music.");
+      return;
+    }
     if (selectedIndex >= 0 && searchSuggestions[selectedIndex]) {
       executeSelectTrack(searchSuggestions[selectedIndex], false);
     } else {
@@ -674,6 +698,24 @@ export default function PlayerPage() {
 
           {/* Search & Enqueue Input with Autocomplete */}
           <BrutCard title="SEARCH & PLAY SONG" subtitle="Enqueue by song title, Spotify, SoundCloud, Apple Music, or direct URL">
+            {playerData && playerData.userInVoice === false && (
+              <div className="mb-4 border-2 border-amber-500 bg-amber-950/40 p-3 shadow-brutal flex items-center justify-between gap-3 text-amber-300 font-mono text-xs">
+                <div className="flex items-center gap-2.5">
+                  <MicOff className="w-5 h-5 text-amber-400 shrink-0" />
+                  <div>
+                    <strong className="text-white block uppercase tracking-wider font-bold">
+                      VOICE CHANNEL REQUIRED
+                    </strong>
+                    <span className="text-zinc-300 text-[11px]">
+                      Connect to a Discord voice channel in this server to search songs, enqueue tracks, or start playback.
+                    </span>
+                  </div>
+                </div>
+                <span className="px-2.5 py-1 bg-amber-400 text-black font-black text-[10px] uppercase border border-black shrink-0">
+                  DISCONNECTED
+                </span>
+              </div>
+            )}
             <div className="relative" ref={searchContainerRef}>
               <form onSubmit={handleSearchPlay} className="flex gap-2">
                 <div className="relative flex-1">
@@ -684,8 +726,13 @@ export default function PlayerPage() {
                     onChange={handleSearchChange}
                     onKeyDown={handleSearchKeyDown}
                     onFocus={() => { if (searchSuggestions.length > 0) setShowDropdown(true); }}
-                    placeholder="Search song title or paste Spotify / SoundCloud / Apple / YouTube link..." 
-                    className="w-full bg-brutal-secondary border-2 border-brutal-border pl-10 pr-9 py-2.5 font-mono text-xs text-brutal-text focus:outline-none focus:border-brutal-accent font-bold placeholder:text-zinc-500"
+                    disabled={Boolean(playerData && playerData.userInVoice === false)}
+                    placeholder={
+                      playerData && playerData.userInVoice === false
+                        ? "⚠️ Join a Discord voice channel in this server to search & play..."
+                        : "Search song title or paste Spotify / SoundCloud / Apple / YouTube link..."
+                    }
+                    className="w-full bg-brutal-secondary border-2 border-brutal-border pl-10 pr-9 py-2.5 font-mono text-xs text-brutal-text focus:outline-none focus:border-brutal-accent font-bold placeholder:text-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                   {searchLoading ? (
                     <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brutal-accent animate-spin" />
@@ -699,8 +746,12 @@ export default function PlayerPage() {
                     </button>
                   ) : null}
                 </div>
-                <BrutButton variant="primary" type="submit" disabled={actionLoading || !searchQuery.trim()}>
-                  PLAY SONG
+                <BrutButton 
+                  variant="primary" 
+                  type="submit" 
+                  disabled={actionLoading || !searchQuery.trim() || Boolean(playerData && playerData.userInVoice === false)}
+                >
+                  {playerData && playerData.userInVoice === false ? "JOIN VOICE TO PLAY" : "PLAY SONG"}
                 </BrutButton>
               </form>
 

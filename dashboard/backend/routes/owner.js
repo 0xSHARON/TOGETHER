@@ -97,5 +97,71 @@ router.post("/flush-logs", requireOwner, async (req, res) => {
   }
 });
 
+// GET /api/owner/servers -> All servers/guilds the bot is currently in (serverlist feature)
+router.get("/servers", requireOwner, async (req, res) => {
+  try {
+    const data = await botBridge.getServerList();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message, guilds: [] });
+  }
+});
+
+// POST /api/owner/leave-server -> Leave a guild by ID (leaveserver feature)
+router.post("/leave-server", requireOwner, async (req, res) => {
+  try {
+    const { guildId } = req.body || {};
+    if (!guildId) return res.status(400).json({ success: false, error: "Missing guildId." });
+    const result = await botBridge.leaveServer(guildId);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/owner/blacklist -> List blacklisted users from database (blacklist feature)
+router.get("/blacklist", requireOwner, async (req, res) => {
+  try {
+    const list = await Blacklist.find().sort({ timestamp: -1 }).lean();
+    res.json({ success: true, count: list.length, blacklist: list });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message, blacklist: [] });
+  }
+});
+
+// POST /api/owner/blacklist -> Add or remove user from blacklist
+router.post("/blacklist", requireOwner, async (req, res) => {
+  try {
+    const { action, userId } = req.body || {};
+    if (!userId) return res.status(400).json({ success: false, error: "Missing userId." });
+
+    if (action === "add") {
+      const existing = await Blacklist.findOne({ userId });
+      if (existing) {
+        return res.json({ success: true, message: `User ${userId} is already blacklisted.` });
+      }
+      await Blacklist.create({ userId, type: "user" });
+      return res.json({ success: true, message: `User ${userId} has been blacklisted.` });
+    } else if (action === "remove") {
+      await Blacklist.deleteOne({ userId });
+      return res.json({ success: true, message: `User ${userId} removed from blacklist.` });
+    }
+
+    res.status(400).json({ success: false, error: "Invalid action. Use 'add' or 'remove'." });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/owner/reload -> Reload commands and reset slash command cache (reload feature)
+router.post("/reload", requireOwner, async (req, res) => {
+  try {
+    const result = await botBridge.reloadCommands();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;
 

@@ -55,7 +55,7 @@ function resolveGuildId(client, identifier) {
 /**
  * Builds current state payload for a specific guild's audio player (STRICT isolation)
  */
-function getGuildPlayerState(client, targetId) {
+function getGuildPlayerState(client, targetId, userId = null) {
   const guildId = resolveGuildId(client, targetId);
   let player = null;
 
@@ -77,17 +77,23 @@ function getGuildPlayerState(client, targetId) {
     }
   }
 
+  const effectiveGuildId = guildId || player?.guildId;
+  const targetGuild = effectiveGuildId ? client?.guilds?.cache?.get(effectiveGuildId) : null;
+  const userVoiceState = (targetGuild && userId) ? targetGuild.voiceStates?.cache?.get(userId) : null;
+  const userVoiceChannelId = userVoiceState?.channelId || null;
+  const userInVoice = Boolean(userVoiceChannelId);
+  const userInSameVoice = Boolean(player && userVoiceChannelId && userVoiceChannelId === player.voiceId);
+
   // If no player active in this requested guild
   if (!player) {
-    const targetGuild = guildId ? client?.guilds?.cache?.get(guildId) : null;
-    const guildName = targetGuild ? targetGuild.name : (guildId ? `Server (${guildId})` : "TOGETHER Standby");
+    const guildName = targetGuild ? targetGuild.name : (effectiveGuildId ? `Server (${effectiveGuildId})` : "TOGETHER Standby");
     return {
-      guildId: guildId || "none",
+      guildId: effectiveGuildId || "none",
       guildName,
       playing: false,
       paused: true,
-      title: guildId ? `No Music Playing in ${guildName}` : "Waiting for Music...",
-      author: guildId ? "Join a voice channel and use /play in this server" : "Use /play in Discord to stream",
+      title: effectiveGuildId ? `No Music Playing in ${guildName}` : "Waiting for Music...",
+      author: effectiveGuildId ? "Join a voice channel and use /play in this server" : "Use /play in Discord to stream",
       thumbnail: "/logo.png?v=2",
       position: 0,
       duration: 0,
@@ -96,6 +102,9 @@ function getGuildPlayerState(client, targetId) {
       volume: 80,
       queue: [],
       queueLength: 0,
+      userInVoice,
+      userVoiceChannelId,
+      userInSameVoice
     };
   }
 
@@ -250,6 +259,9 @@ function getGuildPlayerState(client, targetId) {
     requesterId,
     queue: upcomingQueue,
     queueLength: player.queue?.length || 0,
+    userInVoice,
+    userVoiceChannelId,
+    userInSameVoice,
     timestamp: Date.now()
   };
 }
@@ -565,6 +577,24 @@ function startVisualizerServer(client, preferredPort = 5050) {
       res.setHeader("Content-Type", "application/json");
       res.setHeader("Cache-Control", "no-cache");
       const q = (reqUrl.searchParams.get("q") || reqUrl.searchParams.get("query") || "").trim();
+      const searchGuildId = (reqUrl.searchParams.get("guildId") || reqUrl.searchParams.get("guild") || "").trim();
+      const searchUserId = (reqUrl.searchParams.get("userId") || "").trim();
+
+      // Check if voice channel is required for searching in guild
+      if (searchGuildId && searchUserId) {
+        const targetGuild = client?.guilds?.cache?.get(searchGuildId);
+        const userVoiceState = targetGuild?.voiceStates?.cache?.get(searchUserId);
+        if (!userVoiceState?.channelId) {
+          res.writeHead(200);
+          return res.end(JSON.stringify({
+            success: false,
+            inVoice: false,
+            error: "You must be connected to a voice channel in this server to search and play music.",
+            tracks: []
+          }));
+        }
+      }
+
       if (!q || q.length < 2) {
         res.writeHead(200);
         return res.end(JSON.stringify({ success: true, tracks: [] }));
@@ -794,6 +824,129 @@ function startVisualizerServer(client, preferredPort = 5050) {
       return;
     }
 
+    // ── API: Server Explorer & Guilds List (/api/server-list or /api/owner/server-list) ──
+    if ((pathname === "/api/server-list" || pathname === "/api/owner/server-list") && req.method === "GET") {
+      res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-cache" });
+      const guilds = [];
+      if (client?.guilds?.cache) {
+        for (const g of client.guilds.cache.values()) {
+          const activePlayer = client.manager?.players?.get(g.id);
+          const isPlaying = Boolean(activePlayer && activePlayer.playing);
+          const currentTrack = activePlayer?.queue?.current;
+          guilds.push({
+            id: g.id,
+            name: g.name,
+            icon: typeof g.iconURL === "function" ? g.iconURL({ size: 64 }) : null,
+            memberCount: g.memberCount || 0,
+            ownerId: g.ownerId,
+            joinedTimestamp: g.joinedTimestamp,
+            vanityURLCode: g.vanityURLCode || null,
+            isPlaying,
+            voiceChannelId: activePlayer?.voiceId || null,
+            trackTitle: currentTrack?.title || null
+          });
+        }
+      }
+      guilds.sort((a, b) => b.memberCount - a.memberCount);
+      return res.end(JSON.stringify({
+        success: true,
+        total: guilds.length,
+        guilds
+      }));
+    }
+
+    // ── API: Owner Leave Server (/api/leave-server or /api/owner/leave-server) ──
+    if ((pathname === "/api/leave-server" || pathname === "/api/owner/leave-server") && req.method === "POST") {
+      let body = "";
+      req.on("data", chunk => { body += chunk; });
+      req.on("end", async () => {
+        try {
+          const payload = JSON.parse(body || "{}");
+          const targetGuildId = payload.guildId;
+          if (!targetGuildId) {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ success: false, error: "Missing guildId." }));
+          }
+          const guild = client.guilds.cache.get(targetGuildId);
+          if (!guild) {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ success: false, error: `Guild ${targetGuildId} not found in bot cache.` }));
+          }
+          const guildName = guild.name;
+          await guild.leave();
+          res.writeHead(200, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({ success: true, message: `Successfully left ${guildName} (${targetGuildId}).` }));
+        } catch (err) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({ success: false, error: err.message }));
+        }
+      });
+      return;
+    }
+
+    // ── API: Reload Commands (/api/reload-commands or /api/owner/reload-commands) ──
+    if ((pathname === "/api/reload-commands" || pathname === "/api/owner/reload-commands") && req.method === "POST") {
+      try {
+        const fs = require("fs");
+        const commandsDir = `${process.cwd()}/src/commands`;
+
+        client.commands.clear();
+        client.slashCommands.clear();
+
+        const categories = fs.readdirSync(commandsDir);
+        let reloadedCount = 0;
+        let slashCount = 0;
+
+        for (const category of categories) {
+          const categoryPath = `${commandsDir}/${category}`;
+          if (!fs.lstatSync(categoryPath).isDirectory()) continue;
+
+          const commandFiles = fs.readdirSync(categoryPath).filter((f) => f.endsWith(".js"));
+          for (const file of commandFiles) {
+            const commandPath = `${categoryPath}/${file}`;
+            delete require.cache[require.resolve(commandPath)];
+            const command = require(commandPath);
+
+            if (command.name) {
+              client.commands.set(command.name, command);
+              reloadedCount++;
+
+              if (command.slashExecute || command.slashOptions) {
+                const slashData = {
+                  name: command.name,
+                  description: command.description || "No description provided",
+                  options: command.slashOptions || [],
+                  category: command.category,
+                  execute: command.execute,
+                  slashExecute: command.slashExecute,
+                  autocomplete: command.autocomplete,
+                  run: command.run,
+                  player: command.player,
+                  inVoiceChannel: command.inVoiceChannel,
+                  sameVoiceChannel: command.sameVoiceChannel,
+                  botPerms: command.botPerms,
+                  userPerms: command.userPerms,
+                  owner: command.owner || false,
+                };
+
+                client.slashCommands.set(command.name, slashData);
+                slashCount++;
+              }
+            }
+          }
+        }
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({
+          success: true,
+          message: `Reloaded ${reloadedCount} prefix commands & ${slashCount} slash commands.`
+        }));
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+    }
+
     // ── API: Bot Owner Avatar Endpoint (/api/owner-avatar) ────
     if (pathname === "/api/owner-avatar") {
       const getOwnerAvatar = async () => {
@@ -902,13 +1055,15 @@ function startVisualizerServer(client, preferredPort = 5050) {
     // ── API: Player Snapshot (/api/player/:targetId or /api/state/:targetId) ───
     if ((pathname.startsWith("/api/player/") || pathname.startsWith("/api/state/")) && !pathname.endsWith("/control")) {
       const rawTarget = pathname.replace("/api/player/", "").replace("/api/state/", "").trim();
+      const userId = reqUrl.searchParams.get("userId") || null;
       res.writeHead(200, { "Content-Type": "application/json" });
-      return res.end(JSON.stringify(getGuildPlayerState(client, rawTarget)));
+      return res.end(JSON.stringify(getGuildPlayerState(client, rawTarget, userId)));
     }
     if (pathname === "/api/queue" || pathname === "/api/player") {
       const rawTarget = reqUrl.searchParams.get("guild") || reqUrl.searchParams.get("guildId") || "default";
+      const userId = reqUrl.searchParams.get("userId") || null;
       res.writeHead(200, { "Content-Type": "application/json" });
-      return res.end(JSON.stringify(getGuildPlayerState(client, rawTarget)));
+      return res.end(JSON.stringify(getGuildPlayerState(client, rawTarget, userId)));
     }
 
     // ── API: Interactive Playback Control ─────────────────────
@@ -929,8 +1084,39 @@ function startVisualizerServer(client, preferredPort = 5050) {
             player = client?.manager?.players?.first?.() || Array.from(client?.manager?.players?.values() || [])[0];
           }
 
-          // If no player active yet and user clicked play, auto-create player via 24/7 channel if configured
-          if (!player && action === "play" && guildId) {
+          const targetGuild = guildId ? client.guilds.cache.get(guildId) : null;
+          const userVoiceState = (targetGuild && user?.id) ? targetGuild.voiceStates?.cache?.get(user.id) : null;
+          const userVoiceId = userVoiceState?.channelId;
+
+          // Enforce: User MUST be in a voice channel in this server to play music
+          if (action === "play" && user?.id && !userVoiceId) {
+            res.writeHead(403, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({
+              success: false,
+              error: "You must be connected to a voice channel in this server to play music."
+            }));
+          }
+
+          if (action === "play" && user?.id && player && player.voiceId && userVoiceId !== player.voiceId) {
+            res.writeHead(403, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({
+              success: false,
+              error: "You must be in the same voice channel as the bot to play or control music."
+            }));
+          }
+
+          // If no player active yet and user clicked play while in voice channel: auto-connect to user!
+          if (!player && action === "play" && guildId && userVoiceId) {
+            try {
+              player = await client.manager.createPlayer({
+                guildId,
+                voiceId: userVoiceId,
+                textId: targetGuild?.systemChannelId || targetGuild?.channels?.cache?.find((c) => typeof c.isTextBased === "function" ? c.isTextBased() : true)?.id,
+                volume: 80,
+                deaf: true
+              }).catch(() => null);
+            } catch {}
+          } else if (!player && action === "play" && guildId) {
             try {
               const TwoFourSeven = require("../schema/247");
               const tfs = await TwoFourSeven.findOne({ Guild: guildId }).maxTimeMS(2000).lean().catch(() => null);

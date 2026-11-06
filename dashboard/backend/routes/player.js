@@ -11,7 +11,7 @@ router.get("/:guildId", authenticateUser, requireGuildPermission, async (req, re
   try {
     await ensureConnected().catch(() => {});
     const [data, twoFourSeven] = await Promise.all([
-      botBridge.getGuildPlayer(req.guildId),
+      botBridge.getGuildPlayer(req.guildId, req.user?.id),
       TwoFourSeven.findOne({ Guild: req.guildId }).maxTimeMS(2000).lean().catch(() => null)
     ]);
 
@@ -30,7 +30,10 @@ router.get("/:guildId", authenticateUser, requireGuildPermission, async (req, re
         is247,
         voiceChannel: null,
         current: null,
-        queue: []
+        queue: [],
+        userInVoice: false,
+        userVoiceChannelId: null,
+        userInSameVoice: false
       });
     }
 
@@ -49,7 +52,7 @@ router.get("/:guildId/search", authenticateUser, requireGuildPermission, async (
   }
 
   try {
-    const data = await botBridge.searchTracks(query, req.guildId);
+    const data = await botBridge.searchTracks(query, req.guildId, req.user?.id);
     res.json(data);
   } catch (err) {
     res.status(500).json({ success: false, error: err.message, tracks: [] });

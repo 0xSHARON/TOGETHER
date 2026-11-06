@@ -91,11 +91,14 @@ class BotBridgeService {
     return new Set();
   }
 
-  async getGuildPlayer(guildId) {
+  async getGuildPlayer(guildId, userId = null) {
     if (!guildId) return null;
     try {
       // 1. Primary: query /api/player/:guildId
-      const resp = await axios.get(`${this.apiUrl}/api/player/${encodeURIComponent(guildId)}`, { timeout: 4000 });
+      const resp = await axios.get(
+        `${this.apiUrl}/api/player/${encodeURIComponent(guildId)}?userId=${encodeURIComponent(userId || '')}`,
+        { timeout: 4000 }
+      );
       const data = resp.data;
       if (!data) return null;
 
@@ -127,6 +130,9 @@ class BotBridgeService {
         requester: data.requester || null,
         requesterAvatar: data.requesterAvatar || null,
         requesterId: data.requesterId || null,
+        userInVoice: Boolean(data.userInVoice),
+        userVoiceChannelId: data.userVoiceChannelId || null,
+        userInSameVoice: Boolean(data.userInSameVoice),
         timestamp: data.timestamp || Date.now(),
         current: hasTrack
           ? {
@@ -267,11 +273,11 @@ class BotBridgeService {
     }
   }
 
-  async searchTracks(query, guildId = "") {
+  async searchTracks(query, guildId = "", userId = "") {
     if (!query || query.trim().length < 2) return { success: true, tracks: [] };
     try {
       const resp = await axios.get(
-        `${this.apiUrl}/api/search?q=${encodeURIComponent(query.trim())}&guildId=${encodeURIComponent(guildId)}`,
+        `${this.apiUrl}/api/search?q=${encodeURIComponent(query.trim())}&guildId=${encodeURIComponent(guildId)}&userId=${encodeURIComponent(userId)}`,
         { timeout: 5000 }
       );
       return resp.data || { success: true, tracks: [] };
@@ -279,6 +285,27 @@ class BotBridgeService {
       console.warn(`[botBridge] searchTracks error:`, err.message);
       return { success: false, tracks: [] };
     }
+  }
+
+  async getServerList() {
+    try {
+      const resp = await axios.get(`${this.apiUrl}/api/server-list`, { timeout: 6000 });
+      return resp.data || { success: true, guilds: [] };
+    } catch (err) {
+      console.warn(`[botBridge] getServerList error:`, err.message);
+      return { success: false, guilds: [] };
+    }
+  }
+
+  async leaveServer(guildId) {
+    if (!guildId) throw new Error("Missing guildId");
+    const resp = await axios.post(`${this.apiUrl}/api/leave-server`, { guildId }, { timeout: 8000 });
+    return resp.data;
+  }
+
+  async reloadCommands() {
+    const resp = await axios.post(`${this.apiUrl}/api/reload-commands`, {}, { timeout: 10000 });
+    return resp.data;
   }
 
   async sendDashboardLog({ event, user, guildId, guildName, action, details, color }) {
