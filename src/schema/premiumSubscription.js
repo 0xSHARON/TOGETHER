@@ -54,3 +54,4 @@ const premiumSubscriptionSchema = new Schema({
 });
 
 module.exports = models.PremiumSubscription || model("PremiumSubscription", premiumSubscriptionSchema);
+

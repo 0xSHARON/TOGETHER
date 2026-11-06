@@ -4,6 +4,7 @@ const router = express.Router();
 const { authenticateUser } = require("../middleware/auth");
 const PremiumCode = require("../../../src/schema/premiumCode");
 const PremiumSubscription = require("../../../src/schema/premiumSubscription");
+const UpiOrder = require("../../../src/schema/upiOrder");
 const { isUserPremium, isGuildPremium, redeemPremiumCode } = require("../../../src/utils/premiumCheck");
 const botBridge = require("../services/botBridge");
 
@@ -318,4 +319,230 @@ router.get("/invoice/:invoiceId", authenticateUser, async (req, res) => {
   }
 });
 
+function requireOwner(req, res, next) {
+  const isOwner = Boolean(
+    req.user?.isOwner ||
+    req.user?.id === '780345293237125152' ||
+    req.user?.username === 'kajukatli.' ||
+    req.user?.username === 'KAJU🦋' ||
+    req.user?.username?.toLowerCase() === 'kaju' ||
+    req.user?.global_name?.toLowerCase()?.includes('kaju')
+  );
+  if (!isOwner) {
+    return res.status(403).json({ success: false, error: "Access Denied: Owner clearance required." });
+  }
+  next();
+}
+
+// ── GET /api/premium/upi/config ─────────────────────────────
+router.get("/upi/config", (req, res) => {
+  res.json({
+    success: true,
+    upiId: process.env.UPI_ID || "togethermusic@upi",
+    upiName: process.env.UPI_NAME || "TOGETHER AUDIO",
+    autoApprove: process.env.UPI_AUTO_APPROVE === "true"
+  });
+});
+
+// ── POST /api/premium/upi/submit-utr ─────────────────────────
+router.post("/upi/submit-utr", authenticateUser, async (req, res) => {
+  try {
+    const { planId, utr } = req.body || {};
+    const plan = PLANS[planId];
+    if (!plan) {
+      return res.status(400).json({ success: false, error: "Invalid plan selected." });
+    }
+
+    const cleanUtr = String(utr || "").trim().toUpperCase();
+    if (!cleanUtr || cleanUtr.length < 8) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Please enter a valid 12-digit UTR or UPI Reference Number (minimum 8 characters)." 
+      });
+    }
+
+    // Check if this UTR was already recorded
+    const existing = await UpiOrder.findOne({ utr: cleanUtr });
+    if (existing) {
+      return res.status(400).json({
+        success: false,
+        error: `This UTR Reference Number (${cleanUtr}) has already been submitted on ${new Date(existing.createdAt).toLocaleDateString()}.`
+      });
+    }
+
+    const orderId = `UPI-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString("hex").toUpperCase()}`;
+    const autoApprove = process.env.UPI_AUTO_APPROVE === "true";
+
+    let generatedCode = null;
+    let invoiceId = null;
+    let status = "pending";
+
+    if (autoApprove) {
+      generatedCode = generateRedeemCode();
+      invoiceId = generateInvoiceNumber();
+      status = "approved";
+
+      // Create official PremiumCode
+      await PremiumCode.create({
+        code: generatedCode,
+        plan: plan.id,
+        scope: plan.scope,
+        durationDays: plan.durationDays,
+        purchasedBy: String(req.user.id),
+        purchasedByName: req.user.username || `User ${req.user.id}`,
+        paymentId: `UPI_UTR_${cleanUtr}`,
+        amountPaid: plan.priceINR,
+        currency: "INR",
+        invoiceId
+      });
+    }
+
+    const newOrder = await UpiOrder.create({
+      orderId,
+      userId: String(req.user.id),
+      username: req.user.username || `User ${req.user.id}`,
+      userAvatar: req.user.avatar || "/logo.png",
+      planId: plan.id,
+      planName: plan.name,
+      scope: plan.scope,
+      durationDays: plan.durationDays,
+      amount: plan.priceINR,
+      currency: "INR",
+      utr: cleanUtr,
+      status,
+      generatedCode,
+      invoiceId,
+      reviewedBy: autoApprove ? "SYSTEM_AUTO_APPROVE" : null,
+      reviewedAt: autoApprove ? new Date() : null
+    });
+
+    // Real-Time Discord Notification to #1568284208533864498
+    await botBridge.sendDashboardLog({
+      event: autoApprove ? "UPI_ORDER_AUTO_APPROVED" : "UPI_PAYMENT_SUBMITTED",
+      user: req.user.username || req.user.id,
+      action: autoApprove ? `Auto-approved UPI for ${plan.name}` : `Submitted UPI UTR for ${plan.name}`,
+      details: `UTR: ${cleanUtr} | Amount: ₹${plan.priceINR} | Order: ${orderId}${generatedCode ? ` | Code: ${generatedCode}` : ' | Status: PENDING REVIEW'}`,
+      color: autoApprove ? "#00E676" : "#FFB300"
+    }).catch(() => {});
+
+    res.json({
+      success: true,
+      order: newOrder,
+      message: autoApprove 
+        ? "Payment verified! Your activation key and bill are generated below."
+        : "UTR proof submitted successfully! The bot owner has been notified on Discord to verify and issue your code."
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ── GET /api/premium/upi/my-orders ──────────────────────────
+router.get("/upi/my-orders", authenticateUser, async (req, res) => {
+  try {
+    const orders = await UpiOrder.find({ userId: String(req.user.id) }).sort({ createdAt: -1 }).lean();
+    res.json({ success: true, count: orders.length, orders });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message, orders: [] });
+  }
+});
+
+// ── GET /api/premium/upi/admin/orders ───────────────────────
+router.get("/upi/admin/orders", authenticateUser, requireOwner, async (req, res) => {
+  try {
+    const orders = await UpiOrder.find().sort({ createdAt: -1 }).limit(100).lean();
+    res.json({ 
+      success: true, 
+      count: orders.length, 
+      pendingCount: orders.filter(o => o.status === "pending").length,
+      orders 
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message, orders: [] });
+  }
+});
+
+// ── POST /api/premium/upi/admin/review ──────────────────────
+router.post("/upi/admin/review", authenticateUser, requireOwner, async (req, res) => {
+  try {
+    const { orderId, action, reason } = req.body || {};
+    if (!orderId || !["approve", "reject"].includes(action)) {
+      return res.status(400).json({ success: false, error: "Missing orderId or invalid action." });
+    }
+
+    const order = await UpiOrder.findOne({ orderId });
+    if (!order) {
+      return res.status(404).json({ success: false, error: "Order not found." });
+    }
+
+    if (order.status !== "pending") {
+      return res.status(400).json({ success: false, error: `Order is already ${order.status}.` });
+    }
+
+    if (action === "approve") {
+      const generatedCode = generateRedeemCode();
+      const invoiceId = generateInvoiceNumber();
+
+      // Create official PremiumCode
+      await PremiumCode.create({
+        code: generatedCode,
+        plan: order.planId,
+        scope: order.scope,
+        durationDays: order.durationDays,
+        purchasedBy: order.userId,
+        purchasedByName: order.username,
+        paymentId: `UPI_UTR_${order.utr}`,
+        amountPaid: order.amount,
+        currency: "INR",
+        invoiceId
+      });
+
+      order.status = "approved";
+      order.generatedCode = generatedCode;
+      order.invoiceId = invoiceId;
+      order.reviewedBy = req.user.username || req.user.id;
+      order.reviewedAt = new Date();
+      await order.save();
+
+      // Send Discord notification to #1568284208533864498
+      await botBridge.sendDashboardLog({
+        event: "UPI_ORDER_MANUALLY_APPROVED",
+        user: req.user.username || req.user.id,
+        action: `Approved UPI Order for ${order.username}`,
+        details: `Order: ${order.orderId} | UTR: ${order.utr} | Code: ${generatedCode} | Invoice: ${invoiceId}`,
+        color: "#00E676"
+      }).catch(() => {});
+
+      return res.json({
+        success: true,
+        order,
+        message: `Order approved! Code ${generatedCode} generated and assigned.`
+      });
+    } else {
+      order.status = "rejected";
+      order.rejectionReason = reason || "Payment not received or invalid UTR.";
+      order.reviewedBy = req.user.username || req.user.id;
+      order.reviewedAt = new Date();
+      await order.save();
+
+      await botBridge.sendDashboardLog({
+        event: "UPI_ORDER_REJECTED",
+        user: req.user.username || req.user.id,
+        action: `Rejected UPI Order for ${order.username}`,
+        details: `Order: ${order.orderId} | Reason: ${order.rejectionReason}`,
+        color: "#FF5252"
+      }).catch(() => {});
+
+      return res.json({
+        success: true,
+        order,
+        message: `Order marked as rejected.`
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;
+

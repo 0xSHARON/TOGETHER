@@ -64,3 +64,4 @@ test('Premium system lifecycle', async (t) => {
   await PremiumSubscription.deleteOne({ targetId: testUserId });
   await mongoose.disconnect();
 });
+
