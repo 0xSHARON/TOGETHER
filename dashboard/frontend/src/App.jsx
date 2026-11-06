@@ -12,6 +12,8 @@ import CommandsPage from './pages/CommandsPage';
 import OwnerPage from './pages/OwnerPage';
 import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -19,9 +21,11 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public Standalone Landing Page */}
+          {/* Public Standalone Landing Page & Policies */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
 
           {/* Authenticated / Dashboard Layout Pages */}
           <Route element={<DashboardLayout />}>

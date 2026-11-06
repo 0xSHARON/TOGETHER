@@ -595,6 +595,8 @@ export default function LandingPage() {
         <div className="flex flex-wrap gap-4 uppercase font-bold text-[11px]">
           <Link to="/overview" className="hover:text-brutal-accent">Dashboard</Link>
           <Link to="/commands" className="hover:text-brutal-accent">Commands</Link>
+          <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
+          <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
           <a href={SUPPORT_SERVER_URL} target="_blank" rel="noreferrer" className="hover:text-brutal-accent">Support</a>
           <a href={BOT_INVITE_URL} target="_blank" rel="noreferrer" className="hover:text-brutal-accent">Invite Bot</a>
           <a href={TOPGG_VOTE_URL} target="_blank" rel="noreferrer" className="hover:text-brutal-accent">Vote Top.gg</a>
