@@ -307,7 +307,7 @@ export default function App() {
                   </div>
                   <div style={rowBetween}>
                     <span style={{ color: 'var(--text-muted)' }}>Node.js Runtime</span>
-                    <span style={{ fontFamily: 'JetBrains Mono' }}>{process.version || 'v22.x'}</span>
+                    <span style={{ fontFamily: 'JetBrains Mono' }}>{stats?.nodeVersion || 'v22.x'}</span>
                   </div>
                   <div style={rowBetween}>
                     <span style={{ color: 'var(--text-muted)' }}>Memory RSS</span>

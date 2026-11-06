@@ -25,6 +25,7 @@ function initHelperServer(client, port = process.env.PORT || 5090) {
 
       res.json({
         status: "online",
+        nodeVersion: process.version,
         bot: {
           tag: client.user?.tag || "TOGETHER HELPER",
           id: client.user?.id,
