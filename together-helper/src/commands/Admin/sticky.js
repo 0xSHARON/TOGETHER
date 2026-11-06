@@ -1,17 +1,10 @@
 const {
   ApplicationCommandOptionType,
-  PermissionsBitField
+  PermissionsBitField,
+  EmbedBuilder
 } = require("discord.js");
 const { StickyMessage } = require("../../schema");
 const config = require("../../config");
-const {
-  container,
-  separator,
-  text,
-  flags,
-  noticePayload,
-  COLORS
-} = require("../../utils/ui");
 
 module.exports = {
   name: "sticky",
@@ -38,77 +31,46 @@ module.exports = {
 
   async slashExecute(interaction, client) {
     if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages) && !config.ownerIds.includes(interaction.user.id)) {
-      return interaction.reply(
-        noticePayload({
-          title: "Permission Denied",
-          description: "You need `Manage Messages` permissions to manage sticky messages.",
-          emoji: "🚫",
-          tone: "danger"
-        }, true)
-      );
+      return interaction.reply({ content: "❌ You need `Manage Messages` permissions to manage sticky messages.", ephemeral: true });
     }
 
     const action = interaction.options.getString("action");
-    const content = interaction.options.getString("message");
+    const text = interaction.options.getString("message");
 
     if (action === "set") {
-      if (!content) {
-        return interaction.reply(
-          noticePayload({
-            title: "Missing Content",
-            description: "Please specify the message text you wish to stick to the bottom.",
-            emoji: "⚠️",
-            tone: "warning"
-          }, true)
-        );
+      if (!text) {
+        return interaction.reply({ content: "❌ Please provide the message content to stick.", ephemeral: true });
       }
 
       await interaction.deferReply({ ephemeral: true });
 
-      const stickyCard = container(COLORS.brand)
-        .addTextDisplayComponents(text("### 📌 Channel Notice & Guidelines"))
-        .addSeparatorComponents(separator())
-        .addTextDisplayComponents(text(content))
-        .addSeparatorComponents(separator())
-        .addTextDisplayComponents(text("*This notice dynamically stays anchored to the bottom of the channel.*"));
+      const stickyEmbed = new EmbedBuilder()
+        .setColor(config.color)
+        .setDescription(`📌 **NOTICE / GUIDELINES**\n\n${text}`)
+        .setFooter({ text: "This message will automatically stay at the bottom of the channel." });
 
-      const sentMsg = await interaction.channel.send({
-        components: [stickyCard],
-        flags: flags(false)
-      });
+      const sentMsg = await interaction.channel.send({ embeds: [stickyEmbed] });
 
       await StickyMessage.findOneAndUpdate(
         { channelId: interaction.channel.id },
         {
           guildId: interaction.guild.id,
-          message: content,
+          message: text,
           lastMessageId: sentMsg.id,
           enabled: true
         },
         { upsert: true, new: true }
       );
 
-      return interaction.editReply(
-        noticePayload({
-          title: "Sticky Notice Anchored",
-          description: "Sticky configured. It will seamlessly reposition as members chat.",
-          emoji: "✅",
-          tone: "success"
-        }, true)
-      );
+      return interaction.editReply({
+        content: "✅ Sticky message configured! It will now automatically reappear at the bottom whenever members chat."
+      });
     }
 
     if (action === "remove") {
       const existing = await StickyMessage.findOne({ channelId: interaction.channel.id });
       if (!existing) {
-        return interaction.reply(
-          noticePayload({
-            title: "No Sticky Notice",
-            description: "There is no active sticky notice in this channel.",
-            emoji: "ℹ️",
-            tone: "neutral"
-          }, true)
-        );
+        return interaction.reply({ content: "❌ No sticky message is active in this channel.", ephemeral: true });
       }
 
       if (existing.lastMessageId) {
@@ -120,14 +82,7 @@ module.exports = {
 
       await StickyMessage.findOneAndDelete({ channelId: interaction.channel.id });
 
-      return interaction.reply(
-        noticePayload({
-          title: "Sticky Notice Removed",
-          description: "The sticky notice has been removed from this channel.",
-          emoji: "🗑️",
-          tone: "info"
-        }, true)
-      );
+      return interaction.reply({ content: "✅ Sticky message removed from this channel.", ephemeral: true });
     }
   }
 };

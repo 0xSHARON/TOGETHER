@@ -1,11 +1,6 @@
+const { EmbedBuilder } = require("discord.js");
 const { StickyMessage } = require("../schema");
-const {
-  container,
-  separator,
-  text,
-  flags,
-  COLORS
-} = require("../utils/ui");
+const config = require("../config");
 
 // Cooldown tracker to prevent rate limits when multiple messages arrive quickly
 const stickyCooldowns = new Map();
@@ -32,26 +27,19 @@ module.exports = {
         } catch {}
       }
 
-      // 2. Re-send fresh sticky message at the bottom with Components V2
-      const stickyCard = container(COLORS.brand)
-        .addTextDisplayComponents(text("### 📌 Channel Notice & Guidelines"))
-        .addSeparatorComponents(separator())
-        .addTextDisplayComponents(text(sticky.message))
-        .addSeparatorComponents(separator())
-        .addTextDisplayComponents(text("*This notice dynamically stays anchored to the bottom of the channel.*"));
+      // 2. Re-send fresh sticky message at the bottom
+      const stickyEmbed = new EmbedBuilder()
+        .setColor(config.color)
+        .setDescription(`📌 **NOTICE / CHANNEL GUIDELINES**\n\n${sticky.message}`)
+        .setFooter({ text: "This message automatically stays at the bottom." });
 
-      const newMsg = await message.channel.send({
-        components: [stickyCard],
-        flags: flags(false)
-      });
+      const newMsg = await message.channel.send({ embeds: [stickyEmbed] });
 
       // 3. Update last message ID in MongoDB
       sticky.lastMessageId = newMsg.id;
       await sticky.save();
     } catch (err) {
-      if (client.logger) {
-        client.logger.error(`[Sticky Reposition Error] ${err.message}`);
-      }
+      console.error("[Sticky Event Error]", err);
     }
   }
 };
