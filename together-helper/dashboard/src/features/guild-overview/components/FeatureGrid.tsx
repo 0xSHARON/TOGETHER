@@ -19,11 +19,12 @@ export function FeatureGrid({
 	const { t } = useTranslation();
 	const channels = useChannels(guildId);
 	const channelName = (id: string): string => (channels.data === undefined ? "…" : channelLabel(channels.data, id, t));
+	const visibleFeatures = features.filter((feature) => feature.key !== "music");
 
 	return (
 		// A grid item defaults to `min-width: auto`, so without this the widest tile sets the row's width.
 		<ul className="grid gap-4 sm:grid-cols-2 [&>li]:min-w-0">
-			{features.map((feature) => {
+			{visibleFeatures.map((feature) => {
 				const { icon: Icon, tint, path } = featureLook(feature.key);
 
 				const body: ReactNode = (

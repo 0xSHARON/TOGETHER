@@ -5,15 +5,6 @@ export const SCENES: readonly {
 	prefixName: string;
 	options: readonly ({ name: string; value: string } | { name: string; valueKey: TranslationKey })[];
 }[] = [
-	{ command: "play", prefixName: "play", options: [{ name: "query", valueKey: "landing.composer.query" }] },
-	{
-		command: "remind me",
-		prefixName: "remindme",
-		options: [
-			{ name: "in", value: "2h" },
-			{ name: "about", valueKey: "landing.composer.reminder" },
-		],
-	},
 	{
 		command: "warn create",
 		prefixName: "warn create",
@@ -22,14 +13,21 @@ export const SCENES: readonly {
 			{ name: "reason", valueKey: "landing.composer.reason" },
 		],
 	},
+	{
+		command: "remind me",
+		prefixName: "remindme",
+		options: [
+			{ name: "in", value: "2h" },
+			{ name: "about", valueKey: "landing.composer.reminder" },
+		],
+	},
 ];
 
 export const FEATURES: readonly { look: string; titleKey: TranslationKey; bodyKey: TranslationKey }[] = [
 	{ look: "moderation", titleKey: "landing.features.moderation", bodyKey: "landing.features.moderationBody" },
 	{ look: "levelling", titleKey: "landing.features.levelling", bodyKey: "landing.features.levellingBody" },
-	{ look: "music", titleKey: "landing.features.music", bodyKey: "landing.features.musicBody" },
-	{ look: "casino", titleKey: "landing.features.casino", bodyKey: "landing.features.casinoBody" },
 	{ look: "tickets", titleKey: "landing.features.tickets", bodyKey: "landing.features.ticketsBody" },
+	{ look: "casino", titleKey: "landing.features.casino", bodyKey: "landing.features.casinoBody" },
 	{ look: "community", titleKey: "landing.features.community", bodyKey: "landing.features.communityBody" },
 ];
 

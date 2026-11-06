@@ -72,7 +72,6 @@ describe("navigationFor", () => {
 				"/lottery",
 				"/member-count",
 				"/members",
-				"/music",
 				"/raid-protection",
 				"/role-menus",
 				"/roles",
@@ -102,7 +101,16 @@ describe("navigationFor", () => {
 		);
 
 		expect(sections).toEqual({
-			"nav.community": ["/birthdays", "/ideas", "/levelling", "/role-menus", "/starboard", "/temp-voice", "/welcome"],
+			"nav.community": [
+				"/birthdays",
+				"/giveaways",
+				"/ideas",
+				"/levelling",
+				"/role-menus",
+				"/starboard",
+				"/temp-voice",
+				"/welcome",
+			],
 			"nav.messages": ["/announcements", "/auto-responders", "/scheduled-messages", "/sticky"],
 			"nav.moderation": [
 				"/audit-log",
@@ -117,7 +125,6 @@ describe("navigationFor", () => {
 			],
 			"nav.stats": ["/bot-stats", "/insights", "/member-count"],
 			"nav.economy": ["/casino", "/lottery", "/treasure"],
-			"nav.entertainment": ["/giveaways", "/music"],
 		});
 	});
 

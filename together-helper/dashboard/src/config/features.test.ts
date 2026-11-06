@@ -28,7 +28,6 @@ const CATEGORIES = [
 	"levelling",
 	"moderation",
 	"settings",
-	"music",
 	"tickets",
 	"giveaway",
 	"developer",

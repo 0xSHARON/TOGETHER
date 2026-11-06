@@ -88,46 +88,46 @@
 /** The palette, measured against WCAG by `src/test/contrast.test.ts`: `primary` is a fill under white, `accent` the text colour. */
 @theme {
 	/* Every colour is `light-dark(light, dark)`, so one line holds both themes. */
-	--color-background: light-dark(#f2f3f6, #1f2125);
-	--color-foreground: light-dark(#1b1e24, #eceef1);
-	--color-muted: light-dark(#e7e9ee, #33363c);
-	--color-muted-foreground: light-dark(#565d6b, #a2a7b0);
-	--color-card: light-dark(#ffffff, #282b30);
-	--color-popover: light-dark(#ffffff, #2e3137);
-	--color-border: light-dark(#d9dde4, #383c43);
-	--color-input: light-dark(#767d8a, #7d838e);
+	--color-background: light-dark(#f5f5f7, #07080a);
+	--color-foreground: light-dark(#1d1d1f, #f5f5f7);
+	--color-muted: light-dark(#e5e5ea, #16181d);
+	--color-muted-foreground: light-dark(#86868b, #9ca3af);
+	--color-card: light-dark(#ffffff, #121418);
+	--color-popover: light-dark(#ffffff, #181a20);
+	--color-border: light-dark(#d2d2d7, #22252c);
+	--color-input: light-dark(#767d8a, #374151);
 	/* The sidebar, a step back from the page as Discord's own column is. */
-	--color-sidebar: light-dark(#e7e9ee, #191b1f);
-	--color-primary: light-dark(#8a2a6b, #bf3a94);
+	--color-sidebar: light-dark(#f2f2f7, #0a0b0e);
+	--color-primary: light-dark(#059669, #10b981);
 	--color-primary-foreground: #ffffff;
-	--color-accent: light-dark(#7a2260, #e08ac4);
+	--color-accent: light-dark(#047857, #34d399);
 	/* Behind the selected row or chip, under accent text. */
-	--color-accent-wash: light-dark(#f6e9f2, #3a2433);
-	--color-ring: light-dark(#8a2a6b, #e08ac4);
-	--color-success: light-dark(#047857, #3ddc97);
-	--color-warning: light-dark(#a16207, #fbbf24);
-	--color-destructive: light-dark(#b91c1c, #dc2626);
+	--color-accent-wash: light-dark(#def5ef, #064e3b33);
+	--color-ring: light-dark(#059669, #10b981);
+	--color-success: light-dark(#047857, #34d399);
+	--color-warning: light-dark(#d97706, #fbbf24);
+	--color-destructive: light-dark(#dc2626, #ef4444);
 	/* Red is legible as a fill or as text, never as both, so the text cut is its own token. */
-	--color-destructive-text: light-dark(#b91c1c, #f87171);
+	--color-destructive-text: light-dark(#dc2626, #f87171);
 
 	/* Category hues, at AA as text on the card, worn on icons. */
 	--color-hue-violet: light-dark(#6d28d9, #a78bfa);
-	--color-hue-amber: light-dark(#a16207, #fbbf24);
-	--color-hue-red: light-dark(#b91c1c, #f87171);
-	--color-hue-green: light-dark(#047857, #3ddc97);
+	--color-hue-amber: light-dark(#d97706, #fbbf24);
+	--color-hue-red: light-dark(#dc2626, #f87171);
+	--color-hue-green: light-dark(#047857, #34d399);
 	--color-hue-blue: light-dark(#1d4ed8, #60a5fa);
 	--color-hue-pink: light-dark(#be185d, #f472b6);
 
 	/* One scale, so nothing is left to Tailwind's defaults and nothing reads as a corner that was missed. */
-	--radius-chip: 0.375rem;
-	--radius-field: 0.5rem;
-	--radius-card: 0.625rem;
-	--radius-tile: 1rem;
+	--radius-chip: 0.5rem;
+	--radius-field: 0.625rem;
+	--radius-card: 0.875rem;
+	--radius-tile: 1.25rem;
 
-	/* Rubik is rounded like Discord's own type; Fira Mono marks what is typed literally. */
-	--font-display: "Rubik", ui-sans-serif, system-ui, sans-serif;
-	--font-sans: "Rubik", ui-sans-serif, system-ui, sans-serif;
-	--font-mono: "Fira Mono", ui-monospace, monospace;
+	/* Apple SF Pro typography hierarchy */
+	--font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+	--font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+	--font-mono: "SF Mono", "Fira Mono", ui-monospace, monospace;
 
 	/* Tailwind's default for this size is 1.43, which is tight for prose — and `text-sm` is most of the app. */
 	--text-sm--line-height: 1.55;

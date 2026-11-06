@@ -201,7 +201,7 @@ function SearchRow({
 				aria-keyshortcuts="Control+K Meta+K"
 				className={cn(
 					ROW,
-					"border-border text-muted-foreground hover:text-foreground hover:bg-card/60 mb-3 w-full border text-sm transition-colors duration-150",
+					"border-border/80 bg-card/60 backdrop-blur-md rounded-xl text-muted-foreground hover:text-foreground hover:bg-card/90 mb-3 w-full border text-sm transition-all duration-150 shadow-xs",
 				)}
 			>
 				<Search size={18} aria-hidden="true" className="shrink-0" />

@@ -51,7 +51,6 @@ const RolePage = page(async () => import("@/features/roles/RolePage"), "RolePage
 const ChannelsPage = page(async () => import("@/features/channels/ChannelsPage"), "ChannelsPage");
 const TempVoicePage = page(async () => import("@/features/temp-voice/TempVoicePage"), "TempVoicePage");
 const TreasurePage = page(async () => import("@/features/treasure/TreasurePage"), "TreasurePage");
-const MusicPage = page(async () => import("@/features/music/MusicPage"), "MusicPage");
 const CasinoPage = page(async () => import("@/features/casino/CasinoPage"), "CasinoPage");
 const TicketsPage = page(async () => import("@/features/tickets/TicketsPage"), "TicketsPage");
 const WarningsPage = page(async () => import("@/features/warnings/WarningsPage"), "WarningsPage");
@@ -71,8 +70,6 @@ const NotificationsPage = page(async () => import("@/features/notices/Notificati
 const AccountPage = page(async () => import("@/features/account/AccountPage"), "AccountPage");
 const AppearancePage = page(async () => import("@/features/appearance/AppearancePage"), "AppearancePage");
 const LandingPage = page(async () => import("@/features/site/LandingPage"), "LandingPage");
-const DocsPage = page(async () => import("@/features/docs/DocsPage"), "DocsPage");
-const SourcePage = page(async () => import("@/features/source/SourcePage"), "SourcePage");
 
 function page<Name extends string, Props extends object>(
 	load: () => Promise<Record<Name, ComponentType<Props>>>,
@@ -94,10 +91,6 @@ export const routes = [
 		element: <SiteShell />,
 		children: [
 			{ path: "/", element: lazily(<LandingPage />) },
-			{ path: "/docs", element: lazily(<DocsPage />) },
-			{ path: "/docs/:slug", element: lazily(<DocsPage />) },
-			{ path: "/docs/guides/:articleId", element: lazily(<DocsPage />) },
-			{ path: "/source-code/*", element: lazily(<SourcePage />) },
 		],
 	},
 	{
@@ -150,7 +143,6 @@ export const routes = [
 									{ path: "/guilds/:guildId/channels", element: lazily(<ChannelsPage />) },
 									{ path: "/guilds/:guildId/temp-voice", element: lazily(<TempVoicePage />) },
 									{ path: "/guilds/:guildId/treasure", element: lazily(<TreasurePage />) },
-									{ path: "/guilds/:guildId/music", element: lazily(<MusicPage />) },
 									{ path: "/guilds/:guildId/casino", element: lazily(<CasinoPage />) },
 									{ path: "/guilds/:guildId/tickets", element: lazily(<TicketsPage />) },
 									{ path: "/guilds/:guildId/warnings", element: lazily(<WarningsPage />) },

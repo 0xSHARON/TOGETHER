@@ -110,11 +110,6 @@ const LOOKS: Record<string, FeatureLook> = {
 		tint: "text-hue-amber",
 		path: (guildId) => `/guilds/${guildId}/casino`,
 	},
-	music: {
-		icon: Music,
-		tint: "text-hue-pink",
-		path: (guildId) => `/guilds/${guildId}/music`,
-	},
 	"anti-link": {
 		icon: LinkIcon,
 		tint: "text-hue-red",

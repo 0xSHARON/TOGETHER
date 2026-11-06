@@ -91,8 +91,6 @@ export function navigationFor({ guild, isOwner }: NavAudience): NavGroup[] {
 				{ to: "/status", labelKey: "nav.status", icon: Activity, hintKey: "nav.statusHint" },
 				{ to: "/notifications", labelKey: "nav.notifications", icon: Bell, hintKey: "nav.notificationsHint" },
 				{ to: "/help", labelKey: "nav.help", icon: LifeBuoy, hintKey: "nav.helpHint" },
-				{ to: "/docs", labelKey: "nav.docs", icon: BookOpen, hintKey: "nav.docsHint", exact: false },
-				{ to: "/source-code", labelKey: "nav.source", icon: FileCode, hintKey: "nav.sourceHint", exact: false },
 			],
 		},
 	];
@@ -129,6 +127,7 @@ export function navigationFor({ guild, isOwner }: NavAudience): NavGroup[] {
 						{ to: at("/ideas"), labelKey: "nav.ideas", icon: Lightbulb, hintKey: "nav.ideasHint" },
 						{ to: at("/starboard"), labelKey: "nav.starboard", icon: Star, hintKey: "nav.starboardHint" },
 						{ to: at("/temp-voice"), labelKey: "nav.tempVoice", icon: Volume2, hintKey: "nav.tempVoiceHint" },
+						{ to: at("/giveaways"), labelKey: "nav.giveaways", icon: Gift, hintKey: "nav.giveawaysHint" },
 					],
 				},
 				{
@@ -192,14 +191,6 @@ export function navigationFor({ guild, isOwner }: NavAudience): NavGroup[] {
 						{ to: at("/treasure"), labelKey: "nav.treasure", icon: Gem, hintKey: "nav.treasureHint" },
 						{ to: at("/lottery"), labelKey: "nav.lottery", icon: Ticket, hintKey: "nav.lotteryHint" },
 						{ to: at("/casino"), labelKey: "nav.casino", icon: Dices, hintKey: "nav.casinoHint" },
-					],
-				},
-				{
-					labelKey: "nav.entertainment",
-					icon: Sparkles,
-					items: [
-						{ to: at("/music"), labelKey: "nav.music", icon: Music, hintKey: "nav.musicHint" },
-						{ to: at("/giveaways"), labelKey: "nav.giveaways", icon: Gift, hintKey: "nav.giveawaysHint" },
 					],
 				},
 			],
