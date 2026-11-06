@@ -87,11 +87,12 @@ function initHelperServer(client, port = process.env.PORT || 5090) {
   const distPath = path.join(__dirname, "../dashboard/dist");
   if (fs.existsSync(distPath)) {
     app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      if (req.path.startsWith("/api/")) {
-        return res.status(404).json({ error: "Endpoint not found" });
+    // SPA fallback handler
+    app.use((req, res, next) => {
+      if (req.method === "GET" && !req.path.startsWith("/api/")) {
+        return res.sendFile(path.join(distPath, "index.html"));
       }
-      res.sendFile(path.join(distPath, "index.html"));
+      next();
     });
   } else {
     app.get("/", (req, res) => {
