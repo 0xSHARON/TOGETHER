@@ -599,33 +599,6 @@ export default function SettingsPage() {
               </div>
             </div>
           </BrutCard>
-
-          {/* SECTION 4: SETUP STATUS */}
-          <BrutCard title="DEDICATED SONG REQUEST CHANNEL" subtitle="Automatic queue controller embed">
-            <div className="font-mono text-xs space-y-2">
-              <div className="flex items-center justify-between p-3 border border-brutal-border bg-brutal-bg">
-                <div>
-                  <span className="font-bold text-brutal-text block">REQUEST CHANNEL SETUP:</span>
-                  <span className="text-[11px] text-brutal-muted">Dedicated controller channel configured via /setup</span>
-                </div>
-                <span
-                  className={`px-2 py-0.5 text-xs font-bold uppercase border ${
-                    config?.setup
-                      ? 'border-cyan-600 bg-cyan-950/30 text-cyan-400'
-                      : 'border-zinc-700 bg-zinc-900 text-zinc-400'
-                  }`}
-                >
-                  {config?.setup ? 'CONFIGURED' : 'NOT CONFIGURED'}
-                </span>
-              </div>
-              {config?.setup && (
-                <div className="p-3 border border-brutal-border bg-brutal-bg space-y-1 text-[11px]">
-                  <p><strong className="text-brutal-muted">Channel ID:</strong> {config.setup.channelId}</p>
-                  <p><strong className="text-brutal-muted">Controller Message ID:</strong> {config.setup.messageId}</p>
-                </div>
-              )}
-            </div>
-          </BrutCard>
         </div>
       )}
     </div>
