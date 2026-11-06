@@ -1,5 +1,5 @@
-const { EmbedBuilder } = require("discord.js");
-const { StickyMessage } = require("../schema");
+const { EmbedBuilder, PermissionFlagsBits } = require("discord.js");
+const { StickyMessage, Afk, AutoModConfig } = require("../schema");
 const config = require("../config");
 const { container, flags, separator, text, noticePayload, COLORS } = require("../utils/ui");
 
@@ -10,6 +10,73 @@ module.exports = {
   name: "messageCreate",
   async execute(message, client) {
     if (message.author.bot || !message.guild) return;
+
+    // 0. AutoMod Protection Check (Anti-Invite & Anti-Link)
+    try {
+      const isStaff = message.member?.permissions.has(PermissionFlagsBits.ManageMessages);
+      if (!isStaff) {
+        const automod = await AutoModConfig.findOne({ guildId: message.guild.id });
+        if (automod) {
+          const inviteRegex = /(discord\.(gg|io|me|li)|discordapp\.com\/invite|discord\.com\/invite)\/[a-zA-Z0-9]+/i;
+          const linkRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/i;
+
+          if (automod.antiInvite && inviteRegex.test(message.content)) {
+            await message.delete().catch(() => {});
+            return message.channel.send(
+              noticePayload({
+                title: "AutoMod Action",
+                description: `${message.author}, invite links are not allowed in this server!`,
+                emoji: "🛡️",
+                tone: "danger"
+              }, false)
+            ).then(m => setTimeout(() => m.delete().catch(() => {}), 5000));
+          }
+
+          if (automod.antiLink && linkRegex.test(message.content)) {
+            await message.delete().catch(() => {});
+            return message.channel.send(
+              noticePayload({
+                title: "AutoMod Action",
+                description: `${message.author}, external links are restricted here!`,
+                emoji: "🛡️",
+                tone: "danger"
+              }, false)
+            ).then(m => setTimeout(() => m.delete().catch(() => {}), 5000));
+          }
+        }
+      }
+    } catch {}
+
+    // 1. AFK Detection
+    // 1A. If author was AFK, remove their AFK status
+    try {
+      const authorAfk = await Afk.findOne({ userId: message.author.id, guildId: message.guild.id });
+      if (authorAfk) {
+        await Afk.deleteOne({ _id: authorAfk._id });
+        const afkCard = container(COLORS.success)
+          .addTextDisplayComponents(text(`### 👋 Welcome back, ${message.author.username}!\n-# I've removed your AFK status.`));
+        message.channel.send({ components: [afkCard], flags: flags(false) })
+          .then(m => setTimeout(() => m.delete().catch(() => {}), 6000));
+      }
+
+      // 1B. If author mentioned anyone who is AFK, notify them
+      if (message.mentions.users.size > 0) {
+        for (const [mentionedId, mentionedUser] of message.mentions.users) {
+          if (mentionedId === message.author.id || mentionedUser.bot) continue;
+          const targetAfk = await Afk.findOne({ userId: mentionedId, guildId: message.guild.id });
+          if (targetAfk) {
+            const timeAgo = Math.round(new Date(targetAfk.timestamp).getTime() / 1000);
+            const card = container(COLORS.warning)
+              .addTextDisplayComponents(
+                text(`### 💤 **${mentionedUser.username}** is currently AFK\n• **Reason:** ${targetAfk.reason}\n• **Since:** <t:${timeAgo}:R>`)
+              );
+            message.reply({ components: [card], flags: flags(false) })
+              .then(m => setTimeout(() => m.delete().catch(() => {}), 8000));
+            break; // notify once per message
+          }
+        }
+      }
+    } catch {}
 
     // 1. Handle Prefix & Mention Commands
     const prefix = config.prefix || "-";

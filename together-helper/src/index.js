@@ -102,6 +102,15 @@ client.once("ready", async () => {
 
   // 3. Deploy Slash commands
   await loadCommands(client);
+
+  // 4. Initialize Helper Web Dashboard & API Server on Port 5090
+  try {
+    const { initHelperServer } = require("./server");
+    const port = process.env.PORT || 5090;
+    initHelperServer(client, port);
+  } catch (srvErr) {
+    console.error("[Helper Server Error]", srvErr);
+  }
 });
 
 // Error handling with Discord thread logging

@@ -208,14 +208,28 @@ module.exports = {
       if (action === "close") {
         await interaction.reply(
           noticePayload({
-            title: "Closing Support Ticket",
-            description: "This channel will be closed and archived in 5 seconds. Thank you!",
+            title: "Archiving Support Ticket",
+            description: "Generating complete HTML transcript and archiving channel in 5 seconds...",
             emoji: emoji.lock,
             tone: "danger",
           }, false),
         );
 
-        await Ticket.findOneAndUpdate({ channelId: interaction.channel.id }, { status: "closed" });
+        const ticketDoc = await Ticket.findOneAndUpdate({ channelId: interaction.channel.id }, { status: "closed" });
+
+        let transcriptFile = null;
+        try {
+          const discordTranscripts = require("discord-html-transcripts");
+          transcriptFile = await discordTranscripts.createTranscript(interaction.channel, {
+            limit: -1,
+            returnType: "attachment",
+            filename: `transcript-${interaction.channel.name}.html`,
+            saveImages: true,
+            poweredBy: false,
+          });
+        } catch (tErr) {
+          console.warn("[Transcript Generation Warning]", tErr.message);
+        }
 
         const closeLog = new EmbedBuilder()
           .setColor("#ED4245")
@@ -226,10 +240,30 @@ module.exports = {
           .setTitle(`🔒 Support Ticket Closed`)
           .setDescription(
             `• **Closed By:** ${interaction.user.toString()} (\`${interaction.user.id}\`)\n` +
+            `• **Ticket Owner:** ${ticketDoc?.userId ? `<@${ticketDoc.userId}>` : "Unknown"}\n` +
             `• **Channel:** \`${interaction.channel.name}\` (\`${interaction.channel.id}\`)`,
           )
           .setTimestamp();
-        dispatchLogThread(client, "tickets", closeLog);
+
+        // Dispatch log with HTML transcript attachment
+        if (transcriptFile) {
+          dispatchLogThread(client, "tickets", { embeds: [closeLog], files: [transcriptFile] });
+        } else {
+          dispatchLogThread(client, "tickets", closeLog);
+        }
+
+        // Send transcript to ticket owner's DM
+        if (ticketDoc?.userId && transcriptFile) {
+          try {
+            const owner = await client.users.fetch(ticketDoc.userId).catch(() => null);
+            if (owner) {
+              await owner.send({
+                content: `Your support ticket in **${interaction.guild.name}** was closed. Attached is the full transcript:`,
+                files: [transcriptFile]
+              });
+            }
+          } catch {}
+        }
 
         setTimeout(async () => {
           try {

@@ -53,11 +53,43 @@ const ticketSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// 6. AFK System
+const afkSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  guildId: { type: String, required: true },
+  reason: { type: String, default: "AFK" },
+  timestamp: { type: Date, default: Date.now }
+});
+afkSchema.index({ userId: 1, guildId: 1 }, { unique: true });
+
+// 7. Moderation Warning Records
+const warnSchema = new mongoose.Schema({
+  guildId: { type: String, required: true },
+  userId: { type: String, required: true },
+  moderatorId: { type: String, required: true },
+  reason: { type: String, default: "No reason provided." },
+  warnId: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
+// 8. AutoMod & Server Protection Configuration
+const autoModSchema = new mongoose.Schema({
+  guildId: { type: String, required: true, unique: true },
+  antiLink: { type: Boolean, default: false },
+  antiInvite: { type: Boolean, default: false },
+  antiSpam: { type: Boolean, default: false },
+  ignoredRoles: { type: [String], default: [] },
+  ignoredChannels: { type: [String], default: [] }
+});
+
 module.exports = {
   WelcomeConfig: mongoose.model("HelperWelcome", welcomeSchema),
   SuggestionConfig: mongoose.model("HelperSuggestion", suggestionSchema),
   BugReportConfig: mongoose.model("HelperBugReport", bugReportSchema),
   StickyMessage: mongoose.model("HelperSticky", stickySchema),
   TicketConfig: mongoose.model("HelperTicketConfig", ticketConfigSchema),
-  Ticket: mongoose.model("HelperTicket", ticketSchema)
+  Ticket: mongoose.model("HelperTicket", ticketSchema),
+  Afk: mongoose.model("HelperAfk", afkSchema),
+  Warn: mongoose.model("HelperWarn", warnSchema),
+  AutoModConfig: mongoose.model("HelperAutoModConfig", autoModSchema)
 };

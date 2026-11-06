@@ -42,7 +42,9 @@ const CATEGORY_INFO = Object.freeze({
   Admin: { emoji: emoji.config, bannerKey: "config", description: "Welcome greetings, routing channels, and sticky notices" },
   General: { emoji: emoji.utility, bannerKey: "utility", description: "Community feedback, feature suggestions, and bug reports" },
   Information: { emoji: emoji.info, bannerKey: "information", description: "Bot latency, system diagnostics, and manual" },
+  Moderation: { emoji: "🛡️", bannerKey: "config", description: "Timeouts, warnings, kicks, bans, message purge, and channel lockdown" },
   Support: { emoji: emoji.star, bannerKey: "home", description: "Ticket desk panels, support rooms, and issue resolution" },
+  Utility: { emoji: "🛠️", bannerKey: "utility", description: "AFK status, live polls, reminders, and user/server lookups" },
 });
 
 function publicCommands(client) {
