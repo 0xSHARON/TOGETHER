@@ -67,8 +67,9 @@ export default function LandingPage() {
       .catch(() => {});
   }, []);
 
-  // Filter commands by active category and search
+  // Filter commands by active category and search (Excluding all owner commands)
   const filteredCmds = commands.filter((cmd) => {
+    if (cmd.owner || cmd.category?.toUpperCase() === 'OWNER') return false;
     const matchCat =
       activeCategory === 'ALL' ||
       cmd.category?.toUpperCase() === activeCategory.toUpperCase();
@@ -81,8 +82,25 @@ export default function LandingPage() {
     return matchCat && matchSearch;
   });
 
-  // Display top 9 commands for clean section layout
-  const displayedCmds = filteredCmds.slice(0, 9);
+  // Unique categories dynamically derived from public commands
+  const uniqueCategories = [
+    'ALL',
+    ...Array.from(new Set(commands.map((c) => c.category?.toUpperCase()).filter(Boolean)))
+  ];
+
+  // Category counts
+  const categoryCounts = {
+    ALL: commands.length
+  };
+  commands.forEach((c) => {
+    const cat = c.category?.toUpperCase();
+    if (cat) {
+      categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    }
+  });
+
+  // Display ALL filtered commands without arbitrary slice
+  const displayedCmds = filteredCmds;
 
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono brutal-grid">
@@ -415,17 +433,24 @@ export default function LandingPage() {
         <div className="border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal-sm space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap gap-2">
-              {['ALL', 'MUSIC', 'FILTERS', 'CONFIG', 'FAVOURITE', 'INFO'].map((cat) => (
+              {uniqueCategories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-3 py-1 font-mono text-xs font-bold uppercase border-2 transition-all ${
+                  className={`px-3 py-1 font-mono text-xs font-bold uppercase border-2 transition-all flex items-center gap-1.5 ${
                     activeCategory === cat
                       ? 'bg-brutal-accent text-black border-black shadow-brutal-sm'
                       : 'bg-brutal-bg text-brutal-text border-brutal-border hover:border-brutal-accent hover:text-brutal-accent'
                   }`}
                 >
-                  {cat}
+                  <span>{cat}</span>
+                  <span
+                    className={`text-[10px] px-1 py-0.2 font-mono ${
+                      activeCategory === cat ? 'bg-black text-brutal-accent font-black' : 'bg-brutal-surface text-zinc-400'
+                    }`}
+                  >
+                    {categoryCounts[cat] || 0}
+                  </span>
                 </button>
               ))}
             </div>
@@ -443,8 +468,30 @@ export default function LandingPage() {
           </div>
         </div>
 
+        {/* Results Counter */}
+        <div className="flex items-center justify-between text-xs font-mono text-zinc-400 px-1">
+          <span>
+            SHOWING ALL <strong className="text-brutal-accent">{displayedCmds.length}</strong> COMMANDS
+            {activeCategory !== 'ALL' && ` IN CATEGORY ${activeCategory}`}
+            {cmdSearch && ` MATCHING "${cmdSearch}"`}
+          </span>
+          {cmdSearch && (
+            <button
+              onClick={() => setCmdSearch('')}
+              className="text-xs text-brutal-accent hover:underline uppercase font-bold"
+            >
+              CLEAR SEARCH
+            </button>
+          )}
+        </div>
+
         {/* Command Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {displayedCmds.length === 0 && (
+            <div className="col-span-full border-2 border-dashed border-zinc-800 p-8 text-center font-mono text-xs text-zinc-500">
+              No public commands found matching "{cmdSearch}".
+            </div>
+          )}
           {displayedCmds.map((cmd) => (
             <div
               key={cmd.name}

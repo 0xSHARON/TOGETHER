@@ -12,6 +12,7 @@ import CommandsPage from './pages/CommandsPage';
 import OwnerPage from './pages/OwnerPage';
 import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
   return (
@@ -40,7 +41,8 @@ export default function App() {
             <Route path="/queue" element={<Navigate to="/player" replace />} />
           </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Custom 404 Error Page */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
