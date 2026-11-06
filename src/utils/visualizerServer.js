@@ -160,6 +160,69 @@ function getGuildPlayerState(client, targetId) {
     };
   });
 
+  // Resolve voice channel and real audience members
+  const voiceChannelObj = currentGuild?.channels?.cache?.get(player.voiceId);
+  const voiceChannelName = voiceChannelObj?.name || "Voice Channel";
+  const textChannelName = currentGuild?.channels?.cache?.get(player.textId)?.name || "Text Channel";
+
+  let audienceCount = 0;
+  const audienceMembers = [];
+
+  if (currentGuild?.voiceStates?.cache) {
+    currentGuild.voiceStates.cache.forEach((vs) => {
+      if (vs.channelId === player.voiceId && vs.id !== client?.user?.id) {
+        const u = client.users.cache.get(vs.id) || vs.member?.user;
+        if (u && !u.bot) {
+          audienceCount++;
+          audienceMembers.push({
+            id: u.id,
+            username: u.username,
+            displayName: vs.member?.displayName || u.displayName || u.username,
+            avatar: u.displayAvatarURL ? u.displayAvatarURL({ size: 64 }) : null,
+            deaf: Boolean(vs.deaf || vs.selfDeaf),
+            mute: Boolean(vs.mute || vs.selfMute)
+          });
+        }
+      }
+    });
+  } else if (voiceChannelObj?.members) {
+    voiceChannelObj.members.forEach((m) => {
+      if (!m.user?.bot && m.id !== client?.user?.id) {
+        audienceCount++;
+        audienceMembers.push({
+          id: m.id,
+          username: m.user?.username || m.displayName,
+          displayName: m.displayName || m.user?.username,
+          avatar: m.user?.displayAvatarURL ? m.user.displayAvatarURL({ size: 64 }) : null,
+          deaf: Boolean(m.voice?.deaf || m.voice?.selfDeaf),
+          mute: Boolean(m.voice?.mute || m.voice?.selfMute)
+        });
+      }
+    });
+  }
+
+  // Handle requester object / string / id
+  let requesterName = null;
+  let requesterAvatar = null;
+  let requesterId = null;
+  const reqObj = current?.requester || player.data?.get("lastRequester");
+  if (reqObj) {
+    if (typeof reqObj === "object") {
+      requesterName = reqObj.displayName || reqObj.username || reqObj.tag || "Listener";
+      requesterAvatar = typeof reqObj.displayAvatarURL === "function" ? reqObj.displayAvatarURL({ size: 64 }) : (reqObj.avatar || null);
+      requesterId = reqObj.id || null;
+    } else if (typeof reqObj === "string") {
+      const u = client.users.cache.get(reqObj);
+      if (u) {
+        requesterName = u.displayName || u.username;
+        requesterAvatar = u.displayAvatarURL({ size: 64 });
+        requesterId = u.id;
+      } else {
+        requesterName = reqObj;
+      }
+    }
+  }
+
   return {
     guildId: player.guildId,
     guildName,
@@ -170,16 +233,23 @@ function getGuildPlayerState(client, targetId) {
     author: author || "Together Music Bot",
     thumbnail: rawThumb,
     position: isTransitioning ? 0 : (player.position || 0),
-    duration: current?.length || 0,
+    duration: current?.length || current?.duration || 0,
+    uri: current?.uri || "",
+    isStream: Boolean(current?.isStream),
     loop: player.loop || "none",
     autoplay: Boolean(player.data?.get("autoplay")),
     volume: player.volume || 80,
-    voiceChannel: currentGuild?.channels?.cache?.get(player.voiceId)?.name || "Voice Channel",
-    textChannel: currentGuild?.channels?.cache?.get(player.textId)?.name || "Text Channel",
-    listeners: currentGuild?.channels?.cache?.get(player.voiceId)?.members ? currentGuild.channels.cache.get(player.voiceId).members.filter(m => !m.user?.bot).size : 0,
-    requester: current?.requester?.username || current?.requester?.displayName || null,
+    voiceChannel: voiceChannelName,
+    textChannel: textChannelName,
+    listeners: audienceCount,
+    audience: audienceCount,
+    audienceMembers,
+    requester: requesterName,
+    requesterAvatar,
+    requesterId,
     queue: upcomingQueue,
     queueLength: player.queue?.length || 0,
+    timestamp: Date.now()
   };
 }
 
@@ -194,7 +264,15 @@ function getAllActiveSessions(client) {
     const current = player.queue?.current;
     const guild = client.guilds.cache.get(guildId);
     const voiceChannel = guild?.channels?.cache?.get(player.voiceId);
-    const listeners = voiceChannel?.members ? voiceChannel.members.filter(m => !m.user?.bot).size : 0;
+
+    let audienceCount = 0;
+    if (guild?.voiceStates?.cache) {
+      audienceCount = guild.voiceStates.cache.filter(
+        (vs) => vs.channelId === player.voiceId && !client?.users?.cache?.get(vs.id)?.bot && vs.id !== client?.user?.id
+      ).size;
+    } else if (voiceChannel?.members) {
+      audienceCount = voiceChannel.members.filter(m => !m.user?.bot && m.id !== client?.user?.id).size;
+    }
 
     let rawThumb = current?.thumbnail || current?.artworkUrl || (typeof current?.displayThumbnail === "function" ? current.displayThumbnail("hqdefault") : null);
     if (!rawThumb) {
@@ -214,9 +292,9 @@ function getAllActiveSessions(client) {
       author: current?.author || "Together Music",
       thumbnail: rawThumb,
       position: player.position || 0,
-      duration: current?.length || 0,
+      duration: current?.length || current?.duration || 0,
       voiceChannelName: voiceChannel?.name || "Voice Channel",
-      listeners,
+      listeners: audienceCount,
       loop: player.loop || "none",
       autoplay: Boolean(player.data?.get("autoplay")),
       volume: player.volume || 80,
@@ -789,6 +867,80 @@ function startVisualizerServer(client, preferredPort = 5050) {
       } catch (err) {
         res.writeHead(200, { "Content-Type": "application/json" });
         return res.end(JSON.stringify({ leaderboard: [], totalUsers: 0, error: err.message }));
+      }
+    }
+
+    // ── API: User Discord Profile Canvas Banner (/api/profile-banner/:userId) ──
+    if (pathname.startsWith("/api/profile-banner/") && req.method === "GET") {
+      try {
+        const rawUserId = pathname.replace("/api/profile-banner/", "").trim();
+        const { renderProfileCanvas } = require("./profileCanvas");
+        const UserPreferences = require("../schema/userpreferences");
+        const Liked = require("../schema/liked");
+
+        let discordUser = client.users.cache.get(rawUserId);
+        if (!discordUser) {
+          discordUser = await client.users.fetch(rawUserId).catch(() => null);
+        }
+        if (!discordUser) {
+          discordUser = {
+            id: rawUserId,
+            username: `user_${rawUserId.slice(-4)}`,
+            displayName: `User_${rawUserId.slice(-4)}`,
+            displayAvatarURL: () => null,
+          };
+        }
+
+        const [pref, likedDoc] = await Promise.all([
+          UserPreferences.findOne({ userId: rawUserId }).lean().catch(() => null),
+          Liked.findOne({ userId: rawUserId }).lean().catch(() => null)
+        ]);
+
+        const likedCount = likedDoc?.songs?.length || 0;
+        const totalSec = Math.max(0, Number(pref?.listeningSeconds) || 0);
+        const hoursNum = Math.floor(totalSec / 3600);
+        const minutesNum = Math.floor((totalSec % 3600) / 60);
+        const hoursStr = hoursNum > 0 ? `${hoursNum}h` : (minutesNum > 0 ? `${minutesNum}m` : "0h");
+        const songsCount = Math.max(0, Number(pref?.songsPlayed) || 0);
+        const songsStr = songsCount.toLocaleString();
+        const streakCount = Math.max(0, Number(pref?.streak) || 0);
+        const streakStr = `${streakCount} ${streakCount === 1 ? "day" : "days"}`;
+        const level = Math.max(1, Number(pref?.level) || 1);
+        const xp = Math.max(0, Number(pref?.xp) || 0);
+        const maxXP = Math.max(100, level * 100);
+
+        // Compute badges
+        const badges = [];
+        if (songsCount >= 1) badges.push("vinyl");
+        if (totalSec >= 3600) badges.push("wave");
+        if (level >= 5 || songsCount >= 50) badges.push("crown");
+        if (pref?.anthem?.title) badges.push("star");
+        if (streakCount >= 2) badges.push("planet");
+        if (likedCount >= 1) badges.push("bars");
+
+        const profilePayload = {
+          bio: pref?.bio || "",
+          accentColor: pref?.accentColor || "#FF1E38",
+          listeningHours: hoursStr,
+          songsPlayed: songsStr,
+          streak: streakStr,
+          level,
+          xp,
+          maxXP,
+          badges,
+          anthem: pref?.anthem || null,
+        };
+
+        const canvasBuffer = await renderProfileCanvas(discordUser, profilePayload);
+        res.writeHead(200, {
+          "Content-Type": "image/png",
+          "Cache-Control": "public, max-age=120, stale-while-revalidate=300",
+          "Access-Control-Allow-Origin": "*"
+        });
+        return res.end(canvasBuffer);
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ error: err.message }));
       }
     }
 

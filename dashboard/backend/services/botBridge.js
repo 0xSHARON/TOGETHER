@@ -58,6 +58,7 @@ class BotBridgeService {
       const hasTrack = Boolean(
         data.title &&
         data.title !== "Waiting for Music..." &&
+        data.title !== "Connected in Voice" &&
         !data.title.startsWith("No Music Playing") &&
         data.title !== "TOGETHER Standby"
       );
@@ -70,15 +71,31 @@ class BotBridgeService {
         volume: typeof data.volume === "number" ? data.volume : 80,
         position: data.position || 0,
         duration: data.duration || 0,
+        uri: data.uri || "",
+        isStream: Boolean(data.isStream),
         loop: data.loop || "none",
         autoplay: Boolean(data.autoplay),
+        voiceChannel: data.voiceChannel || null,
+        textChannel: data.textChannel || null,
+        listeners: typeof data.listeners === "number" ? data.listeners : (typeof data.audience === "number" ? data.audience : 0),
+        audience: typeof data.audience === "number" ? data.audience : (typeof data.listeners === "number" ? data.listeners : 0),
+        audienceMembers: Array.isArray(data.audienceMembers) ? data.audienceMembers : [],
+        requester: data.requester || null,
+        requesterAvatar: data.requesterAvatar || null,
+        requesterId: data.requesterId || null,
+        timestamp: data.timestamp || Date.now(),
         current: hasTrack
           ? {
               title: data.title,
               author: data.author || "Together Music",
               thumbnail: data.thumbnail || "/logo.png",
               duration: data.duration || 0,
-              position: data.position || 0
+              position: data.position || 0,
+              uri: data.uri || "",
+              isStream: Boolean(data.isStream),
+              requester: data.requester || null,
+              requesterAvatar: data.requesterAvatar || null,
+              requesterId: data.requesterId || null
             }
           : null,
         queue: Array.isArray(data.queue) ? data.queue : []
@@ -89,6 +106,14 @@ class BotBridgeService {
         const sessions = await this.getActiveSessions();
         const active = sessions.find((s) => s.guildId === guildId);
         if (active) {
+          const hasTrack = Boolean(
+            active.title &&
+            active.title !== "Waiting for Music..." &&
+            active.title !== "Connected in Voice" &&
+            !active.title.startsWith("No Music Playing") &&
+            active.title !== "TOGETHER Standby"
+          );
+
           return {
             guildId: active.guildId,
             guildName: active.guildName,
@@ -99,19 +124,31 @@ class BotBridgeService {
             duration: active.duration || 0,
             loop: active.loop || "none",
             autoplay: Boolean(active.autoplay),
-            current: {
+            voiceChannel: active.voiceChannelName || "Voice Channel",
+            listeners: typeof active.listeners === "number" ? active.listeners : 0,
+            audience: typeof active.listeners === "number" ? active.listeners : 0,
+            audienceMembers: [],
+            timestamp: Date.now(),
+            current: hasTrack ? {
               title: active.title,
               author: active.author,
               thumbnail: active.thumbnail || "/logo.png",
               duration: active.duration || 0,
               position: active.position || 0
-            },
+            } : null,
             queue: []
           };
         }
       } catch {}
       return null;
     }
+  }
+
+  async getProfileBannerStream(userId) {
+    return axios.get(`${this.apiUrl}/api/profile-banner/${encodeURIComponent(userId)}`, {
+      responseType: "stream",
+      timeout: 8000
+    });
   }
 
   async sendPlayerAction(guildId, action, payload = {}) {

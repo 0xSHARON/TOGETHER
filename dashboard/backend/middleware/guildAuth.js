@@ -18,15 +18,15 @@ function requireGuildPermission(req, res, next) {
     return res.status(400).json({ error: "Missing guildId parameter." });
   }
 
-  if (!req.user || !Array.isArray(req.user.guilds)) {
-    return res.status(403).json({ error: "No guild metadata associated with session." });
-  }
-
-  // Allow bot owners to manage any guild
-  const config = require("../config");
-  if (config.ownerIds.includes(req.user.id)) {
+  // Allow bot owners to inspect and manage any guild
+  const { isBotOwner } = require("./auth");
+  if (isBotOwner(req.user)) {
     req.guildId = guildId;
     return next();
+  }
+
+  if (!req.user || !Array.isArray(req.user.guilds)) {
+    return res.status(403).json({ error: "No guild metadata associated with session." });
   }
 
   const userGuild = req.user.guilds.find(g => g.id === guildId);
@@ -34,7 +34,15 @@ function requireGuildPermission(req, res, next) {
     return res.status(403).json({ error: "You are not a member of this Discord server." });
   }
 
-  if (!checkGuildPermission(userGuild.permissions)) {
+  // For GET requests (viewing player, viewing channels, viewing queue): Any guild member can view!
+  if (req.method === "GET") {
+    req.guildId = guildId;
+    req.targetGuild = userGuild;
+    return next();
+  }
+
+  // For POST config updates, require Manage Server or Administrator
+  if (req.baseUrl === "/api/config" && !checkGuildPermission(userGuild.permissions)) {
     return res.status(403).json({ error: "Insufficient permissions. Manage Server or Administrator required." });
   }
 
@@ -47,4 +55,3 @@ module.exports = {
   checkGuildPermission,
   requireGuildPermission
 };
-

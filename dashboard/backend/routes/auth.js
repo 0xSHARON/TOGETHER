@@ -5,6 +5,7 @@ const config = require("../config");
 const { authenticateUser, isBotOwner } = require("../middleware/auth");
 const { setUserGuilds } = require("../services/sessionStore");
 const { UserPreferences, Liked, PlaylistLibrary } = require("../services/dbService");
+const botBridge = require("../services/botBridge");
 
 const router = express.Router();
 
@@ -191,7 +192,7 @@ router.get("/profile", authenticateUser, async (req, res) => {
         bio: prefDoc?.bio || "",
         anthem: prefDoc?.anthem || { title: "", artist: "", uri: "" },
         musicSource: prefDoc?.musicSource || "ytmsearch",
-        accentColor: prefDoc?.accentColor || "#00E676",
+        accentColor: prefDoc?.accentColor || "#FF1E38",
         badges
       },
       likedSongs: {
@@ -232,6 +233,18 @@ router.post("/profile", authenticateUser, async (req, res) => {
     res.json({ success: true, stats: doc });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/auth/profile-banner -> Streams the exact Discord Canvas Profile Banner
+router.get("/profile-banner", authenticateUser, async (req, res) => {
+  try {
+    const streamResp = await botBridge.getProfileBannerStream(req.user.id);
+    res.setHeader("Content-Type", "image/png");
+    res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=120");
+    streamResp.data.pipe(res);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to generate Discord profile banner: " + err.message });
   }
 });
 
