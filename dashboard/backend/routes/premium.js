@@ -338,8 +338,8 @@ function requireOwner(req, res, next) {
 router.get("/upi/config", (req, res) => {
   res.json({
     success: true,
-    upiId: process.env.UPI_ID || "togethermusic@upi",
-    upiName: process.env.UPI_NAME || "TOGETHER AUDIO",
+    upiId: process.env.UPI_ID || "sharonbabu17042004@okaxis",
+    upiName: process.env.UPI_NAME || "SHARON",
     autoApprove: process.env.UPI_AUTO_APPROVE === "true"
   });
 });

@@ -36,7 +36,7 @@ export default function PremiumPage({ initialTab = 'plans' }) {
   const [status, setStatus] = useState(null);
 
   // UPI Config
-  const [upiConfig, setUpiConfig] = useState({ upiId: "togethermusic@upi", upiName: "TOGETHER AUDIO" });
+  const [upiConfig, setUpiConfig] = useState({ upiId: "sharonbabu17042004@okaxis", upiName: "SHARON" });
   const [upiModalOpen, setUpiModalOpen] = useState(false);
   const [upiSelectedPlan, setUpiSelectedPlan] = useState(null);
   const [utrInput, setUtrInput] = useState('');
@@ -89,8 +89,8 @@ export default function PremiumPage({ initialTab = 'plans' }) {
       const resp = await axios.get('/api/premium/upi/config');
       if (resp.data?.success) {
         setUpiConfig({
-          upiId: resp.data.upiId || "togethermusic@upi",
-          upiName: resp.data.upiName || "TOGETHER AUDIO",
+          upiId: resp.data.upiId || "sharonbabu17042004@okaxis",
+          upiName: resp.data.upiName || "SHARON",
           autoApprove: Boolean(resp.data.autoApprove)
         });
       }
