@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, Link } from 'react-router-dom';
 import { 
+  Home,
   LayoutDashboard, 
   Disc3, 
-  ListMusic, 
   Server, 
   User, 
-  Radio, 
-  Trophy, 
   Medal, 
   Terminal, 
   Sliders, 
@@ -31,12 +29,11 @@ export default function DashboardLayout() {
   );
 
   const navItems = [
+    { name: 'HOME', path: '/', icon: Home, end: true },
     { name: 'OVERVIEW', path: '/overview', icon: LayoutDashboard },
     { name: 'MUSIC PLAYER', path: '/player', icon: Disc3 },
     { name: 'SERVERS', path: '/servers', icon: Server },
     { name: 'USER PROFILE', path: '/profile', icon: User },
-    { name: '24/7 & AUTOPLAY', path: '/autoplay-247', icon: Radio },
-    { name: 'MUSIC XP', path: '/xp', icon: Trophy },
     { name: 'LEADERBOARD', path: '/leaderboard', icon: Medal },
     { name: 'COMMANDS', path: '/commands', icon: Terminal },
     { name: 'SETTINGS', path: '/settings', icon: Sliders },
@@ -50,10 +47,10 @@ export default function DashboardLayout() {
     <div className="min-h-screen bg-brutal-bg text-brutal-text flex flex-col md:flex-row brutal-grid">
       {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between p-4 bg-brutal-surface border-b-2 border-brutal-border">
-        <div className="flex items-center gap-2.5">
+        <Link to="/" className="flex items-center gap-2.5">
           <img src="/logo.png" alt="TOGETHER" className="w-7 h-7 object-contain" />
           <span className="font-display font-black text-xl tracking-wider text-brutal-text">TOGETHER // DASH</span>
-        </div>
+        </Link>
         <button 
           onClick={() => setMobileOpen(!mobileOpen)}
           className="p-2 border-2 border-brutal-border bg-brutal-secondary text-brutal-text"
@@ -69,7 +66,7 @@ export default function DashboardLayout() {
       )}>
         <div>
           {/* Brand Header with Logo */}
-          <div className="p-6 border-b-2 border-brutal-border bg-brutal-secondary">
+          <Link to="/" className="block p-6 border-b-2 border-brutal-border bg-brutal-secondary hover:bg-zinc-900 transition-colors">
             <div className="flex items-center gap-3">
               <img src="/logo.png" alt="TOGETHER" className="w-9 h-9 object-contain shrink-0" />
               <div>
@@ -81,7 +78,7 @@ export default function DashboardLayout() {
                 </p>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Navigation Links */}
           <nav className="p-4 space-y-1 overflow-y-auto max-h-[calc(100vh-220px)]">
@@ -91,6 +88,7 @@ export default function DashboardLayout() {
                 <NavLink
                   key={item.path}
                   to={item.path}
+                  end={item.end}
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) => clsx(
                     "flex items-center gap-3 px-3.5 py-2.5 font-mono text-xs font-bold uppercase transition-all duration-150 border-2",

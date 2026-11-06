@@ -11,8 +11,10 @@ import {
   Server, 
   ChevronDown, 
   Music, 
-  Palette, 
-  RefreshCw 
+  User, 
+  RefreshCw,
+  ExternalLink,
+  Lock
 } from 'lucide-react';
 import { BrutCard, BrutButton } from '../components/Brutalist';
 
@@ -23,6 +25,10 @@ export default function SettingsPage() {
   const [guilds, setMutualGuilds] = useState([]);
   const [selectedGuildId, setSelectedGuildId] = useState(searchParams.get('guild') || '');
   const [config, setConfig] = useState(null);
+  const [channels, setChannels] = useState({ textChannels: [], voiceChannels: [] });
+  const [voterStatus, setVoterStatus] = useState({ allowed: false, isOwner: false, isVoter: false });
+  const [topggVoteUrl, setTopggVoteUrl] = useState('https://top.gg/bot/863496211667484676/vote');
+
   const [loadingGuilds, setLoadingGuilds] = useState(true);
   const [loadingConfig, setLoadingConfig] = useState(false);
 
@@ -91,6 +97,11 @@ export default function SettingsPage() {
       setIs247(Boolean(resp.data?.twoFourSeven?.enabled));
       setVoiceId(resp.data?.twoFourSeven?.voiceId || '');
       setTextId(resp.data?.twoFourSeven?.textId || '');
+      setChannels(resp.data?.channels || { textChannels: [], voiceChannels: [] });
+      setVoterStatus(resp.data?.voterStatus || { allowed: false, isOwner: false, isVoter: false });
+      if (resp.data?.topggVoteUrl) {
+        setTopggVoteUrl(resp.data.topggVoteUrl);
+      }
     } catch (err) {
       console.error('Failed to fetch guild config:', err);
     } finally {
@@ -136,8 +147,12 @@ export default function SettingsPage() {
     }
   }
 
-  // 24/7 Handlers
+  // 24/7 Handlers (Strictly voter gated)
   async function handleToggle247(enable) {
+    if (!voterStatus?.allowed) {
+      alert('Top.gg vote required to configure 24/7 voice persistence!');
+      return;
+    }
     setSaving247(true);
     setMsg247('');
     try {
@@ -241,24 +256,24 @@ export default function SettingsPage() {
         </button>
 
         <button
-          onClick={() => navigate(`/cards?guild=${selectedGuildId}`)}
+          onClick={() => navigate('/profile')}
           className="p-3 border-2 border-brutal-border bg-brutal-surface hover:border-brutal-accent text-left transition-all flex items-center justify-between"
         >
           <div>
-            <span className="font-mono text-[10px] text-amber-400 uppercase font-bold block">
-              CANVAS CUSTOMIZATION
+            <span className="font-mono text-[10px] text-cyan-400 uppercase font-bold block">
+              USER REPUTATION & XP
             </span>
             <span className="font-mono text-xs font-bold text-brutal-text uppercase">
-              MUSIC CARD STUDIO →
+              VIEW MY PROFILE →
             </span>
           </div>
-          <Palette className="w-5 h-5 text-amber-400" />
+          <User className="w-5 h-5 text-cyan-400" />
         </button>
       </div>
 
       {loadingConfig ? (
         <div className="text-center py-12 font-mono text-xs text-brutal-muted animate-pulse">
-          [ SYNCHRONIZING GUILD MONGODB PARAMETERS... ]
+          [ SYNCHRONIZING GUILD CONFIGURATION... ]
         </div>
       ) : (
         <div className="space-y-6">
@@ -302,19 +317,61 @@ export default function SettingsPage() {
                 </div>
               </div>
               <p className="font-mono text-[11px] text-brutal-muted">
-                Default bot prefix is <code className="text-brutal-accent">.</code> (e.g. <code className="text-brutal-accent">.play</code>). Slash commands (<code className="text-brutal-accent">/play</code>) work regardless of custom prefix.
+                Default bot prefix is <code className="text-brutal-accent">.</code> (e.g. <code className="text-brutal-accent">.play</code>). Discord slash commands (<code className="text-brutal-accent">/play</code>) always function simultaneously.
               </p>
             </form>
           </BrutCard>
 
-          {/* SECTION 2: 24/7 MODE */}
-          <BrutCard title="24/7 VOICE PERSISTENCE" subtitle="Permanent zero-downtime voice channel connection">
+          {/* SECTION 2: 24/7 MODE (WITH TOP.GG VOTE GATE AND CHANNELS DROPDOWN) */}
+          <BrutCard title="24/7 VOICE PERSISTENCE" subtitle="Locked zero-downtime voice connection with auto-reconnect">
             {msg247 && (
               <div className="p-3 mb-4 border-2 border-black bg-brutal-accent text-black font-mono font-bold text-xs flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>{msg247}</span>
               </div>
             )}
+
+            {/* Voter Gate Notice */}
+            {!voterStatus?.allowed ? (
+              <div className="p-4 mb-4 border-2 border-amber-500 bg-amber-500/10 text-amber-300 font-mono text-xs space-y-3">
+                <div className="flex items-center gap-2 font-black text-amber-400 uppercase tracking-wider text-sm">
+                  <Lock className="w-4 h-4 shrink-0" />
+                  <span>TOP.GG VOTE REQUIRED TO UPDATE 24/7 MODE</span>
+                </div>
+                <p className="text-zinc-300 leading-relaxed">
+                  24/7 voice persistence is an exclusive voter privilege. You must upvote TOGETHER on Top.gg to unlock 12 hours of uninterrupted 24/7 mode for your server.
+                </p>
+                <div>
+                  <a
+                    href={topggVoteUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-amber-400 text-black font-mono text-xs font-black uppercase border-2 border-black shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+                  >
+                    ⭐ VOTE ON TOP.GG TO UNLOCK 24/7
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="p-3 mb-4 border-2 border-brutal-accent bg-brutal-accent/10 text-brutal-accent font-mono font-bold text-xs flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <span>
+                    {voterStatus.isOwner ? '👑 BOT OWNER UNLOCKED — UNLIMITED 24/7 ACCESS' : '⭐ TOP.GG VOTE VERIFIED — 24/7 MODE UNLOCKED'}
+                  </span>
+                </div>
+                <a
+                  href={topggVoteUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline text-[10px] uppercase font-bold text-zinc-300 hover:text-white"
+                >
+                  Renew Vote
+                </a>
+              </div>
+            )}
+
             <div className="space-y-4 font-mono text-xs">
               <div className="flex items-center justify-between p-3 border border-brutal-border bg-brutal-bg">
                 <div>
@@ -332,55 +389,96 @@ export default function SettingsPage() {
                 </span>
               </div>
 
+              {/* Channels Dropdown Selection */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Voice Channels Selector */}
                 <div>
                   <label className="block text-brutal-muted uppercase text-[10px] mb-1 font-bold">
-                    VOICE CHANNEL ID
+                    VOICE CHANNEL TO LOCK
                   </label>
-                  <input
-                    type="text"
-                    value={voiceId}
-                    onChange={(e) => setVoiceId(e.target.value)}
-                    placeholder="e.g. 1523598777573970014"
-                    className="w-full bg-brutal-bg border-2 border-brutal-border p-2.5 font-mono text-xs text-brutal-text focus:outline-none focus:border-brutal-accent"
-                  />
+                  <div className="relative">
+                    <select
+                      value={voiceId}
+                      onChange={(e) => setVoiceId(e.target.value)}
+                      disabled={!voterStatus?.allowed || saving247}
+                      className="w-full bg-brutal-bg border-2 border-brutal-border p-2.5 font-mono text-xs text-brutal-text focus:outline-none focus:border-brutal-accent appearance-none disabled:opacity-50 font-bold"
+                    >
+                      <option value="">-- SELECT VOICE CHANNEL --</option>
+                      {channels.voiceChannels.map((vc) => (
+                        <option key={vc.id} value={vc.id}>
+                          🔊 {vc.name} ({vc.id.slice(-4)})
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brutal-muted pointer-events-none" />
+                  </div>
+                  {channels.voiceChannels.length === 0 && (
+                    <input
+                      type="text"
+                      value={voiceId}
+                      onChange={(e) => setVoiceId(e.target.value)}
+                      placeholder="Paste Voice Channel ID"
+                      disabled={!voterStatus?.allowed || saving247}
+                      className="w-full mt-2 bg-brutal-bg border-2 border-brutal-border p-2 font-mono text-xs text-brutal-text disabled:opacity-50"
+                    />
+                  )}
                   <span className="text-[10px] text-brutal-muted mt-1 block">
-                    Right click voice channel &rarr; Copy Channel ID
+                    Target voice room where TOGETHER stays connected 24/7
                   </span>
                 </div>
 
+                {/* Text Channels Selector */}
                 <div>
                   <label className="block text-brutal-muted uppercase text-[10px] mb-1 font-bold">
-                    TEXT NOTIFICATION CHANNEL ID
+                    TEXT NOTIFICATION CHANNEL
                   </label>
-                  <input
-                    type="text"
-                    value={textId}
-                    onChange={(e) => setTextId(e.target.value)}
-                    placeholder="e.g. 1523598777573970012"
-                    className="w-full bg-brutal-bg border-2 border-brutal-border p-2.5 font-mono text-xs text-brutal-text focus:outline-none focus:border-brutal-accent"
-                  />
+                  <div className="relative">
+                    <select
+                      value={textId}
+                      onChange={(e) => setTextId(e.target.value)}
+                      disabled={!voterStatus?.allowed || saving247}
+                      className="w-full bg-brutal-bg border-2 border-brutal-border p-2.5 font-mono text-xs text-brutal-text focus:outline-none focus:border-brutal-accent appearance-none disabled:opacity-50 font-bold"
+                    >
+                      <option value="">-- SELECT TEXT CHANNEL --</option>
+                      {channels.textChannels.map((tc) => (
+                        <option key={tc.id} value={tc.id}>
+                          # {tc.name} ({tc.id.slice(-4)})
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brutal-muted pointer-events-none" />
+                  </div>
+                  {channels.textChannels.length === 0 && (
+                    <input
+                      type="text"
+                      value={textId}
+                      onChange={(e) => setTextId(e.target.value)}
+                      placeholder="Paste Text Channel ID"
+                      disabled={!voterStatus?.allowed || saving247}
+                      className="w-full mt-2 bg-brutal-bg border-2 border-brutal-border p-2 font-mono text-xs text-brutal-text disabled:opacity-50"
+                    />
+                  )}
                   <span className="text-[10px] text-brutal-muted mt-1 block">
-                    Right click text channel &rarr; Copy Channel ID
+                    Channel where 24/7 status alerts and track changes are sent
                   </span>
                 </div>
               </div>
 
-              <div className="pt-2 flex gap-3">
+              <div className="pt-2 flex flex-wrap gap-3">
                 <button
                   type="button"
-                  disabled={saving247 || !voiceId || !textId}
+                  disabled={!voterStatus?.allowed || saving247 || !voiceId || !textId}
                   onClick={() => handleToggle247(true)}
-                  className="px-4 py-2.5 bg-brutal-accent text-black font-mono text-xs font-bold uppercase border-2 border-black shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50"
+                  className="px-5 py-2.5 bg-brutal-accent text-black font-mono text-xs font-bold uppercase border-2 border-black shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {saving247 ? 'UPDATING...' : 'ENABLE / UPDATE 24/7'}
                 </button>
                 {is247 && (
                   <button
                     type="button"
-                    disabled={saving247}
+                    disabled={!voterStatus?.allowed || saving247}
                     onClick={() => handleToggle247(false)}
-                    className="px-4 py-2.5 bg-red-950/40 text-red-400 font-mono text-xs font-bold uppercase border-2 border-red-600 hover:bg-red-600 hover:text-black transition-all"
+                    className="px-5 py-2.5 bg-red-950/40 text-red-400 font-mono text-xs font-bold uppercase border-2 border-red-600 hover:bg-red-600 hover:text-black transition-all disabled:opacity-40"
                   >
                     DISABLE 24/7
                   </button>
@@ -420,4 +518,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-

@@ -149,6 +149,56 @@ class BotBridgeService {
       }
     }
   }
+
+  async getGuildChannels(guildId) {
+    if (!guildId) return { textChannels: [], voiceChannels: [] };
+    try {
+      const resp = await axios.get(`${this.apiUrl}/api/guild-channels/${encodeURIComponent(guildId)}`, { timeout: 4000 });
+      return {
+        textChannels: Array.isArray(resp.data?.textChannels) ? resp.data.textChannels : [],
+        voiceChannels: Array.isArray(resp.data?.voiceChannels) ? resp.data.voiceChannels : []
+      };
+    } catch {
+      return { textChannels: [], voiceChannels: [] };
+    }
+  }
+
+  async checkVoterStatus(userId) {
+    if (!userId) return { allowed: false, isOwner: false, isVoter: false };
+    if (userId === "780345293237125152" || config.ownerIds.includes(userId)) {
+      return { allowed: true, isOwner: true, isVoter: true };
+    }
+    try {
+      const resp = await axios.get(`${this.apiUrl}/api/check-vote?userId=${encodeURIComponent(userId)}`, { timeout: 4000 });
+      return resp.data || { allowed: false, isOwner: false, isVoter: false };
+    } catch {
+      return { allowed: false, isOwner: false, isVoter: false };
+    }
+  }
+
+  async sendDashboardLog({ event, user, guildId, guildName, action, details, color }) {
+    try {
+      await axios.post(
+        `${this.apiUrl}/api/dashboard-log`,
+        {
+          event,
+          user,
+          guildId,
+          guildName,
+          action,
+          details,
+          color,
+          timestamp: new Date().toISOString()
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          timeout: 4000
+        }
+      );
+    } catch (err) {
+      // Non-blocking log delivery
+    }
+  }
 }
 
 module.exports = new BotBridgeService();

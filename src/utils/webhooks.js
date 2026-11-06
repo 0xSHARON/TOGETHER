@@ -10,6 +10,7 @@ const THREAD_NAMES = {
   error: "⚠️・system-errors",
   console: "💻・console-logs",
   failover: "🔄・audio-failover",
+  dashboard: "🌐・dashboard-logs",
   default: "📋・general-logs",
 };
 
@@ -49,6 +50,10 @@ const THREAD_DESCRIPTIONS = {
   failover: {
     title: "Audio Failover Log",
     desc: "Captures mid-song Lavalink node failover events, seamless audio rerouting, previous/new node mappings, and player timestamps.",
+  },
+  dashboard: {
+    title: "Web Dashboard Actions",
+    desc: "Records all real-time web dashboard operations, prefix adjustments, 24/7 channel locking, and player controls.",
   },
 };
 

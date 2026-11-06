@@ -23,8 +23,14 @@ async function getGuildPrefix(guildId, defaultPrefix = ".") {
     return cached.prefix;
   }
 
+  // Fast path: if MongoDB is not connected, never hang or buffer; return cached or default instantly
+  const mongoose = require("mongoose");
+  if (mongoose?.connection?.readyState !== 1) {
+    return cached ? cached.prefix : defaultPrefix;
+  }
+
   try {
-    const data = await PrefixSchema.findOne({ Guild: guildId }).lean();
+    const data = await PrefixSchema.findOne({ Guild: guildId }).maxTimeMS(2000).lean();
     const prefix = data?.Prefix || defaultPrefix;
     prefixCache.set(guildId, { prefix, timestamp: now });
     return prefix;

@@ -2,11 +2,11 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import DashboardLayout from './layouts/DashboardLayout';
+import LandingPage from './pages/LandingPage';
 import OverviewPage from './pages/OverviewPage';
 import ServersPage from './pages/ServersPage';
 import PlayerPage from './pages/PlayerPage';
 import LeaderboardPage from './pages/LeaderboardPage';
-import Autoplay247Page from './pages/Autoplay247Page';
 import ProfilePage from './pages/ProfilePage';
 import CommandsPage from './pages/CommandsPage';
 import OwnerPage from './pages/OwnerPage';
@@ -18,25 +18,29 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          {/* Public Standalone Landing Page */}
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
 
+          {/* Authenticated / Dashboard Layout Pages */}
           <Route element={<DashboardLayout />}>
-            <Route path="/" element={<Navigate to="/overview" replace />} />
             <Route path="/overview" element={<OverviewPage />} />
             <Route path="/servers" element={<ServersPage />} />
             <Route path="/player" element={<PlayerPage />} />
-            <Route path="/queue" element={<PlayerPage />} />
-            <Route path="/leaderboard" element={<LeaderboardPage />} />
-            <Route path="/xp" element={<LeaderboardPage />} />
-            <Route path="/autoplay-247" element={<Autoplay247Page />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/cards" element={<Navigate to="/profile" replace />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/commands" element={<CommandsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/owner" element={<OwnerPage />} />
+
+            {/* Legacy & Deprecated Route Redirects */}
+            <Route path="/cards" element={<Navigate to="/profile" replace />} />
+            <Route path="/autoplay-247" element={<Navigate to="/settings" replace />} />
+            <Route path="/xp" element={<Navigate to="/leaderboard" replace />} />
+            <Route path="/queue" element={<Navigate to="/player" replace />} />
           </Route>
 
-          <Route path="*" element={<Navigate to="/overview" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

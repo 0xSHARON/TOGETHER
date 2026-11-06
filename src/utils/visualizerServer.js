@@ -647,6 +647,87 @@ function startVisualizerServer(client, preferredPort = 5050) {
       return;
     }
 
+    // ── API: Guild Channels for 24/7 Selector (/api/guild-channels/:guildId) ──
+    if (pathname.startsWith("/api/guild-channels/")) {
+      const rawTarget = pathname.replace("/api/guild-channels/", "").trim();
+      const targetGuildId = resolveGuildId(client, rawTarget) || rawTarget;
+      const guild = client?.guilds?.cache?.get(targetGuildId);
+      if (!guild) {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ textChannels: [], voiceChannels: [] }));
+      }
+      const textChannels = [];
+      const voiceChannels = [];
+      guild.channels.cache.forEach((c) => {
+        if (!c) return;
+        if (c.type === 2 || c.type === 13 || c.isVoiceBased?.()) {
+          voiceChannels.push({ id: c.id, name: c.name, type: c.type });
+        } else if (c.type === 0 || c.type === 5 || c.isTextBased?.()) {
+          textChannels.push({ id: c.id, name: c.name, type: c.type });
+        }
+      });
+      textChannels.sort((a, b) => a.name.localeCompare(b.name));
+      voiceChannels.sort((a, b) => a.name.localeCompare(b.name));
+      res.writeHead(200, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ textChannels, voiceChannels }));
+    }
+
+    // ── API: Check Top.gg Voter Access (/api/check-vote) ─────
+    if (pathname === "/api/check-vote") {
+      const userId = reqUrl.searchParams.get("userId");
+      const { checkVoterAccess } = require("./voterCheck");
+      checkVoterAccess(client, userId).then((status) => {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(status));
+      }).catch(() => {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ allowed: false, isOwner: false, isVoter: false }));
+      });
+      return;
+    }
+
+    // ── API: Dispatch Dashboard Log to Discord Log Thread (/api/dashboard-log) ──
+    if (pathname === "/api/dashboard-log" && req.method === "POST") {
+      let body = "";
+      req.on("data", (chunk) => { body += chunk; });
+      req.on("end", async () => {
+        try {
+          const payload = JSON.parse(body || "{}");
+          const { sendWebhook } = require("./webhooks");
+          const { EmbedBuilder } = require("discord.js");
+          const guild = payload.guildId ? client?.guilds?.cache?.get(payload.guildId) : null;
+          const guildName = guild?.name || payload.guildName || (payload.guildId ? `Server (${payload.guildId})` : "Global");
+
+          const embed = new EmbedBuilder()
+            .setColor(payload.color || "#00E676")
+            .setAuthor({
+              name: `${payload.user?.username || "Web User"} • Dashboard Action`,
+              iconURL: payload.user?.avatar || client?.user?.displayAvatarURL({ dynamic: true })
+            })
+            .setTitle(`🌐 Dashboard Event: ${payload.action || "Configuration Update"}`)
+            .setDescription(
+              `**• Executor:** <@${payload.user?.id}> (\`${payload.user?.username || payload.user?.id}\`)\n` +
+              `**• Target Server:** \`${guildName}\` (${payload.guildId || "N/A"})\n` +
+              `**• Action Details:** ${payload.details || "N/A"}\n` +
+              `**• Timestamp:** <t:${Math.floor(Date.now() / 1000)}:R>`
+            )
+            .setFooter({
+              text: `${client?.user?.username || "TOGETHER"} • Web Sentinel`,
+              iconURL: client?.user?.displayAvatarURL({ dynamic: true })
+            })
+            .setTimestamp();
+
+          await sendWebhook(client, "dashboard", { embeds: [embed] });
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ success: true }));
+        } catch (err) {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ success: false, error: err.message }));
+        }
+      });
+      return;
+    }
+
     // ── Static Web Serving ────────────────────────────────────
     let filePath;
 

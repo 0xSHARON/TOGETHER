@@ -36,6 +36,16 @@ router.post("/:guildId/action", authenticateUser, requireGuildPermission, async 
       io.to(`guild:${req.guildId}`).emit("playerUpdate", { guildId: req.guildId, action, ...result });
     }
 
+    // Log player action to Discord thread
+    botBridge.sendDashboardLog({
+      event: "PLAYER_ACTION",
+      user: req.user,
+      guildId: req.guildId,
+      action: `Music Control: ${action.toUpperCase()}`,
+      details: `Action: \`${action}\`${query ? ` (Query: "${query}")` : ""}${typeof position === "number" ? ` (Value: ${position})` : ""} by **${req.user.username}**.`,
+      color: "#00E676"
+    });
+
     res.json({ success: true, action, result });
   } catch (err) {
     res.status(500).json({ error: err.message });

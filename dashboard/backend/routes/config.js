@@ -2,16 +2,20 @@ const express = require("express");
 const { authenticateUser } = require("../middleware/auth");
 const { requireGuildPermission } = require("../middleware/guildAuth");
 const { TwoFourSeven, Setup, Prefix } = require("../services/dbService");
+const botBridge = require("../services/botBridge");
+const config = require("../config");
 
 const router = express.Router();
 
-// GET /api/config/:guildId -> Get 24/7, Setup channel, and prefix
+// GET /api/config/:guildId -> Get 24/7, Setup channel, prefix, guild channels, and voter status
 router.get("/:guildId", authenticateUser, requireGuildPermission, async (req, res) => {
   try {
-    const [twoFourSeven, setup, prefixDoc] = await Promise.all([
-      TwoFourSeven.findOne({ Guild: req.guildId }),
-      Setup.findOne({ Guild: req.guildId }),
-      Prefix.findOne({ Guild: req.guildId })
+    const [twoFourSeven, setup, prefixDoc, channels, voterStatus] = await Promise.all([
+      TwoFourSeven.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null),
+      Setup.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null),
+      Prefix.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null),
+      botBridge.getGuildChannels(req.guildId).catch(() => ({ textChannels: [], voiceChannels: [] })),
+      botBridge.checkVoterStatus(req.user.id).catch(() => ({ allowed: false, isOwner: false, isVoter: false }))
     ]);
 
     res.json({
@@ -29,32 +33,66 @@ router.get("/:guildId", authenticateUser, requireGuildPermission, async (req, re
             voiceChannelId: setup.voiceChannel
           }
         : null,
-      prefix: prefixDoc?.Prefix || "."
+      prefix: prefixDoc?.Prefix || ".",
+      channels: channels || { textChannels: [], voiceChannels: [] },
+      voterStatus: voterStatus || { allowed: false, isOwner: false, isVoter: false },
+      topggVoteUrl: config.topggVoteUrl || "https://top.gg/bot/863496211667484676/vote"
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// POST /api/config/:guildId/247 -> Toggle or update 24/7 settings
+// POST /api/config/:guildId/247 -> Toggle or update 24/7 settings (Requires Top.gg Vote)
 router.post("/:guildId/247", authenticateUser, requireGuildPermission, async (req, res) => {
   const { enabled, textId, voiceId } = req.body;
 
   try {
+    // 1. Enforce Voter Gate: Only users who have voted on Top.gg (or bot owners) can update 24/7 mode
+    const voterStatus = await botBridge.checkVoterStatus(req.user.id);
+    if (!voterStatus?.allowed) {
+      return res.status(403).json({
+        error: "Top.gg vote required! You must vote for TOGETHER on Top.gg to configure 24/7 voice persistence.",
+        voterOnly: true,
+        voteUrl: config.topggVoteUrl || "https://top.gg/bot/863496211667484676/vote"
+      });
+    }
+
     if (!enabled) {
-      await TwoFourSeven.deleteOne({ Guild: req.guildId });
+      await TwoFourSeven.deleteOne({ Guild: req.guildId }).maxTimeMS(2500).catch(() => {});
+
+      // Dispatch audit log to Discord thread
+      botBridge.sendDashboardLog({
+        event: "247_DISABLE",
+        user: req.user,
+        guildId: req.guildId,
+        action: "24/7 Mode Disabled",
+        details: `Voice persistence was turned off via Web Dashboard by **${req.user.username}**.`,
+        color: "#FFA000"
+      });
+
       return res.json({ success: true, enabled: false });
     }
 
     if (!textId || !voiceId) {
-      return res.status(400).json({ error: "Text channel ID and Voice channel ID are required for 24/7 mode." });
+      return res.status(400).json({ error: "Text channel and Voice channel selections are required for 24/7 mode." });
     }
 
     const doc = await TwoFourSeven.findOneAndUpdate(
       { Guild: req.guildId },
       { TextId: String(textId).trim(), VoiceId: String(voiceId).trim() },
-      { upsert: true, new: true }
+      { upsert: true, new: true, maxTimeMS: 2500 }
     );
+
+    // Dispatch audit log to Discord thread
+    botBridge.sendDashboardLog({
+      event: "247_ENABLE",
+      user: req.user,
+      guildId: req.guildId,
+      action: "24/7 Mode Enabled & Locked",
+      details: `Locked to Voice: <#${voiceId}> | Text: <#${textId}>\nConfigured via Web Dashboard by **${req.user.username}**.`,
+      color: "#00E676"
+    });
 
     res.json({ success: true, enabled: true, data: doc });
   } catch (err) {
@@ -76,16 +114,26 @@ router.post("/:guildId/prefix", authenticateUser, requireGuildPermission, async 
   }
 
   try {
-    const existing = await Prefix.findOne({ Guild: req.guildId });
+    const existing = await Prefix.findOne({ Guild: req.guildId }).maxTimeMS(2500).lean().catch(() => null);
     const oldPrefix = existing?.Prefix || ".";
 
     const doc = await Prefix.findOneAndUpdate(
       { Guild: req.guildId },
       { Prefix: cleanPrefix, oldPrefix },
-      { upsert: true, new: true }
+      { upsert: true, new: true, maxTimeMS: 2500 }
     );
 
-    res.json({ success: true, prefix: doc.Prefix });
+    // Dispatch audit log to Discord thread
+    botBridge.sendDashboardLog({
+      event: "PREFIX_CHANGE",
+      user: req.user,
+      guildId: req.guildId,
+      action: "Prefix Updated",
+      details: `Prefix changed from \`${oldPrefix}\` to \`${cleanPrefix}\` by **${req.user.username}**.`,
+      color: "#00E676"
+    });
+
+    res.json({ success: true, prefix: doc?.Prefix || cleanPrefix });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -94,7 +142,18 @@ router.post("/:guildId/prefix", authenticateUser, requireGuildPermission, async 
 // POST /api/config/:guildId/reset-prefix -> Reset prefix back to default '.'
 router.post("/:guildId/reset-prefix", authenticateUser, requireGuildPermission, async (req, res) => {
   try {
-    await Prefix.deleteOne({ Guild: req.guildId });
+    await Prefix.deleteOne({ Guild: req.guildId }).maxTimeMS(2500).catch(() => {});
+
+    // Dispatch audit log to Discord thread
+    botBridge.sendDashboardLog({
+      event: "PREFIX_RESET",
+      user: req.user,
+      guildId: req.guildId,
+      action: "Prefix Reset to Default",
+      details: `Prefix reset to \`.\` by **${req.user.username}**.`,
+      color: "#00E676"
+    });
+
     res.json({ success: true, prefix: "." });
   } catch (err) {
     res.status(500).json({ error: err.message });
