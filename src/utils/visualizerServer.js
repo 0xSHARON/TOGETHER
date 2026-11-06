@@ -401,7 +401,7 @@ function getBotInfo(client) {
 function startVisualizerServer(client, preferredPort = 5050) {
   const port = Number(process.env.VISUALIZER_PORT) || preferredPort;
 
-  const server = http.createServer((req, res) => {
+  const server = http.createServer(async (req, res) => {
     let cleanUrl = "/" + (req.url || "/").replace(/^\/+/, "");
     let reqUrl;
     try {
