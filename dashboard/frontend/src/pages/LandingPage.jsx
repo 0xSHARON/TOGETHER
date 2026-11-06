@@ -25,6 +25,7 @@ import { useAuth } from '../context/AuthContext';
 
 const BOT_INVITE_URL = "https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands";
 const TOPGG_VOTE_URL = "https://top.gg/bot/863496211667484676/vote";
+const SUPPORT_SERVER_URL = "https://discord.gg/mUdGTs2Dw5";
 
 export default function LandingPage() {
   const { user } = useAuth();
@@ -588,7 +589,7 @@ export default function LandingPage() {
                 <span>SUPPORT ON TOP.GG</span>
               </a>
               <a
-                href="https://discord.gg/"
+                href={SUPPORT_SERVER_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="px-4 py-1.5 bg-brutal-secondary text-white border-2 border-brutal-border font-bold text-xs uppercase hover:border-white transition-all flex items-center gap-1.5"
@@ -611,6 +612,7 @@ export default function LandingPage() {
         <div className="flex flex-wrap gap-4 uppercase font-bold text-[11px]">
           <Link to="/overview" className="hover:text-brutal-accent">Dashboard</Link>
           <Link to="/commands" className="hover:text-brutal-accent">Commands</Link>
+          <a href={SUPPORT_SERVER_URL} target="_blank" rel="noreferrer" className="hover:text-brutal-accent">Support</a>
           <a href={BOT_INVITE_URL} target="_blank" rel="noreferrer" className="hover:text-brutal-accent">Invite Bot</a>
           <a href={TOPGG_VOTE_URL} target="_blank" rel="noreferrer" className="hover:text-brutal-accent">Vote Top.gg</a>
         </div>
