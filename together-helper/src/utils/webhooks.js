@@ -9,3 +9,4 @@ function isHttpUrl(string) {
 }
 
 module.exports = { isHttpUrl };
+

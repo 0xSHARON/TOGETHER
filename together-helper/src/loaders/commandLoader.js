@@ -38,6 +38,16 @@ module.exports = async (client) => {
       console.log(`[Slash] Registering ${commands.length} global slash commands with Discord...`);
       await rest.put(Routes.applicationCommands(client.user.id), { body: commands });
       console.log(`[Slash] Successfully deployed ${commands.length} helper slash commands globally.`);
+
+      // Also register directly to all active guilds so commands appear INSTANTLY (0 delay)
+      for (const guild of client.guilds.cache.values()) {
+        try {
+          await rest.put(Routes.applicationGuildCommands(client.user.id, guild.id), { body: commands });
+          console.log(`[Slash] Instantly synchronized ${commands.length} commands to guild "${guild.name}" (${guild.id}).`);
+        } catch (guildErr) {
+          console.warn(`[Slash] Failed to sync to guild ${guild.id}: ${guildErr.message}`);
+        }
+      }
     } catch (err) {
       console.error("[Slash Deployment Error]", err);
     }

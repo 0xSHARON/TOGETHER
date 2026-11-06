@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const { StickyMessage } = require("../schema");
 const config = require("../config");
-const { container, flags, separator, text, COLORS } = require("../utils/ui");
+const { container, flags, separator, text, noticePayload, COLORS } = require("../utils/ui");
 
 // Cooldown tracker to prevent rate limits when multiple messages arrive quickly
 const stickyCooldowns = new Map();
@@ -11,25 +11,51 @@ module.exports = {
   async execute(message, client) {
     if (message.author.bot || !message.guild) return;
 
-    // 1. Handle Prefix Commands
+    // 1. Handle Prefix & Mention Commands
     const prefix = config.prefix || "-";
+    const mentionRegex = new RegExp(`^<@!?${client.user.id}>(?:\\s+)?`);
+    let matchedPrefix = null;
+
     if (message.content.startsWith(prefix)) {
-      const args = message.content.slice(prefix.length).trim().split(/ +/g);
+      matchedPrefix = prefix;
+    } else if (mentionRegex.test(message.content)) {
+      const match = message.content.match(mentionRegex);
+      matchedPrefix = match[0];
+    }
+
+    if (matchedPrefix !== null) {
+      const rawArgs = message.content.slice(matchedPrefix.length).trim();
+      const args = rawArgs.length ? rawArgs.split(/ +/g) : [];
       const commandName = args.shift()?.toLowerCase();
 
-      if (commandName) {
-        const command = client.commands.get(commandName);
-        if (command && typeof command.prefixExecute === "function") {
-          try {
-            await command.prefixExecute(message, args, client);
-          } catch (err) {
-            console.error(`[Prefix Command Error] ${commandName}:`, err);
-            await message.reply({
-              content: `❌ Error executing command: ${err.message}`
-            }).catch(() => {});
-          }
-          return;
+      // If user merely mentions the bot without arguments, show quick helper info
+      if (!commandName) {
+        return message.reply(
+          noticePayload({
+            title: "TOGETHER HELPER Online",
+            description: `My prefix on this server is \`${prefix}\` or you can use \`/help\` to browse all commands.`,
+            emoji: "🤖",
+            tone: "info"
+          }, false)
+        ).catch(() => {});
+      }
+
+      const command = client.commands.get(commandName);
+      if (command && typeof command.prefixExecute === "function") {
+        try {
+          await command.prefixExecute(message, args, client);
+        } catch (err) {
+          console.error(`[Prefix Command Error] ${commandName}:`, err);
+          await message.reply(
+            noticePayload({
+              title: "Command Execution Error",
+              description: err.message,
+              emoji: "❌",
+              tone: "danger"
+            }, false)
+          ).catch(() => {});
         }
+        return;
       }
     }
 
