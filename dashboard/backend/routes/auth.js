@@ -140,20 +140,41 @@ router.get("/me", authenticateUser, (req, res) => {
   });
 });
 
+function computeRealBadges(pref, likedCount) {
+  const badges = [];
+  const songsCount = Math.max(0, Number(pref?.songsPlayed) || 0);
+  const secCount = Math.max(0, Number(pref?.listeningSeconds) || 0);
+  const streakCount = Math.max(0, Number(pref?.streak) || 0);
+  const level = Math.max(1, Number(pref?.level) || 1);
+  const likes = Math.max(0, Number(likedCount) || 0);
+
+  if (songsCount >= 1) badges.push({ id: "vinyl", label: "First Spin", emoji: "💿", desc: "Played at least 1 track" });
+  if (secCount >= 3600) badges.push({ id: "wave", label: "Audiophile", emoji: "⏱️", desc: "Listened for over 1 hour" });
+  if (level >= 5 || songsCount >= 50) badges.push({ id: "crown", label: "Music Royalty", emoji: "👑", desc: "Level 5+ or 50+ songs played" });
+  if (pref?.anthem?.title) badges.push({ id: "star", label: "Signature Vibe", emoji: "⭐", desc: "Personal anthem configured" });
+  if (streakCount >= 2) badges.push({ id: "planet", label: "Streak Master", emoji: "🔥", desc: "Daily listening streak active" });
+  if (likes >= 1) badges.push({ id: "bars", label: "Taste Curator", emoji: "❤️", desc: "Curated favorite tracks" });
+
+  return badges;
+}
+
 // GET /api/auth/profile -> Returns full user music preferences, stats, liked songs, playlists
 router.get("/profile", authenticateUser, async (req, res) => {
   try {
     const userId = req.user.id;
 
     const [prefDoc, likedDoc, playlistDoc] = await Promise.all([
-      UserPreferences.findOne({ userId }),
-      Liked.findOne({ userId }),
-      PlaylistLibrary.findOne({ userId })
+      UserPreferences.findOne({ userId }).maxTimeMS(2500).lean().catch(() => null),
+      Liked.findOne({ userId }).maxTimeMS(2500).lean().catch(() => null),
+      PlaylistLibrary.findOne({ userId }).maxTimeMS(2500).lean().catch(() => null)
     ]);
 
     const isOwner = config.ownerIds.map(String).includes(String(req.user.id).trim()) ||
       String(req.user.id).trim() === "780345293237125152" ||
       Boolean(req.user.isOwner);
+
+    const likedCount = likedDoc?.songs?.length || 0;
+    const badges = computeRealBadges(prefDoc, likedCount);
 
     res.json({
       user: {
@@ -166,17 +187,19 @@ router.get("/profile", authenticateUser, async (req, res) => {
       stats: {
         level: prefDoc?.level || 1,
         xp: prefDoc?.xp || 0,
+        maxXP: Math.max(100, (prefDoc?.level || 1) * 100),
         songsPlayed: prefDoc?.songsPlayed || 0,
         listeningSeconds: prefDoc?.listeningSeconds || 0,
         streak: prefDoc?.streak || 0,
         bio: prefDoc?.bio || "",
         anthem: prefDoc?.anthem || { title: "", artist: "", uri: "" },
         musicSource: prefDoc?.musicSource || "ytmsearch",
-        accentColor: prefDoc?.accentColor || "#00E676"
+        accentColor: prefDoc?.accentColor || "#00E676",
+        badges
       },
       likedSongs: {
-        total: likedDoc?.songs?.length || 0,
-        recent: (likedDoc?.songs || []).slice(-8).reverse()
+        total: likedCount,
+        recent: (likedDoc?.songs || []).slice(-12).reverse()
       },
       playlists: {
         total: playlistDoc?.playlists?.length || 0,
@@ -187,6 +210,29 @@ router.get("/profile", authenticateUser, async (req, res) => {
         }))
       }
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/auth/profile -> Updates user custom bio, accentColor, and signature anthem
+router.post("/profile", authenticateUser, async (req, res) => {
+  try {
+    const { bio, accentColor, anthem } = req.body;
+    const updates = {};
+    if (typeof bio === "string") updates.bio = bio.trim().slice(0, 80);
+    if (typeof accentColor === "string") updates.accentColor = accentColor.trim();
+    if (typeof anthem === "string") {
+      updates.anthem = anthem.trim() ? { title: anthem.trim().slice(0, 60), artist: "", uri: "" } : null;
+    }
+
+    const doc = await UserPreferences.findOneAndUpdate(
+      { userId: req.user.id },
+      { $set: updates },
+      { upsert: true, new: true, maxTimeMS: 2500 }
+    );
+
+    res.json({ success: true, stats: doc });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

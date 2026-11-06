@@ -119,6 +119,89 @@ function buildProfileCard(user, pref, likedCount, viewerId) {
   return { card, hoursStr, songsStr, streakStr, level, xp, maxXP };
 }
 
+async function sendProfile(target, user, client, originalMessage, viewerId) {
+  try {
+    let pref = await UserPreferences.findOne({ userId: user.id });
+    if (!pref) {
+      pref = {
+        bio: "",
+        accentColor: "#FF1E38",
+        songsPlayed: 0,
+        listeningSeconds: 0,
+        streak: 0,
+        level: 1,
+        xp: 0,
+        anthem: null,
+      };
+    }
+
+    let likedCount = 0;
+    try {
+      const likedDoc = await Liked.findOne({ userId: user.id });
+      if (likedDoc?.songs?.length) likedCount = likedDoc.songs.length;
+    } catch {}
+
+    const { card, hoursStr, songsStr, streakStr, level, xp, maxXP } = buildProfileCard(
+      user,
+      pref,
+      likedCount,
+      viewerId || user.id,
+    );
+
+    const badges = computeRealBadges(pref, likedCount);
+
+    const profilePayload = {
+      bio: pref.bio || "",
+      accentColor: pref.accentColor || "#FF1E38",
+      listeningHours: hoursStr,
+      songsPlayed: songsStr,
+      streak: streakStr,
+      level: level,
+      xp: xp,
+      maxXP: maxXP,
+      badges: badges,
+      anthem: pref.anthem,
+    };
+
+    const canvasBuffer = await renderProfileCanvas(user, profilePayload);
+    const attachment = new AttachmentBuilder(canvasBuffer, { name: "profile.png" });
+
+    const responsePayload = {
+      components: [card],
+      files: [attachment],
+      flags: flags(),
+    };
+
+    if (target.isCommand?.() || target.editReply) {
+      return await target.editReply(responsePayload);
+    } else if (target.edit && typeof target.edit === "function") {
+      return await target.edit(responsePayload).catch(async () => {
+        if (originalMessage?.channel?.send) {
+          return await originalMessage.channel.send(responsePayload);
+        }
+      });
+    } else if (target.channel?.send) {
+      return await target.channel.send(responsePayload);
+    }
+  } catch (err) {
+    console.error("[Profile Command] Error:", err);
+    const errNotice = noticePayload({
+      title: "Rendering Error",
+      description: `Failed to render profile card: ${err.message}`,
+      emoji: emoji.cross || "❌",
+      tone: "danger",
+    });
+
+    if (target.isCommand?.() || target.editReply) {
+      return target.editReply(errNotice).catch(() => {});
+    } else if (target.edit) {
+      return target.edit(errNotice).catch(() => {});
+    } else if (target.channel?.send) {
+      return target.channel.send(errNotice).catch(() => {});
+    }
+  }
+}
+
 module.exports = {
   name: "profile",
   category: "Information",
@@ -211,7 +294,7 @@ module.exports = {
     }
 
     // Render Profile Card
-    return this.sendProfile(interaction, targetUser, client, null, interaction.user.id);
+    return sendProfile(interaction, targetUser, client, null, interaction.user.id);
   },
 
   async execute(message, args, client, prefix) {
@@ -357,91 +440,10 @@ module.exports = {
       flags: flags(),
     }).catch(() => null);
 
-    return this.sendProfile(loadMsg || message, targetUser, client, message, message.author.id);
+    return sendProfile(loadMsg || message, targetUser, client, message, message.author.id);
   },
 
-  async sendProfile(target, user, client, originalMessage, viewerId) {
-    try {
-      let pref = await UserPreferences.findOne({ userId: user.id });
-      if (!pref) {
-        pref = {
-          bio: "",
-          accentColor: "#FF1E38",
-          songsPlayed: 0,
-          listeningSeconds: 0,
-          streak: 0,
-          level: 1,
-          xp: 0,
-          anthem: null,
-        };
-      }
-
-      let likedCount = 0;
-      try {
-        const likedDoc = await Liked.findOne({ userId: user.id });
-        if (likedDoc?.songs?.length) likedCount = likedDoc.songs.length;
-      } catch {}
-
-      const { card, hoursStr, songsStr, streakStr, level, xp, maxXP } = buildProfileCard(
-        user,
-        pref,
-        likedCount,
-        viewerId || user.id,
-      );
-
-      const badges = computeRealBadges(pref, likedCount);
-
-      const profilePayload = {
-        bio: pref.bio || "",
-        accentColor: pref.accentColor || "#FF1E38",
-        listeningHours: hoursStr,
-        songsPlayed: songsStr,
-        streak: streakStr,
-        level: level,
-        xp: xp,
-        maxXP: maxXP,
-        badges: badges,
-        anthem: pref.anthem,
-      };
-
-      const canvasBuffer = await renderProfileCanvas(user, profilePayload);
-      const attachment = new AttachmentBuilder(canvasBuffer, { name: "profile.png" });
-
-      const responsePayload = {
-        components: [card],
-        files: [attachment],
-        flags: flags(),
-      };
-
-      if (target.isCommand?.() || target.editReply) {
-        return await target.editReply(responsePayload);
-      } else if (target.edit && typeof target.edit === "function") {
-        return await target.edit(responsePayload).catch(async () => {
-          if (originalMessage?.channel?.send) {
-            return await originalMessage.channel.send(responsePayload);
-          }
-        });
-      } else if (target.channel?.send) {
-        return await target.channel.send(responsePayload);
-      }
-    } catch (err) {
-      console.error("[Profile Command] Error:", err);
-      const errNotice = noticePayload({
-        title: "Rendering Error",
-        description: `Failed to render profile card: ${err.message}`,
-        emoji: emoji.cross || "❌",
-        tone: "danger",
-      });
-
-      if (target.isCommand?.() || target.editReply) {
-        return target.editReply(errNotice).catch(() => {});
-      } else if (target.edit) {
-        return target.edit(errNotice).catch(() => {});
-      } else if (target.channel?.send) {
-        return target.channel.send(errNotice).catch(() => {});
-      }
-    }
-  },
+  sendProfile,
 
   async componentsV2(interaction, client) {
     const parts = interaction.customId.split("_");

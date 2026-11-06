@@ -70,9 +70,6 @@ export default function LandingPage() {
             <a href="#features" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               FEATURES
             </a>
-            <a href="#visualizer" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              3D VISUALIZER
-            </a>
             <a href="#creator" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               CREATOR
             </a>
@@ -119,7 +116,7 @@ export default function LandingPage() {
           {/* Status Badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-brutal-surface border-2 border-brutal-border text-[11px] font-bold">
             <span className="w-2.5 h-2.5 rounded-full bg-brutal-accent animate-ping" />
-            <span className="text-brutal-accent">NATIVE OPUS TRANSCODER ACTIVE</span>
+            <span className="text-brutal-accent">NATIVE TOGETHER TRANSCODER ACTIVE</span>
             <span className="text-brutal-muted hidden sm:inline">•</span>
             <span className="text-zinc-400 hidden sm:inline">VERSION 2.5.0 STUDIO RELEASE</span>
           </div>
@@ -257,19 +254,19 @@ export default function LandingPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* 1. WebGL Visualizer */}
+          {/* 1. Smart Music Autoplay */}
           <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal hover:border-brutal-accent transition-all flex flex-col justify-between">
             <div className="space-y-3">
               <div className="w-10 h-10 border-2 border-brutal-border bg-black flex items-center justify-center text-brutal-accent">
-                <Sparkles className="w-5 h-5" />
+                <Flame className="w-5 h-5" />
               </div>
-              <h3 className="font-display font-black text-xl text-white uppercase">WebGL 2.0 3D Stage</h3>
+              <h3 className="font-display font-black text-xl text-white uppercase">Smart Music Autoplay</h3>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                Direct spatial 3D audio visualizer right in your web browser. Frequency response bars, chromatic aberration, and live audio reactive waveforms synced with Discord playback.
+                Algorithmic discovery engine keeps the music going endlessly. When your queue ends, TOGETHER seamlessly finds and queues fresh matching songs based on genre, artist, and acoustic vibe.
               </p>
             </div>
             <div className="mt-6 pt-4 border-t border-brutal-border/50">
-              <span className="text-[10px] text-brutal-accent font-black uppercase tracking-wider">HARDWARE ACCELERATED</span>
+              <span className="text-[10px] text-brutal-accent font-black uppercase tracking-wider">SEAMLESS TRANSITIONS</span>
             </div>
           </div>
 
@@ -355,51 +352,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 3D Visualizer Showcase Callout */}
-      <section id="visualizer" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto">
-        <div className="border-2 border-brutal-border bg-gradient-to-r from-zinc-950 via-brutal-surface to-zinc-950 p-8 md:p-12 shadow-brutal flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="space-y-4 max-w-xl">
-            <span className="font-mono text-[10px] bg-cyan-400 text-black font-black px-2 py-0.5 uppercase tracking-widest">
-              IMMERSIVE AUDIO EXPERIENCE
-            </span>
-            <h3 className="font-display font-black text-3xl sm:text-4xl uppercase text-white">
-              WATCH YOUR MUSIC COME ALIVE IN 3D.
-            </h3>
-            <p className="text-xs text-zinc-300 leading-relaxed">
-              Open the WebGL visualizer in your browser or Discord Activity to see real-time 3D particle spheres, spatial bars, and live audio reactiveness as TOGETHER plays songs.
-            </p>
-            <div className="pt-2">
-              <a
-                href="/visualizer/"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 bg-cyan-400 text-black font-display font-black text-xs uppercase border-2 border-black shadow-brutal hover:translate-x-1 hover:translate-y-1 transition-all"
-              >
-                <span>LAUNCH 3D VISUALIZER STAGE</span>
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-
-          <div className="border-2 border-brutal-border bg-black/60 p-4 w-full max-w-sm text-center space-y-3">
-            <div className="h-32 bg-black border border-zinc-800 flex items-center justify-center relative overflow-hidden">
-              <div className="flex items-end gap-1.5 h-16">
-                {[40, 75, 20, 90, 60, 85, 30, 95, 50, 80, 45, 65, 90, 35].map((h, i) => (
-                  <div
-                    key={i}
-                    style={{ height: `${h}%` }}
-                    className="w-2 bg-brutal-accent animate-pulse"
-                  />
-                ))}
-              </div>
-            </div>
-            <p className="text-[11px] text-zinc-400 font-bold uppercase">
-              LIVE BROWSER RENDERER • ZERO PLUGINS NEEDED
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Creator Showcase */}
       <section id="creator" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto">
         <div className="border-2 border-brutal-border bg-brutal-surface p-8 shadow-brutal flex flex-col md:flex-row items-center gap-8">
@@ -473,3 +425,4 @@ export default function LandingPage() {
     </div>
   );
 }
+

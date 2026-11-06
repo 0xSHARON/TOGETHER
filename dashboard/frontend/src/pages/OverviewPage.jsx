@@ -51,12 +51,12 @@ export default function OverviewPage() {
     credit: "Engineered and crafted by kajukatli. High-performance Discord audio streaming & 3D WebGL visuals."
   };
   const features = data?.features || [
-    { title: "3D WebGL Audio Stage", desc: "Interactive brutalist 3D reactive audio stage synchronized live with your voice channel.", badge: "WEBGL 2.0" },
     { title: "24-Bit Lossless Quality", desc: "Studio-grade Opus 320kbps lossless streaming engine with custom system FFmpeg pipeline.", badge: "320 KBPS" },
     { title: "Universal Source Engine", desc: "Effortlessly stream from YouTube, Spotify, SoundCloud, Apple Music, and direct HTTP audio.", badge: "MULTI-SRC" },
     { title: "Studio DSP Filter Suite", desc: "14 real-time DSP sound filters including Bassboost, Nightcore, Vaporwave, and 8D Spatial Audio.", badge: "REALTIME DSP" },
     { title: "24/7 Persistent Voice", desc: "Non-stop 24/7 audio connection with auto-reconnect failover, health monitors, and queue recovery.", badge: "24/7 UPTIME" },
-    { title: "Discord Embedded Activity", desc: "Complete Discord Activity SDK RPC handshake support — view and control music inside voice calls.", badge: "ACTIVITY READY" }
+    { title: "Smart Music Autoplay", desc: "Intelligent related song discovery keeping the audio stream alive when queue ends.", badge: "AUTOPLAY" },
+    { title: "Dual Command Parity", desc: "69 text prefix commands and 67 Discord slash interactions with interactive search autocomplete.", badge: "DUAL COMMANDS" }
   ];
   const sessions = data?.activeSessions || [];
 

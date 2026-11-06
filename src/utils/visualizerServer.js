@@ -175,6 +175,9 @@ function getGuildPlayerState(client, targetId) {
     autoplay: Boolean(player.data?.get("autoplay")),
     volume: player.volume || 80,
     voiceChannel: currentGuild?.channels?.cache?.get(player.voiceId)?.name || "Voice Channel",
+    textChannel: currentGuild?.channels?.cache?.get(player.textId)?.name || "Text Channel",
+    listeners: currentGuild?.channels?.cache?.get(player.voiceId)?.members ? currentGuild.channels.cache.get(player.voiceId).members.filter(m => !m.user?.bot).size : 0,
+    requester: current?.requester?.username || current?.requester?.displayName || null,
     queue: upcomingQueue,
     queueLength: player.queue?.length || 0,
   };
@@ -358,11 +361,6 @@ function getBotInfo(client) {
     },
     features: [
       {
-        title: "3D WebGL Audio Stage",
-        desc: "Interactive brutalist 3D reactive audio stage synchronized live with your Discord voice channel playback.",
-        badge: "WEBGL 2.0"
-      },
-      {
         title: "24-Bit Lossless Quality",
         desc: "Studio-grade Opus 320kbps lossless streaming engine with custom system FFmpeg pipeline and 0% clipping.",
         badge: "320 KBPS"
@@ -383,9 +381,14 @@ function getBotInfo(client) {
         badge: "24/7 UPTIME"
       },
       {
-        title: "Discord Embedded Activity",
-        desc: "Complete Discord Activity SDK RPC handshake support — view and control music right inside voice channel windows.",
-        badge: "ACTIVITY READY"
+        title: "Smart Music Autoplay",
+        desc: "Intelligent related song discovery keeping the party alive automatically when your queue ends.",
+        badge: "AUTOPLAY"
+      },
+      {
+        title: "Dual Command Parity",
+        desc: "69 text prefix commands and 67 Discord slash interactions with interactive search autocomplete.",
+        badge: "DUAL COMMANDS"
       }
     ],
     commands: commandsByCategory,
@@ -600,19 +603,40 @@ function startVisualizerServer(client, preferredPort = 5050) {
     }
 
     // ── API: Interactive Playback Control ─────────────────────
-    if (pathname.startsWith("/api/player/") && pathname.endsWith("/control") && req.method === "POST") {
-      const rawTarget = pathname.replace("/api/player/", "").replace("/control", "").trim();
-      let guildId   = resolveGuildId(client, rawTarget);
-      let player    = guildId ? client?.manager?.players?.get(guildId) : null;
-      if (!player && (!guildId || rawTarget === "default")) {
-        player = client?.manager?.players?.first?.() || Array.from(client?.manager?.players?.values() || [])[0];
-      }
-
+    if (((pathname.startsWith("/api/player/") && pathname.endsWith("/control")) || pathname === "/api/player-action") && req.method === "POST") {
+      let rawTarget = pathname.startsWith("/api/player/") ? pathname.replace("/api/player/", "").replace("/control", "").trim() : "";
       let body = "";
       req.on("data", (chunk) => { body += chunk; });
       req.on("end", async () => {
         try {
-          const { action, position } = JSON.parse(body || "{}");
+          const payload = JSON.parse(body || "{}");
+          const { action, position, value, query, index, user } = payload;
+          if (pathname === "/api/player-action" && payload.guildId) {
+            rawTarget = payload.guildId;
+          }
+          let guildId   = resolveGuildId(client, rawTarget) || rawTarget;
+          let player    = guildId ? client?.manager?.players?.get(guildId) : null;
+          if (!player && (!guildId || rawTarget === "default")) {
+            player = client?.manager?.players?.first?.() || Array.from(client?.manager?.players?.values() || [])[0];
+          }
+
+          // If no player active yet and user clicked play, auto-create player via 24/7 channel if configured
+          if (!player && action === "play" && guildId) {
+            try {
+              const TwoFourSeven = require("../schema/247");
+              const tfs = await TwoFourSeven.findOne({ Guild: guildId }).maxTimeMS(2000).lean().catch(() => null);
+              if (tfs && tfs.VoiceId && tfs.TextId) {
+                player = await client.manager.createPlayer({
+                  guildId,
+                  voiceId: tfs.VoiceId,
+                  textId: tfs.TextId,
+                  volume: 80,
+                  deaf: true
+                }).catch(() => null);
+              }
+            } catch {}
+          }
+
           if (player) {
             if (action === "pause") await player.pause(true);
             if (action === "resume") await player.pause(false);
@@ -633,8 +657,39 @@ function startVisualizerServer(client, preferredPort = 5050) {
               const cur = player.data.get("autoplay") || false;
               player.data.set("autoplay", !cur);
             }
-            if (action === "volume" && typeof position === "number") {
-              player.setVolume(position);
+            if (action === "volume") {
+              const vol = typeof value === "number" ? value : (typeof position === "number" ? position : null);
+              if (vol !== null) player.setVolume(vol);
+            }
+            if (action === "shuffle" && player.queue?.shuffle) {
+              player.queue.shuffle();
+            }
+            if ((action === "clearQueue" || action === "clear") && player.queue) {
+              if (typeof player.queue.clear === "function") player.queue.clear();
+              else player.queue.length = 0;
+            }
+            if (action === "removeTrack" && typeof index === "number" && player.queue) {
+              if (typeof player.queue.remove === "function") player.queue.remove(index);
+              else player.queue.splice(index, 1);
+            }
+            if (action === "stop") {
+              await player.destroy();
+            }
+            if (action === "play" && query) {
+              const requester = user ? { id: user.id, username: user.username } : (client?.user || { id: "0", username: "Dashboard" });
+              const searchRes = await client.manager.search(query, requester);
+              if (searchRes && searchRes.tracks && searchRes.tracks.length) {
+                if (searchRes.type === "PLAYLIST") {
+                  for (const tr of searchRes.tracks) {
+                    player.queue.add(tr);
+                  }
+                } else {
+                  player.queue.add(searchRes.tracks[0]);
+                }
+                if (!player.playing && !player.paused) {
+                  await player.play();
+                }
+              }
             }
           }
           res.writeHead(200, { "Content-Type": "application/json" });
