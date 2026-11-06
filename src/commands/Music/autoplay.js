@@ -65,9 +65,14 @@ module.exports = {
 
     const currentStatus = player.data.get("autoplay") || false;
     const newStatus = !currentStatus;
-    const { disabledLoop } = setAutoplay(player, newStatus);
+    const { disabledLoop } = setAutoplay(player, newStatus, client);
     const { syncVoiceChannelStatus } = require("../../utils/voiceChannelStatus");
     await syncVoiceChannelStatus(client, player);
+
+    try {
+      const { broadcastVisualizerState } = require("../../utils/visualizerServer");
+      broadcastVisualizerState(player);
+    } catch {}
 
     const statusDisplay = new TextDisplayBuilder()
       .setContent(

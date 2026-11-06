@@ -41,9 +41,24 @@ router.get("/:guildId", authenticateUser, requireGuildPermission, async (req, re
   }
 });
 
+// GET /api/player/:guildId/search?q=... -> Real-time track search & autocomplete
+router.get("/:guildId/search", authenticateUser, requireGuildPermission, async (req, res) => {
+  const query = req.query.q || req.query.query || "";
+  if (!query || query.trim().length < 2) {
+    return res.json({ success: true, tracks: [] });
+  }
+
+  try {
+    const data = await botBridge.searchTracks(query, req.guildId);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message, tracks: [] });
+  }
+});
+
 // POST /api/player/:guildId/action -> Dispatch music controls (pause, resume, skip, seek, etc.)
 router.post("/:guildId/action", authenticateUser, requireGuildPermission, async (req, res) => {
-  const { action, position, query, value, index } = req.body;
+  const { action, position, query, value, index, playNow } = req.body;
   const validActions = [
     "pause", "resume", "skip", "previous", "seek", "loop", 
     "autoplay", "volume", "clear", "clearQueue", "shuffle", "stop", "play", "removeTrack"
@@ -59,6 +74,7 @@ router.post("/:guildId/action", authenticateUser, requireGuildPermission, async 
       query, 
       value, 
       index, 
+      playNow,
       user: req.user 
     });
     

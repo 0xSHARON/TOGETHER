@@ -267,6 +267,20 @@ class BotBridgeService {
     }
   }
 
+  async searchTracks(query, guildId = "") {
+    if (!query || query.trim().length < 2) return { success: true, tracks: [] };
+    try {
+      const resp = await axios.get(
+        `${this.apiUrl}/api/search?q=${encodeURIComponent(query.trim())}&guildId=${encodeURIComponent(guildId)}`,
+        { timeout: 5000 }
+      );
+      return resp.data || { success: true, tracks: [] };
+    } catch (err) {
+      console.warn(`[botBridge] searchTracks error:`, err.message);
+      return { success: false, tracks: [] };
+    }
+  }
+
   async sendDashboardLog({ event, user, guildId, guildName, action, details, color }) {
     try {
       await axios.post(

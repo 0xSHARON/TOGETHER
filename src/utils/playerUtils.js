@@ -72,7 +72,7 @@ async function attemptAutoplay(client, player) {
             client.logger?.log(`[Autoplay] Skipping autoplay due to loop mode "${loopMode}" in guild ${player.guildId}`, "debug");
             return;
         }
-        if (player.queue?.size > 0 && player.queue?.current && player.playing) return;
+        if (player.queue?.size > 0 || player.queue?.length > 0) return;
         if (player.data?.get("autoplayInProgress")) return;
 
         const lastAutoplayTime = player.data?.get("lastAutoplayTime") || 0;
@@ -115,6 +115,14 @@ async function attemptAutoplay(client, player) {
             return;
         }
 
+        foundTrack.isAutoplay = true;
+        if (!foundTrack.requester) {
+            foundTrack.requester = {
+                id: client.user?.id || "0",
+                username: "Autoplay Engine",
+                displayName: "Autoplay"
+            };
+        }
         player.queue.add(foundTrack);
         recent = rememberTracks(recent, [foundTrack]);
         player.data?.set(recentKey, recent);
@@ -127,6 +135,11 @@ async function attemptAutoplay(client, player) {
                 client.logger?.log(`[Autoplay] Failed to start playback: ${playErr.message}`, "error");
             }
         }
+
+        try {
+            const { broadcastVisualizerState } = require("./visualizerServer");
+            broadcastVisualizerState(player);
+        } catch {}
     } catch (err) {
         client.logger?.log(`[Autoplay] Error: ${err.message}`, "error");
     } finally {

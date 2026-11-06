@@ -6,12 +6,32 @@ function applyLoop(player, mode) {
   else player.loop = mode;
 }
 
-function setAutoplay(player, enabled) {
+function setAutoplay(player, enabled, client = null) {
   if (!player.data) player.data = new Map();
   const autoplay = Boolean(enabled);
   const disabledLoop = autoplay && (player.loop || "none") !== "none";
   if (autoplay) applyLoop(player, "none");
   player.data.set("autoplay", autoplay);
+
+  // When autoplay enabled and queue is empty, proactively prefetch upcoming recommendation
+  if (autoplay && (player.queue?.length || player.queue?.size || 0) === 0) {
+    const currentClient = client || player.manager?.client || player.client;
+    if (currentClient) {
+      try {
+        const { attemptAutoplay } = require("./playerUtils");
+        attemptAutoplay(currentClient, player).catch(() => {});
+      } catch {}
+    }
+  } else if (!autoplay && player.queue?.length > 0) {
+    // When autoplay disabled, purge any pending autoplay recommendation tracks from queue
+    for (let i = player.queue.length - 1; i >= 0; i--) {
+      if (player.queue[i]?.isAutoplay) {
+        if (typeof player.queue.remove === "function") player.queue.remove(i);
+        else player.queue.splice(i, 1);
+      }
+    }
+  }
+
   return { autoplay, disabledLoop };
 }
 

@@ -47,6 +47,14 @@ export default function PlayerPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
 
+  // Autocomplete search states
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const searchDebounceRef = useRef(null);
+  const searchContainerRef = useRef(null);
+
   // Local optimistic audio volume
   const [localVolume, setLocalVolume] = useState(80);
   const volumeDebounceRef = useRef(null);
@@ -165,6 +173,8 @@ export default function PlayerPage() {
       lastSyncRef.current.playing = true;
       lastSyncRef.current.time = Date.now();
       setPlayerData((prev) => prev ? { ...prev, paused: false } : prev);
+    } else if (action === 'autoplay') {
+      setPlayerData((prev) => prev ? { ...prev, autoplay: !prev.autoplay } : prev);
     } else if (action === 'seek' && payload.position !== undefined) {
       lastSyncRef.current.pos = payload.position;
       lastSyncRef.current.time = Date.now();
@@ -181,6 +191,17 @@ export default function PlayerPage() {
       setActionLoading(false);
     }
   }
+
+  // Handle outside click to close autocomplete dropdown
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   function handleVolumeChange(e) {
     const newVol = parseInt(e.target.value, 10);
@@ -203,11 +224,109 @@ export default function PlayerPage() {
     sendAction('seek', { position: seekMs });
   }
 
+  function handleSearchChange(e) {
+    const val = e.target.value;
+    setSearchQuery(val);
+    setSelectedIndex(-1);
+
+    if (searchDebounceRef.current) {
+      clearTimeout(searchDebounceRef.current);
+    }
+
+    const trimmed = val.trim();
+    if (trimmed.length < 2) {
+      setSearchSuggestions([]);
+      setShowDropdown(false);
+      setSearchLoading(false);
+      return;
+    }
+
+    // Direct stream URLs don't need text search autocomplete
+    if (/^https?:\/\//i.test(trimmed)) {
+      setSearchSuggestions([]);
+      setShowDropdown(false);
+      setSearchLoading(false);
+      return;
+    }
+
+    setSearchLoading(true);
+    searchDebounceRef.current = setTimeout(async () => {
+      try {
+        const resp = await axios.get(
+          `/api/player/${guildId}/search?q=${encodeURIComponent(trimmed)}`,
+          { withCredentials: true }
+        );
+        const tracks = resp.data?.tracks || [];
+        setSearchSuggestions(tracks);
+        setShowDropdown(tracks.length > 0);
+      } catch (err) {
+        console.warn("Search autocomplete failed:", err);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 280);
+  }
+
+  function handleSearchKeyDown(e) {
+    if (showDropdown && searchSuggestions.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev + 1) % searchSuggestions.length);
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev <= 0 ? searchSuggestions.length - 1 : prev - 1));
+        return;
+      }
+      if (e.key === 'Escape') {
+        setShowDropdown(false);
+        return;
+      }
+      if (e.key === 'Enter') {
+        if (selectedIndex >= 0 && searchSuggestions[selectedIndex]) {
+          e.preventDefault();
+          executeSelectTrack(searchSuggestions[selectedIndex], false);
+          return;
+        }
+      }
+    }
+  }
+
+  function executeSelectTrack(track, playNow = false) {
+    if (!track) return;
+    const query = track.uri || `${track.title} ${track.author}`;
+    sendAction('play', { query, playNow });
+    setShowDropdown(false);
+    setSearchQuery('');
+  }
+
+  function executeDirectPlay(url, playNow = false) {
+    if (!url.trim()) return;
+    sendAction('play', { query: url.trim(), playNow });
+    setSearchQuery('');
+  }
+
+  function getSourceBadgeClass(src) {
+    switch (src) {
+      case 'spotify': return 'border-emerald-500 text-emerald-400 bg-emerald-950/40';
+      case 'soundcloud': return 'border-orange-500 text-orange-400 bg-orange-950/40';
+      case 'apple': return 'border-pink-500 text-pink-400 bg-pink-950/40';
+      case 'youtube': return 'border-red-500 text-red-400 bg-red-950/40';
+      default: return 'border-zinc-500 text-zinc-400 bg-zinc-900';
+    }
+  }
+
   function handleSearchPlay(e) {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    sendAction('play', { query: searchQuery.trim() });
-    setSearchQuery('');
+    if (selectedIndex >= 0 && searchSuggestions[selectedIndex]) {
+      executeSelectTrack(searchSuggestions[selectedIndex], false);
+    } else {
+      sendAction('play', { query: searchQuery.trim(), playNow: false });
+      setSearchQuery('');
+      setShowDropdown(false);
+    }
   }
 
   if (loading) {
@@ -243,6 +362,14 @@ export default function PlayerPage() {
   const voiceChannel = playerData?.voiceChannel || 'Not in Voice';
   const listeners = playerData?.listeners || 0;
   const audienceMembers = playerData?.audienceMembers || [];
+
+  const trimmedQuery = searchQuery.trim();
+  const isDirectLink = /^https?:\/\//i.test(trimmedQuery);
+  let directLinkPlatform = "Direct Audio Link";
+  if (trimmedQuery.includes("spotify.com")) directLinkPlatform = "Spotify (Track/Album/Playlist)";
+  else if (trimmedQuery.includes("soundcloud.com")) directLinkPlatform = "SoundCloud Stream";
+  else if (trimmedQuery.includes("apple.com")) directLinkPlatform = "Apple Music";
+  else if (trimmedQuery.includes("youtube.com") || trimmedQuery.includes("youtu.be")) directLinkPlatform = "YouTube Stream";
 
   const duration = current?.duration || 0;
   const progressPercent = duration > 0 ? Math.min(100, Math.max(0, (interpolatedPos / duration) * 100)) : 0;
@@ -545,23 +672,129 @@ export default function PlayerPage() {
             </div>
           </BrutCard>
 
-          {/* Search & Enqueue Input */}
+          {/* Search & Enqueue Input with Autocomplete */}
           <BrutCard title="SEARCH & PLAY SONG" subtitle="Enqueue by song title, Spotify, SoundCloud, Apple Music, or direct URL">
-            <form onSubmit={handleSearchPlay} className="flex gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brutal-muted" />
-                <input 
-                  type="text" 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Enter song name or paste link..." 
-                  className="w-full bg-brutal-secondary border-2 border-brutal-border pl-10 pr-4 py-2.5 font-mono text-xs text-brutal-text focus:outline-none focus:border-brutal-accent font-bold"
-                />
-              </div>
-              <BrutButton variant="primary" type="submit" disabled={actionLoading || !searchQuery.trim()}>
-                PLAY SONG
-              </BrutButton>
-            </form>
+            <div className="relative" ref={searchContainerRef}>
+              <form onSubmit={handleSearchPlay} className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brutal-muted" />
+                  <input 
+                    type="text" 
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    onKeyDown={handleSearchKeyDown}
+                    onFocus={() => { if (searchSuggestions.length > 0) setShowDropdown(true); }}
+                    placeholder="Search song title or paste Spotify / SoundCloud / Apple / YouTube link..." 
+                    className="w-full bg-brutal-secondary border-2 border-brutal-border pl-10 pr-9 py-2.5 font-mono text-xs text-brutal-text focus:outline-none focus:border-brutal-accent font-bold placeholder:text-zinc-500"
+                  />
+                  {searchLoading ? (
+                    <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brutal-accent animate-spin" />
+                  ) : searchQuery ? (
+                    <button
+                      type="button"
+                      onClick={() => { setSearchQuery(''); setSearchSuggestions([]); setShowDropdown(false); }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white font-mono text-xs"
+                    >
+                      ✕
+                    </button>
+                  ) : null}
+                </div>
+                <BrutButton variant="primary" type="submit" disabled={actionLoading || !searchQuery.trim()}>
+                  PLAY SONG
+                </BrutButton>
+              </form>
+
+              {/* Direct link recognized helper */}
+              {isDirectLink && (
+                <div className="mt-2 p-2.5 bg-black/80 border-2 border-brutal-accent flex flex-wrap items-center justify-between gap-2 shadow-brutal animate-fade-in">
+                  <span className="flex items-center gap-1.5 font-mono text-[11px] text-[#00E676] font-bold">
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Direct Link: {directLinkPlatform}
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => executeDirectPlay(searchQuery, true)}
+                      className="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-white font-mono text-[10px] font-bold border border-zinc-600 transition-colors"
+                    >
+                      PLAY NOW
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => executeDirectPlay(searchQuery, false)}
+                      className="px-2.5 py-1 bg-brutal-accent hover:bg-emerald-400 text-black font-mono text-[10px] font-bold border border-emerald-400 transition-colors"
+                    >
+                      + ENQUEUE
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Autocomplete Dropdown */}
+              {showDropdown && searchSuggestions.length > 0 && (
+                <div className="absolute left-0 right-0 top-full mt-2 bg-black border-2 border-brutal-border shadow-2xl z-50 max-h-96 overflow-y-auto divide-y divide-zinc-800">
+                  <div className="p-2 bg-zinc-900/90 text-[10px] font-mono text-zinc-400 flex items-center justify-between border-b border-zinc-800 sticky top-0 backdrop-blur z-10">
+                    <span className="flex items-center gap-1.5 font-bold text-white">
+                      <Music className="w-3 h-3 text-brutal-accent" />
+                      AUTOCOMPLETE SUGGESTIONS ({searchSuggestions.length})
+                    </span>
+                    <span className="text-[9px]">Use ↑ ↓ to navigate • Enter to play</span>
+                  </div>
+
+                  {searchSuggestions.map((track, idx) => (
+                    <div 
+                      key={idx}
+                      onMouseEnter={() => setSelectedIndex(idx)}
+                      className={`p-2.5 flex items-center justify-between gap-3 transition-colors ${
+                        selectedIndex === idx ? 'bg-zinc-800/90 border-l-4 border-brutal-accent' : 'hover:bg-zinc-900/60'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 overflow-hidden flex-1">
+                        <img 
+                          src={track.thumbnail || "/logo.png?v=2"} 
+                          alt={track.title} 
+                          className="w-10 h-10 object-cover border border-zinc-700 shrink-0 bg-zinc-900" 
+                          onError={(e) => { e.currentTarget.src = "/logo.png?v=2"; }}
+                        />
+                        <div className="overflow-hidden">
+                          <p className="font-mono font-bold text-xs text-white truncate" title={track.title}>
+                            {track.title}
+                          </p>
+                          <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-mono">
+                            <span className="truncate max-w-[140px] sm:max-w-[200px]">{track.author}</span>
+                            {track.duration > 0 && <span>• {formatTime(track.duration)}</span>}
+                            <span className={`px-1 py-0.2 text-[8px] font-bold border uppercase ${getSourceBadgeClass(track.source)}`}>
+                              {track.source}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => executeSelectTrack(track, true)}
+                          disabled={actionLoading}
+                          className="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-white text-[10px] font-mono font-bold border border-zinc-600 transition-colors"
+                          title="Play Immediately"
+                        >
+                          PLAY NOW
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => executeSelectTrack(track, false)}
+                          disabled={actionLoading}
+                          className="px-2.5 py-1 bg-brutal-accent text-black hover:bg-emerald-400 text-[10px] font-mono font-bold border border-emerald-400 transition-colors"
+                          title="Add to Upcoming Queue"
+                        >
+                          + QUEUE
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </BrutCard>
 
           {/* Real-time Voice Channel Audience Section */}
@@ -628,24 +861,47 @@ export default function PlayerPage() {
             }
           >
             {queue.length === 0 ? (
-              <p className="font-mono text-xs text-brutal-muted py-8 text-center border border-dashed border-zinc-800">
-                The queue is empty. Enqueue songs on the left or use <code className="text-brutal-accent">/play</code> in Discord.
-              </p>
+              isAutoplay ? (
+                <div className="py-8 text-center border-2 border-dashed border-[#00E676]/40 bg-[#00E676]/5 p-4 space-y-2">
+                  <div className="flex items-center justify-center gap-2 text-brutal-accent font-mono text-xs font-bold animate-pulse">
+                    <Sparkles className="w-4 h-4" />
+                    <span>[ AUTOPLAY ENGINE ACTIVE ]</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 font-mono">
+                    Discovering next recommendation based on current song & history...
+                  </p>
+                </div>
+              ) : (
+                <p className="font-mono text-xs text-brutal-muted py-8 text-center border border-dashed border-zinc-800">
+                  The queue is empty. Enqueue songs on the left or use <code className="text-brutal-accent">/play</code> in Discord.
+                </p>
+              )
             ) : (
               <div className="space-y-2 max-h-[550px] overflow-y-auto pr-1">
                 {queue.map((track, idx) => (
                   <div 
                     key={idx} 
-                    className="flex items-center justify-between p-2.5 bg-brutal-secondary border border-brutal-border hover:border-brutal-accent transition-colors"
+                    className={`flex items-center justify-between p-2.5 bg-brutal-secondary border transition-colors ${
+                      track.isAutoplay 
+                        ? 'border-[#00E676]/60 bg-[#00E676]/5 hover:border-brutal-accent' 
+                        : 'border-brutal-border hover:border-brutal-accent'
+                    }`}
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
                       <span className="font-mono text-xs font-bold text-brutal-accent w-5 text-right shrink-0">
                         {idx + 1}
                       </span>
                       <div className="overflow-hidden">
-                        <p className="font-mono font-bold text-xs truncate text-brutal-text">{track.title}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-mono font-bold text-xs truncate text-brutal-text">{track.title}</p>
+                          {track.isAutoplay && (
+                            <span className="shrink-0 bg-black/80 text-[#00E676] border border-[#00E676]/50 px-1.5 py-0.2 text-[9px] font-mono font-bold flex items-center gap-1 shadow-sm">
+                              <Sparkles className="w-2.5 h-2.5" /> AUTOPLAY
+                            </span>
+                          )}
+                        </div>
                         <p className="font-mono text-[10px] text-brutal-muted truncate">
-                          {track.author} {track.duration ? `• ${formatTime(track.duration)}` : ''}
+                          {track.author} {track.duration ? `• ${formatTime(track.duration)}` : ''} {track.requester ? `• ${track.requester}` : ''}
                         </p>
                       </div>
                     </div>

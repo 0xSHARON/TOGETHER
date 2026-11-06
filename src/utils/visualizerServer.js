@@ -156,7 +156,8 @@ function getGuildPlayerState(client, targetId) {
       duration: t.length || t.duration || 0,
       uri: t.uri || "",
       thumbnail: qThumb,
-      requester: t.requester ? (t.requester.username || t.requester.tag || t.requester.displayName || "Listener") : "Listener"
+      isAutoplay: Boolean(t.isAutoplay || t.autoplay),
+      requester: (t.isAutoplay || t.autoplay) ? "Autoplay Engine" : (t.requester ? (t.requester.username || t.requester.tag || t.requester.displayName || "Listener") : "Listener")
     };
   });
 
@@ -547,6 +548,56 @@ function startVisualizerServer(client, preferredPort = 5050) {
       }));
     }
 
+    // ── API: Autocomplete & Track Search (/api/search) ──────────────────────
+    if (pathname === "/api/search" && req.method === "GET") {
+      res.setHeader("Content-Type", "application/json");
+      res.setHeader("Cache-Control", "no-cache");
+      const q = (reqUrl.searchParams.get("q") || reqUrl.searchParams.get("query") || "").trim();
+      if (!q || q.length < 2) {
+        res.writeHead(200);
+        return res.end(JSON.stringify({ success: true, tracks: [] }));
+      }
+
+      try {
+        const searchPromise = client.manager.search(q, { requester: client.user });
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({ tracks: [] }), 3500));
+        const searchRes = await Promise.race([searchPromise, timeoutPromise]);
+        const rawTracks = searchRes?.tracks || [];
+
+        const formatted = rawTracks.slice(0, 10).map((t) => {
+          let thumb = t.thumbnail || t.artworkUrl || t.info?.thumbnail || (typeof t.displayThumbnail === "function" ? t.displayThumbnail("hqdefault") : null);
+          if (!thumb) thumb = "/logo.png?v=2";
+          else if (thumb.startsWith("http://")) thumb = thumb.replace(/^http:\/\//, "https://");
+
+          let source = t.sourceName || "music";
+          const uri = String(t.uri || "");
+          if (uri.includes("spotify.com")) source = "spotify";
+          else if (uri.includes("soundcloud.com")) source = "soundcloud";
+          else if (uri.includes("apple.com")) source = "apple";
+          else if (uri.includes("youtube.com") || uri.includes("youtu.be")) source = "youtube";
+
+          return {
+            title: t.title || "Unknown Title",
+            author: t.author || "Unknown Artist",
+            duration: Number(t.length || t.duration || 0),
+            uri,
+            thumbnail: thumb,
+            source
+          };
+        });
+
+        res.writeHead(200);
+        return res.end(JSON.stringify({
+          success: true,
+          type: searchRes?.type || "SEARCH",
+          tracks: formatted
+        }));
+      } catch (err) {
+        res.writeHead(200);
+        return res.end(JSON.stringify({ success: false, error: err.message, tracks: [] }));
+      }
+    }
+
     // ── API: Guilds Bot is Installed in (/api/bot-guilds) ───────────────────
     if (pathname === "/api/bot-guilds" || pathname === "/api/guild-ids") {
       res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-cache" });
@@ -900,8 +951,9 @@ function startVisualizerServer(client, preferredPort = 5050) {
               player.loop = modes[(curIdx + 1) % modes.length];
             }
             if (action === "autoplay") {
-              const cur = player.data.get("autoplay") || false;
-              player.data.set("autoplay", !cur);
+              const { setAutoplay } = require("./playbackModes");
+              const cur = Boolean(player.data.get("autoplay"));
+              setAutoplay(player, !cur, client);
             }
             if (action === "volume") {
               const vol = typeof value === "number" ? value : (typeof position === "number" ? position : null);
@@ -922,21 +974,35 @@ function startVisualizerServer(client, preferredPort = 5050) {
               await player.destroy();
             }
             if (action === "play" && query) {
+              // If only an autoplay placeholder track is in queue, purge it so user's track plays next
+              if (player.queue?.length > 0 && player.queue[0]?.isAutoplay) {
+                if (typeof player.queue.remove === "function") player.queue.remove(0);
+                else player.queue.splice(0, 1);
+              }
+
               const requester = user ? { id: user.id, username: user.username } : (client?.user || { id: "0", username: "Dashboard" });
-              const searchRes = await client.manager.search(query, requester);
+              const searchRes = await client.manager.search(query, { requester });
               if (searchRes && searchRes.tracks && searchRes.tracks.length) {
                 if (searchRes.type === "PLAYLIST") {
                   for (const tr of searchRes.tracks) {
                     player.queue.add(tr);
                   }
                 } else {
-                  player.queue.add(searchRes.tracks[0]);
+                  if (payload.playNow) {
+                    player.queue.unshift(searchRes.tracks[0]);
+                    await player.skip();
+                  } else {
+                    player.queue.add(searchRes.tracks[0]);
+                  }
                 }
                 if (!player.playing && !player.paused) {
                   await player.play();
                 }
               }
             }
+
+            // Broadcast immediate visualizer state update
+            broadcastVisualizerState(player);
           }
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ success: true, action }));

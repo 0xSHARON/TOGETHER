@@ -114,6 +114,18 @@ module.exports = {
     player.data.set("lastTrack", track);
     recordTrackListening(track, client).catch(() => {});
 
+    // Proactively pre-fetch next recommendation if autoplay is on and queue is empty
+    if (player.data.get("autoplay") && (player.queue?.length || 0) === 0) {
+      setTimeout(() => {
+        try {
+          if (player.data?.get("autoplay") && (player.queue?.length || 0) === 0) {
+            const { attemptAutoplay } = require("../../utils/playerUtils");
+            attemptAutoplay(client, player).catch(() => {});
+          }
+        } catch {}
+      }, 1000);
+    }
+
     const channel = client.channels.cache.get(player.textId);
     if (!channel) return;
 
