@@ -90,12 +90,12 @@ module.exports = {
       }
 
       // Send fresh sticky message using Components V2
-      const stickyCard = container(COLORS.brand)
-        .addTextDisplayComponents(text(`### 📌 NOTICE / CHANNEL GUIDELINES`))
+      const stickyCard = container()
+        .addTextDisplayComponents(text(`## 📌 Channel Guidelines & Notice\n-# Important Information`))
         .addSeparatorComponents(separator())
         .addTextDisplayComponents(text(sticky.message))
         .addSeparatorComponents(separator())
-        .addTextDisplayComponents(text(`*This message will automatically stay anchored to the bottom of the channel.*`));
+        .addTextDisplayComponents(text(`-# Dynamic notice · Automatically stays anchored to the bottom`));
 
       const newMsg = await message.channel.send({
         components: [stickyCard],

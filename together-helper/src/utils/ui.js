@@ -6,11 +6,9 @@ const {
 } = require("discord.js");
 
 const COLORS = Object.freeze({
-  brand: 0xFF1E38,    // TOGETHER Red Accent
-  accent: 0x00E676,   // Emerald Accent
-  neutral: 0x2A2D34,
+  neutral: 0x3F4652,
   info: 0x5865F2,
-  success: 0x00E676,
+  success: 0x35C47C,
   warning: 0xF0B232,
   danger: 0xED4245,
 });
@@ -22,8 +20,8 @@ function text(content) {
   return new TextDisplayBuilder().setContent(content);
 }
 
-function separator(divider = true) {
-  return new SeparatorBuilder().setDivider(divider);
+function separator() {
+  return new SeparatorBuilder().setDivider(true);
 }
 
 function container(color = null) {
@@ -46,13 +44,4 @@ function noticePayload(options, ephemeral = false) {
   return { components: [notice(options)], flags: flags(ephemeral) };
 }
 
-module.exports = {
-  COLORS,
-  container,
-  flags,
-  notice,
-  noticePayload,
-  separator,
-  text
-};
-
+module.exports = { COLORS, container, flags, notice, noticePayload, separator, text };

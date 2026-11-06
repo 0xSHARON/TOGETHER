@@ -1,10 +1,11 @@
 const {
   ApplicationCommandOptionType,
-  PermissionsBitField
+  PermissionsBitField,
 } = require("discord.js");
 const { StickyMessage } = require("../../schema");
 const config = require("../../config");
-const { container, flags, noticePayload, separator, text, COLORS } = require("../../utils/ui");
+const { container, flags, noticePayload, separator, text } = require("../../utils/ui");
+const emoji = require("../../emojis");
 
 module.exports = {
   name: "sticky",
@@ -19,15 +20,15 @@ module.exports = {
       required: true,
       choices: [
         { name: "set - Pin a message that stays at the bottom", value: "set" },
-        { name: "remove - Stop sticking message in this channel", value: "remove" }
-      ]
+        { name: "remove - Stop sticking message in this channel", value: "remove" },
+      ],
     },
     {
       name: "message",
       type: ApplicationCommandOptionType.String,
       description: "The text to stick at the bottom of the channel (required for set)",
-      required: false
-    }
+      required: false,
+    },
   ],
 
   async slashExecute(interaction, client) {
@@ -36,9 +37,9 @@ module.exports = {
         noticePayload({
           title: "Permission Denied",
           description: "You need `Manage Messages` permissions to manage sticky messages.",
-          emoji: "🚫",
-          tone: "danger"
-        }, true)
+          emoji: emoji.cross,
+          tone: "danger",
+        }, true),
       );
     }
 
@@ -51,24 +52,24 @@ module.exports = {
           noticePayload({
             title: "Missing Content",
             description: "Please specify the message text you wish to stick to the bottom.",
-            emoji: "⚠️",
-            tone: "warning"
-          }, true)
+            emoji: emoji.warn,
+            tone: "warning",
+          }, true),
         );
       }
 
       await interaction.deferReply({ ephemeral: true });
 
-      const stickyCard = container(COLORS.brand)
-        .addTextDisplayComponents(text("### 📌 Channel Notice & Guidelines"))
+      const stickyCard = container()
+        .addTextDisplayComponents(text(`## ${emoji.warn} Channel Guidelines & Notice\n-# Important Information`))
         .addSeparatorComponents(separator())
         .addTextDisplayComponents(text(content))
         .addSeparatorComponents(separator())
-        .addTextDisplayComponents(text("*This notice dynamically stays anchored to the bottom of the channel.*"));
+        .addTextDisplayComponents(text(`-# Dynamic notice · Automatically stays anchored to the bottom`));
 
       const sentMsg = await interaction.channel.send({
         components: [stickyCard],
-        flags: flags(false)
+        flags: flags(false),
       });
 
       await StickyMessage.findOneAndUpdate(
@@ -77,18 +78,18 @@ module.exports = {
           guildId: interaction.guild.id,
           message: content,
           lastMessageId: sentMsg.id,
-          enabled: true
+          enabled: true,
         },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       return interaction.editReply(
         noticePayload({
           title: "Sticky Notice Anchored",
           description: "Sticky configured. It will seamlessly reposition as members chat.",
-          emoji: "✅",
-          tone: "success"
-        }, true)
+          emoji: emoji.check,
+          tone: "success",
+        }, true),
       );
     }
 
@@ -99,9 +100,9 @@ module.exports = {
           noticePayload({
             title: "No Sticky Notice",
             description: "There is no active sticky notice in this channel.",
-            emoji: "ℹ️",
-            tone: "neutral"
-          }, true)
+            emoji: emoji.info,
+            tone: "neutral",
+          }, true),
         );
       }
 
@@ -118,9 +119,9 @@ module.exports = {
         noticePayload({
           title: "Sticky Notice Removed",
           description: "The sticky notice has been removed from this channel.",
-          emoji: "🗑️",
-          tone: "info"
-        }, true)
+          emoji: emoji.check,
+          tone: "info",
+        }, true),
       );
     }
   },
@@ -131,9 +132,9 @@ module.exports = {
         noticePayload({
           title: "Permission Denied",
           description: "You need `Manage Messages` permissions to manage sticky messages.",
-          emoji: "🚫",
-          tone: "danger"
-        }, false)
+          emoji: emoji.cross,
+          tone: "danger",
+        }, false),
       );
     }
 
@@ -146,22 +147,22 @@ module.exports = {
           noticePayload({
             title: "Missing Content",
             description: "Usage: `-sticky set <message content>`",
-            emoji: "⚠️",
-            tone: "warning"
-          }, false)
+            emoji: emoji.warn,
+            tone: "warning",
+          }, false),
         );
       }
 
-      const stickyCard = container(COLORS.brand)
-        .addTextDisplayComponents(text("### 📌 Channel Notice & Guidelines"))
+      const stickyCard = container()
+        .addTextDisplayComponents(text(`## ${emoji.warn} Channel Guidelines & Notice\n-# Important Information`))
         .addSeparatorComponents(separator())
         .addTextDisplayComponents(text(content))
         .addSeparatorComponents(separator())
-        .addTextDisplayComponents(text("*This notice dynamically stays anchored to the bottom of the channel.*"));
+        .addTextDisplayComponents(text(`-# Dynamic notice · Automatically stays anchored to the bottom`));
 
       const sentMsg = await message.channel.send({
         components: [stickyCard],
-        flags: flags(false)
+        flags: flags(false),
       });
 
       await StickyMessage.findOneAndUpdate(
@@ -170,18 +171,18 @@ module.exports = {
           guildId: message.guild.id,
           message: content,
           lastMessageId: sentMsg.id,
-          enabled: true
+          enabled: true,
         },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       return message.reply(
         noticePayload({
           title: "Sticky Notice Anchored",
           description: "Sticky configured. It will seamlessly reposition as members chat.",
-          emoji: "✅",
-          tone: "success"
-        }, false)
+          emoji: emoji.check,
+          tone: "success",
+        }, false),
       );
     }
 
@@ -192,9 +193,9 @@ module.exports = {
           noticePayload({
             title: "No Sticky Notice",
             description: "There is no active sticky notice in this channel.",
-            emoji: "ℹ️",
-            tone: "neutral"
-          }, false)
+            emoji: emoji.info,
+            tone: "neutral",
+          }, false),
         );
       }
 
@@ -211,9 +212,9 @@ module.exports = {
         noticePayload({
           title: "Sticky Notice Removed",
           description: "The sticky notice has been removed from this channel.",
-          emoji: "🗑️",
-          tone: "info"
-        }, false)
+          emoji: emoji.check,
+          tone: "info",
+        }, false),
       );
     }
 
@@ -221,9 +222,9 @@ module.exports = {
       noticePayload({
         title: "Sticky Command Usage",
         description: "• `-sticky set <message>` — Anchor a message to the bottom\n• `-sticky remove` — Remove sticky from this channel",
-        emoji: "ℹ️",
-        tone: "info"
-      }, false)
+        emoji: emoji.info,
+        tone: "info",
+      }, false),
     );
-  }
+  },
 };

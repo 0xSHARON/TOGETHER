@@ -1,75 +1,87 @@
-const { container, flags, separator, text, COLORS } = require("../../utils/ui");
+const mongoose = require("mongoose");
+const { container, flags, separator, text } = require("../../utils/ui");
+const emoji = require("../../emojis");
+
+async function measure(task) {
+  const start = performance.now();
+  try {
+    await task();
+    return Math.round(performance.now() - start);
+  } catch {
+    return null;
+  }
+}
+
+const latency = (value) => (value === null ? "Unavailable" : `${value} ms`);
 
 module.exports = {
   name: "ping",
-  description: "Check the helper bot latency and WebSocket ping",
+  aliases: ["latency", "pong"],
+  description: "Check Discord gateway and database latency",
   category: "Information",
   slashOptions: [],
 
   async slashExecute(interaction, client) {
-    const wsPing = Math.round(client.ws.ping);
-    const sentTime = Date.now();
-
-    const initialCard = container(COLORS.info)
-      .addTextDisplayComponents(text(`### 🏓 Measuring Latency...`));
-
     await interaction.reply({
-      components: [initialCard],
-      flags: flags(false)
+      components: [container().addTextDisplayComponents(text(`### ${emoji.load} Checking latency...`))],
+      flags: flags(false),
     });
 
-    const roundTrip = Date.now() - sentTime;
-    const tone = wsPing < 100 ? COLORS.success : wsPing < 250 ? COLORS.warning : COLORS.danger;
+    const startedAt = performance.now();
+    const [database] = await Promise.all([
+      measure(() => mongoose.connection.db?.admin?.().ping()),
+    ]);
+    const response = Math.round(performance.now() - startedAt);
+    const gateway = Math.max(0, Math.round(client.ws.ping || 0));
 
-    const resultCard = container(tone)
-      .addTextDisplayComponents(text(`### 🏓 Pong! Latency Statistics`))
+    const card = container()
+      .addTextDisplayComponents(text(`## ${emoji.info} Latency\n-# Helper Gateway & Database Diagnostics`))
       .addSeparatorComponents(separator())
       .addTextDisplayComponents(
         text(
-          `• **WebSocket Ping:** \`${wsPing}ms\`\n` +
-          `• **Round-Trip Delay:** \`${roundTrip}ms\`\n` +
-          `• **MongoDB Status:** \`Connected & Responsive\`\n` +
-          `• **Architecture:** \`Discord Components V2\``
-        )
-      );
+          `**Gateway**   \`${latency(gateway)}\`\n` +
+          `**Database**  \`${latency(database)}\`\n` +
+          `**Response**  \`${latency(response)}\``,
+        ),
+      )
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(text(`-# Requested by ${interaction.user.username} · developed by kajukatli.`));
 
-    await interaction.editReply({
-      components: [resultCard],
-      flags: flags(false)
+    return interaction.editReply({
+      components: [card],
+      flags: flags(false),
     });
   },
 
   async prefixExecute(message, args, client) {
-    const wsPing = Math.round(client.ws.ping);
-    const sentTime = Date.now();
-
-    const initialCard = container(COLORS.info)
-      .addTextDisplayComponents(text(`### 🏓 Measuring Latency...`));
-
-    const reply = await message.reply({
-      components: [initialCard],
-      flags: flags(false)
+    const loading = await message.reply({
+      components: [container().addTextDisplayComponents(text(`### ${emoji.load} Checking latency...`))],
+      flags: flags(false),
     });
 
-    const roundTrip = Date.now() - sentTime;
-    const tone = wsPing < 100 ? COLORS.success : wsPing < 250 ? COLORS.warning : COLORS.danger;
+    const startedAt = performance.now();
+    const [database] = await Promise.all([
+      measure(() => mongoose.connection.db?.admin?.().ping()),
+    ]);
+    const response = Math.round(performance.now() - startedAt);
+    const gateway = Math.max(0, Math.round(client.ws.ping || 0));
 
-    const resultCard = container(tone)
-      .addTextDisplayComponents(text(`### 🏓 Pong! Latency Statistics`))
+    const card = container()
+      .addTextDisplayComponents(text(`## ${emoji.info} Latency\n-# Helper Gateway & Database Diagnostics`))
       .addSeparatorComponents(separator())
       .addTextDisplayComponents(
         text(
-          `• **WebSocket Ping:** \`${wsPing}ms\`\n` +
-          `• **Round-Trip Delay:** \`${roundTrip}ms\`\n` +
-          `• **MongoDB Status:** \`Connected & Responsive\`\n` +
-          `• **Architecture:** \`Discord Components V2\``
-        )
-      );
+          `**Gateway**   \`${latency(gateway)}\`\n` +
+          `**Database**  \`${latency(database)}\`\n` +
+          `**Response**  \`${latency(response)}\``,
+        ),
+      )
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(text(`-# Requested by ${message.author.username} · developed by kajukatli.`));
 
-    await reply.edit({
-      components: [resultCard],
-      flags: flags(false)
+    return loading.edit({
+      components: [card],
+      flags: flags(false),
     });
-  }
+  },
 };
-

@@ -1,10 +1,11 @@
 const {
   ApplicationCommandOptionType,
-  PermissionsBitField
+  PermissionsBitField,
 } = require("discord.js");
 const { WelcomeConfig } = require("../../schema");
 const config = require("../../config");
-const { container, flags, noticePayload, separator, text, COLORS } = require("../../utils/ui");
+const { container, flags, noticePayload, separator, text } = require("../../utils/ui");
+const emoji = require("../../emojis");
 
 module.exports = {
   name: "setwelcome",
@@ -16,20 +17,20 @@ module.exports = {
       name: "channel",
       type: ApplicationCommandOptionType.Channel,
       description: "Channel where welcome messages should be announced",
-      required: true
+      required: true,
     },
     {
       name: "message",
       type: ApplicationCommandOptionType.String,
       description: "Custom message. Use {user} for mention, {server} for server name, {count} for member count",
-      required: false
+      required: false,
     },
     {
       name: "dm",
       type: ApplicationCommandOptionType.Boolean,
       description: "Also send a direct message welcome to the user?",
-      required: false
-    }
+      required: false,
+    },
   ],
 
   async slashExecute(interaction, client) {
@@ -38,9 +39,9 @@ module.exports = {
         noticePayload({
           title: "Permission Denied",
           description: "You need `Manage Server` permissions to configure welcome messages.",
-          emoji: "🚫",
-          tone: "danger"
-        }, true)
+          emoji: emoji.cross,
+          tone: "danger",
+        }, true),
       );
     }
 
@@ -54,9 +55,9 @@ module.exports = {
         channelId: channel.id,
         message: customMsg,
         dmWelcome: dm,
-        enabled: true
+        enabled: true,
       },
-      { upsert: true, new: true }
+      { upsert: true, new: true },
     );
 
     const preview = customMsg
@@ -64,20 +65,23 @@ module.exports = {
       .replace(/{server}/g, interaction.guild.name)
       .replace(/{count}/g, String(interaction.guild.memberCount));
 
-    const card = container(COLORS.success)
-      .addTextDisplayComponents(text("### 🎉 Welcome Announcements Configured"))
+    const card = container()
+      .addTextDisplayComponents(text(`## ${emoji.sparkles} Welcome System Configured\n-# Member Onboarding Configuration`))
       .addSeparatorComponents(separator())
       .addTextDisplayComponents(
         text(
-          `• **Channel:** <#${channel.id}>\n` +
-          `• **DM Welcome:** \`${dm ? "Enabled" : "Disabled"}\`\n\n` +
-          `**Live Preview:**\n> ${preview}`
-        )
-      );
+          `**Announcement Channel**  <#${channel.id}>\n` +
+          `**Direct Message**        \`${dm ? "Enabled" : "Disabled"}\``,
+        ),
+      )
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(text(`**Live Message Preview**\n> ${preview}`))
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(text(`-# Configured by ${interaction.user.username} · TOGETHER Helper`));
 
     return interaction.reply({
       components: [card],
-      flags: flags(false)
+      flags: flags(false),
     });
   },
 
@@ -87,9 +91,9 @@ module.exports = {
         noticePayload({
           title: "Permission Denied",
           description: "You need `Manage Server` permissions to configure welcome messages.",
-          emoji: "🚫",
-          tone: "danger"
-        }, false)
+          emoji: emoji.cross,
+          tone: "danger",
+        }, false),
       );
     }
 
@@ -99,9 +103,9 @@ module.exports = {
         noticePayload({
           title: "Missing Channel",
           description: "Usage: `-setwelcome #channel [optional custom message]`",
-          emoji: "⚠️",
-          tone: "warning"
-        }, false)
+          emoji: emoji.warn,
+          tone: "warning",
+        }, false),
       );
     }
 
@@ -113,9 +117,9 @@ module.exports = {
         channelId: channel.id,
         message: customMsg,
         dmWelcome: false,
-        enabled: true
+        enabled: true,
       },
-      { upsert: true, new: true }
+      { upsert: true, new: true },
     );
 
     const preview = customMsg
@@ -123,20 +127,23 @@ module.exports = {
       .replace(/{server}/g, message.guild.name)
       .replace(/{count}/g, String(message.guild.memberCount));
 
-    const card = container(COLORS.success)
-      .addTextDisplayComponents(text("### 🎉 Welcome Announcements Configured"))
+    const card = container()
+      .addTextDisplayComponents(text(`## ${emoji.sparkles} Welcome System Configured\n-# Member Onboarding Configuration`))
       .addSeparatorComponents(separator())
       .addTextDisplayComponents(
         text(
-          `• **Channel:** <#${channel.id}>\n` +
-          `• **DM Welcome:** \`Disabled\`\n\n` +
-          `**Live Preview:**\n> ${preview}`
-        )
-      );
+          `**Announcement Channel**  <#${channel.id}>\n` +
+          `**Direct Message**        \`Disabled\``,
+        ),
+      )
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(text(`**Live Message Preview**\n> ${preview}`))
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(text(`-# Configured by ${message.author.username} · TOGETHER Helper`));
 
     return message.reply({
       components: [card],
-      flags: flags(false)
+      flags: flags(false),
     });
-  }
+  },
 };

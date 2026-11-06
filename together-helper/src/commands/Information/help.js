@@ -1,181 +1,228 @@
+const fs = require("fs");
+const path = require("path");
 const {
   ActionRowBuilder,
+  AttachmentBuilder,
   ButtonBuilder,
   ButtonStyle,
+  ComponentType,
+  MediaGalleryBuilder,
+  MediaGalleryItemBuilder,
   StringSelectMenuBuilder,
-  ComponentType
 } = require("discord.js");
-const { container, flags, noticePayload, separator, text, COLORS } = require("../../utils/ui");
+const { container, flags, noticePayload, separator, text } = require("../../utils/ui");
 const { isHttpUrl } = require("../../utils/webhooks");
+const emoji = require("../../emojis");
 const config = require("../../config");
 
-const CATEGORIES = {
-  Support: {
-    emoji: "📩",
-    label: "Support & Tickets",
-    description: "Ticket panels, ticket closing and staff roles",
-    commands: [
-      { name: "/ticket setup", desc: "Deploy interactive ticket panel in a channel" },
-      { name: "/ticket close", desc: "Close and archive the current ticket" },
-      { name: "/ticket config", desc: "Set tickets category and staff support role" }
-    ]
-  },
-  General: {
-    emoji: "💡",
-    label: "General & Community",
-    description: "Community suggestions and bug reporting",
-    commands: [
-      { name: "/suggest", desc: "Submit an idea or feedback for community voting (👍/👎)" },
-      { name: "/bugreport", desc: "Report an issue with reproduction steps to staff" }
-    ]
-  },
-  Admin: {
-    emoji: "⚙️",
-    label: "Administration",
-    description: "Welcome embeds, channel routing and sticky notices",
-    commands: [
-      { name: "/setwelcome", desc: "Configure dynamic welcome greetings for new members" },
-      { name: "/setchannel", desc: "Route suggestions and bug reports to dedicated channels" },
-      { name: "/sticky", desc: "Set or remove a message permanently anchored to channel bottom" }
-    ]
-  },
-  Information: {
-    emoji: "ℹ️",
-    label: "Information",
-    description: "Bot status, ping and help guide",
-    commands: [
-      { name: "/help", desc: "Display this interactive command manual" },
-      { name: "/ping", desc: "Check bot latency and gateway WebSocket ping" }
-    ]
-  }
-};
+const BANNERS_DIR = path.resolve(__dirname, "../../../assets/banners");
+const BANNER_HOME = path.resolve(__dirname, "../../../assets/banner.png");
+const LOCAL_BANNERS_DIR = path.resolve(__dirname, "../../assets/banners");
+const LOCAL_BANNER_HOME = path.resolve(__dirname, "../../assets/banner.png");
 
-function linkRow() {
-  const buttons = [];
-  if (isHttpUrl(config.supportUrl)) {
-    buttons.push(
-      new ButtonBuilder()
-        .setLabel("Support Server")
-        .setStyle(ButtonStyle.Link)
-        .setURL(config.supportUrl)
-        .setEmoji("💬")
-    );
+function bannerFor(key = "home") {
+  if (key === "home") {
+    if (fs.existsSync(LOCAL_BANNER_HOME)) return { name: "banner.png", filePath: LOCAL_BANNER_HOME };
+    if (fs.existsSync(BANNER_HOME)) return { name: "banner.png", filePath: BANNER_HOME };
+    return null;
   }
-  if (isHttpUrl(config.dashboardUrl)) {
-    buttons.push(
-      new ButtonBuilder()
-        .setLabel("Dashboard")
-        .setStyle(ButtonStyle.Link)
-        .setURL(config.dashboardUrl)
-        .setEmoji("🌐")
-    );
-  }
-  if (config.mainBotId) {
-    buttons.push(
-      new ButtonBuilder()
-        .setLabel("Invite Main Bot")
-        .setStyle(ButtonStyle.Link)
-        .setURL(`https://discord.com/oauth2/authorize?client_id=${config.mainBotId}&permissions=8&scope=bot%20applications.commands`)
-        .setEmoji("🎵")
-    );
-  }
-  return buttons.length ? new ActionRowBuilder().addComponents(buttons) : null;
+  const slug = key.toLowerCase();
+  const localSpecific = path.join(LOCAL_BANNERS_DIR, `${slug}.png`);
+  if (fs.existsSync(localSpecific)) return { name: `${slug}.png`, filePath: localSpecific };
+
+  const specific = path.join(BANNERS_DIR, `${slug}.png`);
+  if (fs.existsSync(specific)) return { name: `${slug}.png`, filePath: specific };
+
+  if (fs.existsSync(LOCAL_BANNER_HOME)) return { name: "banner.png", filePath: LOCAL_BANNER_HOME };
+  if (fs.existsSync(BANNER_HOME)) return { name: "banner.png", filePath: BANNER_HOME };
+  return null;
 }
 
-function menuRow(selected = "home", disabled = false) {
-  const options = [
-    {
-      label: "Overview",
-      value: "home",
-      description: "Return to the main helper manual",
-      emoji: "🏠",
-      default: selected === "home"
-    }
-  ];
+const CATEGORY_INFO = Object.freeze({
+  Admin: { emoji: emoji.config, bannerKey: "config", description: "Welcome greetings, routing channels, and sticky notices" },
+  General: { emoji: emoji.utility, bannerKey: "utility", description: "Community feedback, feature suggestions, and bug reports" },
+  Information: { emoji: emoji.info, bannerKey: "information", description: "Bot latency, system diagnostics, and manual" },
+  Support: { emoji: emoji.star, bannerKey: "home", description: "Ticket desk panels, support rooms, and issue resolution" },
+});
 
-  for (const [key, data] of Object.entries(CATEGORIES)) {
+function publicCommands(client) {
+  return [...client.commands.values()]
+    .filter((command) => command.name)
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function commandGroups(client) {
+  return publicCommands(client).reduce((groups, command) => {
+    const category = command.category || "General";
+    if (!groups.has(category)) groups.set(category, []);
+    groups.get(category).push(command);
+    return groups;
+  }, new Map());
+}
+
+function menuRow(groups, disabled = false, selected = "home") {
+  const options = [{
+    label: "Overview",
+    value: "home",
+    description: "Return to the main helper manual",
+    emoji: emoji.home,
+    default: selected === "home"
+  }];
+
+  for (const [category, commands] of groups) {
+    const info = CATEGORY_INFO[category] || { emoji: emoji.utility, description: `${category} commands` };
     options.push({
-      label: data.label,
-      value: key,
-      description: data.description.slice(0, 100),
-      emoji: data.emoji,
-      default: selected === key
+      label: category,
+      value: category,
+      description: `${commands.length} commands · ${info.description}`.slice(0, 100),
+      emoji: info.emoji,
+      default: selected === category
     });
   }
 
   const menu = new StringSelectMenuBuilder()
-    .setCustomId("help:select")
-    .setPlaceholder("Select a category to view commands...")
+    .setCustomId("help:category")
+    .setPlaceholder(disabled ? "Help menu expired — run help again" : "Browse a command category")
     .setDisabled(disabled)
     .addOptions(options);
 
   return new ActionRowBuilder().addComponents(menu);
 }
 
-function renderHomeView(client) {
-  const card = container(COLORS.brand)
-    .addTextDisplayComponents(text(`### 🤖 TOGETHER HELPER • Operations & Support System`))
-    .addSeparatorComponents(separator())
-    .addTextDisplayComponents(
-      text(
-        `Welcome to **TOGETHER HELPER** — the dedicated companion bot designed to power community operations, support tickets, moderation sticky notices, and feedback channels.\n\n` +
-        `**Available Modules:**\n` +
-        `• 📩 **Support Tickets:** Ephemeral buttons, staff category isolation, and auto-archive.\n` +
-        `• 💡 **Suggestions:** Automated voting threads with instant reaction tallies.\n` +
-        `• 🐛 **Bug Reporting:** Structured triage embeds with reproduction steps.\n` +
-        `• 📌 **Sticky Messages:** Keep essential rules or links glued to the bottom of busy chats.\n` +
-        `• 👋 **Welcome Greetings:** Rich dynamic member join cards with member counter.`
-      )
-    )
-    .addSeparatorComponents(separator())
-    .addTextDisplayComponents(
-      text(`*Select a module from the dropdown below to explore specific commands and options.*`)
+function linkRow() {
+  const buttons = [];
+  if (isHttpUrl(config.supportUrl)) {
+    buttons.push(
+      new ButtonBuilder()
+        .setLabel("Support server")
+        .setEmoji(emoji.info)
+        .setURL(config.supportUrl)
+        .setStyle(ButtonStyle.Link)
     );
-
-  return card;
+  }
+  if (config.mainBotId) {
+    buttons.push(
+      new ButtonBuilder()
+        .setLabel("Invite TOGETHER")
+        .setEmoji(emoji.home)
+        .setURL(`https://discord.com/oauth2/authorize?client_id=${config.mainBotId}&permissions=8&scope=bot%20applications.commands`)
+        .setStyle(ButtonStyle.Link)
+    );
+  }
+  if (isHttpUrl(config.dashboardUrl)) {
+    buttons.push(
+      new ButtonBuilder()
+        .setLabel("Dashboard")
+        .setEmoji(emoji.config)
+        .setURL(config.dashboardUrl)
+        .setStyle(ButtonStyle.Link)
+    );
+  }
+  return buttons.length ? new ActionRowBuilder().addComponents(buttons) : null;
 }
 
-function renderCategoryView(categoryKey) {
-  const cat = CATEGORIES[categoryKey];
-  if (!cat) return renderHomeView();
+function compactUptime(milliseconds = 0) {
+  const totalMinutes = Math.floor(milliseconds / 60_000);
+  const days = Math.floor(totalMinutes / 1_440);
+  const hours = Math.floor((totalMinutes % 1_440) / 60);
+  const minutes = totalMinutes % 60;
+  return [days && `${days}d`, hours && `${hours}h`, `${minutes}m`].filter(Boolean).join(" ") || "1m";
+}
 
-  const cmdList = cat.commands
-    .map(c => `• **\`${c.name}\`**\n  *${c.desc}*`)
+function homeView(client, requester, groups, disabled = false) {
+  const count = [...groups.values()].reduce((total, commands) => total + commands.length, 0);
+  const categorySummary = [...groups].map(([category, commands]) => {
+    const info = CATEGORY_INFO[category] || { emoji: emoji.utility, description: `${category} commands` };
+    return `${info.emoji} **${category}**  \`${commands.length}\``;
+  }).join("\n");
+  const status = client.isReady?.() !== false ? "Online" : "Connecting";
+  const ping = Math.max(0, Math.round(client.ws?.ping || 0));
+
+  const banner = bannerFor("home");
+  const card = container();
+
+  if (banner) {
+    card.addMediaGalleryComponents(
+      new MediaGalleryBuilder().addItems(
+        new MediaGalleryItemBuilder()
+          .setURL(`attachment://${banner.name}`)
+          .setDescription("TOGETHER HELPER Commands Banner"),
+      ),
+    );
+  }
+
+  card
+    .addTextDisplayComponents(text(`## TOGETHER HELPER\n-# ${count} commands · ${groups.size} categories`))
+    .addSeparatorComponents(separator())
+    .addTextDisplayComponents(text(
+      `**Status**  \`${status}\`   **Ping**  \`${ping} ms\`   **Uptime**  \`${compactUptime(client.uptime)}\``,
+    ))
+    .addSeparatorComponents(separator())
+    .addTextDisplayComponents(text(categorySummary))
+    .addSeparatorComponents(separator())
+    .addTextDisplayComponents(text(`-# Requested by ${requester.username} · developed by kajukatli.`))
+    .addActionRowComponents(menuRow(groups, disabled, "home"));
+
+  const links = linkRow();
+  if (links) card.addActionRowComponents(links);
+  return { card, banner };
+}
+
+function categoryView(category, commands, prefix, groups, requester, disabled = false) {
+  const info = CATEGORY_INFO[category] || { emoji: emoji.utility, bannerKey: "utility", description: `${category} commands` };
+  const listing = commands
+    .map((c) => `• **\`/${c.name}\`**\n  *${c.description}*`)
     .join("\n\n");
+  const banner = bannerFor(info.bannerKey || category);
 
-  const card = container(COLORS.accent)
-    .addTextDisplayComponents(text(`### ${cat.emoji} ${cat.label}`))
-    .addSeparatorComponents(separator())
-    .addTextDisplayComponents(text(`${cat.description}\n\n${cmdList}`))
-    .addSeparatorComponents(separator())
-    .addTextDisplayComponents(text(`*Use \`/command\` or prefix \`${config.prefix}command\` to run any command.*`));
+  const card = container();
+  if (banner) {
+    card.addMediaGalleryComponents(
+      new MediaGalleryBuilder().addItems(
+        new MediaGalleryItemBuilder()
+          .setURL(`attachment://${banner.name}`)
+          .setDescription(`${category} Commands Banner`),
+      ),
+    );
+  }
 
-  return card;
+  card
+    .addTextDisplayComponents(text(`## ${info.emoji} ${category}\n-# ${commands.length} commands · ${info.description}`))
+    .addSeparatorComponents(separator())
+    .addTextDisplayComponents(text(listing || "No public commands available in this category."))
+    .addSeparatorComponents(separator())
+    .addTextDisplayComponents(text(`Use \`/${commands[0]?.name || "help"}\` or \`${prefix}${commands[0]?.name || "help"}\` for details.\n-# Requested by ${requester.username} · developed by kajukatli.`))
+    .addActionRowComponents(menuRow(groups, disabled, category));
+
+  const links = linkRow();
+  if (links) card.addActionRowComponents(links);
+  return { card, banner };
 }
 
 module.exports = {
   name: "help",
-  description: "View the command manual and features for TOGETHER HELPER",
+  description: "View all commands and modules for TOGETHER HELPER",
   category: "Information",
   slashOptions: [],
 
   async slashExecute(interaction, client) {
-    const card = renderHomeView(client);
-    const mRow = menuRow("home");
-    const lRow = linkRow();
+    const groups = commandGroups(client);
+    const prefix = config.prefix || "-";
+    const requester = interaction.user;
 
-    const components = [card, mRow];
-    if (lRow) components.push(lRow);
+    const { card, banner } = homeView(client, requester, groups);
+    const files = banner ? [new AttachmentBuilder(banner.filePath, { name: banner.name })] : [];
 
     const reply = await interaction.reply({
-      components,
+      components: [card],
+      files,
       flags: flags(false),
-      fetchReply: true
+      fetchReply: true,
     });
 
     const collector = reply.createMessageComponentCollector({
       componentType: ComponentType.StringSelect,
-      time: 120_000
+      time: 120_000,
     });
 
     collector.on("collect", async (i) => {
@@ -184,50 +231,53 @@ module.exports = {
           noticePayload({
             title: "Interaction Unavailable",
             description: "Please run `/help` yourself to browse categories.",
-            tone: "warning"
-          }, true)
+            tone: "warning",
+          }, true),
         );
       }
 
       const selected = i.values[0];
-      const newCard = selected === "home" ? renderHomeView(client) : renderCategoryView(selected);
-      const newMRow = menuRow(selected);
-      const newComponents = [newCard, newMRow];
-      if (lRow) newComponents.push(lRow);
+      const view = selected === "home"
+        ? homeView(client, requester, groups, false)
+        : categoryView(selected, groups.get(selected) || [], prefix, groups, requester, false);
+
+      const updateFiles = view.banner ? [new AttachmentBuilder(view.banner.filePath, { name: view.banner.name })] : [];
 
       await i.update({
-        components: newComponents,
-        flags: flags(false)
+        components: [view.card],
+        files: updateFiles,
+        flags: flags(false),
       });
     });
 
     collector.on("end", async () => {
       try {
-        const expiredCard = renderHomeView(client);
-        const expiredMRow = menuRow("home", true);
-        const expiredComponents = [expiredCard, expiredMRow];
-        if (lRow) expiredComponents.push(lRow);
-        await interaction.editReply({ components: expiredComponents, flags: flags(false) });
+        const expired = homeView(client, requester, groups, true);
+        await interaction.editReply({
+          components: [expired.card],
+          flags: flags(false),
+        });
       } catch {}
     });
   },
 
   async prefixExecute(message, args, client) {
-    const card = renderHomeView(client);
-    const mRow = menuRow("home");
-    const lRow = linkRow();
+    const groups = commandGroups(client);
+    const prefix = config.prefix || "-";
+    const requester = message.author;
 
-    const components = [card, mRow];
-    if (lRow) components.push(lRow);
+    const { card, banner } = homeView(client, requester, groups);
+    const files = banner ? [new AttachmentBuilder(banner.filePath, { name: banner.name })] : [];
 
     const reply = await message.reply({
-      components,
-      flags: flags(false)
+      components: [card],
+      files,
+      flags: flags(false),
     });
 
     const collector = reply.createMessageComponentCollector({
       componentType: ComponentType.StringSelect,
-      time: 120_000
+      time: 120_000,
     });
 
     collector.on("collect", async (i) => {
@@ -235,23 +285,24 @@ module.exports = {
         return i.reply(
           noticePayload({
             title: "Interaction Unavailable",
-            description: "Please run `help` yourself to navigate.",
-            tone: "warning"
-          }, true)
+            description: "Please run `help` yourself to browse categories.",
+            tone: "warning",
+          }, true),
         );
       }
 
       const selected = i.values[0];
-      const newCard = selected === "home" ? renderHomeView(client) : renderCategoryView(selected);
-      const newMRow = menuRow(selected);
-      const newComponents = [newCard, newMRow];
-      if (lRow) newComponents.push(lRow);
+      const view = selected === "home"
+        ? homeView(client, requester, groups, false)
+        : categoryView(selected, groups.get(selected) || [], prefix, groups, requester, false);
+
+      const updateFiles = view.banner ? [new AttachmentBuilder(view.banner.filePath, { name: view.banner.name })] : [];
 
       await i.update({
-        components: newComponents,
-        flags: flags(false)
+        components: [view.card],
+        files: updateFiles,
+        flags: flags(false),
       });
     });
-  }
+  },
 };
-

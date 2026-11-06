@@ -1,10 +1,11 @@
 const {
   ApplicationCommandOptionType,
-  PermissionsBitField
+  PermissionsBitField,
 } = require("discord.js");
 const { SuggestionConfig, BugReportConfig } = require("../../schema");
 const config = require("../../config");
-const { container, flags, noticePayload, separator, text, COLORS } = require("../../utils/ui");
+const { flags, noticePayload } = require("../../utils/ui");
+const emoji = require("../../emojis");
 
 module.exports = {
   name: "setchannel",
@@ -19,15 +20,15 @@ module.exports = {
       required: true,
       choices: [
         { name: "suggestions - Destination for /suggest", value: "suggestions" },
-        { name: "bugreports - Destination for /bugreport", value: "bugreports" }
-      ]
+        { name: "bugreports - Destination for /bugreport", value: "bugreports" },
+      ],
     },
     {
       name: "channel",
       type: ApplicationCommandOptionType.Channel,
       description: "Target text channel",
-      required: true
-    }
+      required: true,
+    },
   ],
 
   async slashExecute(interaction, client) {
@@ -36,9 +37,9 @@ module.exports = {
         noticePayload({
           title: "Permission Denied",
           description: "You need `Manage Server` permissions to configure helper channels.",
-          emoji: "🚫",
-          tone: "danger"
-        }, true)
+          emoji: emoji.cross,
+          tone: "danger",
+        }, true),
       );
     }
 
@@ -49,15 +50,15 @@ module.exports = {
       await SuggestionConfig.findOneAndUpdate(
         { guildId: interaction.guild.id },
         { channelId: channel.id, enabled: true },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
       return interaction.reply(
         noticePayload({
           title: "Suggestions Channel Configured",
           description: `Suggestions channel updated to <#${channel.id}>. Members can now submit ideas using \`/suggest\` or \`-suggest\`.`,
-          emoji: "💡",
-          tone: "success"
-        }, false)
+          emoji: emoji.check,
+          tone: "success",
+        }, false),
       );
     }
 
@@ -65,15 +66,15 @@ module.exports = {
       await BugReportConfig.findOneAndUpdate(
         { guildId: interaction.guild.id },
         { channelId: channel.id, enabled: true },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
       return interaction.reply(
         noticePayload({
           title: "Bug Reports Channel Configured",
           description: `Bug reports channel updated to <#${channel.id}>. Members can now report issues using \`/bugreport\` or \`-bugreport\`.`,
-          emoji: "🐛",
-          tone: "success"
-        }, false)
+          emoji: emoji.check,
+          tone: "success",
+        }, false),
       );
     }
   },
@@ -84,9 +85,9 @@ module.exports = {
         noticePayload({
           title: "Permission Denied",
           description: "You need `Manage Server` permissions to configure helper channels.",
-          emoji: "🚫",
-          tone: "danger"
-        }, false)
+          emoji: emoji.cross,
+          tone: "danger",
+        }, false),
       );
     }
 
@@ -98,9 +99,9 @@ module.exports = {
         noticePayload({
           title: "Invalid Usage",
           description: "Usage: `-setchannel <suggestions|bugreports> #channel`",
-          emoji: "⚠️",
-          tone: "warning"
-        }, false)
+          emoji: emoji.warn,
+          tone: "warning",
+        }, false),
       );
     }
 
@@ -108,15 +109,15 @@ module.exports = {
       await SuggestionConfig.findOneAndUpdate(
         { guildId: message.guild.id },
         { channelId: channel.id, enabled: true },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
       return message.reply(
         noticePayload({
           title: "Suggestions Channel Configured",
           description: `Suggestions channel updated to <#${channel.id}>. Members can now submit ideas using \`/suggest\` or \`-suggest\`.`,
-          emoji: "💡",
-          tone: "success"
-        }, false)
+          emoji: emoji.check,
+          tone: "success",
+        }, false),
       );
     }
 
@@ -124,16 +125,16 @@ module.exports = {
       await BugReportConfig.findOneAndUpdate(
         { guildId: message.guild.id },
         { channelId: channel.id, enabled: true },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
       return message.reply(
         noticePayload({
           title: "Bug Reports Channel Configured",
           description: `Bug reports channel updated to <#${channel.id}>. Members can now report issues using \`/bugreport\` or \`-bugreport\`.`,
-          emoji: "🐛",
-          tone: "success"
-        }, false)
+          emoji: emoji.check,
+          tone: "success",
+        }, false),
       );
     }
-  }
+  },
 };

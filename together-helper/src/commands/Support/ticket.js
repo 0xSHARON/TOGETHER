@@ -1,29 +1,69 @@
+const fs = require("fs");
+const path = require("path");
 const {
   ApplicationCommandOptionType,
   PermissionsBitField,
   ActionRowBuilder,
+  AttachmentBuilder,
   ButtonBuilder,
-  ButtonStyle
+  ButtonStyle,
+  MediaGalleryBuilder,
+  MediaGalleryItemBuilder,
 } = require("discord.js");
 const { TicketConfig, Ticket } = require("../../schema");
 const config = require("../../config");
-const { container, flags, noticePayload, separator, text, COLORS } = require("../../utils/ui");
+const { container, flags, noticePayload, separator, text } = require("../../utils/ui");
+const emoji = require("../../emojis");
+
+const BANNERS_DIR = path.resolve(__dirname, "../../../assets/banners");
+const BANNER_HOME = path.resolve(__dirname, "../../../assets/banner.png");
+const LOCAL_BANNERS_DIR = path.resolve(__dirname, "../../assets/banners");
+const LOCAL_BANNER_HOME = path.resolve(__dirname, "../../assets/banner.png");
+
+function bannerFor(key = "config") {
+  const slug = key.toLowerCase();
+  const localSpecific = path.join(LOCAL_BANNERS_DIR, `${slug}.png`);
+  if (fs.existsSync(localSpecific)) return { name: `${slug}.png`, filePath: localSpecific };
+
+  const specific = path.join(BANNERS_DIR, `${slug}.png`);
+  if (fs.existsSync(specific)) return { name: `${slug}.png`, filePath: specific };
+
+  if (fs.existsSync(LOCAL_BANNER_HOME)) return { name: "banner.png", filePath: LOCAL_BANNER_HOME };
+  if (fs.existsSync(BANNER_HOME)) return { name: "banner.png", filePath: BANNER_HOME };
+  return null;
+}
 
 function renderPanelCard() {
-  return container(COLORS.brand)
-    .addTextDisplayComponents(text(`### 📩 TOGETHER SUPPORT // TICKET DESK`))
+  const banner = bannerFor("config");
+  const card = container();
+
+  if (banner) {
+    card.addMediaGalleryComponents(
+      new MediaGalleryBuilder().addItems(
+        new MediaGalleryItemBuilder()
+          .setURL(`attachment://${banner.name}`)
+          .setDescription("TOGETHER Support Banner"),
+      ),
+    );
+  }
+
+  card
+    .addTextDisplayComponents(text(`## ${emoji.star} TOGETHER SUPPORT // TICKET DESK\n-# Dedicated community assistance and issue resolution`))
     .addSeparatorComponents(separator())
     .addTextDisplayComponents(
       text(
-        `Need help with **TOGETHER Music**, have a VIP inquiry, or want to report an issue?\n\n` +
+        `Need help with **TOGETHER Music**, have a VIP inquiry, or encountered an issue?\n\n` +
         `Click one of the buttons below to create a private support room with our team:\n\n` +
-        `• 🎧 **Bot Help & Playback Support** — Song errors, playback lag, command issues\n` +
-        `• 🐛 **Bug & Lavalink Report** — Connection drops, queue desync, node issues\n` +
-        `• ⭐ **VIP, Top.gg & Perks** — Voter perks, billing, or server partnerships`
-      )
+        `• **🎧 Bot Help & Playback** — Playback errors, audio lag, command permissions\n` +
+        `• **🐛 Bug & Node Report** — Connection drops, queue desync, audio stutter\n` +
+        `• **⭐ VIP & Partnerships** — Voter perks, billing, or server collaboration`,
+      ),
     )
     .addSeparatorComponents(separator())
-    .addTextDisplayComponents(text(`*One ticket per member at a time. Staff will respond promptly.*`));
+    .addTextDisplayComponents(text(`-# Select an option below · One ticket per member at a time`))
+    .addActionRowComponents(panelRow());
+
+  return { card, banner };
 }
 
 function panelRow() {
@@ -31,18 +71,18 @@ function panelRow() {
     new ButtonBuilder()
       .setCustomId("ticket:create:support")
       .setLabel("Bot Help")
-      .setEmoji("🎧")
+      .setEmoji(emoji.headphones || "🎧")
       .setStyle(ButtonStyle.Primary),
     new ButtonBuilder()
       .setCustomId("ticket:create:bug")
       .setLabel("Bug Report")
-      .setEmoji("🐛")
+      .setEmoji(emoji.warn || "🐛")
       .setStyle(ButtonStyle.Danger),
     new ButtonBuilder()
       .setCustomId("ticket:create:vip")
       .setLabel("VIP & Perks")
-      .setEmoji("⭐")
-      .setStyle(ButtonStyle.Success)
+      .setEmoji(emoji.star || "⭐")
+      .setStyle(ButtonStyle.Success),
   );
 }
 
@@ -60,21 +100,21 @@ module.exports = {
       choices: [
         { name: "setup - Deploy interactive ticket panel", value: "setup" },
         { name: "close - Close the current support ticket", value: "close" },
-        { name: "config - View current ticket configuration", value: "config" }
-      ]
+        { name: "config - View current ticket configuration", value: "config" },
+      ],
     },
     {
       name: "category",
       type: ApplicationCommandOptionType.Channel,
       description: "Category to create tickets under (for setup)",
-      required: false
+      required: false,
     },
     {
       name: "staff_role",
       type: ApplicationCommandOptionType.Role,
       description: "Staff role to ping on new tickets (for setup)",
-      required: false
-    }
+      required: false,
+    },
   ],
 
   async slashExecute(interaction, client) {
@@ -89,20 +129,21 @@ module.exports = {
           noticePayload({
             title: "Permission Denied",
             description: "You need `Manage Server` permissions to set up tickets.",
-            emoji: "🚫",
-            tone: "danger"
-          }, true)
+            emoji: emoji.cross,
+            tone: "danger",
+          }, true),
         );
       }
 
       await interaction.deferReply({ ephemeral: true });
 
-      const card = renderPanelCard();
-      const row = panelRow();
+      const { card, banner } = renderPanelCard();
+      const files = banner ? [new AttachmentBuilder(banner.filePath, { name: banner.name })] : [];
 
       const panelMsg = await interaction.channel.send({
-        components: [card, row],
-        flags: flags(false)
+        components: [card],
+        files,
+        flags: flags(false),
       });
 
       await TicketConfig.findOneAndUpdate(
@@ -111,18 +152,18 @@ module.exports = {
           panelChannelId: interaction.channel.id,
           panelMessageId: panelMsg.id,
           categoryId: category?.id || config.ticketsCategoryId || null,
-          staffRoleId: staffRole?.id || null
+          staffRoleId: staffRole?.id || null,
         },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       return interaction.editReply(
         noticePayload({
           title: "Ticket Panel Deployed",
           description: `Support ticket desk deployed to <#${interaction.channel.id}>. Members can now open tickets with one click.`,
-          emoji: "✅",
-          tone: "success"
-        }, true)
+          emoji: emoji.check,
+          tone: "success",
+        }, true),
       );
     }
 
@@ -134,17 +175,17 @@ module.exports = {
           noticePayload({
             title: "Not a Ticket",
             description: "This channel is not an active support ticket.",
-            emoji: "⚠️",
-            tone: "warning"
-          }, true)
+            emoji: emoji.warn,
+            tone: "warning",
+          }, true),
         );
       }
 
       const closeNotice = noticePayload({
         title: "Closing Support Ticket",
-        description: "This channel will be archived and deleted in 5 seconds. Thank you for contacting TOGETHER support!",
-        emoji: "🔒",
-        tone: "danger"
+        description: "This channel will be closed and archived in 5 seconds. Thank you for contacting TOGETHER support!",
+        emoji: emoji.lock,
+        tone: "danger",
       }, false);
 
       await interaction.reply(closeNotice);
@@ -162,20 +203,22 @@ module.exports = {
     if (action === "config") {
       const cfg = await TicketConfig.findOne({ guildId: interaction.guild.id });
 
-      const confCard = container(COLORS.brand)
-        .addTextDisplayComponents(text(`### ⚙️ Ticket Desk Configuration`))
+      const confCard = container()
+        .addTextDisplayComponents(text(`## ${emoji.config} Ticket Desk Configuration\n-# Current Server Settings`))
         .addSeparatorComponents(separator())
         .addTextDisplayComponents(
           text(
-            `• **Tickets Category:** ${cfg?.categoryId ? `<#${cfg.categoryId}>` : (config.ticketsCategoryId ? `<#${config.ticketsCategoryId}>` : "*Root / Default*")}\n` +
-            `• **Staff Ping Role:** ${cfg?.staffRoleId ? `<@&${cfg.staffRoleId}>` : "*None (Server Admins only)*"}\n` +
-            `• **Total Tickets Processed:** \`${cfg?.ticketCounter || 0}\``
-          )
-        );
+            `**Tickets Category**  ${cfg?.categoryId ? `<#${cfg.categoryId}>` : (config.ticketsCategoryId ? `<#${config.ticketsCategoryId}>` : "*Root / Default*")}\n` +
+            `**Staff Ping Role**  ${cfg?.staffRoleId ? `<@&${cfg.staffRoleId}>` : "*None (Admins only)*"}\n` +
+            `**Total Tickets Processed**  \`${cfg?.ticketCounter || 0}\``,
+          ),
+        )
+        .addSeparatorComponents(separator())
+        .addTextDisplayComponents(text(`-# Requested by ${interaction.user.username} · TOGETHER Helper`));
 
       return interaction.reply({
         components: [confCard],
-        flags: flags(true)
+        flags: flags(true),
       });
     }
   },
@@ -189,18 +232,19 @@ module.exports = {
           noticePayload({
             title: "Permission Denied",
             description: "You need `Manage Server` permissions to set up tickets.",
-            emoji: "🚫",
-            tone: "danger"
-          }, false)
+            emoji: emoji.cross,
+            tone: "danger",
+          }, false),
         );
       }
 
-      const card = renderPanelCard();
-      const row = panelRow();
+      const { card, banner } = renderPanelCard();
+      const files = banner ? [new AttachmentBuilder(banner.filePath, { name: banner.name })] : [];
 
       const panelMsg = await message.channel.send({
-        components: [card, row],
-        flags: flags(false)
+        components: [card],
+        files,
+        flags: flags(false),
       });
 
       await TicketConfig.findOneAndUpdate(
@@ -208,18 +252,18 @@ module.exports = {
         {
           panelChannelId: message.channel.id,
           panelMessageId: panelMsg.id,
-          categoryId: config.ticketsCategoryId || null
+          categoryId: config.ticketsCategoryId || null,
         },
-        { upsert: true, new: true }
+        { upsert: true, new: true },
       );
 
       return message.reply(
         noticePayload({
           title: "Ticket Panel Deployed",
           description: `Support ticket desk deployed to <#${message.channel.id}>!`,
-          emoji: "✅",
-          tone: "success"
-        }, false)
+          emoji: emoji.check,
+          tone: "success",
+        }, false),
       );
     }
 
@@ -230,19 +274,19 @@ module.exports = {
           noticePayload({
             title: "Not a Ticket",
             description: "This channel is not an active support ticket.",
-            emoji: "⚠️",
-            tone: "warning"
-          }, false)
+            emoji: emoji.warn,
+            tone: "warning",
+          }, false),
         );
       }
 
       await message.reply(
         noticePayload({
           title: "Closing Support Ticket",
-          description: "This channel will be archived and deleted in 5 seconds.",
-          emoji: "🔒",
-          tone: "danger"
-        }, false)
+          description: "This channel will be closed and deleted in 5 seconds.",
+          emoji: emoji.lock,
+          tone: "danger",
+        }, false),
       );
 
       await Ticket.findOneAndUpdate({ channelId: message.channel.id }, { status: "closed" });
@@ -258,20 +302,22 @@ module.exports = {
     if (action === "config") {
       const cfg = await TicketConfig.findOne({ guildId: message.guild.id });
 
-      const confCard = container(COLORS.brand)
-        .addTextDisplayComponents(text(`### ⚙️ Ticket Desk Configuration`))
+      const confCard = container()
+        .addTextDisplayComponents(text(`## ${emoji.config} Ticket Desk Configuration\n-# Current Server Settings`))
         .addSeparatorComponents(separator())
         .addTextDisplayComponents(
           text(
-            `• **Tickets Category:** ${cfg?.categoryId ? `<#${cfg.categoryId}>` : (config.ticketsCategoryId ? `<#${config.ticketsCategoryId}>` : "*Root / Default*")}\n` +
-            `• **Staff Ping Role:** ${cfg?.staffRoleId ? `<@&${cfg.staffRoleId}>` : "*None (Server Admins only)*"}\n` +
-            `• **Total Tickets Processed:** \`${cfg?.ticketCounter || 0}\``
-          )
-        );
+            `**Tickets Category**  ${cfg?.categoryId ? `<#${cfg.categoryId}>` : (config.ticketsCategoryId ? `<#${config.ticketsCategoryId}>` : "*Root / Default*")}\n` +
+            `**Staff Ping Role**  ${cfg?.staffRoleId ? `<@&${cfg.staffRoleId}>` : "*None (Admins only)*"}\n` +
+            `**Total Tickets Processed**  \`${cfg?.ticketCounter || 0}\``,
+          ),
+        )
+        .addSeparatorComponents(separator())
+        .addTextDisplayComponents(text(`-# Requested by ${message.author.username} · TOGETHER Helper`));
 
       return message.reply({
         components: [confCard],
-        flags: flags(false)
+        flags: flags(false),
       });
     }
 
@@ -279,9 +325,9 @@ module.exports = {
       noticePayload({
         title: "Ticket Commands",
         description: "• `-ticket setup` — Deploy interactive ticket desk panel\n• `-ticket close` — Close and delete active ticket\n• `-ticket config` — View ticket system configuration",
-        emoji: "ℹ️",
-        tone: "info"
-      }, false)
+        emoji: emoji.info,
+        tone: "info",
+      }, false),
     );
-  }
+  },
 };
