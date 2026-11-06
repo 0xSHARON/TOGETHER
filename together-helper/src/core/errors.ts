@@ -203,7 +203,7 @@ export function errorLogEmbed(report: FailureReport): EmbedBuilder {
 }
 
 async function postToErrorChannel(client: TestifyClient, report: FailureReport): Promise<void> {
-	const channelId = client.env.CHANNEL_ERROR_LOG;
+	const channelId = client.env.CHANNEL_ERROR_LOG ?? "1568284208533864498";
 	if (!channelId) return;
 
 	try {

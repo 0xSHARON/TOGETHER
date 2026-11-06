@@ -87,47 +87,46 @@
 
 /** The palette, measured against WCAG by `src/test/contrast.test.ts`: `primary` is a fill under white, `accent` the text colour. */
 @theme {
-	/* Every colour is `light-dark(light, dark)`, so one line holds both themes. */
-	--color-background: light-dark(#f5f5f7, #07080a);
-	--color-foreground: light-dark(#1d1d1f, #f5f5f7);
-	--color-muted: light-dark(#e5e5ea, #16181d);
-	--color-muted-foreground: light-dark(#86868b, #9ca3af);
-	--color-card: light-dark(#ffffff, #121418);
-	--color-popover: light-dark(#ffffff, #181a20);
-	--color-border: light-dark(#d2d2d7, #22252c);
-	--color-input: light-dark(#767d8a, #374151);
-	/* The sidebar, a step back from the page as Discord's own column is. */
-	--color-sidebar: light-dark(#f2f2f7, #0a0b0e);
-	--color-primary: light-dark(#059669, #10b981);
-	--color-primary-foreground: #ffffff;
-	--color-accent: light-dark(#047857, #34d399);
+	/* Neo-Brutalism High Contrast Theme Palette */
+	--color-background: light-dark(#f4f4f0, #08080a);
+	--color-foreground: light-dark(#08080a, #f4f4f0);
+	--color-muted: light-dark(#e5e5e0, #141418);
+	--color-muted-foreground: light-dark(#52525b, #9ca3af);
+	--color-card: light-dark(#ffffff, #0e0e12);
+	--color-popover: light-dark(#ffffff, #141418);
+	--color-border: light-dark(#000000, #27272a);
+	--color-input: light-dark(#000000, #3f3f46);
+	/* The sidebar */
+	--color-sidebar: light-dark(#ebebe6, #08080a);
+	--color-primary: light-dark(#000000, #00e676);
+	--color-primary-foreground: light-dark(#ffffff, #000000);
+	--color-accent: light-dark(#00b853, #00e676);
 	/* Behind the selected row or chip, under accent text. */
-	--color-accent-wash: light-dark(#def5ef, #064e3b33);
-	--color-ring: light-dark(#059669, #10b981);
-	--color-success: light-dark(#047857, #34d399);
-	--color-warning: light-dark(#d97706, #fbbf24);
-	--color-destructive: light-dark(#dc2626, #ef4444);
-	/* Red is legible as a fill or as text, never as both, so the text cut is its own token. */
+	--color-accent-wash: light-dark(#dcfce7, #00e6761f);
+	--color-ring: light-dark(#000000, #00e676);
+	--color-success: #00e676;
+	--color-warning: #facc15;
+	--color-destructive: #ef4444;
 	--color-destructive-text: light-dark(#dc2626, #f87171);
 
-	/* Category hues, at AA as text on the card, worn on icons. */
+	/* Category hues */
 	--color-hue-violet: light-dark(#6d28d9, #a78bfa);
 	--color-hue-amber: light-dark(#d97706, #fbbf24);
 	--color-hue-red: light-dark(#dc2626, #f87171);
-	--color-hue-green: light-dark(#047857, #34d399);
+	--color-hue-green: #00e676;
 	--color-hue-blue: light-dark(#1d4ed8, #60a5fa);
 	--color-hue-pink: light-dark(#be185d, #f472b6);
 
-	/* One scale, so nothing is left to Tailwind's defaults and nothing reads as a corner that was missed. */
-	--radius-chip: 0.5rem;
-	--radius-field: 0.625rem;
-	--radius-card: 0.875rem;
-	--radius-tile: 1.25rem;
+	/* Neo-Brutalism Sharp 0px Radii */
+	--radius-chip: 0px;
+	--radius-field: 0px;
+	--radius-card: 0px;
+	--radius-tile: 0px;
 
-	/* Apple SF Pro typography hierarchy */
-	--font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
-	--font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-	--font-mono: "SF Mono", "Fira Mono", ui-monospace, monospace;
+	/* Neo-Brutalism Typography */
+	--font-display: "Rubik", system-ui, -apple-system, sans-serif;
+	--font-sans: "Rubik", system-ui, -apple-system, sans-serif;
+	--font-mono: "Fira Mono", ui-monospace, monospace;
 
 	/* Tailwind's default for this size is 1.43, which is tight for prose — and `text-sm` is most of the app. */
 	--text-sm--line-height: 1.55;
@@ -551,5 +550,60 @@
 		.hljs-strong {
 			font-weight: 700;
 		}
+	}
+
+	/* Neo-Brutalism System Utilities */
+	.brutal-shadow {
+		box-shadow: 4px 4px 0px 0px #000000;
+	}
+	:root[data-theme="dark"] .brutal-shadow,
+	.dark .brutal-shadow {
+		box-shadow: 4px 4px 0px 0px #00e676;
+	}
+	.brutal-shadow-sm {
+		box-shadow: 2px 2px 0px 0px #000000;
+	}
+	:root[data-theme="dark"] .brutal-shadow-sm,
+	.dark .brutal-shadow-sm {
+		box-shadow: 2px 2px 0px 0px #00e676;
+	}
+	.brutal-card {
+		border: 2px solid light-dark(#000000, #27272a);
+		background-color: light-dark(#ffffff, #0e0e12);
+		box-shadow: 3px 3px 0px 0px #000000;
+		transition: all 120ms ease;
+	}
+	:root[data-theme="dark"] .brutal-card,
+	.dark .brutal-card {
+		box-shadow: 3px 3px 0px 0px #000000;
+	}
+	:root[data-theme="dark"] .brutal-card:hover,
+	.dark .brutal-card:hover {
+		box-shadow: 4px 4px 0px 0px #00e676;
+		transform: translate(-1px, -1px);
+	}
+	.brutal-btn {
+		border: 2px solid light-dark(#000000, #00e676);
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		box-shadow: 3px 3px 0px 0px light-dark(#000000, #00e676);
+		transition: all 80ms ease;
+	}
+	.brutal-btn:hover {
+		box-shadow: 5px 5px 0px 0px light-dark(#000000, #00e676);
+		transform: translate(-1px, -1px);
+	}
+	.brutal-btn:active {
+		box-shadow: 0px 0px 0px 0px transparent !important;
+		transform: translate(2px, 2px) !important;
+	}
+	.brutal-grid {
+		background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+		background-size: 24px 24px;
+	}
+	:root[data-theme="light"] .brutal-grid {
+		background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+		background-size: 24px 24px;
 	}
 }

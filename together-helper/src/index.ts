@@ -3,6 +3,7 @@ import { dashboardBuilt } from "@api/static";
 import { envFile, loadEnv } from "@config/env";
 import { botName } from "@core/brand";
 import { TestifyClient } from "@core/client";
+import { discordLogger } from "@core/discordLogger";
 import { loadEverything, publishCommands, publishScope } from "@core/loader";
 import { createLogger } from "@core/logger";
 import { handleProcessSignals } from "@core/shutdown";
@@ -24,6 +25,7 @@ async function main(): Promise<void> {
 	const logger = createLogger(env.LOG_LEVEL, process.stdout.isTTY === true || env.NODE_ENV === "development");
 
 	const client = new TestifyClient(env, logger);
+	discordLogger.init(client, env.CHANNEL_CONSOLE_LOG ?? "1568284208533864498");
 	handleProcessSignals(client);
 
 	const report = new BootReport();

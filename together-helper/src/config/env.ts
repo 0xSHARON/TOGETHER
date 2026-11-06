@@ -35,6 +35,7 @@ const fields = z.object({
 	CHANNEL_BUG_REPORT_LOG: id.optional(),
 	CHANNEL_SUGGESTION_LOG: id.optional(),
 	CHANNEL_EVAL_LOG: id.optional(),
+	CHANNEL_CONSOLE_LOG: id.optional(),
 
 	// The website: a landing page, the docs and the source browser. On by default, and needs no other setting.
 	SITE_ENABLED: flag.default(true),

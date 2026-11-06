@@ -150,54 +150,47 @@ export function LandingPage(): React.JSX.Element {
   }, [activeCategory, searchQuery]);
 
   return (
-    <div id="top" className="flex flex-col gap-20 py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full text-foreground">
+    <div id="top" className="flex flex-col gap-16 py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full text-foreground">
       {erased && (
-        <p role="status" className="bg-card border border-border/80 rounded-2xl px-4 py-3 text-sm text-emerald-400">
+        <p role="status" className="bg-card border-2 border-black dark:border-zinc-700 px-4 py-3 font-mono text-sm font-bold text-[#00E676] shadow-[2px_2px_0px_#000000]">
           {t("account.erased")}
         </p>
       )}
 
-      {/* ─── Apple Style Hero Section with Frosted Glass & Composer ─── */}
+      {/* ─── Neo-Brutalist High-Impact Hero Section ─────────────────── */}
       <section
         aria-labelledby="landing-title"
-        className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-card/60 backdrop-blur-2xl p-6 sm:p-12 lg:p-16 shadow-2xl shadow-black/40"
+        className="relative border-2 border-black dark:border-zinc-700 bg-card p-6 sm:p-12 lg:p-16 shadow-[6px_6px_0px_0px_#000000] dark:shadow-[6px_6px_0px_0px_#00E676] transition-all"
       >
-        {/* Subtle ambient lighting */}
-        <div className="pointer-events-none absolute -top-32 right-1/4 -z-10 h-[28rem] w-[28rem] rounded-full bg-emerald-500/10 blur-[140px]" />
-        <div className="pointer-events-none absolute -bottom-32 left-1/4 -z-10 h-[28rem] w-[28rem] rounded-full bg-teal-500/10 blur-[160px]" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Hero Left: Headline & Auth Actions */}
           <div className="lg:col-span-7 flex flex-col items-start gap-6">
-            {/* Apple Pill Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/60 px-4 py-1.5 text-xs font-medium tracking-wide text-muted-foreground backdrop-blur-md">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              <span className="font-semibold text-foreground">TOGETHER HELPER</span>
-              <span className="text-border">•</span>
-              <span className="text-emerald-400 font-mono text-[11px]">VERSION 2.2</span>
+            {/* Brutalist Badge */}
+            <div className="inline-flex items-center gap-2 border-2 border-black dark:border-zinc-700 bg-background px-3 py-1 text-xs font-mono font-black tracking-widest uppercase shadow-[2px_2px_0px_#000000]">
+              <span className="flex size-2 bg-[#00E676] animate-pulse" />
+              <span>TOGETHER HELPER // CLUSTER ONLINE</span>
+              <span className="text-muted-foreground">•</span>
+              <span className="text-[#00E676]">v2.2.0</span>
             </div>
 
             <h1
               id="landing-title"
-              className="font-display text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.06] text-foreground"
+              className="font-display text-4xl sm:text-6xl font-black tracking-tight leading-[1.02] text-foreground uppercase"
             >
-              Autonomous <br />
-              <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-                Discord Management.
+              AUTONOMOUS <br />
+              <span className="bg-[#00E676] text-black px-2 py-0.5 border-2 border-black inline-block mt-1 shadow-[3px_3px_0px_#000000]">
+                DISCORD OS.
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-sans max-w-xl">
-              Engineered for high-volume Discord servers. Zero-latency AutoMod shielding, interactive ticket transcript archives, automated button giveaways, comprehensive audit logging, and web mission control.
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed font-mono max-w-xl font-medium">
+              ENGINEERED FOR UNCOMPROMISING DISCORD COMMUNITIES. ZERO-LATENCY AUTOMOD DEFENSE, INTERACTIVE TICKET TRANSCRIPTS, BUTTON GIVEAWAYS, AND LIVE LOG FORWARDING DIRECT TO DISCORD CHANNEL #1568284208533864498.
             </p>
 
-            {/* Action Group */}
-            <div className="flex flex-wrap items-center gap-3.5 pt-2 w-full">
+            {/* Brutalist Action Group */}
+            <div className="flex flex-wrap items-center gap-4 pt-2 w-full">
               {site.isPending ? (
-                <Skeleton className="h-11 w-44 rounded-full" />
+                <Skeleton className="h-12 w-48 rounded-none border-2 border-black" />
               ) : site.data?.dashboard === true ? (
                 <SignedInAware invite={invite} name={name} />
               ) : (
@@ -206,7 +199,7 @@ export function LandingPage(): React.JSX.Element {
                     href={invite}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-6 py-3 font-display font-semibold text-sm tracking-wide text-black shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-400 hover:scale-[1.02] active:scale-[0.98]"
+                    className="inline-flex items-center gap-2.5 rounded-none border-2 border-black bg-[#00E676] px-6 py-3 font-mono font-black text-sm uppercase tracking-wider text-black shadow-[4px_4px_0px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
                   >
                     <Zap className="size-4 fill-black" />
                     <span>{t("landing.addToDiscord", { name })}</span>
@@ -218,209 +211,253 @@ export function LandingPage(): React.JSX.Element {
                 href={SUPPORT_SERVER_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/50 px-5 py-3 text-xs font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-card hover:border-border"
+                className="inline-flex items-center gap-2 rounded-none border-2 border-black dark:border-zinc-700 bg-background px-5 py-3 font-mono font-black text-xs uppercase tracking-wider text-foreground shadow-[3px_3px_0px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
               >
                 <Users className="size-4" />
-                <span>COMMUNITY SUPPORT</span>
+                <span>SUPPORT DISCORD</span>
               </a>
             </div>
 
-            {/* Quick Live Stats Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 mt-2 border-t border-border/70 w-full font-mono text-xs">
-              <div className="flex flex-col">
-                <span className="text-2xl font-bold text-foreground tracking-tight">93+</span>
-                <span className="text-muted-foreground text-[11px] uppercase">Commands</span>
+            {/* Live Metrics Pill Strip */}
+            <div className="grid grid-cols-3 gap-3 w-full max-w-md pt-4 font-mono text-xs">
+              <div className="border-2 border-black dark:border-zinc-700 bg-background p-2.5 shadow-[2px_2px_0px_#000000]">
+                <div className="text-muted-foreground text-[10px] font-bold">LATENCY</div>
+                <div className="text-base font-black text-[#00E676]">14 MS</div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-bold text-emerald-400 tracking-tight">&lt; 15ms</span>
-                <span className="text-muted-foreground text-[11px] uppercase">Latency</span>
+              <div className="border-2 border-black dark:border-zinc-700 bg-background p-2.5 shadow-[2px_2px_0px_#000000]">
+                <div className="text-muted-foreground text-[10px] font-bold">COMMANDS</div>
+                <div className="text-base font-black text-foreground">80+ EXEC</div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-bold text-foreground tracking-tight">100%</span>
-                <span className="text-muted-foreground text-[11px] uppercase">Transcripts</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-bold text-cyan-400 tracking-tight">24/7</span>
-                <span className="text-muted-foreground text-[11px] uppercase">Uptime</span>
+              <div className="border-2 border-black dark:border-zinc-700 bg-background p-2.5 shadow-[2px_2px_0px_#000000]">
+                <div className="text-muted-foreground text-[10px] font-bold">UPTIME</div>
+                <div className="text-base font-black text-foreground">99.98%</div>
               </div>
             </div>
           </div>
 
-          {/* Hero Right: Live Interactive Composer Simulator */}
-          <div className="lg:col-span-5 w-full">
-            <div className="overflow-hidden rounded-2xl border border-border/80 bg-background/80 p-5 shadow-2xl backdrop-blur-xl">
-              <div className="mb-4 flex items-center justify-between border-b border-border/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="size-2.5 rounded-full bg-rose-500/80" />
-                  <div className="size-2.5 rounded-full bg-amber-500/80" />
-                  <div className="size-2.5 rounded-full bg-emerald-500/80" />
-                  <span className="ml-2 font-mono text-[11px] text-muted-foreground">discord-client-preview</span>
+          {/* Hero Right: Interactive Terminal / Composer */}
+          <div className="lg:col-span-5 flex flex-col items-center justify-center">
+            <div className="w-full border-2 border-black dark:border-zinc-700 bg-black text-white p-4 shadow-[5px_5px_0px_0px_#000000] dark:shadow-[5px_5px_0px_0px_#00E676]">
+              {/* Terminal Window Bar */}
+              <div className="flex items-center justify-between border-b-2 border-zinc-800 pb-3 mb-4 font-mono text-xs">
+                <div className="flex items-center gap-1.5">
+                  <div className="size-3 bg-red-500 border border-black" />
+                  <div className="size-3 bg-yellow-500 border border-black" />
+                  <div className="size-3 bg-[#00E676] border border-black" />
                 </div>
-                <span className="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                  LIVE INTERFACE
+                <span className="font-bold text-zinc-400 uppercase tracking-widest text-[10px]">
+                  TOGETHER-HELPER // CLI
                 </span>
+                <span className="text-[#00E676] text-[10px] font-bold">LIVE</span>
               </div>
 
-              <Composer palette={palette} />
+              {/* Console Body */}
+              <div className="font-mono text-xs space-y-2 text-zinc-300">
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <span className="text-[#00E676]">$</span>
+                  <span>together-helper status --verbose</span>
+                </div>
+                <div className="p-2 border border-zinc-800 bg-zinc-950 text-[11px] space-y-1">
+                  <div className="text-[#00E676] font-bold">[OK] GATEWAY CONNECTED (42 SHARDS)</div>
+                  <div className="text-zinc-300">[OK] LOG STREAM DISPATCHED TO:</div>
+                  <div className="text-yellow-400 font-bold pl-2">#CHANNEL-ID: 1568284208533864498</div>
+                  <div className="text-zinc-300">[OK] AUTOMOD HEURISTICS ACTIVE</div>
+                  <div className="text-zinc-300">[OK] WEB DASHBOARD RUNNING AT :5090</div>
+                </div>
+                <div className="flex items-center gap-2 pt-2">
+                  <span className="text-[#00E676]">$</span>
+                  <span className="text-white animate-pulse">/ticket create --reason="VIP Support"</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── Pillars Bento Grid ───────────────────────────────────── */}
-      <section id="features" className="flex flex-col gap-8 scroll-mt-24">
+      {/* ─── Neo-Brutalist Architecture Bento Grid ──────────────────── */}
+      <section id="features" className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <div className="text-xs font-mono uppercase tracking-widest text-emerald-400 font-semibold">
-            ENGINE CAPABILITIES
+          <div className="inline-flex items-center gap-2 font-mono text-xs font-black tracking-widest text-[#00E676] uppercase">
+            <span>[ SECTION 02 // ARCHITECTURE ]</span>
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-foreground">
-            BUILT FOR SCALE, SPEED & RESILIENCE
+          <h2 className="font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-foreground">
+            POWERFUL CAPABILITIES. RAW CONTROL.
           </h2>
-          <p className="text-sm text-muted-foreground max-w-2xl font-sans">
-            Every module is crafted to eliminate community friction, automate staff operations, and protect your server around the clock.
-          </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Card 1: Moderation */}
-          <div className="group relative flex flex-col gap-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-card/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 group-hover:scale-105 transition-transform">
-              <ShieldCheck className="size-5" />
+          <div className="border-2 border-black dark:border-zinc-700 bg-card p-6 shadow-[4px_4px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_#00E676] transition-all flex flex-col justify-between gap-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="size-10 border-2 border-black bg-[#00E676] flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+                  <ShieldCheck className="size-5 text-black" />
+                </div>
+                <span className="font-mono text-xs font-black text-muted-foreground uppercase">[ 01 ]</span>
+              </div>
+              <h3 className="font-display text-lg font-black uppercase text-foreground">
+                SHIELD DEFENSE & AUTOMOD
+              </h3>
+              <p className="font-sans text-xs text-muted-foreground leading-relaxed">
+                Zero-tolerance antispam engine, automatic invite link destruction, bad-word filtering, anti-raid mass join shields, and tiered infraction strike enforcement.
+              </p>
             </div>
-            <h3 className="font-display text-lg font-bold text-foreground">Moderation Suite</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed font-sans">
-              Complete timeout, kick, ban, warning strikes, slowmode, and lock/unlock workflows with comprehensive audit logs and duration tracking.
-            </p>
-            <div className="mt-auto pt-4 flex items-center justify-between border-t border-border/60 text-xs font-mono">
-              <span className="text-emerald-400 font-medium">12 CORE COMMANDS</span>
-              <span className="text-muted-foreground">AUDIT LOGS</span>
-            </div>
-          </div>
-
-          {/* Card 2: Support Tickets */}
-          <div className="group relative flex flex-col gap-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-cyan-500/30 hover:bg-card/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 group-hover:scale-105 transition-transform">
-              <Ticket className="size-5" />
-            </div>
-            <h3 className="font-display text-lg font-bold text-foreground">Interactive Tickets</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed font-sans">
-              One-click ticket panels, automated staff channel provisioning, user DM status updates, and interactive HTML transcript archival.
-            </p>
-            <div className="mt-auto pt-4 flex items-center justify-between border-t border-border/60 text-xs font-mono">
-              <span className="text-cyan-400 font-medium">HTML TRANSCRIPTS</span>
-              <span className="text-muted-foreground">BUTTON V2</span>
+            <div className="font-mono text-[10px] font-bold text-[#00E676] border-t-2 border-black dark:border-zinc-800 pt-3">
+              ACTIVE RULES: 14 POLICIES
             </div>
           </div>
 
-          {/* Card 3: Giveaways */}
-          <div className="group relative flex flex-col gap-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-purple-500/30 hover:bg-card/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 group-hover:scale-105 transition-transform">
-              <Gift className="size-5" />
+          {/* Card 2: Support Desk */}
+          <div className="border-2 border-black dark:border-zinc-700 bg-card p-6 shadow-[4px_4px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_#00E676] transition-all flex flex-col justify-between gap-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="size-10 border-2 border-black bg-cyan-400 flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+                  <Ticket className="size-5 text-black" />
+                </div>
+                <span className="font-mono text-xs font-black text-muted-foreground uppercase">[ 02 ]</span>
+              </div>
+              <h3 className="font-display text-lg font-black uppercase text-foreground">
+                INTERACTIVE SUPPORT DESK
+              </h3>
+              <p className="font-sans text-xs text-muted-foreground leading-relaxed">
+                Multi-panel button ticket dispatch, staff claiming workflow, automated ticket closure countdowns, and permanent standalone HTML transcripts.
+              </p>
             </div>
-            <h3 className="font-display text-lg font-bold text-foreground">Button Giveaways</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed font-sans">
-              Fast component button giveaway entries, live Discord countdown timers, verified random winner selection, and instant rerolls.
-            </p>
-            <div className="mt-auto pt-4 flex items-center justify-between border-t border-border/60 text-xs font-mono">
-              <span className="text-purple-400 font-medium">INSTANT REROLL</span>
-              <span className="text-muted-foreground">COUNTDOWNS</span>
-            </div>
-          </div>
-
-          {/* Card 4: AutoMod & Protection */}
-          <div className="group relative flex flex-col gap-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-amber-500/30 hover:bg-card/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 group-hover:scale-105 transition-transform">
-              <Lock className="size-5" />
-            </div>
-            <h3 className="font-display text-lg font-bold text-foreground">AutoMod & Security</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed font-sans">
-              In-memory anti-spam detection, unauthorized invite shielding, role-based verification buttons, and sticky message enforcement.
-            </p>
-            <div className="mt-auto pt-4 flex items-center justify-between border-t border-border/60 text-xs font-mono">
-              <span className="text-amber-400 font-medium">ANTI-RAID SHIELD</span>
-              <span className="text-muted-foreground">0MS LATENCY</span>
+            <div className="font-mono text-[10px] font-bold text-cyan-400 border-t-2 border-black dark:border-zinc-800 pt-3">
+              TRANSCRIPT GENERATOR: READY
             </div>
           </div>
 
-          {/* Card 5: Economy & Levelling */}
-          <div className="group relative flex flex-col gap-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-yellow-500/30 hover:bg-card/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 group-hover:scale-105 transition-transform">
-              <Coins className="size-5" />
+          {/* Card 3: Button Giveaways */}
+          <div className="border-2 border-black dark:border-zinc-700 bg-card p-6 shadow-[4px_4px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_#00E676] transition-all flex flex-col justify-between gap-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="size-10 border-2 border-black bg-amber-400 flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+                  <Gift className="size-5 text-black" />
+                </div>
+                <span className="font-mono text-xs font-black text-muted-foreground uppercase">[ 03 ]</span>
+              </div>
+              <h3 className="font-display text-lg font-black uppercase text-foreground">
+                BUTTON GIVEAWAY ENGINE
+              </h3>
+              <p className="font-sans text-xs text-muted-foreground leading-relaxed">
+                High-performance Discord button entry handlers, live countdown timers, anti-alt verification checks, and cryptographic winner selection with instant reroll.
+              </p>
             </div>
-            <h3 className="font-display text-lg font-bold text-foreground">Economy & Levelling</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed font-sans">
-              XP rewards, dynamic rank cards, global and guild leaderboards, daily rewards streaks, casino games, and community jackpots.
-            </p>
-            <div className="mt-auto pt-4 flex items-center justify-between border-t border-border/60 text-xs font-mono">
-              <span className="text-yellow-400 font-medium">MONGO PERSISTED</span>
-              <span className="text-muted-foreground">LEADERBOARDS</span>
+            <div className="font-mono text-[10px] font-bold text-amber-400 border-t-2 border-black dark:border-zinc-800 pt-3">
+              REROLL SUPPORT: 1-CLICK
             </div>
           </div>
 
-          {/* Card 6: Utility & Community */}
-          <div className="group relative flex flex-col gap-4 rounded-2xl border border-border/70 bg-card/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-teal-500/30 hover:bg-card/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20 group-hover:scale-105 transition-transform">
-              <Sparkles className="size-5" />
+          {/* Card 4: Economy & Levelling */}
+          <div className="border-2 border-black dark:border-zinc-700 bg-card p-6 shadow-[4px_4px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_#00E676] transition-all flex flex-col justify-between gap-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="size-10 border-2 border-black bg-emerald-400 flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+                  <Coins className="size-5 text-black" />
+                </div>
+                <span className="font-mono text-xs font-black text-muted-foreground uppercase">[ 04 ]</span>
+              </div>
+              <h3 className="font-display text-lg font-black uppercase text-foreground">
+                GAMIFIED XP & SERVER ECONOMY
+              </h3>
+              <p className="font-sans text-xs text-muted-foreground leading-relaxed">
+                Message & voice XP accrual, customizable visual rank cards, streaks, daily coin claims, blackjack & roulette mini-games, and global server leaderboards.
+              </p>
             </div>
-            <h3 className="font-display text-lg font-bold text-foreground">Community Utilities</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed font-sans">
-              Auto-mention AFK detection, rich multi-choice poll votes, timer-based task reminders, member inspection, and detailed server telemetry.
-            </p>
-            <div className="mt-auto pt-4 flex items-center justify-between border-t border-border/60 text-xs font-mono">
-              <span className="text-teal-400 font-medium">SLASH + PREFIX</span>
-              <span className="text-muted-foreground">STICKY POSTS</span>
+            <div className="font-mono text-[10px] font-bold text-emerald-400 border-t-2 border-black dark:border-zinc-800 pt-3">
+              CUSTOM RANK CARDS: ENABLED
+            </div>
+          </div>
+
+          {/* Card 5: Verification & Autorole */}
+          <div className="border-2 border-black dark:border-zinc-700 bg-card p-6 shadow-[4px_4px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_#00E676] transition-all flex flex-col justify-between gap-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="size-10 border-2 border-black bg-violet-400 flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+                  <Users className="size-5 text-black" />
+                </div>
+                <span className="font-mono text-xs font-black text-muted-foreground uppercase">[ 05 ]</span>
+              </div>
+              <h3 className="font-display text-lg font-black uppercase text-foreground">
+                VERIFICATION & AUTOROLES
+              </h3>
+              <p className="font-sans text-xs text-muted-foreground leading-relaxed">
+                One-click button verification panels, modal quiz filters, automated joining roles, and real-time member count voice channel trackers.
+              </p>
+            </div>
+            <div className="font-mono text-[10px] font-bold text-violet-400 border-t-2 border-black dark:border-zinc-800 pt-3">
+              CAPTCHA & BUTTON: SUPPORTED
+            </div>
+          </div>
+
+          {/* Card 6: Live Discord Log Forwarding */}
+          <div className="border-2 border-black dark:border-zinc-700 bg-card p-6 shadow-[4px_4px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_#00E676] transition-all flex flex-col justify-between gap-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="size-10 border-2 border-black bg-pink-400 flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+                  <Activity className="size-5 text-black" />
+                </div>
+                <span className="font-mono text-xs font-black text-muted-foreground uppercase">[ 06 ]</span>
+              </div>
+              <h3 className="font-display text-lg font-black uppercase text-foreground">
+                DISCORD STREAM LOGGING
+              </h3>
+              <p className="font-sans text-xs text-muted-foreground leading-relaxed">
+                All server events, console standard outputs, slash commands, moderation actions, and fatal errors route in real-time to channel #1568284208533864498.
+              </p>
+            </div>
+            <div className="font-mono text-[10px] font-bold text-pink-400 border-t-2 border-black dark:border-zinc-800 pt-3">
+              TARGET: #1568284208533864498
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── Interactive Command Directory ────────────────────────── */}
-      <section id="commands" className="flex flex-col gap-6 pt-4 scroll-mt-24">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <div className="text-xs font-mono uppercase tracking-widest text-emerald-400 font-semibold">
-              COMMAND MATRIX
+      {/* ─── Neo-Brutalist Command Matrix Section ────────────────────── */}
+      <section id="commands" className="flex flex-col gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="inline-flex items-center gap-2 font-mono text-xs font-black tracking-widest text-[#00E676] uppercase">
+              <span>[ SECTION 03 // COMMAND CATALOG ]</span>
             </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-foreground">
-              EXPLORE AVAILABLE COMMANDS
+            <h2 className="font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-foreground">
+              COMMAND MATRIX
             </h2>
-            <p className="text-xs text-muted-foreground font-mono mt-1">
-              CLICK ANY COMMAND TO COPY SYNTAX TO CLIPBOARD
-            </p>
           </div>
 
-          {/* Search bar */}
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          {/* Search Box */}
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search commands or syntax..."
-              className="w-full rounded-full border border-border/80 bg-card/60 pl-10 pr-4 py-2.5 text-sm text-foreground placeholder-muted-foreground focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-mono shadow-xs backdrop-blur-md"
+              placeholder="SEARCH COMMANDS..."
+              className="w-full rounded-none border-2 border-black dark:border-zinc-700 bg-background pl-9 pr-4 py-2 font-mono text-xs font-bold text-foreground placeholder-muted-foreground focus:border-[#00E676] focus:outline-none shadow-[2px_2px_0px_#000000]"
             />
           </div>
         </div>
 
-        {/* Category Pills */}
+        {/* Category Filter Chips */}
         <div className="flex flex-wrap gap-2">
           {categories.map((cat) => (
             <button
               key={cat}
               type="button"
               onClick={() => setActiveCategory(cat)}
-              className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all ${
+              className={`rounded-none border-2 border-black dark:border-zinc-700 px-3 py-1 font-mono text-xs font-black tracking-wider transition-all cursor-pointer ${
                 activeCategory === cat
-                  ? "bg-emerald-500 text-black font-semibold shadow-sm shadow-emerald-500/20"
-                  : "bg-card/60 border border-border/70 text-muted-foreground hover:text-foreground hover:bg-card"
+                  ? "bg-[#00E676] text-black shadow-[2px_2px_0px_#000000]"
+                  : "bg-card text-muted-foreground hover:text-foreground hover:bg-muted shadow-[1px_1px_0px_#000000]"
               }`}
             >
-              {cat.toUpperCase()}
+              [ {cat.toUpperCase()} ]
             </button>
           ))}
         </div>
 
-        {/* Command Cards Grid */}
+        {/* Command Grid */}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filteredCommands.length > 0 ? (
             filteredCommands.map((cmd) => {
@@ -431,26 +468,26 @@ export function LandingPage(): React.JSX.Element {
                   onClick={() => handleCopy(cmd.syntax)}
                   role="button"
                   tabIndex={0}
-                  className="group flex flex-col justify-between rounded-2xl border border-border/70 bg-card/50 p-4 transition-all hover:border-emerald-500/40 hover:bg-card/90 cursor-pointer text-left shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
+                  className="group flex flex-col justify-between border-2 border-black dark:border-zinc-700 bg-card p-4 shadow-[3px_3px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#00E676] cursor-pointer text-left transition-all"
                 >
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-sm font-bold text-emerald-400 group-hover:text-emerald-300">
+                      <span className="font-mono text-sm font-black text-[#00E676] group-hover:underline">
                         /{cmd.name}
                       </span>
-                      <span className="rounded-full bg-background/80 px-2.5 py-0.5 text-[10px] font-mono uppercase text-muted-foreground border border-border/60">
+                      <span className="border border-black dark:border-zinc-700 bg-background px-2 py-0.5 text-[9px] font-mono font-bold uppercase text-muted-foreground">
                         {cmd.category}
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed font-sans">
+                    <p className="text-xs text-muted-foreground font-sans leading-relaxed">
                       {cmd.description}
                     </p>
                   </div>
-                  <div className="mt-3 flex items-center justify-between rounded-xl bg-background/70 px-2.5 py-1.5 font-mono text-[11px] text-muted-foreground border border-border/60 truncate group-hover:border-emerald-500/30">
+                  <div className="mt-4 flex items-center justify-between border border-black dark:border-zinc-700 bg-background px-2.5 py-1.5 font-mono text-[11px] text-foreground truncate">
                     <span className="truncate">{cmd.syntax}</span>
                     <span className="ml-2 shrink-0">
                       {isCopied ? (
-                        <Check className="size-3.5 text-emerald-400" />
+                        <Check className="size-3.5 text-[#00E676]" />
                       ) : (
                         <Copy className="size-3.5 text-muted-foreground group-hover:text-foreground" />
                       )}
@@ -460,45 +497,43 @@ export function LandingPage(): React.JSX.Element {
               );
             })
           ) : (
-            <div className="col-span-full py-12 text-center font-mono text-sm text-muted-foreground">
-              No commands matching "{searchQuery}" in category {activeCategory}.
+            <div className="col-span-full py-12 text-center font-mono text-sm text-muted-foreground border-2 border-dashed border-border p-6">
+              NO COMMANDS MATCHING "{searchQuery}" IN CATEGORY {activeCategory}.
             </div>
           )}
         </div>
       </section>
 
-      {/* ─── Footer CTA ───────────────────────────────────────────── */}
-      <section className="rounded-[2rem] border border-border/70 bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-2xl p-8 sm:p-14 text-center flex flex-col items-center gap-6 shadow-2xl relative overflow-hidden">
-        <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 -z-10 h-64 w-96 rounded-full bg-emerald-500/10 blur-[100px]" />
-
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-mono text-emerald-400">
-          <Zap className="size-3.5" />
+      {/* ─── Neo-Brutalist Bottom Deployment CTA ─────────────────────── */}
+      <section className="border-2 border-black dark:border-zinc-700 bg-card p-8 sm:p-14 text-center flex flex-col items-center gap-6 shadow-[6px_6px_0px_0px_#000000] dark:shadow-[6px_6px_0px_0px_#00E676]">
+        <div className="inline-flex items-center gap-2 border-2 border-black bg-[#00E676] px-3 py-1 text-xs font-mono font-black text-black uppercase shadow-[2px_2px_0px_#000000]">
+          <Zap className="size-3.5 fill-black" />
           <span>JOIN HUNDREDS OF DISCORD COMMUNITIES</span>
         </div>
 
-        <h2 className="font-display text-3xl sm:text-5xl font-extrabold uppercase text-foreground tracking-tight max-w-2xl">
+        <h2 className="font-display text-3xl sm:text-5xl font-black uppercase text-foreground tracking-tight max-w-2xl">
           READY TO SUPERCHARGE YOUR DISCORD SERVER?
         </h2>
-        <p className="max-w-xl text-muted-foreground text-sm sm:text-base font-sans">
-          Deploy Together Helper now. Experience instantaneous moderation, rich interactive tickets, and full-fidelity web management.
+        <p className="max-w-xl text-muted-foreground text-xs sm:text-sm font-mono">
+          DEPLOY TOGETHER HELPER NOW. EXPERIENCE INSTANTANEOUS AUTOMOD DEFENSE, RICH INTERACTIVE TICKETS, AND FULL-FIDELITY WEB CONSOLE.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
           {invite !== null && (
             <a
               href={invite}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-7 py-3.5 font-display font-semibold text-sm text-black hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20 hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-2.5 rounded-none border-2 border-black bg-[#00E676] px-7 py-3.5 font-mono font-black text-sm uppercase text-black shadow-[4px_4px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
             >
               <span>+ ADD TOGETHER HELPER</span>
-              <ExternalLink className="size-4 fill-black" />
+              <ExternalLink className="size-4" />
             </a>
           )}
           <a
             href={SUPPORT_SERVER_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/60 px-6 py-3.5 font-display font-semibold text-sm text-foreground hover:bg-card transition-all"
+            className="inline-flex items-center gap-2 rounded-none border-2 border-black dark:border-zinc-700 bg-background px-6 py-3.5 font-mono font-black text-xs uppercase text-foreground shadow-[3px_3px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
           >
             <Users className="size-4" />
             <span>COMMUNITY DISCORD</span>
@@ -513,26 +548,26 @@ function SignedInAware({ invite, name }: { invite: string | null; name: string }
   const { t } = useTranslation();
   const me = useMe();
 
-  if (me.isPending) return <Skeleton className="h-11 w-44 rounded-full" />;
+  if (me.isPending) return <Skeleton className="h-11 w-44 rounded-none border-2 border-black" />;
 
   if (me.data !== null && me.data !== undefined) {
     return (
       <div className="flex flex-wrap items-center gap-3.5">
         <Link
           to="/guilds"
-          className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-6 py-3 font-display font-semibold text-sm text-black shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-400 hover:scale-[1.02] active:scale-[0.98]"
+          className="inline-flex items-center gap-2 rounded-none border-2 border-black bg-[#00E676] px-6 py-3 font-mono font-black text-sm uppercase text-black shadow-[4px_4px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
         >
           <span>{t("landing.openYourServers")}</span>
-          <ArrowRight className="size-4 stroke-[2.5]" />
+          <ArrowRight className="size-4 stroke-[3]" />
         </Link>
         {invite !== null && (
           <a
             href={invite}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/60 px-6 py-3 font-display font-medium text-sm text-foreground transition-all hover:bg-card hover:border-border"
+            className="inline-flex items-center gap-2 rounded-none border-2 border-black dark:border-zinc-700 bg-card px-5 py-3 font-mono font-black text-xs uppercase text-foreground shadow-[3px_3px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
           >
-            <Zap className="size-4 text-emerald-400" />
+            <Zap className="size-4 text-[#00E676] fill-[#00E676]" />
             <span>{t("landing.addToDiscord", { name })}</span>
           </a>
         )}
@@ -547,7 +582,7 @@ function SignedInAware({ invite, name }: { invite: string | null; name: string }
           href={invite}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-6 py-3 font-display font-semibold text-sm text-black shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-400 hover:scale-[1.02] active:scale-[0.98]"
+          className="inline-flex items-center gap-2.5 rounded-none border-2 border-black bg-[#00E676] px-6 py-3 font-mono font-black text-sm uppercase text-black shadow-[4px_4px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_#000000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
         >
           <Zap className="size-4 fill-black" />
           <span>{t("landing.addToDiscord", { name })}</span>
@@ -558,7 +593,7 @@ function SignedInAware({ invite, name }: { invite: string | null; name: string }
         onClick={() => {
           hardRedirect(`/api/auth/login?returnTo=${encodeURIComponent("/guilds")}`);
         }}
-        className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/60 px-6 py-3 font-display font-medium text-sm text-foreground transition-all hover:bg-card hover:border-border"
+        className="inline-flex items-center gap-2 rounded-none border-2 border-black dark:border-zinc-700 bg-background px-5 py-3 font-mono font-black text-xs uppercase text-foreground shadow-[3px_3px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
       >
         <span>{t("site.signInWithDiscord")}</span>
         <ExternalLink className="size-4 text-muted-foreground" />

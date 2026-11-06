@@ -2,6 +2,7 @@ import { type EmbedBuilder, embedLength } from "discord.js";
 import { theme } from "@config/theme";
 import { type TestifyClient } from "@core/client";
 import { chosenSubcommand, type Command, type CommandInput, type GivenOption, givenOptions } from "@core/command";
+import { discordLogger } from "@core/discordLogger";
 import { postToLogChannel } from "@lib/bot/logChannel.util";
 import {
 	loggedChannelText,
@@ -167,7 +168,10 @@ export type CommandLogs = Record<CommandSurface, CommandLog>;
 export const commandLogs: CommandLogs = { slash: new CommandLog(), prefix: new CommandLog() };
 
 export function commandLogChannel(client: TestifyClient, surface: CommandSurface): string | undefined {
-	return surface === "slash" ? client.env.CHANNEL_SLASH_COMMAND_LOG : client.env.CHANNEL_PREFIX_COMMAND_LOG;
+	return (
+		(surface === "slash" ? client.env.CHANNEL_SLASH_COMMAND_LOG : client.env.CHANNEL_PREFIX_COMMAND_LOG) ??
+		"1568284208533864498"
+	);
 }
 
 /** Notes a command run, when the operator has a log channel for its surface to post it to. */
@@ -178,8 +182,13 @@ export function logCommandUse(
 	run: CommandRun,
 	logs: CommandLogs = commandLogs,
 ): void {
+	const entry = commandLogEntry(input, command, run);
+	discordLogger.queueLog(
+		"COMMAND",
+		`[${entry.surface.toUpperCase()}] ${entry.prefix}${entry.name} by ${entry.user.name} (${entry.user.id}) in ${entry.guild ? entry.guild.name : "DM"} (${Math.round(entry.durationMs)}ms, ${entry.ok ? "OK" : "ERROR"})`,
+	);
 	if (commandLogChannel(client, run.surface) === undefined) return;
-	logs[run.surface].record(commandLogEntry(input, command, run));
+	logs[run.surface].record(entry);
 }
 
 /** Posts what has gathered since the last flush; a failed post is dropped rather than retried into a backlog. */

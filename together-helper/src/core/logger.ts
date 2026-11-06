@@ -1,4 +1,5 @@
 import pino from "pino";
+import { discordLogger } from "@core/discordLogger";
 import { type LogRecord, type LogRing, logRing } from "@core/logRing";
 import { colourEnabled } from "@core/terminal";
 
@@ -29,8 +30,14 @@ export function createLogger(
 		level,
 		hooks: {
 			logMethod(args, method, methodLevel) {
+				const logData = splitLogArgs([...args]);
+				const lvl = LEVELS[methodLevel] ?? "info";
+
 				// Every level is captured, so the console can filter after the fact.
-				ring.push({ at: Date.now(), level: LEVELS[methodLevel] ?? "info", ...splitLogArgs([...args]) });
+				ring.push({ at: Date.now(), level: lvl, ...logData });
+
+				// Also forward to Discord logging channel
+				discordLogger.queueLog(lvl, logData.message, logData.context);
 
 				return method.apply(this, args);
 			},

@@ -1,5 +1,5 @@
 import { type ComponentType, lazy, type LazyExoticComponent, Suspense } from "react";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import { AppShell } from "@/app/AppShell";
 import { OwnerRouteError } from "@/app/OwnerRouteError";
 import { ReaderShell } from "@/app/ReaderShell";
@@ -91,6 +91,12 @@ export const routes = [
 		element: <SiteShell />,
 		children: [
 			{ path: "/", element: lazily(<LandingPage />) },
+			{ path: "/docs", element: <Navigate to="/" replace /> },
+			{ path: "/docs/*", element: <Navigate to="/" replace /> },
+			{ path: "/music", element: <Navigate to="/" replace /> },
+			{ path: "/music/*", element: <Navigate to="/" replace /> },
+			{ path: "/source-code", element: <Navigate to="/" replace /> },
+			{ path: "/source-code/*", element: <Navigate to="/" replace /> },
 		],
 	},
 	{

@@ -10,7 +10,7 @@ const PADDING = {
 type CardPadding = keyof typeof PADDING;
 
 const SURFACE =
-	"bg-card/85 backdrop-blur-xl border border-border/70 rounded-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] transition-all duration-200";
+	"bg-card border-2 border-black dark:border-zinc-800 rounded-none shadow-[3px_3px_0px_0px_#000000] dark:shadow-[3px_3px_0px_0px_#000000] hover:shadow-[4px_4px_0px_0px_#00e676] transition-all duration-150";
 
 export function cardClass(padding: CardPadding = "default", ...extra: string[]): string {
 	return cn(SURFACE, PADDING[padding], ...extra);
