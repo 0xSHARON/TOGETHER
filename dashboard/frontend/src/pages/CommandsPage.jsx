@@ -17,21 +17,22 @@ import {
   Layers,
   Sparkles,
   Command,
-  Lock,
   Filter
 } from 'lucide-react';
 import { BrutCard, StatBox } from '../components/Brutalist';
+
+const DEFAULT_TOPGG_URL = "https://top.gg/bot/863496211667484676/vote";
 
 export default function CommandsPage() {
   const [commands, setCommands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [dspFilters, setDspFilters] = useState([]);
+  const [topggVoteUrl, setTopggVoteUrl] = useState(DEFAULT_TOPGG_URL);
   const [stats, setStats] = useState({
     total: 0,
     slashCount: 0,
     prefixCount: 0,
     voterOnlyCount: 0,
-    ownerCount: 0,
     byCategory: {}
   });
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,6 @@ export default function CommandsPage() {
   const [search, setSearch] = useState('');
   const [onlyVote, setOnlyVote] = useState(false);
   const [onlyVoice, setOnlyVoice] = useState(false);
-  const [expandedCmd, setExpandedCmd] = useState(null);
   const [selectedModalCmd, setSelectedModalCmd] = useState(null);
 
   useEffect(() => {
@@ -50,16 +50,35 @@ export default function CommandsPage() {
     try {
       const resp = await axios.get('/api/commands');
       if (resp.data) {
-        setCommands(resp.data.commands || []);
-        setCategories(resp.data.categories || []);
+        // Exclude owner commands strictly
+        const publicCmds = (resp.data.commands || []).filter(
+          (c) => !c.owner && c.category?.toUpperCase() !== 'OWNER'
+        );
+        const publicCats = (resp.data.categories || []).filter(
+          (cat) => cat.toUpperCase() !== 'OWNER'
+        );
+
+        setCommands(publicCmds);
+        setCategories(publicCats);
         setDspFilters(resp.data.dspFilters || []);
-        setStats(resp.data.stats || {
-          total: 0,
-          slashCount: 0,
-          prefixCount: 0,
-          voterOnlyCount: 0,
-          ownerCount: 0,
-          byCategory: {}
+        if (resp.data.topggVoteUrl) {
+          setTopggVoteUrl(resp.data.topggVoteUrl);
+        }
+
+        const slashCount = publicCmds.filter((c) => c.hasSlash).length;
+        const prefixCount = publicCmds.filter((c) => c.hasPrefix).length;
+        const voterOnlyCount = publicCmds.filter((c) => c.voterOnly).length;
+        const byCat = {};
+        publicCats.forEach((cat) => {
+          byCat[cat] = publicCmds.filter((c) => c.category === cat).length;
+        });
+
+        setStats({
+          total: publicCmds.length,
+          slashCount,
+          prefixCount,
+          voterOnlyCount,
+          byCategory: byCat
         });
       }
     } catch (err) {
@@ -69,8 +88,10 @@ export default function CommandsPage() {
     }
   }
 
-  // Filter commands by Category, Search, Vote, Voice
+  // Filter commands by Category, Search, Vote, Voice (Strictly excluding Owner)
   const filtered = commands.filter((c) => {
+    if (c.owner || c.category?.toUpperCase() === 'OWNER') return false;
+
     const matchCat = filter === 'ALL' || c.category.toUpperCase() === filter.toUpperCase();
     const q = search.toLowerCase();
     const matchSearch =
@@ -102,12 +123,12 @@ export default function CommandsPage() {
             COMMAND REGISTRY
           </h2>
           <p className="font-mono text-xs text-brutal-muted mt-1 max-w-2xl">
-            Complete synchronized inventory of all {stats.total} Discord slash interactions and prefix utilities powering TOGETHER.
+            Complete synchronized inventory of all {stats.total} public Discord slash interactions and prefix utilities powering TOGETHER.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <a
-            href="https://top.gg/bot/YOUR_BOT_ID/vote"
+            href={topggVoteUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 border-2 border-amber-500 bg-amber-950/30 text-amber-400 font-mono text-xs font-bold px-3 py-2 hover:bg-amber-500 hover:text-black transition-all"
@@ -129,9 +150,9 @@ export default function CommandsPage() {
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <StatBox
-          label="TOTAL COMMANDS"
+          label="PUBLIC COMMANDS"
           value={loading ? '...' : stats.total}
           sub="Synchronized registry"
           accent
@@ -150,11 +171,6 @@ export default function CommandsPage() {
           label="VOTER-LOCKED"
           value={loading ? '...' : stats.voterOnlyCount}
           sub="Top.gg exclusive"
-        />
-        <StatBox
-          label="STUDIO FILTERS"
-          value="14"
-          sub="Lossless DSP effects"
         />
       </div>
 
@@ -226,7 +242,7 @@ export default function CommandsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brutal-muted" />
           <input
             type="text"
-            placeholder="Search commands by name, aliases, description, or parameter..."
+            placeholder="Search public commands by name, aliases, description, or parameter..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-brutal-bg border-2 border-brutal-border pl-10 pr-4 py-2.5 font-mono text-xs text-brutal-text placeholder-brutal-muted focus:outline-none focus:border-brutal-accent"
@@ -320,102 +336,94 @@ export default function CommandsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((cmd) => {
-            const isExpanded = expandedCmd === cmd.name;
-            return (
-              <div
-                key={cmd.name}
-                className="border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal-sm hover:border-brutal-accent transition-all flex flex-col justify-between cursor-pointer group"
-                onClick={() => setSelectedModalCmd(cmd)}
-              >
-                <div>
-                  {/* Top Bar: Name & Badges */}
-                  <div className="flex justify-between items-start gap-2 mb-2">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="font-mono font-bold text-base text-brutal-accent group-hover:underline">
-                        /{cmd.name}
+          {filtered.map((cmd) => (
+            <div
+              key={cmd.name}
+              className="border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal-sm hover:border-brutal-accent transition-all flex flex-col justify-between cursor-pointer group"
+              onClick={() => setSelectedModalCmd(cmd)}
+            >
+              <div>
+                {/* Top Bar: Name & Badges */}
+                <div className="flex justify-between items-start gap-2 mb-2">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-mono font-bold text-base text-brutal-accent group-hover:underline">
+                      /{cmd.name}
+                    </span>
+                    {cmd.aliases && cmd.aliases.length > 0 && (
+                      <span className="font-mono text-[10px] text-brutal-muted">
+                        (!{cmd.aliases[0]})
                       </span>
-                      {cmd.aliases && cmd.aliases.length > 0 && (
-                        <span className="font-mono text-[10px] text-brutal-muted">
-                          (!{cmd.aliases[0]})
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-1 flex-wrap justify-end">
-                      {cmd.voterOnly && (
-                        <span className="font-mono text-[9px] px-1.5 py-0.5 border border-amber-600 bg-amber-950/40 text-amber-400 font-bold uppercase flex items-center gap-1">
-                          <Star className="w-2.5 h-2.5 fill-amber-400" />
-                          VOTE
-                        </span>
-                      )}
-                      {cmd.owner && (
-                        <span className="font-mono text-[9px] px-1.5 py-0.5 border border-red-600 bg-red-950/40 text-red-400 font-bold uppercase">
-                          OWNER
-                        </span>
-                      )}
-                      {cmd.inVoiceChannel && (
-                        <span className="font-mono text-[9px] px-1.5 py-0.5 border border-cyan-800 bg-cyan-950/40 text-cyan-400 font-bold uppercase">
-                          VC
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
 
-                  {/* Description */}
-                  <p className="font-mono text-xs text-brutal-muted leading-relaxed line-clamp-2 mb-3">
-                    {cmd.description}
-                  </p>
-
-                  {/* Slash Parameters Pills */}
-                  {cmd.slashOptions && cmd.slashOptions.length > 0 && (
-                    <div className="mb-3 space-y-1">
-                      <span className="font-mono text-[9px] text-brutal-muted uppercase block">
-                        PARAMETERS ({cmd.slashOptions.length}):
+                  <div className="flex items-center gap-1 flex-wrap justify-end">
+                    {cmd.voterOnly && (
+                      <span className="font-mono text-[9px] px-1.5 py-0.5 border border-amber-600 bg-amber-950/40 text-amber-400 font-bold uppercase flex items-center gap-1">
+                        <Star className="w-2.5 h-2.5 fill-amber-400" />
+                        VOTE
                       </span>
-                      <div className="flex flex-wrap gap-1">
-                        {cmd.slashOptions.map((opt, idx) => (
-                          <span
-                            key={idx}
-                            className={`font-mono text-[10px] px-1.5 py-0.5 border ${
-                              opt.required
-                                ? 'border-brutal-accent/50 bg-brutal-accent/10 text-brutal-accent font-bold'
-                                : 'border-brutal-border bg-brutal-bg text-brutal-muted'
-                            }`}
-                          >
-                            {opt.name}
-                            {opt.required && '*'}
-                          </span>
-                        ))}
-                      </div>
+                    )}
+                    {cmd.inVoiceChannel && (
+                      <span className="font-mono text-[9px] px-1.5 py-0.5 border border-cyan-800 bg-cyan-950/40 text-cyan-400 font-bold uppercase">
+                        VC
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Description */}
+                <p className="font-mono text-xs text-brutal-muted leading-relaxed line-clamp-2 mb-3">
+                  {cmd.description}
+                </p>
+
+                {/* Slash Parameters Pills */}
+                {cmd.slashOptions && cmd.slashOptions.length > 0 && (
+                  <div className="mb-3 space-y-1">
+                    <span className="font-mono text-[9px] text-brutal-muted uppercase block">
+                      PARAMETERS ({cmd.slashOptions.length}):
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {cmd.slashOptions.map((opt, idx) => (
+                        <span
+                          key={idx}
+                          className={`font-mono text-[10px] px-1.5 py-0.5 border ${
+                            opt.required
+                              ? 'border-brutal-accent/50 bg-brutal-accent/10 text-brutal-accent font-bold'
+                              : 'border-brutal-border bg-brutal-bg text-brutal-muted'
+                          }`}
+                        >
+                          {opt.name}
+                          {opt.required && '*'}
+                        </span>
+                      ))}
                     </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Footer Info */}
+              <div className="mt-3 pt-2.5 border-t border-brutal-border flex justify-between items-center text-[10px] font-mono text-brutal-muted uppercase">
+                <div className="flex items-center gap-2">
+                  <span className="text-brutal-text font-bold">{cmd.category}</span>
+                  {cmd.cooldown > 0 && (
+                    <span>• {cmd.cooldown}s CD</span>
                   )}
                 </div>
-
-                {/* Footer Info */}
-                <div className="mt-3 pt-2.5 border-t border-brutal-border flex justify-between items-center text-[10px] font-mono text-brutal-muted uppercase">
-                  <div className="flex items-center gap-2">
-                    <span className="text-brutal-text font-bold">{cmd.category}</span>
-                    {cmd.cooldown > 0 && (
-                      <span>• {cmd.cooldown}s CD</span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {cmd.hasSlash && (
-                      <span className="px-1 border border-brutal-border bg-brutal-bg text-[9px] text-emerald-400 font-bold">
-                        SLASH
-                      </span>
-                    )}
-                    {cmd.hasPrefix && (
-                      <span className="px-1 border border-brutal-border bg-brutal-bg text-[9px] text-zinc-400 font-bold">
-                        PREFIX
-                      </span>
-                    )}
-                  </div>
+                <div className="flex items-center gap-1">
+                  {cmd.hasSlash && (
+                    <span className="px-1 border border-brutal-border bg-brutal-bg text-[9px] text-emerald-400 font-bold">
+                      SLASH
+                    </span>
+                  )}
+                  {cmd.hasPrefix && (
+                    <span className="px-1 border border-brutal-border bg-brutal-bg text-[9px] text-zinc-400 font-bold">
+                      PREFIX
+                    </span>
+                  )}
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       )}
 
@@ -437,14 +445,15 @@ export default function CommandsPage() {
                     {selectedModalCmd.category}
                   </span>
                   {selectedModalCmd.voterOnly && (
-                    <span className="font-mono text-[10px] border border-amber-600 bg-amber-950/40 text-amber-400 font-bold px-2 py-0.5">
-                      ⭐ TOP.GG VOTE REQUIRED
-                    </span>
-                  )}
-                  {selectedModalCmd.owner && (
-                    <span className="font-mono text-[10px] border border-red-600 bg-red-950/40 text-red-400 font-bold px-2 py-0.5">
-                      👑 BOT OWNER EXCLUSIVE
-                    </span>
+                    <a
+                      href={topggVoteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-[10px] border border-amber-600 bg-amber-950/40 text-amber-400 font-bold px-2 py-0.5 hover:bg-amber-500 hover:text-black transition-all flex items-center gap-1"
+                    >
+                      <Star className="w-2.5 h-2.5 fill-amber-400" />
+                      TOP.GG VOTE REQUIRED
+                    </a>
                   )}
                 </div>
                 <h3 className="font-display font-black text-3xl text-brutal-text uppercase">

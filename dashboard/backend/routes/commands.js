@@ -7,6 +7,8 @@ const router = express.Router();
 let cachedCommands = null;
 let lastLoadedTime = 0;
 
+const TOPGG_VOTE_URL = process.env.TOPGG_VOTE_URL || "https://top.gg/bot/863496211667484676/vote";
+
 const dspFilters = [
   { name: "8D Audio", desc: "Spatial 360-degree rotating stereo immersion" },
   { name: "BassBoost", desc: "Low-end frequency amplification (+15dB punch)" },
@@ -34,6 +36,9 @@ function loadAllCommands() {
   const dirs = fs.readdirSync(commandsPath);
 
   dirs.forEach((dir) => {
+    // Exclude Owner directory completely from public commands
+    if (dir.toLowerCase() === "owner") return;
+
     const dirPath = path.join(commandsPath, dir);
     if (!fs.statSync(dirPath).isDirectory()) return;
 
@@ -41,9 +46,13 @@ function loadAllCommands() {
     files.forEach((file) => {
       try {
         const filePath = path.join(dirPath, file);
-        // Clear require cache to allow hot reloading if files change
         delete require.cache[require.resolve(filePath)];
         const cmd = require(filePath);
+
+        // Double check owner flag
+        if (cmd.owner === true || (cmd.category && cmd.category.toLowerCase() === "owner")) {
+          return;
+        }
 
         // Normalize category
         let category = cmd.category || dir;
@@ -66,7 +75,7 @@ function loadAllCommands() {
               }))
             : [],
           voterOnly: !!cmd.voterOnly,
-          owner: !!cmd.owner,
+          owner: false,
           userPerms: Array.isArray(cmd.userPerms) ? cmd.userPerms : [],
           botPerms: Array.isArray(cmd.botPerms) ? cmd.botPerms : [],
           inVoiceChannel: !!cmd.inVoiceChannel,
@@ -93,12 +102,11 @@ router.get("/", (req, res) => {
     lastLoadedTime = now;
   }
 
-  // Calculate stats
+  // Calculate public command stats
   const total = cachedCommands.length;
   const slashCount = cachedCommands.filter((c) => c.hasSlash).length;
   const prefixCount = cachedCommands.filter((c) => c.hasPrefix).length;
   const voterOnlyCount = cachedCommands.filter((c) => c.voterOnly).length;
-  const ownerCount = cachedCommands.filter((c) => c.owner).length;
 
   const categoriesSet = new Set(cachedCommands.map((c) => c.category));
   const categories = Array.from(categoriesSet).sort();
@@ -112,12 +120,12 @@ router.get("/", (req, res) => {
     commands: cachedCommands,
     categories,
     dspFilters,
+    topggVoteUrl: TOPGG_VOTE_URL,
     stats: {
       total,
       slashCount,
       prefixCount,
       voterOnlyCount,
-      ownerCount,
       byCategory
     }
   });

@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config");
+const { getUserGuilds } = require("../services/sessionStore");
 
 function authenticateUser(req, res, next) {
   const token = req.cookies?.together_token || req.headers?.authorization?.replace(/^Bearer\s+/i, "");
@@ -11,6 +12,8 @@ function authenticateUser(req, res, next) {
   try {
     const decoded = jwt.verify(token, config.jwtSecret);
     req.user = decoded;
+    // Attach guilds from memory cache or fallback to decoded payload
+    req.user.guilds = getUserGuilds(decoded.id) || decoded.guilds || [];
     next();
   } catch (err) {
     return res.status(401).json({ error: "Invalid or expired session. Please log in again." });
@@ -30,4 +33,3 @@ module.exports = {
   authenticateUser,
   requireOwner
 };
-
