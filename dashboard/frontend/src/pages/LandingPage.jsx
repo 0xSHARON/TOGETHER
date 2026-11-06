@@ -200,7 +200,7 @@ export default function LandingPage() {
                 </a>
 
                 <Link
-                  to="/overview"
+                  to="/login"
                   className="px-6 py-3.5 bg-brutal-surface text-white font-display font-black text-sm uppercase border-2 border-brutal-border shadow-brutal hover:border-brutal-accent hover:text-brutal-accent hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-2"
                 >
                   <span>LAUNCH WEB DASHBOARD</span>

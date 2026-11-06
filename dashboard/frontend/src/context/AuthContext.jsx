@@ -26,9 +26,11 @@ export function AuthProvider({ children }) {
     try {
       await axios.post('/api/auth/logout', {}, { withCredentials: true });
       setUser(null);
-      window.location.href = '/login';
+      window.location.href = '/';
     } catch (err) {
       console.error('Logout error:', err);
+      setUser(null);
+      window.location.href = '/';
     }
   }
 
