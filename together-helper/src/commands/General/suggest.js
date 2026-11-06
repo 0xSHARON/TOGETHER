@@ -1,17 +1,15 @@
 const {
   ApplicationCommandOptionType,
-  PermissionsBitField,
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle
+  PermissionsBitField
 } = require("discord.js");
 const { SuggestionConfig } = require("../../schema");
 const config = require("../../config");
+const { container, flags, noticePayload, separator, text, COLORS } = require("../../utils/ui");
 
 module.exports = {
   name: "suggest",
-  description: "Submit a feature idea or suggestion for TOGETHER Music",
+  description: "Submit a feature idea or suggestion for community review",
+  category: "General",
   slashOptions: [
     {
       name: "idea",
@@ -30,33 +28,104 @@ module.exports = {
       : interaction.guild.channels.cache.find(c => c.name.includes("suggest"));
 
     if (!targetChannel) {
-      return interaction.reply({
-        content: "❌ Suggestions channel is not configured on this server yet. An admin can set it up with `/setsuggestion #channel`.",
-        ephemeral: true
-      });
+      return interaction.reply(
+        noticePayload({
+          title: "Channel Not Configured",
+          description: "Suggestions channel has not been designated yet. An admin can run `/setchannel type:suggestions #channel`.",
+          emoji: "⚠️",
+          tone: "warning"
+        }, true)
+      );
     }
 
-    const embed = new EmbedBuilder()
-      .setColor(config.accentColor)
-      .setAuthor({
-        name: `Suggestion by ${interaction.user.tag}`,
-        iconURL: interaction.user.displayAvatarURL({ dynamic: true })
-      })
-      .setDescription(`>>> ${idea}`)
-      .addFields(
-        { name: "Status", value: "⏳ Pending Community Review", inline: true },
-        { name: "Submitter ID", value: `\`${interaction.user.id}\``, inline: true }
+    const card = container(COLORS.accent)
+      .addTextDisplayComponents(text(`### 💡 Community Suggestion`))
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(
+        text(
+          `**Submitter:** ${interaction.user.toString()} (\`${interaction.user.id}\`)\n` +
+          `**Status:** ⏳ *Pending Community Review*\n\n` +
+          `**Idea / Proposal:**\n> ${idea}`
+        )
       )
-      .setFooter({ text: "Vote using the reactions below!" })
-      .setTimestamp();
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(text(`*Vote using the reactions below to show support!*`));
 
-    const msg = await targetChannel.send({ embeds: [embed] });
+    const msg = await targetChannel.send({
+      components: [card],
+      flags: flags(false)
+    });
+
     await msg.react("👍").catch(() => {});
     await msg.react("👎").catch(() => {});
 
-    return interaction.reply({
-      content: `✅ Your suggestion has been posted to ${targetChannel.toString()}!`,
-      ephemeral: true
+    return interaction.reply(
+      noticePayload({
+        title: "Suggestion Posted",
+        description: `Your suggestion was dispatched to <#${targetChannel.id}> for voting!`,
+        emoji: "✅",
+        tone: "success"
+      }, true)
+    );
+  },
+
+  async prefixExecute(message, args, client) {
+    const idea = args.join(" ");
+    if (!idea) {
+      return message.reply(
+        noticePayload({
+          title: "Missing Suggestion Content",
+          description: "Usage: `-suggest <describe your idea>`",
+          emoji: "⚠️",
+          tone: "warning"
+        }, false)
+      );
+    }
+
+    const cfg = await SuggestionConfig.findOne({ guildId: message.guild.id });
+    const targetChannel = cfg?.channelId
+      ? message.guild.channels.cache.get(cfg.channelId)
+      : message.guild.channels.cache.find(c => c.name.includes("suggest"));
+
+    if (!targetChannel) {
+      return message.reply(
+        noticePayload({
+          title: "Channel Not Configured",
+          description: "Suggestions channel has not been designated yet. An admin can run `/setchannel type:suggestions #channel`.",
+          emoji: "⚠️",
+          tone: "warning"
+        }, false)
+      );
+    }
+
+    const card = container(COLORS.accent)
+      .addTextDisplayComponents(text(`### 💡 Community Suggestion`))
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(
+        text(
+          `**Submitter:** ${message.author.toString()} (\`${message.author.id}\`)\n` +
+          `**Status:** ⏳ *Pending Community Review*\n\n` +
+          `**Idea / Proposal:**\n> ${idea}`
+        )
+      )
+      .addSeparatorComponents(separator())
+      .addTextDisplayComponents(text(`*Vote using the reactions below to show support!*`));
+
+    const msg = await targetChannel.send({
+      components: [card],
+      flags: flags(false)
     });
+
+    await msg.react("👍").catch(() => {});
+    await msg.react("👎").catch(() => {});
+
+    return message.reply(
+      noticePayload({
+        title: "Suggestion Posted",
+        description: `Your suggestion was dispatched to <#${targetChannel.id}> for voting!`,
+        emoji: "✅",
+        tone: "success"
+      }, false)
+    );
   }
 };

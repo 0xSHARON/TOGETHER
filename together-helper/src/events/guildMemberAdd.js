@@ -1,6 +1,35 @@
-const { EmbedBuilder } = require("discord.js");
+const {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle
+} = require("discord.js");
 const { WelcomeConfig } = require("../schema");
 const config = require("../config");
+const { container, flags, separator, text, COLORS } = require("../utils/ui");
+const { isHttpUrl } = require("../utils/webhooks");
+
+function welcomeLinks() {
+  const buttons = [];
+  if (isHttpUrl(config.dashboardUrl)) {
+    buttons.push(
+      new ButtonBuilder()
+        .setLabel("Web Dashboard")
+        .setStyle(ButtonStyle.Link)
+        .setURL(config.dashboardUrl)
+        .setEmoji("🌐")
+    );
+  }
+  if (isHttpUrl(config.supportUrl)) {
+    buttons.push(
+      new ButtonBuilder()
+        .setLabel("Support Server")
+        .setStyle(ButtonStyle.Link)
+        .setURL(config.supportUrl)
+        .setEmoji("💬")
+    );
+  }
+  return buttons.length ? new ActionRowBuilder().addComponents(buttons) : null;
+}
 
 module.exports = {
   name: "guildMemberAdd",
@@ -20,33 +49,41 @@ module.exports = {
         .replace(/{server}/g, member.guild.name)
         .replace(/{count}/g, member.guild.memberCount.toString());
 
-      const embed = new EmbedBuilder()
-        .setColor(config.color)
-        .setAuthor({
-          name: `${member.user.tag} joined the soundstage!`,
-          iconURL: member.user.displayAvatarURL({ dynamic: true })
-        })
-        .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
-        .setDescription(
-          `### 🎵 Welcome to ${member.guild.name}!\n\n` +
-          `Hey ${member.toString()}, ${formatted}\n\n` +
-          `• **Listen in Voice**: Join any VC and type \`/play\`\n` +
-          `• **Web Dashboard**: [Open Dashboard](${config.dashboardUrl})\n` +
-          `• **Official Support**: [Join Support Server](${config.supportUrl})\n\n` +
-          `*You are member #${member.guild.memberCount}!*`
+      const welcomeCard = container(COLORS.brand)
+        .addTextDisplayComponents(text(`### 🎵 Welcome to ${member.guild.name}!`))
+        .addSeparatorComponents(separator())
+        .addTextDisplayComponents(
+          text(
+            `Hey ${member.toString()},\n\n` +
+            `${formatted}\n\n` +
+            `• **Listen Together**: Hop into any Voice Channel and queue songs using \`/play\`\n` +
+            `• **Web Audio Controls**: Adjust volume, loop, and 24/7 settings from the Dashboard\n\n` +
+            `*You are member #${member.guild.memberCount}! Enjoy high-fidelity audio with us.*`
+          )
         )
-        .setFooter({ text: "TOGETHER Helper • Member Onboarding" })
-        .setTimestamp();
+        .addSeparatorComponents(separator())
+        .addTextDisplayComponents(text(`*TOGETHER Helper • Community Member Onboarding*`));
 
-      await channel.send({ content: `${member.toString()}`, embeds: [embed] }).catch(() => {});
+      const links = welcomeLinks();
+      const components = [welcomeCard];
+      if (links) components.push(links);
+
+      await channel.send({
+        content: `${member.toString()}`,
+        components,
+        flags: flags(false)
+      }).catch(() => {});
 
       if (cfg.dmWelcome) {
-        const dmEmbed = new EmbedBuilder()
-          .setColor(config.accentColor)
-          .setTitle(`Welcome to ${member.guild.name}!`)
-          .setDescription(formatted)
-          .setFooter({ text: "TOGETHER Music Bot" });
-        await member.send({ embeds: [dmEmbed] }).catch(() => {});
+        const dmCard = container(COLORS.accent)
+          .addTextDisplayComponents(text(`### Welcome to ${member.guild.name}!`))
+          .addSeparatorComponents(separator())
+          .addTextDisplayComponents(text(formatted));
+
+        await member.send({
+          components: [dmCard],
+          flags: flags(false)
+        }).catch(() => {});
       }
     } catch (err) {
       console.error("[Welcome Event Error]", err);

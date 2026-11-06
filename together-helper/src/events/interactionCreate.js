@@ -1,13 +1,13 @@
 const {
   ChannelType,
   PermissionsBitField,
-  EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle
 } = require("discord.js");
 const { TicketConfig, Ticket } = require("../schema");
 const config = require("../config");
+const { container, flags, noticePayload, separator, text, COLORS } = require("../utils/ui");
 
 module.exports = {
   name: "interactionCreate",
@@ -22,10 +22,14 @@ module.exports = {
       } catch (err) {
         console.error(`[Command Error] ${interaction.commandName}:`, err);
         const replyFn = interaction.deferred || interaction.replied ? "editReply" : "reply";
-        await interaction[replyFn]({
-          content: `❌ Error executing command: ${err.message}`,
-          ephemeral: true
-        }).catch(() => {});
+        await interaction[replyFn](
+          noticePayload({
+            title: "Command Execution Error",
+            description: err.message,
+            emoji: "❌",
+            tone: "danger"
+          }, true)
+        ).catch(() => {});
       }
       return;
     }
@@ -46,9 +50,14 @@ module.exports = {
         });
 
         if (existing) {
-          return interaction.editReply({
-            content: `❌ You already have an open ticket in <#${existing.channelId}>!`
-          });
+          return interaction.editReply(
+            noticePayload({
+              title: "Ticket Already Open",
+              description: `You already have an active ticket open in <#${existing.channelId}>. Please resolve it before creating a new one.`,
+              emoji: "⚠️",
+              tone: "warning"
+            }, true)
+          );
         }
 
         const cfg = await TicketConfig.findOne({ guildId: interaction.guild.id });
@@ -100,7 +109,6 @@ module.exports = {
 
         const chosenCategory = categoryTitles[category] || "General Support";
         const channelName = `ticket-${interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, "")}-${nextNum}`;
-
         const categoryIdToUse = cfg?.categoryId || config.ticketsCategoryId || null;
 
         const ticketChannel = await interaction.guild.channels.create({
@@ -126,19 +134,21 @@ module.exports = {
           { upsert: true }
         );
 
-        // Send Welcome Embed inside the newly created ticket channel
-        const welcomeTicketEmbed = new EmbedBuilder()
-          .setColor(config.color)
-          .setTitle(`📩 Support Ticket #${nextNum}`)
-          .setDescription(
-            `Hello ${interaction.user.toString()},\n\n` +
-            `Thank you for contacting **TOGETHER Support** regarding **${chosenCategory}**.\n\n` +
-            `• Please describe your problem in detail.\n` +
-            `• If reporting an audio error, mention which voice channel and song URL caused it.\n` +
-            `• A staff member will assist you shortly.`
+        // Send Components V2 Card inside the newly created ticket channel
+        const welcomeCard = container(COLORS.brand)
+          .addTextDisplayComponents(text(`### 📩 Support Room #${nextNum} • ${chosenCategory}`))
+          .addSeparatorComponents(separator())
+          .addTextDisplayComponents(
+            text(
+              `Hello ${interaction.user.toString()},\n\n` +
+              `Thank you for contacting **TOGETHER Support** regarding **${chosenCategory}**.\n\n` +
+              `• **Instructions:** Describe your issue clearly, providing links or reproduction steps where applicable.\n` +
+              `• **Staff Response:** A support team member has been notified and will assist you shortly.\n` +
+              `• **Resolution:** When finished, click **Close Ticket** below to archive this room.`
+            )
           )
-          .setFooter({ text: "Click Close Ticket when your issue has been resolved." })
-          .setTimestamp();
+          .addSeparatorComponents(separator())
+          .addTextDisplayComponents(text(`*TOGETHER Helper • Support Desk Automation*`));
 
         const closeRow = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
@@ -148,22 +158,32 @@ module.exports = {
             .setStyle(ButtonStyle.Danger)
         );
 
+        const staffPing = cfg?.staffRoleId ? `<@&${cfg.staffRoleId}>` : "";
         await ticketChannel.send({
-          content: `${interaction.user.toString()} ${cfg?.staffRoleId ? `<@&${cfg.staffRoleId}>` : ""}`,
-          embeds: [welcomeTicketEmbed],
-          components: [closeRow]
+          content: `${interaction.user.toString()} ${staffPing}`.trim(),
+          components: [welcomeCard, closeRow],
+          flags: flags(false)
         });
 
-        return interaction.editReply({
-          content: `✅ Your ticket has been created! Head over to ${ticketChannel.toString()}.`
-        });
+        return interaction.editReply(
+          noticePayload({
+            title: "Support Ticket Created",
+            description: `Your ticket has been opened: <#${ticketChannel.id}>. Click the link to jump directly to your support room.`,
+            emoji: "✅",
+            tone: "success"
+          }, true)
+        );
       }
 
       if (action === "close") {
-        await interaction.reply({
-          content: "🔒 Closing this ticket in 5 seconds...",
-          ephemeral: false
-        });
+        await interaction.reply(
+          noticePayload({
+            title: "Closing Support Ticket",
+            description: "This channel will be closed and deleted in 5 seconds. Thank you!",
+            emoji: "🔒",
+            tone: "danger"
+          }, false)
+        );
 
         await Ticket.findOneAndUpdate({ channelId: interaction.channel.id }, { status: "closed" });
 
