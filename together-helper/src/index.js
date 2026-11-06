@@ -14,9 +14,7 @@ const loadEvents = require("./loaders/eventLoader");
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers, // Required for Welcome messages
-    GatewayIntentBits.GuildMessages, // Required for Sticky messages
-    GatewayIntentBits.MessageContent, // Required to inspect messages for Sticky handling
+    GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMessageReactions
   ],
   partials: [Partials.Message, Partials.Channel, Partials.Reaction]
