@@ -66,3 +66,4 @@ module.exports = {
     return message.reply({ components: [card], flags: flags(false) });
   }
 };
+

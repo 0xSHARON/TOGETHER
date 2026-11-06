@@ -48,9 +48,51 @@ module.exports = {
       return;
     }
 
-    // 2. Handle Ticket Button Interactions
+    // 2. Handle Button Interactions
     if (interaction.isButton()) {
-      const [namespace, action, category] = interaction.customId.split(":");
+      const [namespace, action, extra] = interaction.customId.split(":");
+
+      // Verification Gatekeeper Button
+      if (namespace === "verify") {
+        const { VerifyConfig } = require("../schema");
+        const vcfg = await VerifyConfig.findOne({ guildId: interaction.guild.id, enabled: true });
+        if (!vcfg || !vcfg.roleId) {
+          return interaction.reply({ content: "Verification role is not configured on this server.", ephemeral: true });
+        }
+        const role = interaction.guild.roles.cache.get(vcfg.roleId);
+        if (!role) {
+          return interaction.reply({ content: "The verified member role was deleted or not found.", ephemeral: true });
+        }
+        if (interaction.member.roles.cache.has(role.id)) {
+          return interaction.reply({ content: "You are already verified on this server!", ephemeral: true });
+        }
+        try {
+          await interaction.member.roles.add(role.id, "Verified via Gatekeeper panel");
+          return interaction.reply({ content: `✅ Verification successful! Welcome to the server, you now have the **${role.name}** role.`, ephemeral: true });
+        } catch (err) {
+          return interaction.reply({ content: `Could not grant role: ${err.message}`, ephemeral: true });
+        }
+      }
+
+      // Giveaway Enter/Leave Button
+      if (namespace === "giveaway" && action === "enter") {
+        const { Giveaway } = require("../schema");
+        const gw = await Giveaway.findOne({ messageId: interaction.message.id, ended: false });
+        if (!gw) {
+          return interaction.reply({ content: "This giveaway has already ended.", ephemeral: true });
+        }
+        const userId = interaction.user.id;
+        if (gw.entries.includes(userId)) {
+          gw.entries = gw.entries.filter(id => id !== userId);
+          await gw.save();
+          return interaction.reply({ content: "You have left this giveaway.", ephemeral: true });
+        } else {
+          gw.entries.push(userId);
+          await gw.save();
+          return interaction.reply({ content: `🎉 You entered the giveaway for **${gw.prize}**! (${gw.entries.length} total entries)`, ephemeral: true });
+        }
+      }
+
       if (namespace !== "ticket") return;
 
       if (action === "create") {

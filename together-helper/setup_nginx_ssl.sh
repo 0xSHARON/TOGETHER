@@ -30,3 +30,4 @@ certbot --nginx -d help.together.dpdns.org --non-interactive --agree-tos --redir
 echo "============================================="
 echo " 🎉 Successfully deployed: https://help.together.dpdns.org/"
 echo "============================================="
+

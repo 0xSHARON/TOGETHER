@@ -68,3 +68,4 @@ module.exports = {
     return message.reply(noticePayload({ title: "Warnings Cleared", description: `Cleared **${result.deletedCount}** warning(s) for **${targetUser.tag}**.`, tone: "success" }));
   }
 };
+

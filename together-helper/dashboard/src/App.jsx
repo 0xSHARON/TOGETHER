@@ -618,3 +618,4 @@ const thStyle = {
 const tdStyle = {
   padding: '14px 18px'
 };
+

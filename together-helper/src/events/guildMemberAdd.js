@@ -4,7 +4,7 @@ const {
   ButtonStyle,
   EmbedBuilder,
 } = require("discord.js");
-const { WelcomeConfig } = require("../schema");
+const { WelcomeConfig, AutoRoleConfig } = require("../schema");
 const config = require("../config");
 const { container, flags, separator, text } = require("../utils/ui");
 const { isHttpUrl, dispatchLogThread } = require("../utils/webhooks");
@@ -36,6 +36,17 @@ function welcomeLinks() {
 module.exports = {
   name: "guildMemberAdd",
   async execute(member, client) {
+    // 0. Automatic Role Assignment (AutoRole)
+    try {
+      const autoRole = await AutoRoleConfig.findOne({ guildId: member.guild.id, enabled: true });
+      if (autoRole) {
+        const roleId = member.user.bot ? autoRole.botRoleId : autoRole.humanRoleId;
+        if (roleId) {
+          await member.roles.add(roleId, "TOGETHER Helper AutoRole on Join").catch(() => {});
+        }
+      }
+    } catch {}
+
     if (member.user.bot) return;
 
     try {

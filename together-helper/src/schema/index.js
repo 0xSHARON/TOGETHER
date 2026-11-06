@@ -82,6 +82,36 @@ const autoModSchema = new mongoose.Schema({
   ignoredChannels: { type: [String], default: [] }
 });
 
+// 9. Giveaways System
+const giveawaySchema = new mongoose.Schema({
+  messageId: { type: String, required: true, unique: true },
+  channelId: { type: String, required: true },
+  guildId: { type: String, required: true },
+  prize: { type: String, required: true },
+  winnersCount: { type: Number, default: 1 },
+  endsAt: { type: Date, required: true },
+  hostedBy: { type: String, required: true },
+  entries: { type: [String], default: [] },
+  ended: { type: Boolean, default: false },
+  winners: { type: [String], default: [] }
+});
+
+// 10. Verification Gatekeeper System
+const verifySchema = new mongoose.Schema({
+  guildId: { type: String, required: true, unique: true },
+  roleId: { type: String, required: true },
+  channelId: { type: String, required: true },
+  enabled: { type: Boolean, default: true }
+});
+
+// 11. AutoRole Configuration
+const autoRoleSchema = new mongoose.Schema({
+  guildId: { type: String, required: true, unique: true },
+  humanRoleId: { type: String, default: null },
+  botRoleId: { type: String, default: null },
+  enabled: { type: Boolean, default: true }
+});
+
 module.exports = {
   WelcomeConfig: mongoose.model("HelperWelcome", welcomeSchema),
   SuggestionConfig: mongoose.model("HelperSuggestion", suggestionSchema),
@@ -91,5 +121,8 @@ module.exports = {
   Ticket: mongoose.model("HelperTicket", ticketSchema),
   Afk: mongoose.model("HelperAfk", afkSchema),
   Warn: mongoose.model("HelperWarn", warnSchema),
-  AutoModConfig: mongoose.model("HelperAutoModConfig", autoModSchema)
+  AutoModConfig: mongoose.model("HelperAutoModConfig", autoModSchema),
+  Giveaway: mongoose.model("HelperGiveaway", giveawaySchema),
+  VerifyConfig: mongoose.model("HelperVerifyConfig", verifySchema),
+  AutoRoleConfig: mongoose.model("HelperAutoRoleConfig", autoRoleSchema)
 };
