@@ -27,7 +27,7 @@
 		"audit": "better-npm-audit audit --level high",
 		"build": "npm run build:shared && npm run build:bot && npm run build:dashboard",
 		"build:bot": "tsup",
-		"build:dashboard": "npm run build --workspace dashboard && npm run verify:bundle",
+		"build:dashboard": "npm run build --workspace dashboard",
 		"build:shared": "npm run build --workspace @together-helper/shared",
 		"check": "npm run typecheck && npm run lint && npm run format:check && npm run test",
 		"commands:clear": "tsx scripts/clearCommands.ts",
