@@ -1,27 +1,5 @@
-const { createCanvas, loadImage, GlobalFonts } = require("@napi-rs/canvas");
-const fs = require("fs");
-
-// Register system and local emoji fonts for seamless Discord emoji & unicode display
-let fontsInitialized = false;
-function initEmojiFonts() {
-  if (fontsInitialized) return;
-  const paths = [
-    { p: "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf", name: "Noto Color Emoji" },
-    { p: "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf", name: "Symbola" },
-    { p: "C:/Windows/Fonts/seguiemj.ttf", name: "Segoe UI Emoji" },
-  ];
-  for (const { p, name } of paths) {
-    if (fs.existsSync(p)) {
-      try {
-        GlobalFonts.registerFromPath(p, name);
-      } catch {}
-    }
-  }
-  fontsInitialized = true;
-}
-initEmojiFonts();
-
-const EMOJI_FALLBACK = '"Noto Color Emoji", "Segoe UI Emoji", "Apple Color Emoji", Symbola, sans-serif';
+const { createCanvas, loadImage } = require("@napi-rs/canvas");
+const { FONTS } = require("./canvasFonts");
 
 const WIDTH = 1200;
 const HEIGHT = 675;
@@ -646,11 +624,11 @@ async function renderProfileCanvas(user, profile = {}) {
   // 2. TOP HEADER
   // ========================================================
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = "900 52px Bahnschrift, Arial Black, sans-serif";
+  ctx.font = FONTS.title("900", 52);
   ctx.fillText("TOGETHER", 40, 72);
 
   ctx.fillStyle = "#7E828C";
-  ctx.font = "700 13px Bahnschrift, Arial, sans-serif";
+  ctx.font = FONTS.sans("700", 13);
   ctx.fillText("M U S I C   B R I N G S   U S   C L O S E R", 42, 94);
 
   // Wireframe Globe in center header
@@ -661,19 +639,19 @@ async function renderProfileCanvas(user, profile = {}) {
   ctx.lineWidth = 1;
   ctx.strokeRect(475, 45, 110, 42);
   ctx.fillStyle = "#8E929D";
-  ctx.font = "700 9px Bahnschrift, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.fillText("PEOPLE", 512, 57);
   ctx.fillText("MUSIC", 515, 68);
   ctx.fillText("TOGETHER", 506, 79);
 
   // + + + + Crosshairs
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 15px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 15);
   ctx.fillText("+   +   +   +", 635, 69);
 
   // Top-Right Metadata
   ctx.fillStyle = "#8E929D";
-  ctx.font = "600 11px Bahnschrift, sans-serif";
+  ctx.font = FONTS.sans("600", 11);
   ctx.textAlign = "right";
   ctx.fillText("SAME VIBES", 1080, 56);
   ctx.fillText("DIFFERENT PEOPLE", 1080, 70);
@@ -813,7 +791,7 @@ async function renderProfileCanvas(user, profile = {}) {
   drawBarcode(ctx, frameX + 14, bottomBarY + 12, 130, 24);
 
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 9px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.fillText("TOGETHER.USER", frameX + 155, bottomBarY + 27);
 
   drawFourPointStar(ctx, frameX + frameW - 24, bottomBarY + 24, 9, 3, "#C0C4CC");
@@ -830,7 +808,7 @@ async function renderProfileCanvas(user, profile = {}) {
   ctx.fillRect(infoX, 122, 130, 25);
   ctx.strokeRect(infoX, 122, 130, 25);
   ctx.fillStyle = "#DCDFE6";
-  ctx.font = "700 11px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 11);
   ctx.fillText("USER PROFILE", infoX + 16, 139);
 
   // Huge User Name (Emoji-safe)
@@ -838,11 +816,11 @@ async function renderProfileCanvas(user, profile = {}) {
   const cleanName = Array.from(rawName).slice(0, 16).join("");
   ctx.fillStyle = "#FFFFFF";
 
-  let nameFontSize = 46;
-  ctx.font = `900 ${nameFontSize}px "Segoe UI", Bahnschrift, ${EMOJI_FALLBACK}`;
-  while (ctx.measureText(cleanName).width > 360 && nameFontSize > 22) {
-    nameFontSize -= 3;
-    ctx.font = `900 ${nameFontSize}px "Segoe UI", Bahnschrift, ${EMOJI_FALLBACK}`;
+  let nameFontSize = 44;
+  ctx.font = FONTS.title("900", nameFontSize);
+  while (ctx.measureText(cleanName).width > 360 && nameFontSize > 20) {
+    nameFontSize -= 2;
+    ctx.font = FONTS.title("900", nameFontSize);
   }
   ctx.fillText(cleanName, infoX, 200);
 
@@ -858,7 +836,7 @@ async function renderProfileCanvas(user, profile = {}) {
   ctx.fillRect(infoX, 216, 140, 24);
   ctx.strokeRect(infoX, 216, 140, 24);
   ctx.fillStyle = "#9598A0";
-  ctx.font = `700 11px Consolas, ${EMOJI_FALLBACK}`;
+  ctx.font = FONTS.mono("700", 11);
   ctx.fillText(handleTag, infoX + 12, 232);
 
   // LEVEL BOX (x: 810, y: 122)
@@ -873,11 +851,11 @@ async function renderProfileCanvas(user, profile = {}) {
   ctx.strokeRect(lvlX, lvlY, lvlW, lvlH);
 
   ctx.fillStyle = "#727680";
-  ctx.font = "700 11px Bahnschrift, sans-serif";
+  ctx.font = FONTS.sans("700", 11);
   ctx.fillText("LEVEL", lvlX + 16, lvlY + 22);
 
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = "900 48px Bahnschrift, Arial Black, sans-serif";
+  ctx.font = FONTS.title("900", 48);
   ctx.fillText(String(level), lvlX + 16, lvlY + 70);
 
   // Red XP Progress Bar
@@ -893,7 +871,7 @@ async function renderProfileCanvas(user, profile = {}) {
   }
 
   ctx.fillStyle = "#7E828C";
-  ctx.font = "600 9px Consolas, monospace";
+  ctx.font = FONTS.mono("600", 9);
   ctx.fillText(`${xp.toLocaleString()} / ${maxXP.toLocaleString()} XP`, lvlX + 16, lvlY + 104);
 
   // Moon Phases Column beside Level Box
@@ -922,7 +900,7 @@ async function renderProfileCanvas(user, profile = {}) {
   ctx.fillRect(bioX, bioY, 52, 20);
   ctx.strokeRect(bioX, bioY, 52, 20);
   ctx.fillStyle = "#D0D3DB";
-  ctx.font = "700 10px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 10);
   ctx.fillText("BIO", bioX + 16, bioY + 14);
 
   // Vector Double Quote marks
@@ -942,7 +920,7 @@ async function renderProfileCanvas(user, profile = {}) {
 
   // Bio Text lines (Emoji-safe)
   ctx.fillStyle = "#D0D3DB";
-  ctx.font = `500 13px Consolas, ${EMOJI_FALLBACK}`;
+  ctx.font = FONTS.mono("500", 13);
   const bioLines = bio.split("\n");
   const bioLine1 = Array.from(bioLines[0] || "No bio set yet.").slice(0, 48).join("");
   ctx.fillText(bioLine1, bioX + 46, bioY + 44);
@@ -951,7 +929,7 @@ async function renderProfileCanvas(user, profile = {}) {
     ctx.fillText(bioLine2, bioX + 46, bioY + 66);
   } else if (!profile.bio && profile.anthem?.title) {
     ctx.fillStyle = "#8E929D";
-    ctx.font = `500 12px Consolas, ${EMOJI_FALLBACK}`;
+    ctx.font = FONTS.mono("500", 12);
     ctx.fillText(`Anthem: ${Array.from(profile.anthem.title).slice(0, 42).join("")}`, bioX + 46, bioY + 66);
   }
 
@@ -984,11 +962,11 @@ async function renderProfileCanvas(user, profile = {}) {
   drawHeadphonesIcon(ctx, b1X + 26, statsY + 30);
 
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = "800 24px Bahnschrift, sans-serif";
+  ctx.font = FONTS.title("800", 24);
   ctx.fillText(String(listeningHours), b1X + 48, statsY + 33);
 
   ctx.fillStyle = "#727680";
-  ctx.font = "700 9px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.fillText("LISTENING HOURS", b1X + 48, statsY + 47);
 
   drawEqualizer(ctx, b1X + 12, statsY + 68, statBoxW - 24, 30, 14, 2, accentColor);
@@ -1003,11 +981,11 @@ async function renderProfileCanvas(user, profile = {}) {
   drawMusicNoteIcon(ctx, b2X + 26, statsY + 28);
 
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = "800 24px Bahnschrift, sans-serif";
+  ctx.font = FONTS.title("800", 24);
   ctx.fillText(String(songsPlayed), b2X + 48, statsY + 33);
 
   ctx.fillStyle = "#727680";
-  ctx.font = "700 9px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.fillText("SONGS PLAYED", b2X + 48, statsY + 47);
 
   drawEqualizer(ctx, b2X + 12, statsY + 68, statBoxW - 24, 30, 14, 5, accentColor);
@@ -1022,11 +1000,11 @@ async function renderProfileCanvas(user, profile = {}) {
   drawFlameIcon(ctx, b3X + 26, statsY + 30, accentColor);
 
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = "800 24px Bahnschrift, sans-serif";
+  ctx.font = FONTS.title("800", 24);
   ctx.fillText(String(streak), b3X + 48, statsY + 33);
 
   ctx.fillStyle = "#727680";
-  ctx.font = "700 9px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.fillText("LISTENING STREAK", b3X + 48, statsY + 47);
 
   drawEqualizer(ctx, b3X + 12, statsY + 68, statBoxW - 24, 30, 14, 8, accentColor);
@@ -1048,7 +1026,7 @@ async function renderProfileCanvas(user, profile = {}) {
   ctx.fillRect(infoX, badgeY, 110, 20);
   ctx.strokeRect(infoX, badgeY, 110, 20);
   ctx.fillStyle = userUnlocked.length > 0 ? accentColor : "#D0D3DB";
-  ctx.font = "700 10px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 10);
   ctx.fillText(badgeTagText, infoX + 10, badgeY + 14);
 
   const slotSize = 46;
@@ -1081,12 +1059,12 @@ async function renderProfileCanvas(user, profile = {}) {
   ctx.strokeRect(pX, pY, pW, pH);
 
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = "800 16px Bahnschrift, sans-serif";
+  ctx.font = FONTS.title("800", 16);
   ctx.fillText("TOGETHER", pX + 16, pY + 28);
   drawFourPointStar(ctx, pX + 115, pY + 22, 6, 2, accentColor);
 
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 8px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 8);
   ctx.fillText("PEOPLE", pX + 140, pY + 20);
   ctx.fillText("MUSIC", pX + 140, pY + 29);
   ctx.fillText("TOGETHER", pX + 140, pY + 38);
@@ -1121,7 +1099,7 @@ async function renderProfileCanvas(user, profile = {}) {
   }
 
   ctx.fillStyle = "#E4E7ED";
-  ctx.font = "900 20px Bahnschrift, Arial Black, sans-serif";
+  ctx.font = FONTS.title("900", 20);
   ctx.textAlign = "center";
   ctx.fillText("GOOD", pX + pW / 2, pY + 215);
   ctx.fillText("MUSIC", pX + pW / 2, pY + 238);
@@ -1136,7 +1114,7 @@ async function renderProfileCanvas(user, profile = {}) {
   const footerY = 642;
 
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 11px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 11);
   ctx.fillText("TOGETHER", 42, footerY);
   ctx.fillText("A MUSIC COMMUNITY", 42, footerY + 14);
 
@@ -1157,7 +1135,7 @@ async function renderProfileCanvas(user, profile = {}) {
   drawDiagonalStripes(ctx, 770, footerY - 5, 60, 20, 5, 2, "#4D5058");
 
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 11px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 11);
   ctx.textAlign = "right";
   ctx.fillText("MUSIC NEVER SOUNDS THE SAME ALONE.", WIDTH - 42, footerY + 7);
   ctx.textAlign = "left";

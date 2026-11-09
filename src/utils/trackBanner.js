@@ -1,6 +1,7 @@
 const { createCanvas, loadImage } = require("@napi-rs/canvas");
 const { artworkUrl, cleanAuthorName } = require("./presentation");
 const { convertTime } = require("./convert");
+const { FONTS } = require("./canvasFonts");
 
 const WIDTH = 1_000;
 const HEIGHT = 250;
@@ -294,7 +295,7 @@ async function renderTrackBanner(artwork, track = {}) {
   drawBarcode(ctx, frameX + 8, bottomBarY + 6, 85, 16);
 
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 8px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 8);
   ctx.fillText("TRACK.AUDIO", frameX + 102, bottomBarY + 17);
 
   drawFourPointStar(ctx, frameX + frameSize - 14, bottomBarY + 14, 6, 2, "#C0C4CC");
@@ -311,7 +312,7 @@ async function renderTrackBanner(artwork, track = {}) {
   ctx.fillRect(contentX, 22, 110, 22);
   ctx.strokeRect(contentX, 22, 110, 22);
   ctx.fillStyle = "#DCDFE6";
-  ctx.font = "700 10px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 10);
   ctx.fillText("NOW PLAYING", contentX + 14, 36);
 
   // Wireframe Globe
@@ -321,17 +322,17 @@ async function renderTrackBanner(artwork, track = {}) {
   ctx.strokeStyle = "#2B2D35";
   ctx.strokeRect(425, 23, 120, 20);
   ctx.fillStyle = "#8E929D";
-  ctx.font = "700 8px Bahnschrift, Consolas, monospace";
+  ctx.font = FONTS.mono("700", 8);
   ctx.fillText("PEOPLE / MUSIC / TOGETHER", 430, 36);
 
   // + + + + Crosshairs
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 12px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 12);
   ctx.fillText("+  +  +  +", 565, 36);
 
   // Top-Right Slogan & Caution Stripes
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 9px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.textAlign = "right";
   ctx.fillText("TOGETHER.LIVE", 915, 36);
   ctx.textAlign = "left";
@@ -341,9 +342,9 @@ async function renderTrackBanner(artwork, track = {}) {
   // ========================================================
   // 4. TITLE & ARTIST SECTION
   // ========================================================
-  const titleText = track.title || "Side To Side";
+  const titleText = track.title || track.info?.title || track.name || "Now Playing";
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = '900 32px Bahnschrift, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+  ctx.font = FONTS.title("900", 30);
   const fittedTitle = fitText(ctx, titleText, 660);
   ctx.fillText(fittedTitle, contentX, 86);
 
@@ -351,13 +352,13 @@ async function renderTrackBanner(artwork, track = {}) {
   drawFourPointStar(ctx, contentX + titleW + 18, 76, 9, 3, accentColor);
 
   // Artist / Author
-  const authorText = cleanAuthorName(track.author || "Unknown Artist");
+  const authorText = cleanAuthorName(track.author || track.info?.author || track.artist || "Unknown Artist");
   ctx.fillStyle = "#9598A0";
-  ctx.font = "700 12px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 12);
   ctx.fillText("ARTIST", contentX, 118);
 
   ctx.fillStyle = "#E4E7ED";
-  ctx.font = '700 18px Bahnschrift, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+  ctx.font = FONTS.sans("700", 18);
   ctx.fillText(fitText(ctx, authorText, 600), contentX + 60, 118);
 
   // Thin separator rule
@@ -382,12 +383,13 @@ async function renderTrackBanner(artwork, track = {}) {
   ctx.strokeRect(contentX, bentoY, box1W, bentoH);
 
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 9px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.fillText("DURATION", contentX + 14, bentoY + 20);
 
-  const durationStr = track.length ? convertTime(track.length) : "03:47";
+  const durVal = track.length || track.duration || track.info?.length || track.info?.duration;
+  const durationStr = durVal ? convertTime(durVal) : "03:45";
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = "800 20px Bahnschrift, Arial, sans-serif";
+  ctx.font = FONTS.title("800", 20);
   ctx.fillText(durationStr, contentX + 14, bentoY + 48);
 
   // Box 2: REQUESTER
@@ -399,15 +401,15 @@ async function renderTrackBanner(artwork, track = {}) {
   ctx.strokeRect(box2X, bentoY, box2W, bentoH);
 
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 9px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.fillText("REQUESTED BY", box2X + 14, bentoY + 20);
 
   const reqUser = track.requester;
-  let reqName = reqUser?.username || reqUser?.tag || reqUser?.displayName || (typeof reqUser === "string" ? reqUser : "Listener");
+  let reqName = reqUser?.displayName || reqUser?.username || reqUser?.tag || (typeof reqUser === "string" ? reqUser : "Listener");
   if (!reqName || typeof reqName !== "string") reqName = "Listener";
   reqName = reqName.trim();
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = '800 17px Bahnschrift, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+  ctx.font = FONTS.sans("800", 16);
   ctx.fillText(fitText(ctx, `@${reqName.toUpperCase()}`, 180), box2X + 14, bentoY + 48);
 
   // Box 3: AUDIO EQUALIZER SPECTRUM
@@ -419,7 +421,7 @@ async function renderTrackBanner(artwork, track = {}) {
   ctx.strokeRect(box3X, bentoY, box3W, bentoH);
 
   ctx.fillStyle = "#6B6F7A";
-  ctx.font = "700 9px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.fillText("AUDIO SPECTRUM", box3X + 14, bentoY + 20);
 
   drawEqualizer(ctx, box3X + 14, bentoY + 28, box3W - 28, 28, 18, 4, accentColor);
@@ -429,7 +431,7 @@ async function renderTrackBanner(artwork, track = {}) {
   // ========================================================
   const footerY = 236;
   ctx.fillStyle = "#4D5058";
-  ctx.font = "700 9px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.fillText("TOGETHER / A MUSIC COMMUNITY", contentX, footerY);
 
   // 3 Interlocking Circles ⚬⚬⚬
@@ -446,7 +448,7 @@ async function renderTrackBanner(artwork, track = {}) {
   ctx.stroke();
 
   ctx.fillStyle = "#4D5058";
-  ctx.font = "700 9px Consolas, monospace";
+  ctx.font = FONTS.mono("700", 9);
   ctx.textAlign = "right";
   ctx.fillText("MUSIC NEVER SOUNDS THE SAME ALONE.", WIDTH - 25, footerY);
   ctx.textAlign = "left";
