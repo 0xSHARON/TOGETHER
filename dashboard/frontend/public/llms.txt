@@ -14,6 +14,9 @@ Together delivers studio-quality music across Discord servers with 14 digital so
 - [Discord Bot Invite](https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands): Direct authorization link to invite Together to your Discord server.
 - [Top.gg Voting Perks](https://top.gg/bot/863496211667484676/vote): Daily vote rewards including double streak XP, priority queueing, and exclusive audio profiles.
 - [Community Support Discord](https://discord.gg/mUdGTs2Dw5): Official support guild for bot troubleshooting, feature updates, and assistance.
+- [About Us & Systems Architecture](https://dash.together.dpdns.org/about): System architecture, 24-bit audio engine specs, and creator credentials.
+- [Contact Technical Support](https://dash.together.dpdns.org/contact): Direct contact desk, response SLA guarantees, and support channels.
+- [GitHub Repository](https://github.com/0xSHARON/TOGETHER): Open-source GPL-3.0 codebase, documentation, and release history.
 - [Terms of Service](https://dash.together.dpdns.org/terms): Usage policies, terms of service agreements, and bot guidelines.
 - [Privacy Policy](https://dash.together.dpdns.org/privacy): Privacy policy, data safety standards, and GDPR compliance disclosures.
 

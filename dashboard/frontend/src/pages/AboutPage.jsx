@@ -169,6 +169,7 @@ export default function AboutPage() {
           <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
           <Link to="/about#editorial-policy" rel="editorial" className="hover:text-brutal-accent">Editorial Policy</Link>
+          <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">GitHub</a>
         </nav>
       </footer>
     </div>

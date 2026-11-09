@@ -20,9 +20,6 @@ const assetTags = [...cssMatches, ...scriptMatches].join('\n    ');
 
 // Shared head resources
 const sharedHeadMeta = `
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="msvalidate.01" content="A86E9F234D5174092E1B9C7F72E84561" />
     <link rel="indexnow" href="/indexnow-key.txt" />
     <meta name="date" content="2026-11-09" />
@@ -91,6 +88,7 @@ const sharedFooter = `
           <a href="/leaderboard">Music Leaderboard</a> |
           <a href="/terms">Terms of Service</a> |
           <a href="/privacy">Privacy Policy</a> |
+          <a href="https://github.com/0xSHARON/TOGETHER" rel="noopener noreferrer" target="_blank">GitHub Repository (GPL-3.0)</a> |
           <a href="https://discord.gg/mUdGTs2Dw5" rel="me noopener noreferrer" target="_blank">Discord Community</a> |
           <a href="https://top.gg/bot/863496211667484676" rel="me noopener noreferrer" target="_blank">Top.gg Bot Profile</a> |
           <a href="https://www.youtube.com/@dpdns" rel="me noopener noreferrer" target="_blank">YouTube Channel</a> |
@@ -1287,6 +1285,8 @@ for (const p of pages) {
       "jobTitle": "Lead Audio Systems Architect",
       "url": "https://dash.together.dpdns.org/about",
       "sameAs": [
+        "https://github.com/0xSHARON",
+        "https://github.com/0xSHARON/TOGETHER",
         "https://discord.gg/mUdGTs2Dw5",
         "https://www.youtube.com/@dpdns",
         "https://twitter.com/together_bot",
@@ -1329,6 +1329,7 @@ for (const p of pages) {
       "url": "https://dash.together.dpdns.org/contact"
     },
     "sameAs": [
+      "https://github.com/0xSHARON/TOGETHER",
       "https://discord.gg/mUdGTs2Dw5",
       "https://top.gg/bot/863496211667484676",
       "https://www.youtube.com/@dpdns",
@@ -1345,6 +1346,9 @@ for (const p of pages) {
   const pageHtml = `<!doctype html>
 <html lang="en" prefix="og: https://ogp.me/ns#">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>${p.title}</title>
     <meta name="title" content="${p.title}" />
     <meta name="description" content="${p.description}" />

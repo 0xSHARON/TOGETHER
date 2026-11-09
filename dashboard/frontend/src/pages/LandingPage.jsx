@@ -850,6 +850,8 @@ export default function LandingPage() {
           <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
           <a href={SUPPORT_SERVER_URL} target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Discord</a>
+          <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">GitHub (GPL-3.0)</a>
+          <a href="https://www.reddit.com/r/TogetherMusicBot/" target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Reddit</a>
           <a href={TOPGG_VOTE_URL} target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Vote Top.gg</a>
         </nav>
 
