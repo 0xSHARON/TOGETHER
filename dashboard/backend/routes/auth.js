@@ -123,19 +123,30 @@ router.get("/callback", async (req, res) => {
   }
 });
 
-// GET /api/auth/me -> Returns current user session
-router.get("/me", authenticateUser, (req, res) => {
-  const isOwner = isBotOwner(req.user);
+// GET /api/auth/me -> Returns current user session (returns { user: null } for guests to avoid console 401s)
+router.get("/me", (req, res) => {
+  const token = req.cookies?.together_token || req.headers?.authorization?.replace(/^Bearer\s+/i, "");
 
-  res.json({
-    user: {
-      id: req.user.id,
-      username: req.user.username,
-      global_name: req.user.global_name,
-      avatar: req.user.avatar,
-      isOwner
-    }
-  });
+  if (!token) {
+    return res.json({ user: null });
+  }
+
+  try {
+    const decoded = jwt.verify(token, config.jwtSecret);
+    const isOwner = isBotOwner(decoded);
+
+    return res.json({
+      user: {
+        id: decoded.id,
+        username: decoded.username,
+        global_name: decoded.global_name,
+        avatar: decoded.avatar,
+        isOwner
+      }
+    });
+  } catch (err) {
+    return res.json({ user: null });
+  }
 });
 
 function computeRealBadges(pref, likedCount) {

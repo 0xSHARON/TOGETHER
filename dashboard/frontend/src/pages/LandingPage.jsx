@@ -128,8 +128,11 @@ export default function LandingPage() {
     }
   });
 
-  // Display ALL filtered commands without arbitrary slice
-  const displayedCmds = filteredCmds;
+  // Display commands with lazy initial window for mobile performance (12 items default)
+  const [cmdLimit, setCmdLimit] = useState(12);
+  const displayedCmds = (activeCategory === 'ALL' && !cmdSearch)
+    ? filteredCmds.slice(0, cmdLimit)
+    : filteredCmds;
 
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono brutal-grid">
@@ -200,7 +203,6 @@ export default function LandingPage() {
               href={TOPGG_VOTE_URL}
               target="_blank"
               rel="nofollow noopener noreferrer"
-              aria-label="Vote for Together on Top.gg"
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-amber-400 text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
             >
               <Star className="w-3.5 h-3.5 fill-black" />
@@ -218,7 +220,6 @@ export default function LandingPage() {
             ) : (
               <a
                 href="/api/auth/login"
-                aria-label="Sign in to Discord Dashboard"
                 className="px-4 py-1.5 bg-brutal-accent text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
               >
                 <span>LOGIN</span>
@@ -516,16 +517,16 @@ export default function LandingPage() {
                   <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
                     24-Bit / 48kHz Lossless
                   </td>
-                  <td className="p-4 text-zinc-400">Standard 128kbps</td>
-                  <td className="p-4 text-zinc-500">64–96kbps</td>
+                  <td className="p-4 text-zinc-300">Standard 128kbps</td>
+                  <td className="p-4 text-zinc-400">64–96kbps</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-bold text-white">3D WebGL Webplayer Visualizer</td>
                   <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
                     Included (50 3D Modes)
                   </td>
-                  <td className="p-4 text-zinc-500">None / Basic 2D</td>
-                  <td className="p-4 text-zinc-500">None</td>
+                  <td className="p-4 text-zinc-400">None / Basic 2D</td>
+                  <td className="p-4 text-zinc-400">None</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-bold text-white">14 DSP Audio Filters (8D, Bass, Nightcore)</td>
@@ -533,7 +534,7 @@ export default function LandingPage() {
                     100% Free & Unlimited
                   </td>
                   <td className="p-4 text-amber-400">Paid / Premium Tier</td>
-                  <td className="p-4 text-zinc-500">None</td>
+                  <td className="p-4 text-zinc-400">None</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-bold text-white">24/7 Channel Locking</td>
@@ -541,7 +542,7 @@ export default function LandingPage() {
                     Free Voter Perk
                   </td>
                   <td className="p-4 text-amber-400">Subscription Only</td>
-                  <td className="p-4 text-zinc-500">Not Available</td>
+                  <td className="p-4 text-zinc-400">Not Available</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-bold text-white">Spotify & SoundCloud Direct Play</td>
@@ -549,15 +550,15 @@ export default function LandingPage() {
                     Native Multi-Platform
                   </td>
                   <td className="p-4 text-emerald-400">Partial / Delayed</td>
-                  <td className="p-4 text-zinc-500">Frequent Blocks</td>
+                  <td className="p-4 text-zinc-400">Frequent Blocks</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-bold text-white">Global Music Leaderboard</td>
                   <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
                     Listen Time & Streaks
                   </td>
-                  <td className="p-4 text-zinc-500">None</td>
-                  <td className="p-4 text-zinc-500">None</td>
+                  <td className="p-4 text-zinc-400">None</td>
+                  <td className="p-4 text-zinc-400">None</td>
                 </tr>
               </tbody>
             </table>
@@ -596,7 +597,6 @@ export default function LandingPage() {
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    aria-label={`Filter by ${cat} commands`}
                     className={`px-3 py-1 font-mono text-xs font-bold uppercase border-2 transition-all flex items-center gap-1.5 ${
                       activeCategory === cat
                         ? 'bg-brutal-accent text-black border-black shadow-brutal-sm'
@@ -606,7 +606,7 @@ export default function LandingPage() {
                     <span>{cat}</span>
                     <span
                       className={`text-[10px] px-1 py-0.2 font-mono ${
-                        activeCategory === cat ? 'bg-black text-brutal-accent font-black' : 'bg-brutal-surface text-zinc-400'
+                        activeCategory === cat ? 'bg-black text-brutal-accent font-black' : 'bg-brutal-surface text-zinc-300'
                       }`}
                     >
                       {categoryCounts[cat] || 0}
@@ -616,17 +616,16 @@ export default function LandingPage() {
               </div>
 
               <div className="relative w-full sm:w-72">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <label htmlFor="command-search-input" className="sr-only">Search Discord Commands</label>
                 <input
                   id="command-search-input"
                   name="command-search"
                   type="text"
-                  aria-label="Search Discord bot commands by keyword or name"
                   placeholder="Search commands (e.g. play, 247, loop)..."
                   value={cmdSearch}
                   onChange={(e) => setCmdSearch(e.target.value)}
-                  className="w-full bg-brutal-bg border-2 border-brutal-border pl-9 pr-3 py-1.5 font-mono text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-brutal-accent"
+                  className="w-full bg-brutal-bg border-2 border-brutal-border pl-9 pr-3 py-1.5 font-mono text-xs text-white placeholder-zinc-400 focus:outline-none focus:border-brutal-accent"
                 />
               </div>
             </div>
@@ -653,7 +652,7 @@ export default function LandingPage() {
           {/* Command Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {displayedCmds.length === 0 && (
-              <div className="col-span-full border-2 border-dashed border-zinc-800 p-8 text-center font-mono text-xs text-zinc-500">
+              <div className="col-span-full border-2 border-dashed border-zinc-800 p-8 text-center font-mono text-xs text-zinc-400">
                 No public commands found matching "{cmdSearch}".
               </div>
             )}
@@ -668,22 +667,22 @@ export default function LandingPage() {
                       <span className="font-display font-black text-lg text-white group-hover:text-brutal-accent transition-colors">
                         /{cmd.name}
                       </span>
-                      <span className="font-mono text-xs text-zinc-500">
+                      <span className="font-mono text-xs text-zinc-400">
                         .{cmd.name}
                       </span>
                     </div>
-                    <span className="font-mono text-[9px] bg-black text-zinc-400 px-2 py-0.5 border border-zinc-800 uppercase font-bold">
+                    <span className="font-mono text-[9px] bg-black text-zinc-300 px-2 py-0.5 border border-zinc-800 uppercase font-bold">
                       {cmd.category}
                     </span>
                   </div>
 
-                  <p className="font-mono text-xs text-zinc-400 line-clamp-2">
+                  <p className="font-mono text-xs text-zinc-300 line-clamp-2">
                     {cmd.description}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-zinc-800 flex items-center justify-between text-[11px] font-mono text-zinc-500">
-                  <span>Usage: <code className="text-zinc-300">.{cmd.name}</code></span>
+                <div className="mt-4 pt-3 border-t border-zinc-800 flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                  <span>Usage: <code className="text-zinc-200">.{cmd.name}</code></span>
                   {cmd.voterOnly && (
                     <span className="text-amber-400 text-[10px] font-bold flex items-center gap-1">
                       <Star className="w-3 h-3 fill-amber-400" /> VOTER PERK
@@ -692,6 +691,18 @@ export default function LandingPage() {
                 </div>
               </div>
             ))}
+
+            {activeCategory === 'ALL' && !cmdSearch && filteredCmds.length > cmdLimit && (
+              <div className="col-span-full text-center pt-4">
+                <button
+                  type="button"
+                  onClick={() => setCmdLimit(filteredCmds.length)}
+                  className="px-6 py-3 bg-zinc-900 text-brutal-accent border-2 border-brutal-border hover:border-brutal-accent font-mono text-xs font-bold uppercase transition-all shadow-brutal-sm"
+                >
+                  SHOW ALL {filteredCmds.length} COMMANDS (+{filteredCmds.length - cmdLimit})
+                </button>
+              </div>
+            )}
           </div>
         </section>
 
@@ -759,7 +770,6 @@ export default function LandingPage() {
                     href={TOPGG_VOTE_URL}
                     target="_blank"
                     rel="nofollow noopener noreferrer"
-                    aria-label="Vote on Top.gg"
                     className="px-4 py-1.5 bg-amber-400 text-black border-2 border-black font-bold text-xs uppercase shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1.5"
                   >
                     <Star className="w-3.5 h-3.5 fill-black" />
@@ -769,7 +779,6 @@ export default function LandingPage() {
                     href={SUPPORT_SERVER_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="Join Community Discord"
                     className="px-4 py-1.5 bg-brutal-secondary text-white border-2 border-brutal-border font-bold text-xs uppercase hover:border-white transition-all flex items-center gap-1.5"
                   >
                     <span>COMMUNITY DISCORD</span>
@@ -852,7 +861,7 @@ export default function LandingPage() {
             </picture>
             <div>
               <div className="text-white font-bold">TOGETHER // AUDIO OS v2.5.0</div>
-              <div className="text-[10px] text-zinc-500">GPL-3.0 Open Architecture • High-Performance Sound Engine</div>
+              <div className="text-[10px] text-zinc-400">GPL-3.0 Open Architecture • High-Performance Sound Engine</div>
             </div>
           </div>
           <div className="trust-signals flex flex-wrap gap-2 text-[10px]" aria-label="Trust and Security Badges">
@@ -880,7 +889,7 @@ export default function LandingPage() {
         </nav>
 
         <div className="text-center md:text-right">
-          <address className="company-address not-italic text-[10px] text-zinc-500">
+          <address className="company-address not-italic text-[10px] text-zinc-400">
             Together Audio Systems • 100 Innovation Way, Suite 400, San Francisco, CA 94105, United States
           </address>
           <div className="text-[11px] mt-0.5">Author Byline: <strong className="text-white">KAJU🦋</strong> (Lead Systems Architect)</div>
