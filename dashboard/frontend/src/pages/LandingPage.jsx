@@ -84,8 +84,7 @@ export default function LandingPage() {
   };
 
   useEffect(() => {
-    // Defer dynamic API calls slightly to let initial paint and LCP complete unhindered
-    const timer = setTimeout(() => {
+    const fetchTelemetry = () => {
       axios.get('/api/overview')
         .then((res) => {
           if (res.data?.bot) {
@@ -109,9 +108,15 @@ export default function LandingPage() {
           }
         })
         .catch(() => {});
-    }, 1200);
+    };
 
-    return () => clearTimeout(timer);
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const handle = window.requestIdleCallback(fetchTelemetry, { timeout: 4500 });
+      return () => window.cancelIdleCallback(handle);
+    } else {
+      const timer = setTimeout(fetchTelemetry, 3500);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Filter commands by active category and search (Excluding all owner commands)
