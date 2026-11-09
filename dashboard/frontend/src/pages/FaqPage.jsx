@@ -19,16 +19,19 @@ import {
   ChevronRight,
   Sparkles,
   Volume2,
-  LifeBuoy
+  LifeBuoy,
+  Star
 } from 'lucide-react';
 import SEO from '../components/SEO';
 
 const BOT_INVITE_URL = "https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands";
 const SUPPORT_SERVER_URL = "https://discord.gg/mUdGTs2Dw5";
 const WEBPLAYER_URL = "https://together.dpdns.org/visualizer/";
+const TOPGG_VOTE_URL = "https://top.gg/bot/863496211667484676/vote";
 
 const DOC_CATEGORIES = [
   { id: 'quickstart', label: 'Quickstart & Adding Bot', icon: Zap },
+  { id: 'voting-perks', label: 'Voting & Voter Commands', icon: Star },
   { id: 'audio-engine', label: '24-Bit Lossless Audio', icon: Volume2 },
   { id: 'webplayer', label: '3D WebGL Webplayer', icon: Sparkles },
   { id: 'dsp-filters', label: '14 DSP Sound Filters', icon: Sliders },
@@ -63,6 +66,42 @@ const FAQ_SECTIONS = [
         id: 'is-together-free',
         question: 'Is Together free to use?',
         answer: 'Yes! Together provides 100% free access to all core audio features: 24-bit lossless transcoding, 14 studio DSP filters, real-time dashboard controls, and voter perks like 24/7 voice channel persistence without paid subscriptions.'
+      }
+    ]
+  },
+  {
+    category: 'voting-perks',
+    categoryLabel: 'Voting & Top.gg Voter Commands',
+    items: [
+      {
+        id: 'how-to-vote',
+        question: 'How do I vote and check my vote status?',
+        answer: 'You can check your current vote status and remaining perk duration directly inside Discord using the /vote or .vote command. If your vote has expired, the command provides an interactive button that opens the official Top.gg voting page.',
+        command: '/vote',
+        commandLabel: 'Check Vote Status in Discord'
+      },
+      {
+        id: 'vote-command-syntax',
+        question: 'What are the aliases for the vote command?',
+        answer: 'You can use /vote, .vote, .voted, or .vo. You can also inspect another user\'s vote status by passing their mention or user ID (e.g. /vote user: @username or .vote <userID>).',
+        command: '.vote @user',
+        commandLabel: 'Inspect User Vote Status'
+      },
+      {
+        id: 'voter-exclusive-perks',
+        question: 'What exclusive commands are unlocked by voting?',
+        answer: 'Voting on Top.gg instantly unlocks premium features for 12 hours without any payments:\n\n• /247 (.247): 24/7 Channel Locking to keep the bot permanently in your voice channel.\n• /autoplay (.autoplay / .ap): Algorithmic song recommendation that keeps music playing endlessly when the queue ends.\n• /lyrics (.lyrics / .ly): Real-time interactive lyrics search and display.\n• Leaderboard Streaks: Earn bonus listening streaks and verified voter indicators.',
+        callout: {
+          type: 'tip',
+          text: 'Only one person in the voice channel needs an active vote for the server to benefit from 24/7 channel locking and Autoplay!'
+        }
+      },
+      {
+        id: 'vote-refresh-interval',
+        question: 'How long does a vote last and when can I vote again?',
+        answer: 'Top.gg allows users to vote once every 12 hours. Every time you cast a vote, all voter commands remain active for the full 12-hour duration. On Top.gg weekends, votes count double toward community milestones.',
+        command: 'https://top.gg/bot/863496211667484676/vote',
+        commandLabel: 'Direct Top.gg Bot Vote Portal'
       }
     ]
   },
@@ -331,7 +370,7 @@ export default function FaqPage() {
                 CATEGORIES
               </span>
               <span className="text-[10px] bg-black text-brutal-accent px-1.5 py-0.5 border border-zinc-800">
-                8 TOPICS
+                {DOC_CATEGORIES.length} TOPICS
               </span>
             </div>
 
@@ -365,6 +404,15 @@ export default function FaqPage() {
             </nav>
 
             <div className="pt-4 border-t-2 border-brutal-border space-y-2">
+              <a
+                href={TOPGG_VOTE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2 bg-amber-400 hover:bg-amber-300 border-2 border-black text-center text-xs font-black uppercase transition-all flex items-center justify-center gap-2 text-black shadow-brutal-sm"
+              >
+                <Star className="w-3.5 h-3.5 fill-black" />
+                <span>VOTE ON TOP.GG</span>
+              </a>
               <a
                 href={SUPPORT_SERVER_URL}
                 target="_blank"
@@ -516,3 +564,4 @@ export default function FaqPage() {
     </div>
   );
 }
+
