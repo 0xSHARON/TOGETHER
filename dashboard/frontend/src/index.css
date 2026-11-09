@@ -60,8 +60,4 @@ body {
   );
 }
 
-/* Performance: Defer offscreen layout and rendering calculations */
-.content-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 450px;
-}
+

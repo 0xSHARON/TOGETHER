@@ -391,7 +391,7 @@ export default function LandingPage() {
         </div>
 
         {/* Feature Bento Grid */}
-        <section id="features" className="content-auto px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto">
+        <section id="features" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto">
           <div className="mb-12">
             <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
               ENGINEERING EXCELLENCE
@@ -504,7 +504,7 @@ export default function LandingPage() {
         </section>
 
         {/* Comparison Matrix: Together vs Competitors */}
-        <section id="benchmark" className="content-auto px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
+        <section id="benchmark" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
           <div>
             <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
               HEAD-TO-HEAD BENCHMARK
@@ -584,7 +584,7 @@ export default function LandingPage() {
         </section>
 
         {/* Commands Section */}
-        <section id="commands" className="content-auto px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
+        <section id="commands" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
@@ -725,7 +725,7 @@ export default function LandingPage() {
         </section>
 
         {/* Creator & Lead Architect Showcase (E-E-A-T & Authority) */}
-        <section id="creator" className="content-auto px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-6">
+        <section id="creator" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-6">
           <div>
             <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
               CREATOR & LEAD ARCHITECT
@@ -857,7 +857,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer & E-E-A-T Links */}
-      <footer id="contact" className="content-auto px-4 md:px-8 py-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-brutal-muted border-t-2 border-brutal-border">
+      <footer id="contact" className="px-4 md:px-8 py-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-brutal-muted border-t-2 border-brutal-border">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <picture>

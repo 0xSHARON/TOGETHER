@@ -116,10 +116,6 @@ const sharedCss = `
         font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
         line-height: 1.6;
       }
-      .content-auto {
-        content-visibility: auto;
-        contain-intrinsic-size: 0 450px;
-      }
       .skip-link {
         position: absolute;
         top: -40px;
@@ -141,6 +137,7 @@ const sharedCss = `
         background: rgba(9, 10, 15, 0.95);
       }
       .brand { display: flex; align-items: center; gap: 12px; }
+      header.site-header .brand img { width: 36px; height: 36px; aspect-ratio: 1/1; }
       .brand-title { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
       header nav a {
         color: var(--color-text-muted);
