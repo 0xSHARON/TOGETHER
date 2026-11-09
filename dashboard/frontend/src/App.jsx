@@ -24,9 +24,11 @@ export default function App() {
         <Routes>
           {/* Public Standalone Landing Page & Policies */}
           <Route path="/" element={<LandingPage />} />
+          <Route path="/about" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/docs" element={<Navigate to="/faq" replace />} />
+          <Route path="/contact" element={<Navigate to="/faq#contact" replace />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
 

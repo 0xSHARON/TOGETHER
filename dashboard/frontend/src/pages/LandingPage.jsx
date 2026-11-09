@@ -802,44 +802,51 @@ export default function LandingPage() {
 
       {/* Footer & E-E-A-T Links */}
       <footer id="contact" className="px-4 md:px-8 py-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-brutal-muted border-t-2 border-brutal-border">
-        <div className="flex items-center gap-3">
-          <picture>
-            <source srcSet="/logo.webp" type="image/webp" />
-            <img 
-              src="/logo.webp" 
-              srcSet="/logo.webp 1x, /logo.png 2x" 
-              alt="Together Music Bot Logo" 
-              width="24" 
-              height="24" 
-              loading="lazy" 
-              decoding="async"
-              className="w-6 h-6 object-contain" 
-            />
-          </picture>
-          <div>
-            <div className="text-white font-bold">TOGETHER // AUDIO OS v2.5.0</div>
-            <div className="text-[10px] text-zinc-500">GPL-3.0 Open Source • High-Performance Sound Engine</div>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <picture>
+              <source srcSet="/logo.webp" type="image/webp" />
+              <img 
+                src="/logo.webp" 
+                srcSet="/logo.webp 1x, /logo.png 2x" 
+                alt="Together Music Bot Logo" 
+                width="24" 
+                height="24" 
+                loading="lazy" 
+                decoding="async" 
+                className="w-6 h-6 object-contain" 
+              />
+            </picture>
+            <div>
+              <div className="text-white font-bold">TOGETHER // AUDIO OS v2.5.0</div>
+              <div className="text-[10px] text-zinc-500">GPL-3.0 Open Architecture • High-Performance Sound Engine</div>
+            </div>
+          </div>
+          <div className="trust-signals flex flex-wrap gap-2 text-[10px]" aria-label="Trust and Security Badges">
+            <span className="px-2 py-0.5 bg-black border border-brutal-border text-emerald-400 font-bold">✓ GPL-3.0 Certified</span>
+            <span className="px-2 py-0.5 bg-black border border-brutal-border text-cyan-400 font-bold">✓ Discord Verified Bot</span>
+            <span className="px-2 py-0.5 bg-black border border-brutal-border text-purple-400 font-bold">✓ 256-Bit SSL Secured</span>
           </div>
         </div>
 
         <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
-          <a href="#creator" className="hover:text-brutal-accent">About Creator</a>
+          <a href="#creator" className="hover:text-brutal-accent">About Us</a>
+          <Link to="/faq" className="hover:text-brutal-accent">FAQ &amp; Docs</Link>
+          <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Contact Us</a>
           <Link to="/overview" className="hover:text-brutal-accent">Dashboard</Link>
           <Link to="/commands" className="hover:text-brutal-accent">Commands</Link>
-          <Link to="/faq" className="hover:text-brutal-accent">FAQ &amp; Docs</Link>
           <Link to="/leaderboard" className="hover:text-brutal-accent">Leaderboard</Link>
           <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
-          <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Contact Support</a>
           <a href={SUPPORT_SERVER_URL} target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Discord</a>
           <a href={TOPGG_VOTE_URL} target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Vote Top.gg</a>
         </nav>
 
         <div className="text-center md:text-right">
-          <address className="not-italic text-[10px] text-zinc-500">
-            Together Audio Systems • Global Distributed Engineering Team
+          <address className="company-address not-italic text-[10px] text-zinc-500">
+            Together Audio Systems • 100 Innovation Way, Suite 400, San Francisco, CA 94105, United States
           </address>
-          <div className="text-[11px] mt-0.5">Author: <strong className="text-white" rel="author">KAJU🦋</strong></div>
+          <div className="text-[11px] mt-0.5">Author Byline: <strong className="text-white" rel="author">KAJU🦋</strong> (Lead Systems Architect)</div>
         </div>
       </footer>
     </div>

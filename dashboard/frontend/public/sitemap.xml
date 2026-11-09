@@ -52,6 +52,22 @@
     <priority>0.85</priority>
   </url>
 
+  <!-- About Us -->
+  <url>
+    <loc>https://dash.together.dpdns.org/about</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Contact -->
+  <url>
+    <loc>https://dash.together.dpdns.org/contact</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Terms of Service -->
   <url>
     <loc>https://dash.together.dpdns.org/terms</loc>

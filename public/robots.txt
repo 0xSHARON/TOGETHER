@@ -7,9 +7,12 @@
 # ── General Search Engine Crawlers ──
 User-agent: *
 Allow: /
+Allow: /about
+Allow: /contact
 Allow: /login
 Allow: /commands
 Allow: /faq
+Allow: /docs
 Allow: /leaderboard
 Allow: /terms
 Allow: /privacy
@@ -17,6 +20,7 @@ Allow: /logo.png
 Allow: /logo.webp
 Allow: /favicon.svg
 Allow: /llms.txt
+Allow: /sitemap.xml
 Disallow: /api/
 Disallow: /owner
 Disallow: /settings
