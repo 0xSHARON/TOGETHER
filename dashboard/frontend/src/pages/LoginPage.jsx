@@ -41,8 +41,8 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text flex items-center justify-center p-4 brutal-grid">
       <SEO 
-        title="Login — TOGETHER Discord Music Bot Dashboard"
-        description="Authorize with Discord to access the TOGETHER Discord music bot dashboard, control 3D webplayer streaming, manage 24/7 channels, and tune audio settings."
+        title="Login — Together Music Bot Dashboard"
+        description="Authorize with Discord to access the Together Music Bot dashboard, control 3D webplayer streaming, manage 24/7 channels, and tune server audio."
         canonical="https://dash.together.dpdns.org/login"
       />
       <div className="max-w-md w-full border-2 border-brutal-border bg-brutal-surface shadow-brutal relative overflow-hidden">

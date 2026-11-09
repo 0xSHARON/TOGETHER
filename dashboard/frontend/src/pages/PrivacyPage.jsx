@@ -7,8 +7,8 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono p-4 md:p-8 flex flex-col justify-between selection:bg-brutal-accent selection:text-black">
       <SEO 
-        title="Privacy Policy — TOGETHER Discord Music Bot"
-        description="Privacy policy and data retention practices for TOGETHER Discord music bot. Learn how telemetry, server configs, and Discord IDs are securely processed."
+        title="Privacy Policy — Together Music Bot"
+        description="Privacy policy and data retention practices for Together Music Bot. Learn how telemetry, server configs, and Discord IDs are securely processed."
         canonical="https://dash.together.dpdns.org/privacy"
       />
       {/* Top Navbar */}

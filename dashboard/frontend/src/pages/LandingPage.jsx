@@ -109,8 +109,8 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono brutal-grid">
       <SEO 
-        title="TOGETHER — #1 Discord Music Bot & Lossless Webplayer"
-        description="Top-rated Discord music bot featuring 24-bit lossless opus audio, real-time 3D webplayer visualizer, 24/7 uptime, and multi-source streaming. Add to Discord now."
+        title="Together Music Bot — #1 Best Discord Music Bot & Lossless Webplayer"
+        description="Together Music Bot is the premier high-fidelity Discord music bot featuring 24-bit lossless audio, 3D webplayer visualizer, 24/7 uptime, 14 DSP filters, and Spotify/SoundCloud streaming."
         canonical="https://dash.together.dpdns.org/"
       />
       {/* Top Navbar */}
@@ -186,13 +186,12 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8 space-y-6">
               <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl leading-none uppercase tracking-tight text-white">
-                THE NEXT GENERATION <br />
-                <span className="text-brutal-accent underline decoration-4 decoration-black">OF DISCORD MUSIC BOT.</span>
+                TOGETHER MUSIC BOT <br />
+                <span className="text-brutal-accent underline decoration-4 decoration-black">#1 DISCORD MUSIC STREAMER.</span>
               </h1>
 
               <p className="font-mono text-sm sm:text-base text-zinc-300 max-w-2xl leading-relaxed">
-                Experience ultra-low latency, 24-bit lossless opus audio streaming across your Discord servers with TOGETHER, the premier Discord music bot and real-time 3D WebGL webplayer. 
-                Featuring 14 DSP studio audio filters, zero dropouts, and 24/7 channel locking.
+                Experience ultra-low latency, 24-bit lossless opus audio with <strong className="text-white">Together Music Bot</strong>. The premier Discord music bot featuring an interactive real-time 3D WebGL webplayer visualizer, 14 DSP studio audio filters, zero dropouts, 24/7 channel locking, and full Spotify &amp; SoundCloud streaming.
               </p>
 
               {/* Action Buttons */}
@@ -411,6 +410,93 @@ export default function LandingPage() {
               <span className="text-[10px] text-purple-400 font-black uppercase tracking-wider">PREFIX & SLASH INTEGRATED</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Comparison Matrix: Together Music Bot vs Competitors */}
+      <section id="compare" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
+        <div>
+          <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
+            HEAD-TO-HEAD BENCHMARK
+          </span>
+          <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
+            WHY TOGETHER MUSIC BOT OUTPERFORMS.
+          </h2>
+          <p className="font-mono text-xs text-zinc-400 mt-2 max-w-xl">
+            See how Together Music Bot compares against other popular Discord music bots like Jockie Music, Musico, and FlaviBot.
+          </p>
+        </div>
+
+        <div className="overflow-x-auto border-2 border-brutal-border bg-brutal-surface shadow-brutal">
+          <table className="w-full text-left font-mono text-xs">
+            <thead className="bg-black border-b-2 border-brutal-border text-[11px] text-zinc-300 uppercase">
+              <tr>
+                <th className="p-4">Feature / Capability</th>
+                <th className="p-4 text-brutal-accent bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
+                  Together Music Bot
+                </th>
+                <th className="p-4 text-zinc-400">Jockie Music</th>
+                <th className="p-4 text-zinc-400">Musico</th>
+                <th className="p-4 text-zinc-400">Ordinary Bots</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800">
+              <tr>
+                <td className="p-4 font-bold text-white">Audio Quality & Bitrate</td>
+                <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
+                  24-Bit / 48kHz Lossless
+                </td>
+                <td className="p-4 text-zinc-400">Standard 128kbps</td>
+                <td className="p-4 text-zinc-400">Standard 128kbps</td>
+                <td className="p-4 text-zinc-500">64–96kbps</td>
+              </tr>
+              <tr>
+                <td className="p-4 font-bold text-white">3D WebGL Webplayer Visualizer</td>
+                <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
+                  Included (50 3D Modes)
+                </td>
+                <td className="p-4 text-zinc-500">None</td>
+                <td className="p-4 text-zinc-400">Basic 2D Web Player</td>
+                <td className="p-4 text-zinc-500">None</td>
+              </tr>
+              <tr>
+                <td className="p-4 font-bold text-white">14 DSP Audio Filters (8D, Bass, Nightcore)</td>
+                <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
+                  100% Free & Unlimited
+                </td>
+                <td className="p-4 text-zinc-400">Basic Filters</td>
+                <td className="p-4 text-amber-400">Premium Locked</td>
+                <td className="p-4 text-zinc-500">None / Paid</td>
+              </tr>
+              <tr>
+                <td className="p-4 font-bold text-white">24/7 Channel Locking</td>
+                <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
+                  Free Voter Perk
+                </td>
+                <td className="p-4 text-amber-400">Paid Tier Only</td>
+                <td className="p-4 text-amber-400">$4.99/mo Tier</td>
+                <td className="p-4 text-zinc-500">Subscription Only</td>
+              </tr>
+              <tr>
+                <td className="p-4 font-bold text-white">Spotify & SoundCloud Direct Play</td>
+                <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
+                  Native Multi-Platform
+                </td>
+                <td className="p-4 text-emerald-400">Supported</td>
+                <td className="p-4 text-emerald-400">Supported</td>
+                <td className="p-4 text-zinc-500">Frequent Blocks</td>
+              </tr>
+              <tr>
+                <td className="p-4 font-bold text-white">Global Music Leaderboard</td>
+                <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
+                  Listen Time & Streaks
+                </td>
+                <td className="p-4 text-zinc-500">None</td>
+                <td className="p-4 text-zinc-500">None</td>
+                <td className="p-4 text-zinc-500">None</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 

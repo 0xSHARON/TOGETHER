@@ -1,6 +1,6 @@
-# TOGETHER — Discord Music Bot & Web Dashboard
+# Together Music Bot — The Best Discord Music Bot & 3D Webplayer
 
-> TOGETHER is a next-generation high-fidelity Discord music bot and web dashboard engineered for 24-bit lossless Opus audio streaming, real-time 3D WebGL webplayer visualization, 24/7 channel locking, and centralized server control.
+> Together Music Bot is a next-generation high-fidelity Discord music bot and web dashboard engineered for 24-bit lossless Opus audio streaming, real-time 3D WebGL webplayer visualization, 24/7 channel locking, and centralized server control.
 
 - **Web Dashboard**: https://dash.together.dpdns.org/
 - **3D Webplayer Visualizer**: https://together.dpdns.org/visualizer/
@@ -13,7 +13,7 @@
 
 ## 1. Web Dashboard Structure (`/dashboard`)
 
-The TOGETHER dashboard provides an interface for Discord community owners, DJs, and listeners:
+The Together Music Bot dashboard provides an interface for Discord community owners, DJs, and listeners:
 
 ### Public Pages
 - **Landing Page (`/`)**: Displays live cluster telemetry (verified servers, total listeners, gateway ping), engineering highlights, interactive command search, FAQ section, and creator profile.
@@ -69,3 +69,15 @@ The TOGETHER dashboard provides an interface for Discord community owners, DJs, 
 - `POST /api/config/:guildId/247`: Toggle 24/7 voice persistence.
 - `GET /api/xp/leaderboard`: Paginated leaderboard rankings by listening time, songs, or streak.
 - `GET /api/auth/profile`: Discord user profile data and dynamic canvas banner link.
+
+---
+
+## 5. Competitor Comparisons & Benchmarks
+
+Together Music Bot is designed as a direct high-fidelity replacement for older Discord music bots:
+
+- **vs. Jockie Music**: Together provides a real-time interactive 3D WebGL soundstage webplayer (over 50 modes), 24-bit studio Opus transcoding, and free 24/7 channel locking without complex multi-bot setup tiers.
+- **vs. Musico**: Together delivers 14 DSP studio audio filters (8D, Bass Boost, Nightcore, Vaporwave) completely free without paywall gates or monthly premium subscriptions.
+- **vs. FlaviBot**: Together focuses purely on high-fidelity audio excellence, sub-30ms latency, and synchronized listening leaderboards without bloat.
+- **vs. LunaBot**: Together offers full interactive dashboard control, web audio streaming, and seamless Spotify/SoundCloud/YouTube integration with zero audio dropouts.
+

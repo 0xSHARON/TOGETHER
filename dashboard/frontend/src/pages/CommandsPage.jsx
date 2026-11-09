@@ -110,8 +110,8 @@ export default function CommandsPage() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       <SEO 
-        title="Commands — TOGETHER Discord Music Bot & Webplayer"
-        description="Browse all 69+ Discord music bot commands for TOGETHER. Full slash and prefix syntax for playing music, 14 DSP audio filters, 24/7 playback, and playlists."
+        title="Commands — Together Music Bot & Webplayer"
+        description="Browse all 69+ Together Music Bot commands for Discord. Full slash and prefix syntax for playing music, 14 DSP audio filters, 24/7 playback, and playlists."
         canonical="https://dash.together.dpdns.org/commands"
       />
       {/* Brutalist Header Banner */}

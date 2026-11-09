@@ -5,8 +5,8 @@ import { useEffect } from 'react';
  * Ensures compliance with Screaming Frog SEO Spider & Search Engine indexation.
  */
 export default function SEO({
-  title = 'TOGETHER — #1 Discord Music Bot & Lossless Webplayer',
-  description = 'Top-rated Discord music bot featuring 24-bit lossless opus audio, real-time 3D webplayer visualizer, 24/7 uptime, and multi-source streaming.',
+  title = 'Together Music Bot — #1 Best Discord Music Bot & Lossless Webplayer',
+  description = 'Together Music Bot is the premier high-fidelity Discord music bot featuring 24-bit lossless opus audio, real-time 3D webplayer visualizer, 24/7 uptime, and multi-source streaming.',
   canonical = 'https://dash.together.dpdns.org/',
   noindex = false,
   image = 'https://dash.together.dpdns.org/logo.png'

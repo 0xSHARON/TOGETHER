@@ -7,8 +7,8 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono p-4 md:p-8 flex flex-col justify-between selection:bg-brutal-accent selection:text-black">
       <SEO 
-        title="Terms of Service — TOGETHER Discord Music Bot"
-        description="Official Terms of Service for TOGETHER Discord music bot and web dashboard. Transparent audio bot usage policies and community guidelines."
+        title="Terms of Service — Together Music Bot"
+        description="Official Terms of Service for Together Music Bot and web dashboard. Transparent audio bot usage policies and community guidelines."
         canonical="https://dash.together.dpdns.org/terms"
       />
       {/* Top Navbar */}

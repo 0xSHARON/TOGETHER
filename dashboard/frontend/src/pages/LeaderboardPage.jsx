@@ -111,8 +111,8 @@ export default function LeaderboardPage() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <SEO 
-        title="Leaderboard — TOGETHER Discord Music Bot"
-        description="Track live global and server music listening leaderboards for TOGETHER Discord music bot. View hours listened, streak rankings, and top users."
+        title="Leaderboard — Together Music Bot"
+        description="Track live global and server music listening leaderboards for Together Music Bot. View hours listened, streak rankings, and top community listeners."
         canonical="https://dash.together.dpdns.org/leaderboard"
       />
       {/* Header Banner */}
