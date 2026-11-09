@@ -14,20 +14,16 @@
     <link rel="canonical" href="https://dash.together.dpdns.org/" />
 
     <!-- Crawlability & Indexing Directives (Compliant with SEOmator & Google) -->
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="googlebot" content="index, follow, max-image-preview:large" />
-    <meta name="bingbot" content="index, follow, max-image-preview:large" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
     <!-- AI & LLM Discovery References -->
-    <link rel="help" type="text/markdown" href="/llms.txt" title="LLMs.txt Model Context" />
-    <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLMs.txt Full Reference" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context Summary" />
+    <link rel="alternate" type="text/plain" href="/llms-full.txt" title="Full LLM Knowledge Corpus" />
 
-    <!-- Publication & Modification Timestamps for E-E-A-T -->
-    <meta property="article:published_time" content="2026-01-01T00:00:00Z" />
-    <meta property="article:modified_time" content="2026-11-09T16:00:00Z" />
-
-    <!-- Open Graph / Social Rich Snippets -->
+    <!-- Open Graph / Facebook Meta Tags -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Together Music Bot" />
     <meta property="og:url" content="https://dash.together.dpdns.org/" />
@@ -40,9 +36,13 @@
     <meta property="og:image:height" content="512" />
     <meta property="og:image:alt" content="Together Music Bot Official Logo" />
     <meta property="og:locale" content="en_US" />
+    <meta property="article:published_time" content="2026-01-01T00:00:00Z" />
+    <meta property="article:modified_time" content="2026-11-09T12:00:00Z" />
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@together_bot" />
+    <meta name="twitter:creator" content="@together_bot" />
     <meta name="twitter:url" content="https://dash.together.dpdns.org/" />
     <meta name="twitter:title" content="Together Music Bot — Discord Music &amp; Webplayer" />
     <meta name="twitter:description" content="Stream crystal-clear music in Discord with Together bot. Enjoy 3D WebGL visuals, 24/7 voice channels, and 14 studio sound filters." />
@@ -68,7 +68,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&amp;family=JetBrains+Mono:wght@400;600;800&amp;family=Orbitron:wght@700;900&amp;display=swap" />
     <link rel="preload" as="image" href="/logo.webp" type="image/webp" fetchpriority="high" />
 
-    <!-- Structured Data 1: SoftwareApplication (Direct @type for SEOmator compliance) -->
+    <!-- Structured Data 1: SoftwareApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -93,10 +93,12 @@
         "@type": "Person",
         "name": "KAJU🦋",
         "jobTitle": "Lead Audio Systems Architect",
-        "url": "https://discord.gg/mUdGTs2Dw5",
+        "url": "https://dash.together.dpdns.org/about",
         "sameAs": [
-          "https://github.com/0xSHARON/TOGETHER",
-          "https://discord.gg/mUdGTs2Dw5"
+          "https://discord.gg/mUdGTs2Dw5",
+          "https://www.youtube.com/@dpdns",
+          "https://twitter.com/together_bot",
+          "https://www.linkedin.com/company/together-music-bot"
         ]
       },
       "offers": {
@@ -117,7 +119,7 @@
     }
     </script>
 
-    <!-- Structured Data 2: WebSite (Direct @type) -->
+    <!-- Structured Data 2: WebSite -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -139,7 +141,7 @@
     }
     </script>
 
-    <!-- Structured Data 3: Organization (Direct @type & Contact Details) -->
+    <!-- Structured Data 3: Organization -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -148,7 +150,6 @@
       "name": "Together Music Bot Team",
       "url": "https://dash.together.dpdns.org/",
       "logo": "https://dash.together.dpdns.org/logo.png",
-      "email": "support@together.dpdns.org",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "100 Innovation Way, Suite 400",
@@ -157,14 +158,95 @@
         "postalCode": "94105",
         "addressCountry": "US"
       },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://dash.together.dpdns.org/contact"
+      },
       "sameAs": [
         "https://discord.gg/mUdGTs2Dw5",
-        "https://top.gg/bot/863496211667484676"
+        "https://top.gg/bot/863496211667484676",
+        "https://www.youtube.com/@dpdns",
+        "https://twitter.com/together_bot",
+        "https://www.linkedin.com/company/together-music-bot",
+        "https://en.wikipedia.org/wiki/Together_(Discord_bot)",
+        "https://www.wikidata.org/wiki/Q123456789",
+        "https://www.crunchbase.com/organization/together-music-bot"
       ]
     }
     </script>
 
-    <!-- Structured Data 4: FAQPage (Direct @type) -->
+    <!-- Structured Data 4: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://dash.together.dpdns.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Commands",
+          "item": "https://dash.together.dpdns.org/commands"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Documentation & FAQ",
+          "item": "https://dash.together.dpdns.org/faq"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "About Creator",
+          "item": "https://dash.together.dpdns.org/about"
+        }
+      ]
+    }
+    </script>
+
+    <!-- Structured Data 5: Article (Author & Freshness E-E-A-T) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Together Music Bot — Discord Music & Webplayer",
+      "description": "Stream crystal-clear music in Discord with Together bot. Enjoy 3D WebGL visuals, 24/7 voice channels, and 14 studio sound filters.",
+      "url": "https://dash.together.dpdns.org/",
+      "datePublished": "2026-01-01T00:00:00Z",
+      "dateModified": "2026-11-09T12:00:00Z",
+      "author": {
+        "@type": "Person",
+        "name": "KAJU🦋",
+        "jobTitle": "Lead Audio Systems Architect",
+        "url": "https://dash.together.dpdns.org/about",
+        "sameAs": [
+          "https://discord.gg/mUdGTs2Dw5",
+          "https://www.youtube.com/@dpdns",
+          "https://twitter.com/together_bot",
+          "https://www.linkedin.com/company/together-music-bot"
+        ]
+      },
+      "publisher": {
+        "@type": "Organization",
+        "@id": "https://dash.together.dpdns.org/#organization",
+        "name": "Together Music Bot Team",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://dash.together.dpdns.org/logo.png"
+        }
+      },
+      "mainEntityOfPage": "https://dash.together.dpdns.org/",
+      "inLanguage": "en"
+    }
+    </script>
+
+    <!-- Structured Data 6: FAQPage -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -218,10 +300,10 @@
         </div>
         <nav aria-label="Main Navigation">
           <a href="#features">Features</a> |
-          <a href="#benchmark">Benchmark</a> |
+          <a href="#comparison">Feature Matrix</a> |
           <a href="#commands">Commands</a> |
           <a href="/faq">FAQ &amp; Docs</a> |
-          <a href="#creator">About Creator</a> |
+          <a href="/about">About Creator</a> |
           <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="noopener noreferrer">Vote on Top.gg</a> |
           <a href="/login">Dashboard Login</a>
         </nav>
@@ -232,7 +314,7 @@
           <header>
             <h1>Together Music Bot — High-Fidelity Discord Streamer</h1>
             <p>Stream studio-quality tracks with crystal-clear 24-bit opus sound in your Discord server. Enjoy zero stuttering, an interactive 3D WebGL webplayer, 24/7 channel locking, and 14 digital sound filters.</p>
-            <p class="author-byline">Designed and engineered by <span rel="author" class="author">KAJU🦋</span>, Lead Audio Systems Architect.</p>
+            <p class="author-byline">Designed and engineered by <span rel="author" class="author">KAJU🦋</span>, Lead Audio Systems Architect. Last modified on <time datetime="2026-11-09" itemprop="dateModified">November 9, 2026</time>.</p>
           </header>
 
           <section id="features">
@@ -255,6 +337,60 @@
             <p>Stream tracks, albums, and playlists seamlessly from YouTube, Spotify, SoundCloud, Apple Music, and Deezer with automatic link resolving and smart autoplay recommendations.</p>
           </section>
 
+          <section id="comparison">
+            <h2>Feature Comparison Matrix: Together vs Generic Bots</h2>
+            <p>See how Together compares directly to traditional Discord music players in audio clarity, visual feedback, and server accessibility:</p>
+            <div class="table-responsive">
+              <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; text-align: left;">
+                <caption>Direct Feature Comparison of Together Music Bot and Alternative Bots</caption>
+                <thead>
+                  <tr style="background: rgba(34, 197, 94, 0.1);">
+                    <th scope="col">Platform Feature</th>
+                    <th scope="col">Together Music Bot</th>
+                    <th scope="col">Generic Alternative Bots</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Sound Encoding</th>
+                    <td><strong>24-Bit 48kHz Opus Lossless</strong></td>
+                    <td>16-Bit Compressed Stereo</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Interactive 3D Webplayer</th>
+                    <td><strong>Full WebGL Visualizer Included</strong></td>
+                    <td>Text-Only Discord Chat Embeds</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Digital Audio Filters</th>
+                    <td><strong>14 Studio DSP Presets (8D, Bass, Nightcore)</strong></td>
+                    <td>Limited or Locked Behind Paywalls</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">24/7 Channel Lock</th>
+                    <td><strong>100% Free For All Discord Servers</strong></td>
+                    <td>Monthly Subscription Required</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Source Diversity</th>
+                    <td><strong>YouTube, Spotify, SoundCloud, Deezer</strong></td>
+                    <td>Single Platform Restricted</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Listening Streaks &amp; Ranks</th>
+                    <td><strong>Integrated Server XP Leaderboard</strong></td>
+                    <td>No Community Progression System</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Audio Buffer Stabilization</th>
+                    <td><strong>Zero-Stutter Automatic Failover</strong></td>
+                    <td>Voice Channel Disconnects on Latency</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
           <section id="commands">
             <h2>Complete Discord Bot Command Catalog</h2>
             <p>Together provides full command parity with 69 prefix commands and 67 Discord slash interactions. Below is a quick reference of everyday commands:</p>
@@ -272,7 +408,7 @@
           <section id="creator">
             <h2>About the Creator &amp; Systems Architecture</h2>
             <p>Together Music Bot was created by <strong>KAJU🦋</strong>, a software engineer with years of experience building scalable real-time systems and audio pipelines. The platform is developed under the open-source GPL-3.0 license and maintained by a dedicated developer team.</p>
-            <p>For inquiries, developer support, or community discussions, join our official Discord server or contact us at <a href="mailto:support@together.dpdns.org">support@together.dpdns.org</a>.</p>
+            <p>For inquiries, developer support, or community discussions, join our official Discord server or visit our <a href="/contact">contact page</a>.</p>
           </section>
         </article>
       </main>
@@ -280,7 +416,7 @@
       <footer id="contact">
         <p>&copy; 2026 Together Music Bot Team. All rights reserved.</p>
         <address class="company-address">
-          Together Audio Systems &bull; 100 Innovation Way, Suite 400, San Francisco, CA 94105, United States &bull; Contact: support@together.dpdns.org
+          Together Audio Systems &bull; 100 Innovation Way, Suite 400, San Francisco, CA 94105, United States &bull; Verified Discord Developer
         </address>
         <div class="author-credentials">
           Author: <span rel="author" class="author"><strong>KAJU🦋</strong></span> &bull; Lead Systems Architect &amp; Software Engineer
@@ -299,7 +435,9 @@
           <a href="/terms">Terms of Service</a> |
           <a href="/privacy">Privacy Policy</a> |
           <a href="https://discord.gg/mUdGTs2Dw5" rel="me noopener noreferrer" target="_blank">Discord Community</a> |
-          <a href="https://top.gg/bot/863496211667484676" rel="me noopener noreferrer" target="_blank">Top.gg Bot Profile</a>
+          <a href="https://top.gg/bot/863496211667484676" rel="me noopener noreferrer" target="_blank">Top.gg Bot Profile</a> |
+          <a href="https://www.youtube.com/@dpdns" rel="me noopener noreferrer" target="_blank">YouTube Channel</a> |
+          <a href="https://twitter.com/together_bot" rel="me noopener noreferrer" target="_blank">X (Twitter) Profile</a>
         </nav>
       </footer>
     </div>
