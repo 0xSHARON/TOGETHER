@@ -442,9 +442,9 @@ const pages = [
             <h2>8. Audio Engineering Standards &amp; Architecture Benchmarks</h2>
             <p>Together's playback pipeline is developed in compliance with official industry standards and protocols:</p>
             <ul>
-              <li><strong>IETF RFC 6716 (Opus Interactive Audio Codec):</strong> Playback frames are transcoded at 48,000Hz sample rate across 24-bit PCM channels conforming to <a href="https://datatracker.ietf.org/doc/html/rfc6716" target="_blank" rel="noopener noreferrer">IETF RFC 6716 Audio Specifications</a>.</li>
+              <li><strong>IETF RFC 6716 (Opus Interactive Audio Codec):</strong> Playback frames are transcoded at 48,000Hz sample rate across 24-bit PCM channels conforming to <cite><a href="https://datatracker.ietf.org/doc/html/rfc6716" target="_blank" rel="noopener noreferrer">IETF RFC 6716 Audio Specifications</a></cite>.</li>
               <li><strong>Discord Voice Gateway Protocol v10:</strong> Voice packet delivery uses real-time encrypted UDP buffers with sub-20ms jitter latency as defined by <a href="https://discord.com/developers/docs/topics/voice-connections" target="_blank" rel="noopener noreferrer">Discord Voice Connections Documentation</a>.</li>
-              <li><strong>WebGL 2.0 Hardware Acceleration:</strong> The 3D audio visualizer leverages WebGL 2.0 compute shaders conforming to <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/" target="_blank" rel="noopener noreferrer">The Khronos Group WebGL Standards</a>.</li>
+              <li><strong>WebGL 2.0 Hardware Acceleration:</strong> The 3D audio visualizer leverages WebGL 2.0 compute shaders conforming to <cite><a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/" target="_blank" rel="noopener noreferrer">The Khronos Group WebGL Standards</a></cite>.</li>
               <li><strong>Open Source Integrity (GPL-3.0):</strong> The Together codebase is publicly audited and licensed under GNU General Public License v3.0, published under standard open architecture standards with complete GPL-3.0 transparency.</li>
             </ul>
           </section>
