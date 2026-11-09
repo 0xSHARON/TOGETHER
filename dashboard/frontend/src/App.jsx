@@ -15,6 +15,8 @@ import SettingsPage from './pages/SettingsPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import FaqPage from './pages/FaqPage';
+import ContactPage from './pages/ContactPage';
+import AboutPage from './pages/AboutPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -24,11 +26,11 @@ export default function App() {
         <Routes>
           {/* Public Standalone Landing Page & Policies */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/about" element={<LandingPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/docs" element={<Navigate to="/faq" replace />} />
-          <Route path="/contact" element={<Navigate to="/faq#contact" replace />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
 

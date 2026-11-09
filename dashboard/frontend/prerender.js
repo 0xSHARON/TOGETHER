@@ -21,7 +21,7 @@ const assetTags = [...cssMatches, ...scriptMatches].join('\n    ');
 // Shared head resources
 const sharedHeadMeta = `
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="msvalidate.01" content="A86E9F234D5174092E1B9C7F72E84561" />
     <link rel="indexnow" href="/indexnow-key.txt" />
@@ -59,7 +59,8 @@ const sharedHeader = `
           <a href="/commands">Commands</a> |
           <a href="/faq">FAQ &amp; Docs</a> |
           <a href="/leaderboard">Leaderboard</a> |
-          <a href="/about">About Creator</a> |
+          <a href="/about">About Us</a> |
+          <a href="/contact">Contact</a> |
           <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="noopener noreferrer">Vote on Top.gg</a> |
           <a href="/login">Dashboard Login</a>
         </nav>
@@ -1276,6 +1277,7 @@ for (const p of pages) {
     "@type": p.schemaType || "Article",
     "headline": p.h1,
     "description": p.description,
+    "image": "https://dash.together.dpdns.org/banner.png",
     "url": `https://dash.together.dpdns.org/${p.route}`,
     "datePublished": "2026-01-01T00:00:00Z",
     "dateModified": "2026-11-09T12:00:00Z",
