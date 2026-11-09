@@ -6,7 +6,7 @@ import { useEffect } from 'react';
  */
 export default function SEO({
   title = 'Together Music Bot — Discord Music & Webplayer',
-  description = 'Stream 24-bit lossless audio in Discord with Together. Features an interactive 3D WebGL player, 24/7 channel locking, and 14 studio-grade DSP filters.',
+  description = 'Stream crystal-clear music in Discord with Together bot. Enjoy 3D WebGL visuals, 24/7 voice channels, and 14 studio sound filters.',
   canonical = 'https://dash.together.dpdns.org/',
   noindex = false,
   image = 'https://dash.together.dpdns.org/logo.png'

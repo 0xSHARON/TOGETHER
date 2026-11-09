@@ -143,7 +143,7 @@ export default function LandingPage() {
 
       <SEO 
         title="Together Music Bot — Discord Music & Webplayer"
-        description="Stream 24-bit lossless audio in Discord with Together. Features an interactive 3D WebGL player, 24/7 channel locking, and 14 studio-grade DSP filters."
+        description="Stream crystal-clear music in Discord with Together bot. Enjoy 3D WebGL visuals, 24/7 voice channels, and 14 studio sound filters."
         canonical="https://dash.together.dpdns.org/"
       />
 
@@ -154,10 +154,13 @@ export default function LandingPage() {
             <picture>
               <source srcSet="/logo.webp" type="image/webp" />
               <img 
-                src="/logo.png" 
-                alt="Together Bot Logo" 
+                src="/logo.webp" 
+                srcSet="/logo.webp 1x, /logo.png 2x" 
+                alt="Together Music Bot Logo" 
                 width="36" 
                 height="36" 
+                fetchPriority="high"
+                loading="eager"
                 className="w-9 h-9 object-contain" 
               />
             </picture>
@@ -185,7 +188,7 @@ export default function LandingPage() {
               FAQ
             </Link>
             <a href="#creator" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              CREATOR
+              ABOUT
             </a>
           </nav>
 
@@ -212,6 +215,7 @@ export default function LandingPage() {
             ) : (
               <a
                 href="/api/auth/login"
+                aria-label="Sign in to Discord Dashboard"
                 className="px-4 py-1.5 bg-brutal-accent text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
               >
                 <span>LOGIN</span>
@@ -287,11 +291,13 @@ export default function LandingPage() {
                     <picture>
                       <source srcSet="/logo.webp" type="image/webp" />
                       <img 
-                        src="/logo.png" 
-                        alt="Together Audio Logo" 
+                        src="/logo.webp" 
+                        srcSet="/logo.webp 1x, /logo.png 2x" 
+                        alt="Together Music Bot Logo" 
                         width="64" 
                         height="64" 
                         fetchPriority="high" 
+                        loading="eager"
                         className="w-16 h-16 object-contain border-2 border-brutal-border bg-black/40 p-1" 
                       />
                     </picture>
@@ -700,10 +706,12 @@ export default function LandingPage() {
             <div className="shrink-0 relative">
               <img
                 src="https://cdn.discordapp.com/avatars/780345293237125152/9352c3dd8bc5d5722007156bcdc62075.png?size=512"
-                alt="KAJU🦋 - Lead Audio Systems Architect"
+                srcSet="https://cdn.discordapp.com/avatars/780345293237125152/9352c3dd8bc5d5722007156bcdc62075.png?size=256 1x, https://cdn.discordapp.com/avatars/780345293237125152/9352c3dd8bc5d5722007156bcdc62075.png?size=512 2x"
+                alt="KAJU🦋 - Lead Systems Architect and Bot Creator"
                 width="112"
                 height="112"
                 loading="lazy"
+                decoding="async"
                 className="w-24 h-24 sm:w-28 sm:h-28 border-2 border-black object-cover shadow-brutal-sm"
                 onError={(e) => { e.currentTarget.src = "/logo.png"; }}
               />
@@ -723,7 +731,7 @@ export default function LandingPage() {
                 </span>
               </div>
               <p className="text-xs text-zinc-300 max-w-2xl leading-relaxed">
-                Together is engineered and maintained by kajukatli. Built with a passion for lossless Discord audio streaming, low-latency DSP algorithms, and high-performance WebGL 3D visualizations.
+                Together is designed and engineered by <strong className="text-white" rel="author">KAJU🦋</strong>. Built with a passion for lossless Discord music streaming, high-throughput Lavalink node clustering, and interactive 3D WebGL sound visualizations.
               </p>
               
               <div className="text-[11px] font-mono text-zinc-400 flex flex-wrap gap-4 items-center justify-center md:justify-start">
@@ -731,15 +739,15 @@ export default function LandingPage() {
                 <span>•</span>
                 <span>Last Updated: <time dateTime="2026-11-09">November 9, 2026</time></span>
                 <span>•</span>
-                <span>Status: <strong className="text-emerald-400">Active & Verified</strong></span>
+                <span>Status: <strong className="text-emerald-400">Active &amp; Verified</strong></span>
               </div>
 
-              {/* Social and Share Buttons */}
-              <div className="pt-2 flex flex-wrap justify-center md:justify-start gap-3">
+              {/* Social Profiles & Share Buttons */}
+              <div className="pt-2 flex flex-wrap justify-center md:justify-start gap-3 items-center">
                 <a
                   href={TOPGG_VOTE_URL}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   aria-label="Vote on Top.gg"
                   className="px-4 py-1.5 bg-amber-400 text-black border-2 border-black font-bold text-xs uppercase shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1.5"
                 >
@@ -749,11 +757,21 @@ export default function LandingPage() {
                 <a
                   href={SUPPORT_SERVER_URL}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   aria-label="Join Community Discord"
                   className="px-4 py-1.5 bg-brutal-secondary text-white border-2 border-brutal-border font-bold text-xs uppercase hover:border-white transition-all flex items-center gap-1.5"
                 >
                   <span>COMMUNITY DISCORD</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+                <a
+                  href="https://github.com/0xSHARON/TOGETHER"
+                  target="_blank"
+                  rel="me noopener noreferrer"
+                  aria-label="GitHub Repository"
+                  className="px-4 py-1.5 bg-black text-white border-2 border-brutal-border font-bold text-xs uppercase hover:border-white transition-all flex items-center gap-1.5"
+                >
+                  <span>GITHUB SOURCE</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
                 <button
@@ -764,6 +782,28 @@ export default function LandingPage() {
                   <Share2 className="w-3.5 h-3.5" />
                   <span>{copied ? 'LINK COPIED!' : 'SHARE'}</span>
                 </button>
+                <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-mono">
+                  <span>Share:</span>
+                  <a
+                    href="https://twitter.com/intent/tweet?text=Stream%20music%20in%20Discord%20with%20Together%20Bot&url=https%3A%2F%2Fdash.together.dpdns.org%2F"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-zinc-300 hover:text-brutal-accent underline"
+                    aria-label="Share on X"
+                  >
+                    X
+                  </a>
+                  <span>•</span>
+                  <a
+                    href="https://www.reddit.com/submit?url=https%3A%2F%2Fdash.together.dpdns.org%2F&title=Together%20Discord%20Music%20Bot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-zinc-300 hover:text-brutal-accent underline"
+                    aria-label="Share on Reddit"
+                  >
+                    Reddit
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -776,32 +816,41 @@ export default function LandingPage() {
           <picture>
             <source srcSet="/logo.webp" type="image/webp" />
             <img 
-              src="/logo.png" 
-              alt="Together Logo" 
+              src="/logo.webp" 
+              srcSet="/logo.webp 1x, /logo.png 2x" 
+              alt="Together Music Bot Logo" 
               width="24" 
               height="24" 
               loading="lazy" 
+              decoding="async"
               className="w-6 h-6 object-contain" 
             />
           </picture>
-          <span className="text-white font-bold">TOGETHER // AUDIO OS v2.5.0</span>
+          <div>
+            <div className="text-white font-bold">TOGETHER // AUDIO OS v2.5.0</div>
+            <div className="text-[10px] text-zinc-500">GPL-3.0 Open Source • Lavalink v4 Audio Core</div>
+          </div>
         </div>
 
         <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
+          <a href="#creator" className="hover:text-brutal-accent">About Creator</a>
           <Link to="/overview" className="hover:text-brutal-accent">Dashboard</Link>
           <Link to="/commands" className="hover:text-brutal-accent">Commands</Link>
-          <Link to="/faq" className="hover:text-brutal-accent">FAQ</Link>
+          <Link to="/faq" className="hover:text-brutal-accent">FAQ &amp; Docs</Link>
           <Link to="/leaderboard" className="hover:text-brutal-accent">Leaderboard</Link>
           <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
-          <a href="/terms#editorial" className="hover:text-brutal-accent">Editorial Policy</a>
-          <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Support</a>
-          <a href={BOT_INVITE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Invite Bot</a>
-          <a href={TOPGG_VOTE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Vote Top.gg</a>
+          <a href="mailto:support@together.dpdns.org" className="hover:text-brutal-accent">Contact Support</a>
+          <a href={SUPPORT_SERVER_URL} target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Discord</a>
+          <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">GitHub</a>
+          <a href={TOPGG_VOTE_URL} target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Vote Top.gg</a>
         </nav>
 
-        <div>
-          <span>Engineered by <strong className="text-white">KAJU🦋</strong></span>
+        <div className="text-center md:text-right">
+          <address className="not-italic text-[10px] text-zinc-500">
+            Together Audio Systems • Global Team • <a href="mailto:support@together.dpdns.org" className="text-zinc-400 hover:text-white">support@together.dpdns.org</a>
+          </address>
+          <div className="text-[11px] mt-0.5">Author: <strong className="text-white" rel="author">KAJU🦋</strong></div>
         </div>
       </footer>
     </div>
