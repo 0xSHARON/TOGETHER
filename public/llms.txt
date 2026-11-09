@@ -1,82 +1,27 @@
-# Together Music Bot — The Best Discord Music Bot & 3D Webplayer
+# Together Music Bot
 
-> Together Music Bot is a next-generation high-fidelity Discord music bot and web dashboard engineered for 24-bit lossless Opus audio streaming, real-time 3D WebGL webplayer visualization, 24/7 channel locking, and centralized server control.
+> Together Music Bot is a high-fidelity Discord music streamer and web dashboard engineered for crystal-clear 24-bit opus sound, interactive 3D WebGL webplayer visuals, 24/7 voice channel persistence, and zero-stutter playback.
 
-- **Web Dashboard**: https://dash.together.dpdns.org/
-- **3D Webplayer Visualizer**: https://together.dpdns.org/visualizer/
-- **Discord Bot Invite**: https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands
-- **Top.gg Vote**: https://top.gg/bot/863496211667484676/vote
-- **Support Guild**: https://discord.gg/mUdGTs2Dw5
-- **Creator / Architect**: KAJU🦋 (`@kajukatli.`)
+Together delivers studio-quality music across Discord servers with 14 digital sound processing filters, multi-platform streaming from Spotify, SoundCloud, YouTube, Apple Music, and Deezer, and global listening leaderboards.
 
----
+## Core Services
 
-## 1. Web Dashboard Structure (`/dashboard`)
+- [Web Dashboard](https://dash.together.dpdns.org/): Centralized web interface for server configuration, real-time player controls, and listening stats.
+- [Documentation & FAQ](https://dash.together.dpdns.org/faq): Full guide covering all 59+ bot commands, 14 DSP audio presets, server configuration, and voting rewards.
+- [Commands Directory](https://dash.together.dpdns.org/commands): Searchable directory of 69 prefix commands and 67 Discord slash interactions.
+- [Music Leaderboard](https://dash.together.dpdns.org/leaderboard): Server and global community rankings tracked by listening time and streaks.
+- [3D Webplayer Visualizer](https://together.dpdns.org/visualizer/): Interactive browser-based WebGL audio frequency visualizer with 50+ spectrum modes.
+- [Discord Bot Invite](https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands): Direct authorization link to invite Together to your Discord server.
+- [Top.gg Voting Perks](https://top.gg/bot/863496211667484676/vote): Daily vote rewards including double streak XP, priority queueing, and exclusive audio profiles.
+- [Community Support Discord](https://discord.gg/mUdGTs2Dw5): Official support guild for bot troubleshooting, feature updates, and assistance.
+- [Terms of Service](https://dash.together.dpdns.org/terms): Usage policies, terms of service agreements, and bot guidelines.
+- [Privacy Policy](https://dash.together.dpdns.org/privacy): Privacy policy, data safety standards, and GDPR compliance disclosures.
 
-The Together Music Bot dashboard provides an interface for Discord community owners, DJs, and listeners:
+## Bot Architecture & Commands Summary
 
-### Public Pages
-- **Landing Page (`/`)**: Displays live cluster telemetry (verified servers, total listeners, gateway ping), engineering highlights, interactive command search, FAQ section, and creator profile.
-- **Login Portal (`/login`)**: Discord OAuth2 authentication with verified bot banner, real-time server counter, and system uptime.
-- **Commands Directory (`/commands`)**: Complete catalog of 69+ Discord commands with full slash (`/command`) and prefix (`.command`) syntax, arguments, permissions, and category filtering.
-- **Music Leaderboard (`/leaderboard`)**: Real-time listening rankings globally and per server. Ranked primarily by **listening time** (hours and minutes), songs played, streaks, and XP. Includes instant username search.
-- **Terms of Service (`/terms`)**: Legal contracts, usage guidelines, and service agreements.
-- **Privacy Policy (`/privacy`)**: Transparent telemetry disclosures, minimal data collection, and GDPR compliance.
-
-### Authenticated Management Pages
-- **Overview (`/overview`)**: Live cluster metrics, active voice instances, audio node health, and streaming statistics.
-- **Interactive Webplayer (`/player`)**: Full-featured web controller allowing users to search tracks with autocomplete (YouTube, Spotify, SoundCloud, Apple Music), pause/resume, seek, adjust volume, view real-time audience members in voice, and toggle 14 DSP audio filters.
-- **Server Selector (`/servers`)**: Displays all Discord servers where the user has administrator or management permissions with quick links to configure or invite the bot.
-- **Server Settings (`/settings`)**: Configure server-specific command prefix, lock the bot into a designated voice channel 24/7, assign DJ roles, and bind announcement text channels.
-- **Music Profile (`/profile`)**: Dynamic 1200x675 PNG canvas banner generator (powered by `@napi-rs/canvas`) showing user listening stats, rank, level badges, and custom anthem.
-- **Apex Mission Control (`/owner`)**: Restricted developer administration interface with real-time Shoukaku Lavalink node telemetry, live Discord log channel streaming, hot reload, server directory, and blacklist defense.
-
----
-
-## 2. Audio Engineering & DSP Architecture
-
-- **Lossless Opus Transcoding**: Streams raw 24-bit 48,000Hz Opus frames directly into Discord voice channels with zero compression jitter and sub-30ms gateway latency.
-- **14 DSP Studio Audio Filters**:
-  1. `8D Audio`: Circular spatial panning simulation.
-  2. `Bass Boost`: Low, Medium, and Extreme sub-bass harmonic boosting.
-  3. `Nightcore`: Pitch and tempo acceleration.
-  4. `Vaporwave`: Slowed down with pitch modulation.
-  5. `Pop` & `Soft`: Dynamic frequency balancing.
-  6. `Tremolo` & `Vibrato`: Frequency and amplitude oscillation.
-  7. `Karaoke`: Voice frequency attenuation.
-- **Smart Autoplay Engine**: Algorithmic music recommendation that queues similar tracks based on genre, tempo, and artist acoustic metadata when the queue concludes.
-- **24/7 Channel Locking**: Uninterrupted voice persistence that prevents the bot from leaving when voice channels empty and automatically reconnects upon network recovery.
-
----
-
-## 3. Interactive 3D WebGL Webplayer (`/visualizer`)
-
-- Hosted at `https://together.dpdns.org/visualizer/`
-- Over 50 real-time 3D WebGL audio visualizer modes (Monolith, Neon Grid, Audio Waveform, Particle Tunnel, Fractal Core, Hologram, Matrix).
-- Synchronized frequency analysis matching Discord voice playback.
-- Live track queue drawer, synced lyrics, and full web audio playback controls.
-
----
-
-## 4. REST API Endpoints (`/api`)
-
-- `GET /api/overview`: Cluster health, total guilds, total users, ping, and active voice streams.
-- `GET /api/commands`: Complete public command directory.
-- `GET /api/guilds`: Mutual guilds for authenticated Discord user.
-- `GET /api/player/:guildId`: Live playback state, track duration, position, volume, queue, and voice audience.
-- `POST /api/player/:guildId/action`: Dispatch play, pause, resume, skip, seek, loop, or filter commands.
-- `GET /api/config/:guildId`: Fetch server prefix, DJ role, and 24/7 channel locking status.
-- `POST /api/config/:guildId/247`: Toggle 24/7 voice persistence.
-- `GET /api/xp/leaderboard`: Paginated leaderboard rankings by listening time, songs, or streak.
-- `GET /api/auth/profile`: Discord user profile data and dynamic canvas banner link.
-
----
-
-## 5. Architectural Benchmarks & Advantages
-
-Together is engineered as a next-generation high-fidelity sound system for Discord:
-
-- **vs. Standard Discord Music Bots**: Together provides a real-time interactive 3D WebGL soundstage webplayer (over 50 modes), 24-bit studio Opus transcoding, and free 24/7 channel locking without complex setup tiers.
-- **vs. Commercial Paywalled Bots**: Together delivers 14 DSP studio audio filters (8D, Bass Boost, Nightcore, Vaporwave) completely free without paywall gates or monthly subscriptions.
-- **Low Latency & High Fidelity**: Sub-30ms internal audio pipeline with synchronized listening leaderboards and zero audio dropouts.
-
+Together Music Bot supports 59+ commands grouped into 10 documentation categories:
+- Playback: /play, /pause, /resume, /skip, /forceskip, /skipto, /previous, /replay, /stop, /seek, /forward, /rewind, /speed, /sleep, /lyrics, /search, /similar
+- Queue: /queue, /clear, /shuffle, /remove, /loop (track/queue/off), /autoplay
+- 14 DSP Audio Filters: /filter (bassboost, 8d, nightcore, vaporwave, pop, soft, treblebass, karaoke, vibrato, tremolo, subboost, superbass, reset)
+- Server Management: /247 (stay in voice 24/7), /setprefix, /djrole, /source, /ignore
+- Community & Stats: /profile, /lb, /stats, /ping, /grab, /forcefix, /vote
