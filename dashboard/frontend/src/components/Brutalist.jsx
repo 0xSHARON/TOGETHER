@@ -8,7 +8,9 @@ export function BrutButton({
   className = "", 
   onClick, 
   disabled = false,
-  icon: Icon
+  icon: Icon,
+  "aria-label": ariaLabel,
+  ...props
 }) {
   const base = "font-mono font-bold tracking-wider uppercase transition-all duration-150 inline-flex items-center justify-center gap-2 border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed select-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none";
 
@@ -29,9 +31,11 @@ export function BrutButton({
     <button
       onClick={onClick}
       disabled={disabled}
+      aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
       className={clsx(base, variants[variant], sizes[size], className)}
+      {...props}
     >
-      {Icon && <Icon className="w-4 h-4" />}
+      {Icon && <Icon className="w-4 h-4" aria-hidden="true" />}
       {children}
     </button>
   );

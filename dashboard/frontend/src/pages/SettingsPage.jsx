@@ -337,6 +337,7 @@ export default function SettingsPage() {
                   <button
                     type="submit"
                     disabled={savingPrefix || !prefix}
+                    aria-label="Save bot prefix"
                     className="px-4 py-2 bg-brutal-accent text-black font-mono text-xs font-bold uppercase border-2 border-black shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all disabled:opacity-50"
                   >
                     {savingPrefix ? 'SAVING...' : 'SAVE PREFIX'}
@@ -345,6 +346,7 @@ export default function SettingsPage() {
                     type="button"
                     onClick={handleResetPrefix}
                     disabled={savingPrefix || prefix === '.'}
+                    aria-label="Reset bot prefix to default"
                     className="px-3 py-2 bg-brutal-bg text-brutal-muted font-mono text-xs font-bold uppercase border-2 border-brutal-border hover:border-white hover:text-white transition-all disabled:opacity-50"
                   >
                     RESET [ . ]
