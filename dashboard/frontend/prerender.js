@@ -28,9 +28,9 @@ const sharedHeadMeta = `
     <meta name="date" content="2026-11-09" />
     <meta name="last-modified" content="2026-11-09" />
     <meta name="author" content="KAJU🦋" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large" />
+    <meta name="bingbot" content="index, follow, max-image-preview:large" />
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
     <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context Summary" />
     <link rel="alternate" type="text/plain" href="/llms-full.txt" title="Full LLM Knowledge Corpus" />
@@ -43,8 +43,8 @@ const sharedHeadMeta = `
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVnskPMA.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&amp;family=JetBrains+Mono:wght@400;600;800&amp;family=Orbitron:wght@700;900&amp;display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&amp;family=JetBrains+Mono:wght@400;600;800&amp;family=Orbitron:wght@700;900&amp;display=swap" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?display=swap&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900" />
 `;
 
 const sharedHeader = `
@@ -83,7 +83,8 @@ const sharedFooter = `
         <nav aria-label="Footer Navigation">
           <a href="/">Home</a> |
           <a href="/about">About Us</a> |
-          <a href="/contact">Contact</a> |
+          <a href="/contact">Contact Us</a> |
+          <a href="/about#editorial-policy" rel="editorial">Editorial Policy</a> |
           <a href="/faq">Documentation &amp; FAQ</a> |
           <a href="/commands">Bot Commands</a> |
           <a href="/leaderboard">Music Leaderboard</a> |

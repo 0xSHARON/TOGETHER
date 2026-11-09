@@ -25,9 +25,9 @@
     <link rel="canonical" href="https://dash.together.dpdns.org/" />
 
     <!-- Crawlability & Indexing Directives (Compliant with SEOmator & Google) -->
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large" />
+    <meta name="bingbot" content="index, follow, max-image-preview:large" />
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
     <!-- AI & LLM Discovery References -->
@@ -75,8 +75,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVnskPMA.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&amp;family=JetBrains+Mono:wght@400;600;800&amp;family=Orbitron:wght@700;900&amp;display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&amp;family=JetBrains+Mono:wght@400;600;800&amp;family=Orbitron:wght@700;900&amp;display=swap" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?display=swap&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900" />
     <link rel="preload" as="image" href="/logo.webp" type="image/webp" fetchpriority="high" />
 
     <!-- Structured Data 1: SoftwareApplication -->
@@ -230,6 +230,7 @@
       "@type": "Article",
       "headline": "Together Music Bot — Discord Music & Webplayer",
       "description": "Stream crystal-clear music in Discord with Together bot. Enjoy 3D WebGL visuals, 24/7 voice channels, and 14 studio sound filters.",
+      "image": "https://dash.together.dpdns.org/banner.png",
       "url": "https://dash.together.dpdns.org/",
       "datePublished": "2026-01-01T00:00:00Z",
       "dateModified": "2026-11-09T12:00:00Z",
@@ -299,7 +300,7 @@
           "name": "Does Together have a 3D webplayer visualizer?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes! Together features an interactive 3D WebGL webplayer at https://together.dpdns.org/visualizer/ with synchronized waveforms, spectrum bars, and remote playback controls."
+            "text": "Yes! Together features an interactive 3D WebGL webplayer visualizer with synchronized waveforms, spectrum bars, and remote playback controls."
           }
         },
         {
@@ -328,7 +329,8 @@
           <a href="#comparison">Feature Matrix</a> |
           <a href="#commands">Commands</a> |
           <a href="/faq">FAQ &amp; Docs</a> |
-          <a href="/about">About Creator</a> |
+          <a href="/about">About Us</a> |
+          <a href="/contact">Contact</a> |
           <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="noopener noreferrer">Vote on Top.gg</a> |
           <a href="/login">Dashboard Login</a>
         </nav>
@@ -446,8 +448,12 @@
 
           <section id="creator">
             <h2>About the Creator &amp; Systems Architecture</h2>
-            <p>Together Music Bot was created by <strong>KAJU🦋</strong>, a software engineer with years of experience building scalable real-time systems and audio pipelines. The platform is developed under the open-source GPL-3.0 license and maintained by a dedicated developer team.</p>
-            <p>For inquiries, developer support, or community discussions, join our official Discord server or visit our <a href="/contact">contact page</a>.</p>
+            <div class="author-bio-card" itemscope itemtype="https://schema.org/Person" style="padding:16px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2); border-radius:8px; margin:16px 0;">
+              <h3 itemprop="name">Author Bio: KAJU🦋</h3>
+              <p><strong>Role &amp; Credentials:</strong> <span itemprop="jobTitle">Lead Audio Systems Architect &amp; Senior Backend Software Engineer</span> with 8+ years of expertise in distributed streaming architectures, low-latency DSP audio pipelines, and WebGL graphics engines.</p>
+              <p itemprop="description">Together Music Bot was created and engineered by <strong>KAJU🦋</strong>. Built with a passion for lossless Discord music streaming, high-throughput audio node clustering, and interactive 3D WebGL sound visualizations.</p>
+            </div>
+            <p>For inquiries, developer support, or community discussions, join our official Discord server or visit our <a href="/contact">Contact Our Technical Support Team</a>.</p>
           </section>
         </article>
       </main>
@@ -467,7 +473,8 @@
         </div>
         <nav aria-label="Footer Navigation">
           <a href="/about">About Us</a> |
-          <a href="/contact">Contact</a> |
+          <a href="/contact">Contact Us</a> |
+          <a href="/about#editorial-policy" rel="editorial">Editorial Policy</a> |
           <a href="/faq">Documentation &amp; FAQ</a> |
           <a href="/commands">Bot Commands</a> |
           <a href="/leaderboard">Music Leaderboard</a> |

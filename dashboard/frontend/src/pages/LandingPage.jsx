@@ -187,9 +187,12 @@ export default function LandingPage() {
             <Link to="/faq" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               FAQ
             </Link>
-            <a href="#creator" className="text-brutal-muted hover:text-brutal-accent transition-colors">
+            <Link to="/about" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               ABOUT
-            </a>
+            </Link>
+            <Link to="/contact" className="text-brutal-muted hover:text-brutal-accent transition-colors">
+              CONTACT
+            </Link>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -488,7 +491,7 @@ export default function LandingPage() {
               HEAD-TO-HEAD BENCHMARK
             </span>
             <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
-              WHY OUR SOUND ENGINE OUTPERFORMS.
+              FEATURE COMPARISON MATRIX: TOGETHER VS GENERIC BOTS.
             </h2>
             <p className="font-mono text-xs text-zinc-400 mt-2 max-w-xl">
               Compare audio quality, real-time visualizers, and feature flexibility against other popular alternatives.
@@ -619,6 +622,7 @@ export default function LandingPage() {
                   id="command-search-input"
                   name="command-search"
                   type="text"
+                  aria-label="Search Discord bot commands by keyword or name"
                   placeholder="Search commands (e.g. play, 247, loop)..."
                   value={cmdSearch}
                   onChange={(e) => setCmdSearch(e.target.value)}
@@ -710,7 +714,8 @@ export default function LandingPage() {
                 alt="KAJU🦋 - Lead Systems Architect and Bot Creator"
                 width="112"
                 height="112"
-                loading="lazy"
+                fetchPriority="high"
+                loading="eager"
                 decoding="async"
                 className="w-24 h-24 sm:w-28 sm:h-28 border-2 border-black object-cover shadow-brutal-sm"
                 onError={(e) => { e.currentTarget.src = "/logo.png"; }}
@@ -730,9 +735,14 @@ export default function LandingPage() {
                   LEAD AUDIO SYSTEMS ARCHITECT
                 </span>
               </div>
-              <p className="text-xs text-zinc-300 max-w-2xl leading-relaxed">
-                Together is designed and engineered by <strong className="text-white" rel="author">KAJU🦋</strong>. Built with a passion for lossless Discord music streaming, high-throughput audio node clustering, and interactive 3D WebGL sound visualizations.
-              </p>
+              <div className="author-bio-card text-xs text-zinc-300 max-w-2xl leading-relaxed space-y-2">
+                <p>
+                  <strong>Role &amp; Credentials:</strong> Lead Audio Systems Architect and Software Engineer with 8+ years of expertise in distributed streaming architectures, low-latency DSP audio pipelines, and WebGL visualization engines.
+                </p>
+                <p>
+                  Together is designed and engineered by <strong className="text-white" rel="author">KAJU🦋</strong>. For inquiries, developer assistance, or partnership discussions, visit our <Link to="/contact" className="text-brutal-accent underline font-bold">Contact Technical Support</Link> page or read our <Link to="/about" className="text-brutal-accent underline font-bold">About Us</Link> documentation.
+                </p>
+              </div>
               
               <div className="text-[11px] font-mono text-zinc-400 flex flex-wrap gap-4 items-center justify-center md:justify-start">
                 <span>Published: <time dateTime="2026-01-01">January 2026</time></span>
@@ -830,9 +840,10 @@ export default function LandingPage() {
         </div>
 
         <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
-          <a href="#creator" className="hover:text-brutal-accent">About Us</a>
+          <Link to="/about" className="hover:text-brutal-accent">About Us</Link>
+          <Link to="/contact" className="hover:text-brutal-accent">Contact Us</Link>
+          <Link to="/about#editorial-policy" rel="editorial" className="hover:text-brutal-accent">Editorial Policy</Link>
           <Link to="/faq" className="hover:text-brutal-accent">FAQ &amp; Docs</Link>
-          <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Contact Us</a>
           <Link to="/overview" className="hover:text-brutal-accent">Dashboard</Link>
           <Link to="/commands" className="hover:text-brutal-accent">Commands</Link>
           <Link to="/leaderboard" className="hover:text-brutal-accent">Leaderboard</Link>

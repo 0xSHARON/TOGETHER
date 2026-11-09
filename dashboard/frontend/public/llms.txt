@@ -10,7 +10,7 @@ Together delivers studio-quality music across Discord servers with 14 digital so
 - [Documentation & FAQ](https://dash.together.dpdns.org/faq): Full guide covering all 59+ bot commands, 14 DSP audio presets, server configuration, and voting rewards.
 - [Commands Directory](https://dash.together.dpdns.org/commands): Searchable directory of 69 prefix commands and 67 Discord slash interactions.
 - [Music Leaderboard](https://dash.together.dpdns.org/leaderboard): Server and global community rankings tracked by listening time and streaks.
-- [3D Webplayer Visualizer](https://together.dpdns.org/visualizer/): Interactive browser-based WebGL audio frequency visualizer with 50+ spectrum modes.
+- [3D Webplayer Visualizer](https://dash.together.dpdns.org/commands#visualizer): Interactive browser-based WebGL audio frequency visualizer with 50+ spectrum modes.
 - [Discord Bot Invite](https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands): Direct authorization link to invite Together to your Discord server.
 - [Top.gg Voting Perks](https://top.gg/bot/863496211667484676/vote): Daily vote rewards including double streak XP, priority queueing, and exclusive audio profiles.
 - [Community Support Discord](https://discord.gg/mUdGTs2Dw5): Official support guild for bot troubleshooting, feature updates, and assistance.
