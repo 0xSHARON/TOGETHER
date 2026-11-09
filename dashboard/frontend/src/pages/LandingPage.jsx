@@ -761,12 +761,12 @@ export default function LandingPage() {
 
             <div className="space-y-3 text-center md:text-left flex-1">
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                <h3 className="font-display font-black text-2xl text-white">KAJU🦋</h3>
+                <h3 className="font-display font-black text-2xl text-white">Kaju Katli (<span className="text-brutal-accent">KAJU🦋</span>)</h3>
                 <span className="font-mono text-xs bg-black px-2 py-0.5 border border-brutal-border text-brutal-accent font-bold">
                   @kajukatli.
                 </span>
                 <span className="font-mono text-[10px] bg-red-950/40 text-red-400 px-2 py-0.5 border border-red-800 font-bold">
-                  LEAD AUDIO SYSTEMS ARCHITECT
+                  LEAD AUDIO SYSTEMS ARCHITECT &amp; SENIOR SOFTWARE ENGINEER
                 </span>
               </div>
               <div className="author-bio-card text-xs text-zinc-300 max-w-2xl leading-relaxed space-y-2">

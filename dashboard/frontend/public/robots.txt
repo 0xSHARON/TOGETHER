@@ -29,6 +29,13 @@ Disallow: /player
 Disallow: /servers
 Disallow: /profile
 
+# ── Bing & Microsoft Search Crawlers ──
+User-agent: bingbot
+Allow: /
+
+User-agent: msnbot
+Allow: /
+
 # ── AI Crawlers (100% Unrestricted Access for AI Discovery & Citations) ──
 User-agent: GPTBot
 Allow: /

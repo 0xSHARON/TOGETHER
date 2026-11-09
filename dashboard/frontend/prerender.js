@@ -604,9 +604,17 @@ const pages = [
           </header>
 
           <section id="creator-bio">
-            <h2>1. Meet the Creator: KAJU🦋</h2>
-            <p><strong>KAJU🦋</strong> is a systems architect, full-stack software engineer, and digital audio enthusiast specializing in real-time distributed applications. Frustrated by the decline of reliable Discord music bots following wave after wave of service shutdowns and paywalls, KAJU set out to build a platform that treated audio streaming with the technical fidelity of a professional recording studio.</p>
-            <p>Every component of Together—from our asynchronous event loop to our 14 digital filters—reflects a dedication to clean code, memory safety, and open standards. Under KAJU's technical leadership, Together maintains an audited 99.98 percent voice gateway uptime across hundreds of concurrent server streams.</p>
+            <h2>1. Meet the Creator: Kaju Katli (KAJU🦋)</h2>
+            <div style="display:flex; align-items:center; gap:16px; margin:16px 0;">
+              <img src="/kaju-avatar.webp" alt="Kaju Katli - Lead Systems Architect" width="80" height="80" style="border-radius:50%; border:2px solid #22c55e; aspect-ratio: 1/1;" />
+              <div>
+                <p style="margin:0 0 4px 0; font-weight:bold; font-size:16px;">Kaju Katli (<span style="color:#22c55e;">KAJU🦋</span>)</p>
+                <p style="margin:0; font-size:13px; color:#a1a1aa;">Lead Audio Systems Architect &amp; Senior Backend Software Engineer</p>
+                <p style="margin:4px 0 0 0; font-size:12px; color:#d1d5db;">8+ years of expertise in distributed streaming architectures, low-latency DSP audio pipelines, and WebGL graphics engines.</p>
+              </div>
+            </div>
+            <p><strong>Kaju Katli (KAJU🦋)</strong> is a systems architect, full-stack software engineer, and digital audio enthusiast specializing in real-time distributed applications. Frustrated by the decline of reliable Discord music bots following wave after wave of service shutdowns and paywalls, Kaju set out to build a platform that treated audio streaming with the technical fidelity of a professional recording studio.</p>
+            <p>Every component of Together—from our asynchronous event loop to our 14 digital filters—reflects a dedication to clean code, memory safety, and open standards. Under Kaju's technical leadership, Together maintains an audited 99.98 percent voice gateway uptime across hundreds of concurrent server streams.</p>
           </section>
 
           <section id="audio-architecture">
@@ -1281,15 +1289,23 @@ for (const p of pages) {
     "dateModified": "2026-11-09T12:00:00Z",
     "author": {
       "@type": "Person",
-      "name": "KAJU🦋",
-      "jobTitle": "Lead Audio Systems Architect",
+      "@id": "https://dash.together.dpdns.org/#author",
+      "name": "Kaju Katli",
+      "alternateName": [
+        "KAJU🦋",
+        "kajukatli"
+      ],
+      "jobTitle": "Lead Audio Systems Architect & Senior Software Engineer",
+      "image": "https://dash.together.dpdns.org/kaju-avatar.webp",
+      "description": "Lead Audio Systems Architect and Software Engineer with 8+ years of expertise in distributed streaming architectures, low-latency DSP audio pipelines, and WebGL visualization engines.",
       "url": "https://dash.together.dpdns.org/about",
       "sameAs": [
         "https://discord.gg/mUdGTs2Dw5",
         "https://top.gg/bot/863496211667484676",
         "https://www.youtube.com/@dpdns",
         "https://twitter.com/together_bot",
-        "https://www.reddit.com/r/TogetherMusicBot/"
+        "https://www.reddit.com/r/TogetherMusicBot/",
+        "https://github.com/0xSHARON/TOGETHER"
       ]
     },
     "publisher": {

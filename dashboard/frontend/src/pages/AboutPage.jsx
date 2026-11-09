@@ -85,16 +85,16 @@ export default function AboutPage() {
 
             <div className="space-y-2 text-center md:text-left flex-1" itemscope itemType="https://schema.org/Person">
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                <h3 itemprop="name" className="font-display font-black text-2xl text-white">KAJU🦋</h3>
+                <h3 itemprop="name" className="font-display font-black text-2xl text-white">Kaju Katli (<span className="text-brutal-accent">KAJU🦋</span>)</h3>
                 <span className="font-mono text-xs bg-black px-2 py-0.5 border border-brutal-border text-brutal-accent font-bold">
                   @kajukatli.
                 </span>
                 <span itemprop="jobTitle" className="font-mono text-[10px] bg-red-950/40 text-red-400 px-2 py-0.5 border border-red-800 font-bold">
-                  LEAD AUDIO SYSTEMS ARCHITECT
+                  LEAD AUDIO SYSTEMS ARCHITECT &amp; SENIOR SOFTWARE ENGINEER
                 </span>
               </div>
               <p itemprop="description" className="text-xs text-zinc-300 leading-relaxed">
-                KAJU🦋 is a software engineer with 8+ years of production experience designing scalable distributed backend microservices, real-time WebRTC audio gateways, and high-performance WebGL 3D rendering pipelines. As the creator and lead maintainer of Together, KAJU steers the core sound pipeline and voice failover algorithms.
+                Kaju Katli (KAJU🦋) is a software engineer with 8+ years of production experience designing scalable distributed backend microservices, real-time WebRTC audio gateways, and high-performance WebGL 3D rendering pipelines. As the creator and lead maintainer of Together, Kaju steers the core sound pipeline and voice failover algorithms.
               </p>
               <div className="text-[11px] font-mono text-zinc-400 pt-1">
                 Author & Systems Architect &bull; Verified Discord Developer &bull; GPL-3.0 Core Contributor
