@@ -35,7 +35,7 @@ export default function ContactPage() {
         <Link to="/" className="flex items-center gap-3 group" aria-label="Together Music Bot Home">
           <img src="/logo.webp" alt="Together Logo" width="32" height="32" className="w-8 h-8 object-contain" />
           <span className="font-display font-black text-sm tracking-wider group-hover:text-brutal-accent transition-colors">
-            TOGETHER // CONTACT &amp; SUPPORT
+            TOGETHER // CONTACT & SUPPORT
           </span>
         </Link>
         <Link
@@ -53,10 +53,10 @@ export default function ContactPage() {
         <div className="border-b-2 border-brutal-border pb-6">
           <div className="flex items-center gap-2 text-brutal-accent text-xs font-black uppercase mb-2">
             <MessageSquare className="w-4 h-4" />
-            <span>24/7 DEVELOPER DISPATCH &amp; BOT ASSISTANCE</span>
+            <span>24/7 DEVELOPER DISPATCH & BOT ASSISTANCE</span>
           </div>
           <h1 className="font-display font-black text-3xl md:text-5xl text-white uppercase tracking-tight">
-            CONTACT &amp; TECHNICAL SUPPORT
+            CONTACT & TECHNICAL SUPPORT
           </h1>
           <p className="font-mono text-xs text-brutal-muted mt-2 max-w-2xl leading-relaxed">
             Need help configuring Together in your Discord server? Have questions about our 24-bit sound transcode pipeline, 3D visualizer, or custom DJ roles? Reach our engineering team below.
@@ -195,11 +195,11 @@ export default function ContactPage() {
                     className="w-full px-3 py-2 bg-brutal-surface border-2 border-brutal-border text-white text-xs focus:border-brutal-accent focus:outline-none"
                   >
                     <option value="Technical Support">Technical Support / Audio Stutter</option>
-                    <option value="Server Setup">24/7 Channel Locking &amp; DJ Roles</option>
-                    <option value="Voter Perks">Top.gg Vote Perks &amp; XP Multipliers</option>
+                    <option value="Server Setup">24/7 Channel Locking & DJ Roles</option>
+                    <option value="Voter Perks">Top.gg Vote Perks & XP Multipliers</option>
                     <option value="Visualizer">3D WebGL Webplayer Feedback</option>
-                    <option value="Partnership">Partnership &amp; Verified Communities</option>
-                    <option value="Security">Security &amp; Responsible Disclosure</option>
+                    <option value="Partnership">Partnership & Verified Communities</option>
+                    <option value="Security">Security & Responsible Disclosure</option>
                   </select>
                 </div>
               </div>
@@ -256,7 +256,7 @@ export default function ContactPage() {
               <span>LEAD SYSTEMS ARCHITECT</span>
             </h3>
             <p>
-              Together Music Bot is designed and architected by <strong className="text-white" rel="author">KAJU🦋</strong> (<code>@kajukatli.</code>). With 8+ years of engineering experience in low-latency WebRTC systems, audio transcode servers, and WebGL visualizations, our priority is zero-stutter playback across all servers.
+              Together Music Bot is designed and architected by <strong className="text-white">KAJU🦋</strong> (<code>@kajukatli.</code>). With 8+ years of engineering experience in low-latency WebRTC systems, audio transcode servers, and WebGL visualizations, our priority is zero-stutter playback across all servers.
             </p>
             <p>
               Read more in our <Link to="/about" className="text-brutal-accent hover:underline font-bold">About TOGETHER</Link> documentation.
@@ -266,7 +266,7 @@ export default function ContactPage() {
           <div className="space-y-2">
             <h3 className="font-display font-black text-sm text-white uppercase flex items-center gap-2">
               <MapPin className="w-4 h-4 text-cyan-400" />
-              <span>PROJECT LOCATION &amp; COMPLIANCE</span>
+              <span>PROJECT LOCATION & COMPLIANCE</span>
             </h3>
             <address className="not-italic text-zinc-400">
               Together Audio Systems • 100 Innovation Way, Suite 400, San Francisco, CA 94105, United States
@@ -283,13 +283,13 @@ export default function ContactPage() {
         <div>&copy; 2026 Together Music Bot Team. All rights reserved.</div>
         <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px]" aria-label="Footer Navigation">
           <Link to="/" className="hover:text-brutal-accent">Home</Link>
-          <Link to="/about" className="hover:text-brutal-accent">About Us</Link>
-          <Link to="/commands" className="hover:text-brutal-accent">Commands</Link>
-          <Link to="/faq" className="hover:text-brutal-accent">FAQ</Link>
-          <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
-          <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
-          <Link to="/about#editorial-policy" rel="editorial" className="hover:text-brutal-accent">Editorial Policy</Link>
-          <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">GitHub</a>
+          <Link to="/about" className="hover:text-brutal-accent">About Together</Link>
+          <Link to="/commands" className="hover:text-brutal-accent">Bot Commands</Link>
+          <Link to="/faq" className="hover:text-brutal-accent">Documentation & FAQ</Link>
+          <Link to="/terms" className="hover:text-brutal-accent">Terms of Service</Link>
+          <Link to="/privacy" className="hover:text-brutal-accent">Privacy Policy</Link>
+          <Link to="/about#editorial-policy" className="hover:text-brutal-accent">Editorial Standards</Link>
+          <a href="https://discord.gg/mUdGTs2Dw5" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Official Discord</a>
         </nav>
       </footer>
     </div>

@@ -699,7 +699,7 @@ export default function LandingPage() {
         <section id="creator" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-6">
           <div>
             <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
-              CREATOR &amp; LEAD ARCHITECT
+              CREATOR & LEAD ARCHITECT
             </span>
             <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
               BEHIND THE ARCHITECTURE.
@@ -737,7 +737,7 @@ export default function LandingPage() {
               </div>
               <div className="author-bio-card text-xs text-zinc-300 max-w-2xl leading-relaxed space-y-2">
                 <p>
-                  <strong>Role &amp; Credentials:</strong> Lead Audio Systems Architect and Software Engineer with 8+ years of expertise in distributed streaming architectures, low-latency DSP audio pipelines, and WebGL visualization engines.
+                  <strong>Role & Credentials:</strong> Lead Audio Systems Architect and Software Engineer with 8+ years of expertise in distributed streaming architectures, low-latency DSP audio pipelines, and WebGL visualization engines.
                 </p>
                 <p>
                   Together is designed and engineered by <strong className="text-white" rel="author">KAJU🦋</strong>. For inquiries, developer assistance, or partnership discussions, visit our <Link to="/contact" className="text-brutal-accent underline font-bold">Contact Technical Support</Link> page or read our <Link to="/about" className="text-brutal-accent underline font-bold">About Us</Link> documentation.
@@ -749,7 +749,7 @@ export default function LandingPage() {
                 <span>•</span>
                 <span>Last Updated: <time dateTime="2026-11-09">November 9, 2026</time></span>
                 <span>•</span>
-                <span>Status: <strong className="text-emerald-400">Active &amp; Verified</strong></span>
+                <span>Status: <strong className="text-emerald-400">Active & Verified</strong></span>
               </div>
 
               {/* Social Profiles & Share Buttons */}
@@ -782,28 +782,6 @@ export default function LandingPage() {
                   <Share2 className="w-3.5 h-3.5" />
                   <span>{copied ? 'LINK COPIED!' : 'SHARE'}</span>
                 </button>
-                <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-mono">
-                  <span>Share:</span>
-                  <a
-                    href="https://twitter.com/intent/tweet?text=Stream%20music%20in%20Discord%20with%20Together%20Bot&url=https%3A%2F%2Fdash.together.dpdns.org%2F"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-zinc-300 hover:text-brutal-accent underline"
-                    aria-label="Share on X"
-                  >
-                    X
-                  </a>
-                  <span>•</span>
-                  <a
-                    href="https://www.reddit.com/submit?url=https%3A%2F%2Fdash.together.dpdns.org%2F&title=Together%20Discord%20Music%20Bot"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-zinc-300 hover:text-brutal-accent underline"
-                    aria-label="Share on Reddit"
-                  >
-                    Reddit
-                  </a>
-                </div>
               </div>
             </div>
           </div>
@@ -840,19 +818,17 @@ export default function LandingPage() {
         </div>
 
         <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
-          <Link to="/about" className="hover:text-brutal-accent">About Us</Link>
-          <Link to="/contact" className="hover:text-brutal-accent">Contact Us</Link>
-          <Link to="/about#editorial-policy" rel="editorial" className="hover:text-brutal-accent">Editorial Policy</Link>
-          <Link to="/faq" className="hover:text-brutal-accent">FAQ &amp; Docs</Link>
-          <Link to="/overview" className="hover:text-brutal-accent">Dashboard</Link>
-          <Link to="/commands" className="hover:text-brutal-accent">Commands</Link>
-          <Link to="/leaderboard" className="hover:text-brutal-accent">Leaderboard</Link>
-          <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
-          <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
-          <a href={SUPPORT_SERVER_URL} target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Discord</a>
-          <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">GitHub (GPL-3.0)</a>
-          <a href="https://www.reddit.com/r/TogetherMusicBot/" target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Reddit</a>
-          <a href={TOPGG_VOTE_URL} target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Vote Top.gg</a>
+          <Link to="/about" className="hover:text-brutal-accent">About Together Bot</Link>
+          <Link to="/contact" className="hover:text-brutal-accent">Contact Support Team</Link>
+          <Link to="/about#editorial-policy" className="hover:text-brutal-accent">Editorial Standards</Link>
+          <Link to="/faq" className="hover:text-brutal-accent">Documentation & FAQ</Link>
+          <Link to="/overview" className="hover:text-brutal-accent">Web Player Dashboard</Link>
+          <Link to="/commands" className="hover:text-brutal-accent">Bot Commands</Link>
+          <Link to="/leaderboard" className="hover:text-brutal-accent">Music Leaderboard</Link>
+          <Link to="/terms" className="hover:text-brutal-accent">Terms of Service</Link>
+          <Link to="/privacy" className="hover:text-brutal-accent">Privacy Policy</Link>
+          <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Official Discord Server</a>
+          <a href={TOPGG_VOTE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Vote on Top.gg</a>
         </nav>
 
         <div className="text-center md:text-right">

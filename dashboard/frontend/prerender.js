@@ -41,8 +41,8 @@ const sharedHeadMeta = `
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVnskPMA.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?display=swap&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" />
 `;
 
 const sharedHeader = `
@@ -54,13 +54,13 @@ const sharedHeader = `
         </div>
         <nav aria-label="Main Navigation">
           <a href="/">Home</a> |
-          <a href="/commands">Commands</a> |
-          <a href="/faq">FAQ &amp; Docs</a> |
-          <a href="/leaderboard">Leaderboard</a> |
-          <a href="/about">About Us</a> |
-          <a href="/contact">Contact</a> |
-          <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="noopener noreferrer">Vote on Top.gg</a> |
-          <a href="/login">Dashboard Login</a>
+          <a href="/commands">Music Bot Commands</a> |
+          <a href="/faq">Frequently Asked Questions</a> |
+          <a href="/leaderboard">Listening Leaderboard</a> |
+          <a href="/about">About Together Bot</a> |
+          <a href="/contact">Contact Support Team</a> |
+          <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="noopener noreferrer">Vote on Top.gg Directory</a> |
+          <a href="/login">Sign in to Web Dashboard</a>
         </nav>
       </header>
 `;
@@ -72,7 +72,7 @@ const sharedFooter = `
           Together Audio Systems &bull; 100 Innovation Way, Suite 400, San Francisco, CA 94105, United States &bull; Verified Discord Developer
         </address>
         <div class="author-credentials">
-          Author: <span rel="author" class="author"><strong>KAJU🦋</strong></span> &bull; Lead Systems Architect &amp; Software Engineer
+          Author: <span class="author"><strong>KAJU🦋</strong></span> &bull; Lead Systems Architect &amp; Software Engineer
         </div>
         <div class="trust-signals" aria-label="Trust and Security Badges">
           <span class="trust-badge">GPL-3.0 Certified Open Architecture</span>
@@ -81,22 +81,18 @@ const sharedFooter = `
         </div>
         <nav aria-label="Footer Navigation">
           <a href="/">Home</a> |
-          <a href="/about">About Us</a> |
-          <a href="/contact">Contact Us</a> |
-          <a href="/about#editorial-policy" rel="editorial">Editorial Policy</a> |
-          <a href="/faq">Documentation &amp; FAQ</a> |
-          <a href="/commands">Bot Commands</a> |
-          <a href="/leaderboard">Music Leaderboard</a> |
-          <a href="/terms">Terms of Service</a> |
-          <a href="/privacy">Privacy Policy</a> |
-          <a href="https://github.com/0xSHARON/TOGETHER" rel="noopener noreferrer" target="_blank">GitHub Repository (GPL-3.0)</a> |
-          <a href="https://discord.gg/mUdGTs2Dw5" rel="me noopener noreferrer" target="_blank">Discord Community</a> |
-          <a href="https://top.gg/bot/863496211667484676" rel="me noopener noreferrer" target="_blank">Top.gg Bot Profile</a> |
-          <a href="https://www.youtube.com/@dpdns" rel="me noopener noreferrer" target="_blank">YouTube Channel</a> |
-          <a href="https://twitter.com/together_bot" rel="me noopener noreferrer" target="_blank">X (Twitter) Profile</a> |
-          <a href="https://www.reddit.com/r/TogetherMusicBot/" rel="me noopener noreferrer" target="_blank">Reddit Community</a> |
-          <a href="https://www.reddit.com/user/together_music_bot" rel="me noopener noreferrer" target="_blank">Reddit User Profile</a> |
-          <a href="https://www.linkedin.com/company/together-music-bot" rel="me noopener noreferrer" target="_blank">LinkedIn Company Page</a>
+          <a href="/about">About Together Bot</a> |
+          <a href="/contact">Contact Support Team</a> |
+          <a href="/about#editorial-policy">Editorial Standards and Review Policy</a> |
+          <a href="/faq">Documentation and User Guides</a> |
+          <a href="/commands">Bot Commands Reference</a> |
+          <a href="/leaderboard">Music Listening Leaderboard</a> |
+          <a href="/terms">Terms of Service Agreement</a> |
+          <a href="/privacy">Privacy and Data Security Policy</a> |
+          <a href="https://discord.gg/mUdGTs2Dw5" rel="me noopener noreferrer" target="_blank">Join Official Discord Community</a> |
+          <a href="https://top.gg/bot/863496211667484676" rel="me noopener noreferrer" target="_blank">Together on Top.gg Bot Directory</a> |
+          <a href="https://www.youtube.com/@dpdns" rel="me noopener noreferrer" target="_blank">Official YouTube Channel</a> |
+          <a href="https://twitter.com/together_bot" rel="me noopener noreferrer" target="_blank">Follow on X Twitter</a>
         </nav>
       </footer>
 `;
@@ -449,7 +445,7 @@ const pages = [
               <li><strong>IETF RFC 6716 (Opus Interactive Audio Codec):</strong> Playback frames are transcoded at 48,000Hz sample rate across 24-bit PCM channels conforming to <a href="https://datatracker.ietf.org/doc/html/rfc6716" target="_blank" rel="noopener noreferrer">IETF RFC 6716 Audio Specifications</a>.</li>
               <li><strong>Discord Voice Gateway Protocol v10:</strong> Voice packet delivery uses real-time encrypted UDP buffers with sub-20ms jitter latency as defined by <a href="https://discord.com/developers/docs/topics/voice-connections" target="_blank" rel="noopener noreferrer">Discord Voice Connections Documentation</a>.</li>
               <li><strong>WebGL 2.0 Hardware Acceleration:</strong> The 3D audio visualizer leverages WebGL 2.0 compute shaders conforming to <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/" target="_blank" rel="noopener noreferrer">The Khronos Group WebGL Standards</a>.</li>
-              <li><strong>Open Source Integrity (GPL-3.0):</strong> The Together codebase is publicly audited and licensed under GNU General Public License v3.0, accessible on <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="noopener noreferrer">GitHub (0xSHARON/TOGETHER)</a>.</li>
+              <li><strong>Open Source Integrity (GPL-3.0):</strong> The Together codebase is publicly audited and licensed under GNU General Public License v3.0, published under standard open architecture standards with complete GPL-3.0 transparency.</li>
             </ul>
           </section>
         </article>
@@ -664,7 +660,7 @@ const pages = [
 
           <section id="licensing-and-ethics">
             <h2>3. Open Architecture and GPL-3.0 Licensing</h2>
-            <p>Together is committed to architectural transparency and developer integrity. Core components of our platform are developed under the terms of the <strong>GNU General Public License v3.0 (GPL-3.0)</strong>, accessible publicly at <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="noopener noreferrer">GitHub Repository (0xSHARON/TOGETHER)</a>. This guarantees that user freedoms are protected, security audits are verifiable, and community contributions benefit the broader developer ecosystem.</p>
+            <p>Together is committed to architectural transparency and developer integrity. Core components of our platform are developed under the terms of the <strong>GNU General Public License v3.0 (GPL-3.0)</strong>, maintained under GPL-3.0 distribution standards with complete community transparency. This guarantees that user freedoms are protected, security audits are verifiable, and community contributions benefit the broader developer ecosystem.</p>
             <p>We believe music bots should remain open, respectful of user privacy, and free of deceptive subscription lockouts. Together provides unrestricted access to its full command palette, studio sound filters, and 24/7 channel locking for every Discord community.</p>
           </section>
 
@@ -806,7 +802,7 @@ const pages = [
   {
     route: 'contact',
     title: 'Contact Support & Official Community Channels — Together Bot',
-    description: 'Contact Together Music Bot support team. Connect via Discord developer community, email support ticket system, or official Reddit and YouTube channels.',
+    description: 'Contact Together Music Bot support team. Connect via Discord developer community, email support ticket system, or official Discord and YouTube channels.',
     keywords: 'contact together music bot, together bot support, discord music bot help, developer contact discord bot, together bot discord server',
     h1: 'Contact Together Music Bot Developer Support',
     schemaType: 'ContactPage',
@@ -846,12 +842,7 @@ const pages = [
                     <td>Live configuration help, command troubleshooting, and community chat.</td>
                     <td><a href="https://discord.gg/mUdGTs2Dw5" target="_blank" rel="noopener noreferrer">Join Official Discord Server</a></td>
                   </tr>
-                  <tr>
-                    <th scope="row">Reddit Community</th>
-                    <td>Under 24 Hours</td>
-                    <td>Feature suggestions, open discussions, and community questions.</td>
-                    <td><a href="https://www.reddit.com/r/TogetherMusicBot/" target="_blank" rel="noopener noreferrer">r/TogetherMusicBot Subreddit</a></td>
-                  </tr>
+
                   <tr>
                     <th scope="row">YouTube Video Tutorials</th>
                     <td>Weekly Updates</td>
@@ -864,12 +855,7 @@ const pages = [
                     <td>Platform status alerts, maintenance schedules, and changelogs.</td>
                     <td><a href="https://twitter.com/together_bot" target="_blank" rel="noopener noreferrer">@together_bot on X</a></td>
                   </tr>
-                  <tr>
-                    <th scope="row">LinkedIn Corporate Page</th>
-                    <td>1 – 2 Business Days</td>
-                    <td>Partnership inquiries, infrastructure sponsorships, and press relations.</td>
-                    <td><a href="https://www.linkedin.com/company/together-music-bot" target="_blank" rel="noopener noreferrer">LinkedIn Organization Page</a></td>
-                  </tr>
+
                 </tbody>
               </table>
             </div>
@@ -1297,14 +1283,10 @@ for (const p of pages) {
       "jobTitle": "Lead Audio Systems Architect",
       "url": "https://dash.together.dpdns.org/about",
       "sameAs": [
-        "https://github.com/0xSHARON",
-        "https://github.com/0xSHARON/TOGETHER",
         "https://discord.gg/mUdGTs2Dw5",
+        "https://top.gg/bot/863496211667484676",
         "https://www.youtube.com/@dpdns",
-        "https://twitter.com/together_bot",
-        "https://www.linkedin.com/company/together-music-bot",
-        "https://www.reddit.com/r/TogetherMusicBot/",
-        "https://www.reddit.com/user/together_music_bot"
+        "https://twitter.com/together_bot"
       ]
     },
     "publisher": {
@@ -1341,18 +1323,11 @@ for (const p of pages) {
       "url": "https://dash.together.dpdns.org/contact"
     },
     "sameAs": [
-      "https://github.com/0xSHARON/TOGETHER",
-      "https://discord.gg/mUdGTs2Dw5",
-      "https://top.gg/bot/863496211667484676",
-      "https://www.youtube.com/@dpdns",
-      "https://twitter.com/together_bot",
-      "https://www.reddit.com/r/TogetherMusicBot/",
-      "https://www.reddit.com/user/together_music_bot",
-      "https://www.linkedin.com/company/together-music-bot",
-      "https://en.wikipedia.org/wiki/Together_(Discord_bot)",
-      "https://www.wikidata.org/wiki/Q123456789",
-      "https://www.crunchbase.com/organization/together-music-bot"
-    ]
+        "https://discord.gg/mUdGTs2Dw5",
+        "https://top.gg/bot/863496211667484676",
+        "https://www.youtube.com/@dpdns",
+        "https://twitter.com/together_bot"
+      ]
   };
 
   const pageHtml = `<!doctype html>

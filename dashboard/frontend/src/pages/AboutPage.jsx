@@ -20,7 +20,7 @@ export default function AboutPage() {
         <Link to="/" className="flex items-center gap-3 group" aria-label="Together Music Bot Home">
           <img src="/logo.webp" alt="Together Logo" width="32" height="32" className="w-8 h-8 object-contain" />
           <span className="font-display font-black text-sm tracking-wider group-hover:text-brutal-accent transition-colors">
-            TOGETHER // ABOUT &amp; ARCHITECTURE
+            TOGETHER // ABOUT & ARCHITECTURE
           </span>
         </Link>
         <Link
@@ -38,7 +38,7 @@ export default function AboutPage() {
         <div className="border-b-2 border-brutal-border pb-6">
           <div className="flex items-center gap-2 text-brutal-accent text-xs font-black uppercase mb-2">
             <Cpu className="w-4 h-4" />
-            <span>ENGINEERING EXCELLENCE &amp; AUDIO ARCHITECTURE</span>
+            <span>ENGINEERING EXCELLENCE & AUDIO ARCHITECTURE</span>
           </div>
           <h1 className="font-display font-black text-3xl md:text-5xl text-white uppercase tracking-tight">
             ABOUT TOGETHER MUSIC BOT
@@ -62,7 +62,7 @@ export default function AboutPage() {
         <section className="border-2 border-brutal-border bg-black/60 p-6 md:p-8 shadow-brutal space-y-6">
           <div className="flex items-center gap-2 text-brutal-accent text-xs font-black uppercase">
             <User className="w-4 h-4" />
-            <span>LEAD SYSTEMS ARCHITECT &amp; CREATOR BIO</span>
+            <span>LEAD SYSTEMS ARCHITECT & CREATOR BIO</span>
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-6">
@@ -97,7 +97,7 @@ export default function AboutPage() {
                 KAJU🦋 is a software engineer with 8+ years of production experience designing scalable distributed backend microservices, real-time WebRTC audio gateways, and high-performance WebGL 3D rendering pipelines. As the creator and lead maintainer of Together, KAJU steers the core sound pipeline and voice failover algorithms.
               </p>
               <div className="text-[11px] font-mono text-zinc-400 pt-1">
-                Author &amp; Systems Architect &bull; Verified Discord Developer &bull; GPL-3.0 Core Contributor
+                Author & Systems Architect &bull; Verified Discord Developer &bull; GPL-3.0 Core Contributor
               </div>
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function AboutPage() {
             <span className="text-brutal-accent">02.</span> OPEN SOURCE GPL-3.0 INTEGRITY
           </h2>
           <p className="text-xs md:text-sm text-zinc-300 leading-relaxed">
-            Together is licensed under the <strong>GNU General Public License v3.0 (GPL-3.0)</strong>, with our complete open source repository hosted at <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="noopener noreferrer" className="text-brutal-accent hover:underline font-bold">GitHub (0xSHARON/TOGETHER)</a>. We believe community music streaming tools must remain open, inspectable, and resilient against vendor lock-in. Our software application does not monetize basic playback controls or lock essential audio equalizer filters behind subscription paywalls.
+            Together is licensed under the <strong>GNU General Public License v3.0 (GPL-3.0)</strong>, with our complete open-source architecture and public software distribution under the GPL-3.0 license. We believe community music streaming tools must remain open, inspectable, and resilient against vendor lock-in. Our software application does not monetize basic playback controls or lock essential audio equalizer filters behind subscription paywalls.
           </p>
         </section>
 
@@ -117,10 +117,10 @@ export default function AboutPage() {
         <section id="editorial-policy" className="border-2 border-brutal-border bg-brutal-surface p-6 md:p-8 space-y-4">
           <div className="flex items-center gap-2 text-brutal-accent text-xs font-black uppercase">
             <BookOpen className="w-4 h-4" />
-            <span>EDITORIAL POLICY &amp; CONTENT STANDARDS</span>
+            <span>EDITORIAL POLICY & CONTENT STANDARDS</span>
           </div>
           <h2 className="font-display font-black text-xl text-white uppercase">
-            EDITORIAL STANDARDS &amp; TECHNICAL DISCLOSURES
+            EDITORIAL STANDARDS & TECHNICAL DISCLOSURES
           </h2>
           <div className="text-xs md:text-sm text-zinc-300 space-y-3 leading-relaxed">
             <p>
@@ -168,8 +168,8 @@ export default function AboutPage() {
           <Link to="/faq" className="hover:text-brutal-accent">FAQ</Link>
           <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
-          <Link to="/about#editorial-policy" rel="editorial" className="hover:text-brutal-accent">Editorial Policy</Link>
-          <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">GitHub</a>
+          <Link to="/about#editorial-policy" className="hover:text-brutal-accent">Editorial Standards</Link>
+          <Link to="/contact" className="hover:text-brutal-accent">Contact Support</Link>
         </nav>
       </footer>
     </div>

@@ -471,7 +471,7 @@ export default function FaqPage() {
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono selection:bg-brutal-accent selection:text-black">
       <SEO 
-        title="Documentation &amp; FAQ — Together Music Bot"
+        title="Documentation & FAQ — Together Music Bot"
         description="Comprehensive documentation and command FAQ for Together Music Bot: 24-bit lossless opus audio, 3D webplayer visualizer, playback controls, DSP filters, and 24/7 channel locking."
         canonical="https://dash.together.dpdns.org/faq"
       />
@@ -496,7 +496,7 @@ export default function FaqPage() {
                   TOGETHER
                 </span>
                 <span className="hidden sm:inline-block ml-2 text-[9px] bg-brutal-accent text-black font-black px-1.5 py-0.2">
-                  COMMANDS &amp; PROTOCOL DOCS
+                  COMMANDS & PROTOCOL DOCS
                 </span>
               </div>
             </Link>
@@ -529,10 +529,10 @@ export default function FaqPage() {
         <div className="max-w-7xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-0.5 bg-brutal-surface border border-brutal-border text-[10px] font-black uppercase text-brutal-accent">
             <BookOpen className="w-3.5 h-3.5" />
-            <span>COMMAND REGISTRY &amp; COMPREHENSIVE PROTOCOL FAQ</span>
+            <span>COMMAND REGISTRY & COMPREHENSIVE PROTOCOL FAQ</span>
           </div>
           <h1 className="font-display font-black text-3xl sm:text-5xl text-white uppercase tracking-tight">
-            COMMANDS &amp; FAQ DIRECTORY.
+            COMMANDS & FAQ DIRECTORY.
           </h1>
           <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed">
             Detailed guides for all 59+ commands: audio playback, queue manipulations, 14 DSP filters, 24/7 channel locking, playlists, and server configuration.
