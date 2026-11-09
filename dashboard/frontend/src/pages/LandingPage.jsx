@@ -282,10 +282,11 @@ export default function LandingPage() {
                     href={BOT_INVITE_URL}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Invite Together Music Bot to Discord"
                     className="px-6 py-3.5 bg-brutal-accent text-black font-display font-black text-sm uppercase border-2 border-black shadow-brutal hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-2"
                   >
                     <Disc3 className="w-5 h-5 animate-spin" />
-                    <span>+ ADD TO DISCORD</span>
+                    <span>INVITE TO DISCORD</span>
                   </a>
 
                   <Link
@@ -640,12 +641,15 @@ export default function LandingPage() {
 
               <div className="relative w-full sm:w-72">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-                <label htmlFor="command-search-input" className="sr-only">Search Discord Commands</label>
+                <label id="command-search-label" htmlFor="command-search-input" className="sr-only">Search Discord Commands</label>
                 <input
                   id="command-search-input"
                   name="command-search"
                   type="text"
                   placeholder="Search commands (e.g. play, 247, loop)..."
+                  aria-label="Search Discord commands"
+                  aria-labelledby="command-search-label"
+                  title="Search Discord commands"
                   value={cmdSearch}
                   onChange={(e) => setCmdSearch(e.target.value)}
                   className="w-full bg-brutal-bg border-2 border-brutal-border pl-9 pr-3 py-1.5 font-mono text-xs text-white placeholder-zinc-400 focus:outline-none focus:border-brutal-accent"

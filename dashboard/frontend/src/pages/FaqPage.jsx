@@ -64,7 +64,7 @@ const FAQ_SECTIONS = [
       {
         id: 'how-to-invite',
         question: 'How do I add Together to my Discord server?',
-        answer: 'Click the "+ ADD TO DISCORD" button or use the direct OAuth2 invite link. Make sure to grant the bot "Connect", "Speak", "Use Slash Commands", and "Embed Links" permissions in your server role settings.',
+        answer: 'Click the "INVITE TO DISCORD" button or use the direct OAuth2 invite link. Make sure to grant the bot "Connect", "Speak", "Use Slash Commands", and "Embed Links" permissions in your server role settings.',
         command: 'https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands',
         commandLabel: 'Direct OAuth2 Bot Invite Link'
       },
@@ -542,10 +542,14 @@ export default function FaqPage() {
           <div className="pt-2 max-w-2xl">
             <div className="relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-              <label htmlFor="doc-search-input" className="sr-only">Search all commands and FAQs</label>
+              <label id="doc-search-label" htmlFor="doc-search-input" className="sr-only">Search all commands and FAQs</label>
               <input
                 id="doc-search-input"
+                name="doc-search"
                 type="text"
+                aria-label="Search all commands and FAQs"
+                aria-labelledby="doc-search-label"
+                title="Search all commands and FAQs"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search commands (e.g. play, skip, 247, bassboost, lyrics, djrole)..."

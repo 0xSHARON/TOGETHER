@@ -4,7 +4,9 @@
 # AI Search Engine Optimization (GEO)
 # ==========================================
 
-# ── General Search Engine Crawlers ──
+# ------------------------------------------
+# General Search Engine Crawlers
+# ------------------------------------------
 User-agent: *
 Allow: /
 Allow: /about
@@ -29,14 +31,18 @@ Disallow: /player
 Disallow: /servers
 Disallow: /profile
 
-# ── Bing & Microsoft Search Crawlers ──
+# ------------------------------------------
+# Bing & Microsoft Search Crawlers
+# ------------------------------------------
 User-agent: bingbot
 Allow: /
 
 User-agent: msnbot
 Allow: /
 
-# ── AI Crawlers (100% Unrestricted Access for AI Discovery & Citations) ──
+# ------------------------------------------
+# AI Crawlers (100% Unrestricted Access for AI Discovery & Citations)
+# ------------------------------------------
 User-agent: GPTBot
 Allow: /
 
@@ -64,6 +70,8 @@ Allow: /
 User-agent: Meta-ExternalAgent
 Allow: /
 
-# ── Host & XML Sitemap Location ──
+# ------------------------------------------
+# Host & XML Sitemap Location
+# ------------------------------------------
 Host: https://dash.together.dpdns.org
 Sitemap: https://dash.together.dpdns.org/sitemap.xml

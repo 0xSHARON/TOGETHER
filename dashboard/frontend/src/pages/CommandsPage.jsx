@@ -234,8 +234,14 @@ export default function CommandsPage() {
         {/* Search Bar */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brutal-muted" />
+          <label id="commands-page-search-label" htmlFor="commands-page-search" className="sr-only">Search Discord Commands</label>
           <input
+            id="commands-page-search"
+            name="commands-search"
             type="text"
+            aria-label="Search public commands by name, aliases, description, or parameter"
+            aria-labelledby="commands-page-search-label"
+            title="Search Discord commands"
             placeholder="Search public commands by name, aliases, description, or parameter..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}

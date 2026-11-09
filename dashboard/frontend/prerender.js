@@ -38,7 +38,6 @@ const sharedHeadMeta = `
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#22c55e" />
     <link rel="preload" as="image" href="/logo.webp" type="image/webp" fetchpriority="high" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVnskPMA.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" />
