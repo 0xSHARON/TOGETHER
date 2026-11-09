@@ -15,14 +15,24 @@ module.exports = {
   name: "lb",
   category: "Information",
   aliases: ["leaderboard", "top", "rankings", "ranks"],
-  cooldown: 5,
-  description: "Display the brutalist music leaderboard showing top 3 and rankings.",
+  cooldown: 3,
+  description: "Display the music leaderboard showing top listeners and rankings.",
   args: false,
-  usage: "[page]",
+  usage: "[page | server | global]",
   userPerms: [],
   botPerms: ["AttachFiles", "EmbedLinks"],
 
   slashOptions: [
+    {
+      name: "scope",
+      description: "Leaderboard scope: Server or Global",
+      type: 3, // STRING
+      required: false,
+      choices: [
+        { name: "🏰 Server Standings", value: "server" },
+        { name: "🌐 Global Standings", value: "global" },
+      ],
+    },
     {
       name: "page",
       description: "Page number to view (Page 1 = Top 3 Podium)",
@@ -32,13 +42,29 @@ module.exports = {
   ],
 
   async slashExecute(interaction, client) {
+    const scope = interaction.options.getString("scope") || "server";
     const page = interaction.options.getInteger("page") || 1;
     await interaction.deferReply();
-    return this.sendLeaderboard(interaction, client, page, interaction.user.id);
+    return this.sendLeaderboard(interaction, client, page, interaction.user.id, null, scope);
   },
 
   async execute(message, args, client, prefix) {
-    const requestedPage = parseInt(args[0], 10) || 1;
+    let requestedPage = 1;
+    let scope = "server";
+
+    for (const arg of args) {
+      const lower = arg.toLowerCase();
+      if (lower === "server" || lower === "guild" || lower === "local") {
+        scope = "server";
+      } else if (lower === "global" || lower === "all" || lower === "bot") {
+        scope = "global";
+      } else {
+        const num = parseInt(arg, 10);
+        if (!isNaN(num) && num > 0) {
+          requestedPage = num;
+        }
+      }
+    }
 
     const loadCard = container().addTextDisplayComponents(
       text(`**${emoji.load || "⏳"} Rendering brutalist music leaderboard...**`),
@@ -50,19 +76,49 @@ module.exports = {
       })
       .catch(() => null);
 
-    return this.sendLeaderboard(loadMsg || message, client, requestedPage, message.author.id, message);
+    return this.sendLeaderboard(loadMsg || message, client, requestedPage, message.author.id, message, scope);
   },
 
-  async sendLeaderboard(target, client, requestedPage = 1, viewerId, originalMessage) {
+  async sendLeaderboard(target, client, requestedPage = 1, viewerId, originalMessage, scope = "server") {
     try {
-      // 1. Fetch top users sorted by XP, then songs played, then listening duration
-      const rawDocs = await UserPreferences.find()
-        .sort({ xp: -1, songsPlayed: -1, listeningSeconds: -1 })
-        .limit(100);
+      const botId = client?.user?.id;
+      const targetGuild = target.guild || originalMessage?.guild;
 
-      // Filter active users
-      let docs = rawDocs.filter((d) => (d.songsPlayed > 0 || d.xp > 0 || d.listeningSeconds > 0));
-      if (docs.length === 0) docs = rawDocs;
+      // If scope is server but executed in DMs, fallback to global
+      const effectiveScope = targetGuild ? scope : "global";
+
+      // 1. Fetch top users sorted by XP, then songs played, then listening duration
+      const queryFilter = botId ? { userId: { $ne: botId } } : {};
+      const rawDocs = await UserPreferences.find(queryFilter)
+        .sort({ xp: -1, songsPlayed: -1, listeningSeconds: -1 })
+        .limit(200)
+        .lean();
+
+      // Filter active users and strictly exclude any bot ID
+      let docs = rawDocs.filter((d) => 
+        d.userId !== botId && 
+        (Number(d.songsPlayed) > 0 || Number(d.xp) > 0 || Number(d.listeningSeconds) > 0)
+      );
+
+      // Server scope filtering
+      if (effectiveScope === "server" && targetGuild) {
+        // Pre-fetch guild members cache or check membership
+        docs = docs.filter((d) => {
+          return targetGuild.members.cache.has(d.userId);
+        });
+      }
+
+      // If no server activity yet, fallback to global with a notice or empty state
+      let isServerEmpty = false;
+      if (docs.length === 0) {
+        if (effectiveScope === "server") {
+          isServerEmpty = true;
+          // Fallback to rawDocs for rendering or empty list
+          docs = [];
+        } else {
+          docs = rawDocs.filter((d) => d.userId !== botId);
+        }
+      }
 
       // Pagination math:
       // Page 1: Ranks 1 to 3 (Podium)
@@ -87,62 +143,76 @@ module.exports = {
         targetDocs = docs.slice(startIdx, startIdx + 7);
       }
 
-      // 4. Resolve Discord User profiles in parallel with full nickname emoji preservation
-      const resolvedUsers = await Promise.all(
-        targetDocs.map(async (doc) => {
-          let discordUser = null;
-          try {
-            discordUser =
-              client.users.cache.get(doc.userId) ||
-              (await client.users.fetch(doc.userId).catch(() => null));
-          } catch {}
+      // 4. Resolve Discord User profiles in parallel with full nickname support
+      const resolvedUsers = (
+        await Promise.all(
+          targetDocs.map(async (doc) => {
+            let discordUser = null;
+            try {
+              discordUser =
+                client.users.cache.get(doc.userId) ||
+                (await client.users.fetch(doc.userId).catch(() => null));
+            } catch {}
 
-          return {
-            userId: doc.userId,
-            name: discordUser?.displayName || discordUser?.username || `User_${doc.userId.slice(-4)}`,
-            username: discordUser?.username || `user_${doc.userId.slice(-4)}`,
-            avatarUrl: discordUser?.displayAvatarURL?.({ extension: "png", size: 256 }) || null,
-            level: Math.max(1, Number(doc.level) || 1),
-            xp: Math.max(0, Number(doc.xp) || 0),
-            songsPlayed: Math.max(0, Number(doc.songsPlayed) || 0),
-            listeningSeconds: Math.max(0, Number(doc.listeningSeconds) || 0),
-            streak: Math.max(0, Number(doc.streak) || 0),
-            anthem: doc.anthem,
-          };
-        }),
-      );
+            // Strictly filter out bot accounts
+            if (discordUser?.bot || doc.userId === botId) return null;
+
+            const member = targetGuild?.members?.cache?.get(doc.userId);
+            const displayName = member?.displayName || discordUser?.displayName || discordUser?.username || `User_${doc.userId.slice(-4)}`;
+
+            return {
+              userId: doc.userId,
+              name: displayName,
+              username: discordUser?.username || `user_${doc.userId.slice(-4)}`,
+              avatarUrl: discordUser?.displayAvatarURL?.({ extension: "png", size: 256 }) || null,
+              level: Math.max(1, Number(doc.level) || 1),
+              xp: Math.max(0, Number(doc.xp) || 0),
+              songsPlayed: Math.max(0, Number(doc.songsPlayed) || 0),
+              listeningSeconds: Math.max(0, Number(doc.listeningSeconds) || 0),
+              streak: Math.max(0, Number(doc.streak) || 0),
+              anthem: doc.anthem,
+            };
+          }),
+        )
+      ).filter(Boolean);
 
       // 5. Generate Neo-Brutalist Canvas Banner
-      const serverName = target.guild?.name || originalMessage?.guild?.name || "COMMUNITY";
+      const serverTitle = effectiveScope === "server" && targetGuild
+        ? targetGuild.name
+        : "GLOBAL COMMUNITY";
+
       let canvasBuffer;
       if (page === 1) {
         canvasBuffer = await renderLeaderboardPodium(resolvedUsers, {
           totalPages,
-          serverName,
+          serverName: serverTitle,
         });
       } else {
         canvasBuffer = await renderLeaderboardRanks(resolvedUsers, page, totalPages, {
-          serverName,
+          serverName: serverTitle,
         });
       }
 
-      const attachment = new AttachmentBuilder(canvasBuffer, { name: "leaderboard.png" });
+      const fileName = `leaderboard-${effectiveScope}-p${page}-${Date.now()}.png`;
+      const attachment = new AttachmentBuilder(canvasBuffer, { name: fileName });
 
-      // 6. Build Discord Message Components V2 with bot brutalist custom emojis
+      // 6. Build Discord Message Components V2
       const card = container();
 
       // Media Gallery for Canvas Banner
       card.addMediaGalleryComponents(
         new MediaGalleryBuilder().addItems(
           new MediaGalleryItemBuilder()
-            .setURL("attachment://leaderboard.png")
-            .setDescription(`Music Leaderboard Page ${page} of ${totalPages}`),
+            .setURL(`attachment://${fileName}`)
+            .setDescription(`Music Leaderboard [${effectiveScope.toUpperCase()}] Page ${page} of ${totalPages}`),
         ),
       );
 
-      // Text Display with bot custom brutalist emojis from assets/emojis
+      // Text Display with custom brutalist styling
       let textContent = "";
-      if (page === 1) {
+      if (isServerEmpty) {
+        textContent = `## ${emoji.trophy || "🏆"} ${serverTitle} // Podium\n*No members in this server have earned music XP yet. Play music with TOGETHER to claim #1!*`;
+      } else if (page === 1) {
         const p1 = resolvedUsers[0]
           ? `${emoji.medal1 || "🥇"} **#1:** \`${resolvedUsers[0].name}\` — ${emoji.level || "⚡"} LVL \`${resolvedUsers[0].level}\` · ${emoji.sparkles || "✨"} \`${(resolvedUsers[0].xp || 0).toLocaleString()} XP\` · ${emoji.headphones || "🎧"} \`${resolvedUsers[0].songsPlayed} tracks\``
           : `${emoji.medal1 || "🥇"} **#1:** *Open Challenger (Play music to claim)*`;
@@ -153,7 +223,7 @@ module.exports = {
           ? `${emoji.medal3 || "🥉"} **#3:** \`${resolvedUsers[2].name}\` — ${emoji.level || "⚡"} LVL \`${resolvedUsers[2].level}\` · ${emoji.sparkles || "✨"} \`${(resolvedUsers[2].xp || 0).toLocaleString()} XP\` · ${emoji.headphones || "🎧"} \`${resolvedUsers[2].songsPlayed} tracks\``
           : `${emoji.medal3 || "🥉"} **#3:** *Open Challenger*`;
 
-        textContent = `## ${emoji.trophy || "🏆"} Top Music Listeners // Podium\n${p1}\n${p2}\n${p3}`;
+        textContent = `## ${emoji.trophy || "🏆"} Top Music Listeners // ${effectiveScope === "server" ? "Server Podium" : "Global Podium"}\n${p1}\n${p2}\n${p3}`;
       } else {
         const startRank = 4 + (page - 2) * 7;
         const rankLines = resolvedUsers.map((u, i) => {
@@ -172,21 +242,21 @@ module.exports = {
         const myStreak = myDoc?.streak > 0 ? ` · ${emoji.fire || "🔥"} \`${myDoc.streak}d streak\`` : "";
         card.addTextDisplayComponents(
           text(
-            `-# ${emoji.rank || "👤"} **Your Standing:** Rank \`#${myRank}\` · ${emoji.level || "⚡"} LVL \`${myDoc?.level || 1}\` · ${emoji.sparkles || "✨"} \`${(myDoc?.xp || 0).toLocaleString()} XP\` · ${emoji.headphones || "🎧"} \`${myDoc?.songsPlayed || 0} tracks\`${myStreak}`,
+            `-# ${emoji.rank || "👤"} **Your Standing (${effectiveScope.toUpperCase()}):** Rank \`#${myRank}\` · ${emoji.level || "⚡"} LVL \`${myDoc?.level || 1}\` · ${emoji.sparkles || "✨"} \`${(myDoc?.xp || 0).toLocaleString()} XP\` · ${emoji.headphones || "🎧"} \`${myDoc?.songsPlayed || 0} tracks\`${myStreak}`,
           ),
         );
       } else {
         card.addTextDisplayComponents(
-          text(`-# ${emoji.rank || "👤"} **Your Standing:** *Unranked (Play songs to climb the leaderboard!)*`),
+          text(`-# ${emoji.rank || "👤"} **Your Standing (${effectiveScope.toUpperCase()}):** *Unranked (Play songs to climb the leaderboard!)*`),
         );
       }
 
-      // 7. Navigation Action Row with custom bot emojis
-      const row = new ActionRowBuilder();
+      // 7. Navigation Action Row 1: Pagination
+      const navRow = new ActionRowBuilder();
 
-      row.addComponents(
+      navRow.addComponents(
         new ButtonBuilder()
-          .setCustomId(`lb_prev_${page}_${viewerId || "0"}`)
+          .setCustomId(`lb_prev_${page}_${viewerId || "0"}_${effectiveScope}`)
           .setLabel("Prev")
           .setEmoji(emoji.previous || "◀")
           .setStyle(ButtonStyle.Secondary)
@@ -197,7 +267,7 @@ module.exports = {
           .setStyle(ButtonStyle.Primary)
           .setDisabled(true),
         new ButtonBuilder()
-          .setCustomId(`lb_next_${page}_${viewerId || "0"}`)
+          .setCustomId(`lb_next_${page}_${viewerId || "0"}_${effectiveScope}`)
           .setLabel("Next")
           .setEmoji(emoji.skip || "▶")
           .setStyle(ButtonStyle.Secondary)
@@ -211,9 +281,9 @@ module.exports = {
           myPage = 2 + Math.floor((myRank - 4) / 7);
         }
         if (myPage !== page && myPage <= totalPages) {
-          row.addComponents(
+          navRow.addComponents(
             new ButtonBuilder()
-              .setCustomId(`lb_jump_${myPage}_${viewerId}`)
+              .setCustomId(`lb_jump_${myPage}_${viewerId}_${effectiveScope}`)
               .setLabel("My Rank")
               .setEmoji(emoji.star || "🎯")
               .setStyle(ButtonStyle.Success),
@@ -221,24 +291,48 @@ module.exports = {
         }
       }
 
-      card.addActionRowComponents(row);
+      card.addActionRowComponents(navRow);
 
-      const responsePayload = {
+      // 8. Scope Toggle Action Row (Server vs Global)
+      if (targetGuild) {
+        const scopeRow = new ActionRowBuilder();
+        scopeRow.addComponents(
+          new ButtonBuilder()
+            .setCustomId(`lb_scope_server_${viewerId || "0"}`)
+            .setLabel("🏰 Server Leaderboard")
+            .setStyle(effectiveScope === "server" ? ButtonStyle.Success : ButtonStyle.Secondary)
+            .setDisabled(effectiveScope === "server"),
+          new ButtonBuilder()
+            .setCustomId(`lb_scope_global_${viewerId || "0"}`)
+            .setLabel("🌐 Global Leaderboard")
+            .setStyle(effectiveScope === "global" ? ButtonStyle.Success : ButtonStyle.Secondary)
+            .setDisabled(effectiveScope === "global"),
+        );
+        card.addActionRowComponents(scopeRow);
+      }
+
+      // 9. Dispatch response payload safely
+      const editPayload = {
+        components: [card],
+        files: [attachment],
+      };
+
+      const newMsgPayload = {
         components: [card],
         files: [attachment],
         flags: flags(),
       };
 
       if (target.isCommand?.() || target.editReply) {
-        return await target.editReply(responsePayload);
+        return await target.editReply(editPayload);
       } else if (target.edit && typeof target.edit === "function") {
-        return await target.edit(responsePayload).catch(async () => {
+        return await target.edit(editPayload).catch(async () => {
           if (originalMessage?.channel?.send) {
-            return await originalMessage.channel.send(responsePayload);
+            return await originalMessage.channel.send(newMsgPayload);
           }
         });
       } else if (target.channel?.send) {
-        return await target.channel.send(responsePayload);
+        return await target.channel.send(newMsgPayload);
       }
     } catch (err) {
       console.error("[Leaderboard Command] Error:", err);
@@ -261,16 +355,25 @@ module.exports = {
 
   async componentsV2(interaction, client) {
     const parts = interaction.customId.split("_");
-    const action = parts[1]; // "prev", "next", "jump"
-    const currentPage = parseInt(parts[2], 10) || 1;
+    const action = parts[1]; // "prev", "next", "jump", "scope"
+    
+    let targetPage = 1;
+    let targetScope = "server";
 
-    let targetPage = currentPage;
-    if (action === "prev") targetPage = Math.max(1, currentPage - 1);
-    else if (action === "next") targetPage = currentPage + 1;
-    else if (action === "jump") targetPage = currentPage;
+    if (action === "scope") {
+      targetScope = parts[2] || "server";
+      targetPage = 1;
+    } else {
+      const currentPage = parseInt(parts[2], 10) || 1;
+      targetScope = parts[4] || "server";
 
-    await interaction.deferUpdate();
+      if (action === "prev") targetPage = Math.max(1, currentPage - 1);
+      else if (action === "next") targetPage = currentPage + 1;
+      else if (action === "jump") targetPage = currentPage;
+    }
 
-    return this.sendLeaderboard(interaction, client, targetPage, interaction.user.id);
+    await interaction.deferUpdate().catch(() => {});
+
+    return this.sendLeaderboard(interaction, client, targetPage, interaction.user.id, null, targetScope);
   },
 };

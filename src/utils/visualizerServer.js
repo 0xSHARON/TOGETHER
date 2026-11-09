@@ -1257,51 +1257,102 @@ function startVisualizerServer(client, preferredPort = 5050) {
       return;
     }
 
-    // ── API: Global Bot Leaderboard (/api/leaderboard) ────────
+    // ── API: Global / Server Bot Leaderboard (/api/leaderboard) ────────
     if (pathname === "/api/leaderboard" && req.method === "GET") {
       try {
         const UserPreferences = require("../schema/userpreferences");
-        const rawDocs = await UserPreferences.find()
+        const botId = client?.user?.id;
+        const guildId = reqUrl.searchParams.get("guildId") || reqUrl.searchParams.get("guild");
+        const sortBy = (reqUrl.searchParams.get("sort") || "xp").toLowerCase();
+
+        // 1. Fetch top docs excluding the bot itself
+        const queryFilter = botId ? { userId: { $ne: botId } } : {};
+        const rawDocs = await UserPreferences.find(queryFilter)
           .sort({ xp: -1, songsPlayed: -1, listeningSeconds: -1 })
-          .limit(100)
+          .limit(200)
           .lean()
           .catch(() => []);
 
-        let docs = Array.isArray(rawDocs) ? rawDocs.filter((d) => (d.songsPlayed > 0 || d.xp > 0 || d.listeningSeconds > 0)) : [];
-        if (docs.length === 0 && Array.isArray(rawDocs)) docs = rawDocs;
+        let docs = Array.isArray(rawDocs) ? rawDocs.filter((d) => 
+          d.userId !== botId && (d.songsPlayed > 0 || d.xp > 0 || d.listeningSeconds > 0)
+        ) : [];
+        if (docs.length === 0 && Array.isArray(rawDocs)) {
+          docs = rawDocs.filter((d) => d.userId !== botId);
+        }
 
-        const resolvedUsers = await Promise.all(
-          docs.map(async (doc, idx) => {
-            let discordUser = null;
-            try {
-              discordUser =
-                client.users.cache.get(doc.userId) ||
-                (await client.users.fetch(doc.userId).catch(() => null));
-            } catch {}
+        // 2. Guild filtering if requested and guild exists
+        let targetGuild = null;
+        if (guildId && client?.guilds?.cache?.has(guildId)) {
+          targetGuild = client.guilds.cache.get(guildId);
+        }
 
-            return {
-              rank: idx + 1,
-              userId: doc.userId,
-              name: discordUser?.displayName || discordUser?.username || `User_${doc.userId.slice(-4)}`,
-              username: discordUser?.username || `user_${doc.userId.slice(-4)}`,
-              avatarUrl: discordUser?.displayAvatarURL?.({ extension: "png", size: 256 }) || null,
-              level: Math.max(1, Number(doc.level) || 1),
-              xp: Math.max(0, Number(doc.xp) || 0),
-              songsPlayed: Math.max(0, Number(doc.songsPlayed) || 0),
-              listeningSeconds: Math.max(0, Number(doc.listeningSeconds) || 0),
-              listeningMinutes: Math.floor((Math.max(0, Number(doc.listeningSeconds) || 0)) / 60),
-              streak: Math.max(0, Number(doc.streak) || 0),
-              anthem: doc.anthem,
-              accentColor: doc.accentColor || "#00E676"
-            };
-          })
-        );
+        // 3. Resolve Discord users in parallel
+        const resolvedUsers = (
+          await Promise.all(
+            docs.map(async (doc) => {
+              // Guild membership check
+              if (targetGuild) {
+                const inGuild =
+                  targetGuild.members.cache.has(doc.userId) ||
+                  (await targetGuild.members.fetch(doc.userId).catch(() => null));
+                if (!inGuild) return null;
+              }
+
+              let discordUser = null;
+              try {
+                discordUser =
+                  client.users.cache.get(doc.userId) ||
+                  (await client.users.fetch(doc.userId).catch(() => null));
+              } catch {}
+
+              // Exclude bots
+              if (discordUser?.bot || doc.userId === botId) return null;
+
+              const member = targetGuild?.members?.cache?.get(doc.userId);
+
+              return {
+                userId: doc.userId,
+                name: member?.displayName || discordUser?.displayName || discordUser?.username || `User_${doc.userId.slice(-4)}`,
+                username: discordUser?.username || `user_${doc.userId.slice(-4)}`,
+                avatarUrl: discordUser?.displayAvatarURL?.({ extension: "png", size: 256 }) || null,
+                level: Math.max(1, Number(doc.level) || 1),
+                xp: Math.max(0, Number(doc.xp) || 0),
+                songsPlayed: Math.max(0, Number(doc.songsPlayed) || 0),
+                listeningSeconds: Math.max(0, Number(doc.listeningSeconds) || 0),
+                listeningMinutes: Math.floor((Math.max(0, Number(doc.listeningSeconds) || 0)) / 60),
+                streak: Math.max(0, Number(doc.streak) || 0),
+                anthem: doc.anthem,
+                accentColor: doc.accentColor || "#FF1E38",
+              };
+            })
+          )
+        ).filter(Boolean);
+
+        // 4. Sort according to requested metric
+        if (sortBy === "songs") {
+          resolvedUsers.sort((a, b) => b.songsPlayed - a.songsPlayed || b.xp - a.xp);
+        } else if (sortBy === "time") {
+          resolvedUsers.sort((a, b) => b.listeningSeconds - a.listeningSeconds || b.xp - a.xp);
+        } else if (sortBy === "streak") {
+          resolvedUsers.sort((a, b) => b.streak - a.streak || b.xp - a.xp);
+        } else {
+          resolvedUsers.sort((a, b) => b.xp - a.xp || b.songsPlayed - a.songsPlayed);
+        }
+
+        // Re-index ranks after filtering and sorting
+        resolvedUsers.forEach((u, idx) => {
+          u.rank = idx + 1;
+        });
 
         res.writeHead(200, { "Content-Type": "application/json" });
-        return res.end(JSON.stringify({
-          leaderboard: resolvedUsers,
-          totalUsers: docs.length
-        }));
+        return res.end(
+          JSON.stringify({
+            leaderboard: resolvedUsers,
+            totalUsers: resolvedUsers.length,
+            scope: targetGuild ? "server" : "global",
+            serverName: targetGuild?.name || "Global",
+          })
+        );
       } catch (err) {
         res.writeHead(200, { "Content-Type": "application/json" });
         return res.end(JSON.stringify({ leaderboard: [], totalUsers: 0, error: err.message }));

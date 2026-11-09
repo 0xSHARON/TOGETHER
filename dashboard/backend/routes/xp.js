@@ -18,14 +18,15 @@ function getOptionalUser(req) {
   }
 }
 
-// GET /api/xp/leaderboard -> Global leaderboard sorted by XP & Listening Time (PUBLIC)
+// GET /api/xp/leaderboard -> Global or Server leaderboard (PUBLIC)
 router.get("/leaderboard", async (req, res) => {
   try {
     const viewer = getOptionalUser(req);
     const viewerId = viewer?.id ? String(viewer.id).trim() : null;
+    const { guildId, sort } = req.query;
 
     // 1. Primary: query bot process for Discord-resolved usernames and avatars
-    let botData = await botBridge.getLeaderboard();
+    let botData = await botBridge.getLeaderboard({ guildId, sort });
     let leaderboard = botData?.leaderboard || [];
 
     // 2. Fallback to MongoDB if bot is temporarily restarting
@@ -36,7 +37,10 @@ router.get("/leaderboard", async (req, res) => {
         .lean()
         .catch(() => []);
 
-      let activeUsers = rawUsers.filter((d) => (d.songsPlayed > 0 || d.xp > 0 || d.listeningSeconds > 0));
+      let activeUsers = rawUsers.filter((d) => 
+        (d.songsPlayed > 0 || d.xp > 0 || d.listeningSeconds > 0) &&
+        d.userId !== "863496211667484676"
+      );
       if (activeUsers.length === 0) activeUsers = rawUsers;
 
       leaderboard = activeUsers.map((u, i) => ({
@@ -51,11 +55,11 @@ router.get("/leaderboard", async (req, res) => {
         listeningSeconds: u.listeningSeconds || 0,
         listeningMinutes: Math.floor((u.listeningSeconds || 0) / 60),
         streak: u.streak || 0,
-        accentColor: u.accentColor || "#00E676"
+        accentColor: u.accentColor || "#FF1E38"
       }));
     }
 
-    // 3. Compute viewer rank
+    // 3. Compute viewer rank & profile
     let myRank = null;
     let myProfile = null;
     if (viewerId) {
@@ -63,12 +67,33 @@ router.get("/leaderboard", async (req, res) => {
       if (idx !== -1) {
         myRank = idx + 1;
         myProfile = leaderboard[idx];
+      } else {
+        // Logged-in user is not in the top slice, fetch their own stats
+        const personalDoc = await UserPreferences.findOne({ userId: viewerId }).lean().catch(() => null);
+        if (personalDoc) {
+          myProfile = {
+            rank: "100+",
+            userId: viewerId,
+            name: viewer.username || `User_${viewerId.slice(-4)}`,
+            username: viewer.username || `user_${viewerId.slice(-4)}`,
+            avatarUrl: viewer.avatar ? `https://cdn.discordapp.com/avatars/${viewerId}/${viewer.avatar}.png?size=256` : null,
+            xp: personalDoc.xp || 0,
+            level: personalDoc.level || 1,
+            songsPlayed: personalDoc.songsPlayed || 0,
+            listeningSeconds: personalDoc.listeningSeconds || 0,
+            listeningMinutes: Math.floor((personalDoc.listeningSeconds || 0) / 60),
+            streak: personalDoc.streak || 0,
+            accentColor: personalDoc.accentColor || "#FF1E38"
+          };
+        }
       }
     }
 
     res.json({
       leaderboard,
-      totalUsers: leaderboard.length,
+      totalUsers: botData?.totalUsers || leaderboard.length,
+      scope: botData?.scope || (guildId ? "server" : "global"),
+      serverName: botData?.serverName || (guildId ? "Server" : "Global"),
       myRank,
       myProfile
     });

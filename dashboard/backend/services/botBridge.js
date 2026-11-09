@@ -72,9 +72,12 @@ class BotBridgeService {
     }
   }
 
-  async getLeaderboard() {
+  async getLeaderboard(params = {}) {
     try {
-      const resp = await axios.get(`${this.apiUrl}/api/leaderboard`, { timeout: 4000 });
+      const resp = await axios.get(`${this.apiUrl}/api/leaderboard`, { 
+        params,
+        timeout: 5000 
+      });
       return resp.data || { leaderboard: [], totalUsers: 0 };
     } catch {
       return null;

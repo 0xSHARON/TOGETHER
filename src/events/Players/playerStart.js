@@ -37,6 +37,11 @@ async function recordTrackListening(track, client) {
     const userId = requester?.id;
     if (!userId) return;
 
+    // Never record stats or XP for bots or the bot's own client ID
+    let isBot = Boolean(requester?.bot);
+    if (!isBot && client?.users?.cache?.get(userId)?.bot) isBot = true;
+    if (isBot || userId === client?.user?.id) return;
+
     const UserPreferences = require("../../schema/userpreferences");
     let pref = await UserPreferences.findOne({ userId });
     if (!pref) {
