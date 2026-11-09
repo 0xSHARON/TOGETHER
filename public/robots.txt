@@ -1,9 +1,10 @@
 # ==========================================
-# Robots.txt for TOGETHER Discord Music Bot
+# Robots.txt for TOGETHER Discord Music Bot & Dashboard
 # Domain: https://dash.together.dpdns.org
-# Crawler Compliance: Screaming Frog / Googlebot / Bingbot
+# AI Search Engine Optimization (GEO)
 # ==========================================
 
+# ── General Search Engine Crawlers ──
 User-agent: *
 Allow: /
 Allow: /login
@@ -11,12 +12,9 @@ Allow: /commands
 Allow: /leaderboard
 Allow: /terms
 Allow: /privacy
-Allow: /assets/
 Allow: /logo.png
-Allow: /og-banner.png
-Allow: /banner.webp
-Allow: /favicon.png
 Allow: /favicon.svg
+Allow: /llms.txt
 
 # Disallow Private & Authenticated Dashboard Endpoints
 Disallow: /api/
@@ -27,6 +25,147 @@ Disallow: /player
 Disallow: /servers
 Disallow: /profile
 
-# Host & XML Sitemap Location
+# ── OpenAI / ChatGPT Crawlers (AI Citations & Browsing) ──
+User-agent: GPTBot
+Allow: /
+Allow: /commands
+Allow: /leaderboard
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /owner
+Disallow: /settings
+Disallow: /overview
+Disallow: /player
+Disallow: /servers
+Disallow: /profile
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /commands
+Allow: /leaderboard
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /owner
+Disallow: /settings
+Disallow: /overview
+Disallow: /player
+Disallow: /servers
+Disallow: /profile
+
+# ── Anthropic Claude Crawlers ──
+User-agent: Claude-Web
+Allow: /
+Allow: /commands
+Allow: /leaderboard
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /owner
+Disallow: /settings
+Disallow: /overview
+Disallow: /player
+Disallow: /servers
+Disallow: /profile
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /commands
+Allow: /leaderboard
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /owner
+Disallow: /settings
+Disallow: /overview
+Disallow: /player
+Disallow: /servers
+Disallow: /profile
+
+User-agent: anthropic-ai
+Allow: /
+Allow: /commands
+Allow: /leaderboard
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /owner
+Disallow: /settings
+Disallow: /overview
+Disallow: /player
+Disallow: /servers
+Disallow: /profile
+
+# ── Perplexity AI Search Crawler ──
+User-agent: PerplexityBot
+Allow: /
+Allow: /commands
+Allow: /leaderboard
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /owner
+Disallow: /settings
+Disallow: /overview
+Disallow: /player
+Disallow: /servers
+Disallow: /profile
+
+# ── Google Gemini & AI Overviews ──
+User-agent: Google-Extended
+Allow: /
+Allow: /commands
+Allow: /leaderboard
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /owner
+Disallow: /settings
+Disallow: /overview
+Disallow: /player
+Disallow: /servers
+Disallow: /profile
+
+# ── Apple Intelligence & Siri ──
+User-agent: Applebot-Extended
+Allow: /
+Allow: /commands
+Allow: /leaderboard
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /owner
+Disallow: /settings
+Disallow: /overview
+Disallow: /player
+Disallow: /servers
+Disallow: /profile
+
+# ── Meta AI / Llama ──
+User-agent: Meta-ExternalAgent
+Allow: /
+Allow: /commands
+Allow: /leaderboard
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+Disallow: /api/
+Disallow: /owner
+Disallow: /settings
+Disallow: /overview
+Disallow: /player
+Disallow: /servers
+Disallow: /profile
+
+# ── Host & XML Sitemap Location ──
 Host: https://dash.together.dpdns.org
 Sitemap: https://dash.together.dpdns.org/sitemap.xml

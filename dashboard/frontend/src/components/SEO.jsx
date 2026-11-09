@@ -9,7 +9,7 @@ export default function SEO({
   description = 'Top-rated Discord music bot featuring 24-bit lossless opus audio, real-time 3D webplayer visualizer, 24/7 uptime, and multi-source streaming.',
   canonical = 'https://dash.together.dpdns.org/',
   noindex = false,
-  image = 'https://dash.together.dpdns.org/og-banner.png'
+  image = 'https://dash.together.dpdns.org/logo.png'
 }) {
   useEffect(() => {
     // 1. Update Document Title
