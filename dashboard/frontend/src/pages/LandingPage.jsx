@@ -8,7 +8,6 @@ import {
   Radio, 
   ExternalLink, 
   ArrowRight, 
-  ShieldCheck, 
   Zap, 
   Terminal, 
   Headphones, 
@@ -16,14 +15,12 @@ import {
   Layers, 
   Star, 
   Flame, 
-  CheckCircle2, 
   Cpu,
   Volume2,
   Search,
   HelpCircle,
   ChevronDown,
   Share2,
-  Award,
   Globe,
   FileText
 } from 'lucide-react';
@@ -474,27 +471,6 @@ export default function LandingPage() {
               <div className="mt-6 pt-4 border-t border-brutal-border/50">
                 <span className="text-[10px] text-purple-400 font-black uppercase tracking-wider">PREFIX & SLASH INTEGRATED</span>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* E-E-A-T Trust & Reliability Badges */}
-        <section className="px-4 md:px-8 py-10 bg-black/60 border-b-2 border-brutal-border">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-            <div className="border-2 border-brutal-border bg-brutal-surface p-4">
-              <ShieldCheck className="w-6 h-6 text-brutal-accent mx-auto mb-2" />
-              <div className="font-bold text-white text-xs uppercase">Discord Verified</div>
-              <p className="text-[10px] text-zinc-400 mt-0.5">Official Application API</p>
-            </div>
-            <div className="border-2 border-brutal-border bg-brutal-surface p-4">
-              <Award className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
-              <div className="font-bold text-white text-xs uppercase">24-Bit Lossless</div>
-              <p className="text-[10px] text-zinc-400 mt-0.5">Studio Transcoding Rig</p>
-            </div>
-            <div className="border-2 border-brutal-border bg-brutal-surface p-4">
-              <CheckCircle2 className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
-              <div className="font-bold text-white text-xs uppercase">99.98% Uptime</div>
-              <p className="text-[10px] text-zinc-400 mt-0.5">Reliable High Availability</p>
             </div>
           </div>
         </section>
