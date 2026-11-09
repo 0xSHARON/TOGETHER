@@ -1078,51 +1078,15 @@ export default function LandingPage() {
                   </a>
                 </div>
 
-                {/* Social Media Share Buttons */}
-                <div className="pt-1 flex flex-col gap-1.5" aria-label="Social Media Share Buttons">
-                  <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider text-center md:text-left">Share Together Bot:</span>
-                  <div className="flex flex-wrap justify-center md:justify-start gap-2 items-center">
-                    <a
-                      href="https://twitter.com/intent/tweet?text=Experience%20TOGETHER%20%E2%80%94%20the%20audiophile%20Discord%20music%20bot%20with%20real-time%203D%20WebGL%20visualizer&url=https%3A%2F%2Fdash.together.dpdns.org%2F"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
-                    >
-                      Share on X (Twitter)
-                    </a>
-                    <a
-                      href="https://www.reddit.com/submit?url=https%3A%2F%2Fdash.together.dpdns.org%2F&title=TOGETHER%20%E2%80%94%20Audiophile%20Discord%20Music%20Bot%20with%20Real-Time%203D%20WebGL%20Visualizer"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
-                    >
-                      Share on Reddit
-                    </a>
-                    <a
-                      href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdash.together.dpdns.org%2F"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
-                    >
-                      Share on Facebook
-                    </a>
-                    <a
-                      href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fdash.together.dpdns.org%2F"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
-                    >
-                      Share on LinkedIn
-                    </a>
-                    <button
-                      onClick={handleShare}
-                      aria-label="Share or Copy Link"
-                      className="px-2.5 py-1 bg-brutal-accent text-black font-mono text-[10px] font-bold uppercase border border-black hover:bg-emerald-300 transition-all flex items-center gap-1"
-                    >
-                      <Share2 className="w-3 h-3" />
-                      <span>{copied ? 'LINK COPIED!' : 'COPY LINK'}</span>
-                    </button>
-                  </div>
+                <div className="pt-1 flex flex-wrap justify-center md:justify-start items-center gap-2">
+                  <button
+                    onClick={handleShare}
+                    aria-label="Copy Website Link"
+                    className="px-3 py-1.5 bg-brutal-accent text-black font-mono text-xs font-bold uppercase border border-black hover:bg-emerald-300 transition-all flex items-center gap-1.5 shadow-brutal-sm"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                    <span>{copied ? 'LINK COPIED!' : 'COPY LINK'}</span>
+                  </button>
                 </div>
               </div>
             </div>
