@@ -434,12 +434,21 @@ function getBotInfo(client) {
     refreshOwnerData(client).catch(() => {});
   }
 
+  if (client?.user && !client.user.banner && client.user.fetch) {
+    client.user.fetch().catch(() => {});
+  }
+
+  const botBanner = client?.user?.bannerURL?.({ size: 1024, extension: "png" }) ||
+    (client?.user?.banner ? `https://cdn.discordapp.com/banners/${client.user.id}/${client.user.banner}.png?size=1024` : "https://cdn.discordapp.com/banners/863496211667484676/eeb36e3b03b9cee8ef995ca107b635e2.png?size=1024");
+
   return {
     bot: {
       name: client?.user?.username || "TOGETHER",
-      tag: client?.user?.tag || "TOGETHER#0000",
+      tag: client?.user?.tag || "TOGETHER#8106",
       id: client?.user?.id || "863496211667484676",
-      avatar: client?.user?.displayAvatarURL?.({ size: 256 }) || "/logo.png",
+      avatar: client?.user?.displayAvatarURL?.({ size: 512, extension: "png" }) || "https://cdn.discordapp.com/avatars/863496211667484676/b2b06f7f709e0963ed8ac5b31218246f.png?size=512",
+      banner: botBanner,
+      accentColor: client?.user?.accentColor ? `#${client.user.accentColor.toString(16).padStart(6, '0')}` : null,
       totalGuilds: client?.guilds?.cache?.size || 103,
       totalUsers,
       activeSessions: client?.manager?.players?.size || 0,

@@ -13,7 +13,16 @@ class BotBridgeService {
       return resp.data;
     } catch (err) {
       return {
-        bot: { name: "TOGETHER", ping: 0, totalGuilds: 0, totalUsers: 0 },
+        bot: {
+          name: "TOGETHER",
+          tag: "TOGETHER#8106",
+          id: "863496211667484676",
+          avatar: "https://cdn.discordapp.com/avatars/863496211667484676/b2b06f7f709e0963ed8ac5b31218246f.png?size=512",
+          banner: "https://cdn.discordapp.com/banners/863496211667484676/eeb36e3b03b9cee8ef995ca107b635e2.png?size=1024",
+          ping: 0,
+          totalGuilds: 106,
+          totalUsers: 23075
+        },
         error: "Bot offline or unreachable"
       };
     }
