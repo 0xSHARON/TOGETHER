@@ -731,7 +731,7 @@ export default function LandingPage() {
                 </span>
               </div>
               <p className="text-xs text-zinc-300 max-w-2xl leading-relaxed">
-                Together is designed and engineered by <strong className="text-white" rel="author">KAJU🦋</strong>. Built with a passion for lossless Discord music streaming, high-throughput Lavalink node clustering, and interactive 3D WebGL sound visualizations.
+                Together is designed and engineered by <strong className="text-white" rel="author">KAJU🦋</strong>. Built with a passion for lossless Discord music streaming, high-throughput audio node clustering, and interactive 3D WebGL sound visualizations.
               </p>
               
               <div className="text-[11px] font-mono text-zinc-400 flex flex-wrap gap-4 items-center justify-center md:justify-start">
@@ -762,16 +762,6 @@ export default function LandingPage() {
                   className="px-4 py-1.5 bg-brutal-secondary text-white border-2 border-brutal-border font-bold text-xs uppercase hover:border-white transition-all flex items-center gap-1.5"
                 >
                   <span>COMMUNITY DISCORD</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-                <a
-                  href="https://github.com/0xSHARON/TOGETHER"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  aria-label="GitHub Repository"
-                  className="px-4 py-1.5 bg-black text-white border-2 border-brutal-border font-bold text-xs uppercase hover:border-white transition-all flex items-center gap-1.5"
-                >
-                  <span>GITHUB SOURCE</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
                 <button
@@ -828,7 +818,7 @@ export default function LandingPage() {
           </picture>
           <div>
             <div className="text-white font-bold">TOGETHER // AUDIO OS v2.5.0</div>
-            <div className="text-[10px] text-zinc-500">GPL-3.0 Open Source • Lavalink v4 Audio Core</div>
+            <div className="text-[10px] text-zinc-500">GPL-3.0 Open Source • High-Performance Sound Engine</div>
           </div>
         </div>
 
@@ -840,15 +830,14 @@ export default function LandingPage() {
           <Link to="/leaderboard" className="hover:text-brutal-accent">Leaderboard</Link>
           <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
-          <a href="mailto:support@together.dpdns.org" className="hover:text-brutal-accent">Contact Support</a>
+          <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Contact Support</a>
           <a href={SUPPORT_SERVER_URL} target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Discord</a>
-          <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">GitHub</a>
           <a href={TOPGG_VOTE_URL} target="_blank" rel="me noopener noreferrer" className="hover:text-brutal-accent">Vote Top.gg</a>
         </nav>
 
         <div className="text-center md:text-right">
           <address className="not-italic text-[10px] text-zinc-500">
-            Together Audio Systems • Global Team • <a href="mailto:support@together.dpdns.org" className="text-zinc-400 hover:text-white">support@together.dpdns.org</a>
+            Together Audio Systems • Global Distributed Engineering Team
           </address>
           <div className="text-[11px] mt-0.5">Author: <strong className="text-white" rel="author">KAJU🦋</strong></div>
         </div>
