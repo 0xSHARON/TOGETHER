@@ -30,3 +30,4 @@ Disallow: /profile
 # Host & XML Sitemap Location
 Host: https://dash.together.dpdns.org
 Sitemap: https://dash.together.dpdns.org/sitemap.xml
+
