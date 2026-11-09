@@ -46,6 +46,41 @@ const POPULAR_COMMANDS = [
   { name: '247', category: 'SETTINGS', description: 'Keep Together bot locked in voice channel 24 hours a day.', voterOnly: true, aliases: ['stay'] }
 ];
 
+const LANDING_FAQS = [
+  {
+    q: "Is Together Music Bot completely free to use?",
+    a: "Yes. Together is 100% free to use. All members enjoy high quality sound, queue controls, and sound filters without monthly fees."
+  },
+  {
+    q: "How do I enable 24/7 voice channel playback?",
+    a: "Type /247 in your server text channel. Together will stay in your voice lounge around the clock, even when you log off."
+  },
+  {
+    q: "Which music sources can I play?",
+    a: "You can stream tracks from Spotify, SoundCloud, YouTube, Apple Music, and direct web radio streams. Simply paste any link or type the song name."
+  },
+  {
+    q: "What sound filters are available?",
+    a: "Together includes 14 sound effects. You can boost bass, turn on 8D surround sound, speed up tracks with Nightcore, or slow them down with Vaporwave."
+  },
+  {
+    q: "How do I control playback with the Web Dashboard?",
+    a: "Sign in with your Discord account. Open the web player to see live album art, skip songs, adjust volume, and view real-time 3D visualizers right in your browser."
+  },
+  {
+    q: "Can I set up DJ roles and channel restrictions?",
+    a: "Yes. Server admins can assign custom DJ roles and lock the bot to specific text or voice channels to keep music commands organized."
+  },
+  {
+    q: "Does Together collect private voice data?",
+    a: "No. Together only plays music. We never record, store, or monitor private voice conversations. Your privacy is always protected."
+  },
+  {
+    q: "How do I vote for Together on Top.gg?",
+    a: "Click the vote link in the footer or navigation. Voting supports our hosting and unlocks premium voter perks for your whole server."
+  }
+];
+
 export default function LandingPage() {
   const { user } = useAuth();
   const [stats, setStats] = useState({
@@ -139,6 +174,9 @@ export default function LandingPage() {
     'ALL',
     ...Array.from(new Set(commands.map((c) => c.category?.toUpperCase()).filter(Boolean)))
   ];
+
+  const [openFaq, setOpenFaq] = useState(null);
+  const toggleFaq = (idx) => setOpenFaq(openFaq === idx ? null : idx);
 
   // Category counts
   const categoryCounts = {
@@ -509,6 +547,119 @@ export default function LandingPage() {
           </div>
         </section>
 
+                {/* Quickstart Setup Guide */}
+        <section id="quickstart" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
+          <div>
+            <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
+              FAST SETUP
+            </span>
+            <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
+              HOW TO SETUP TOGETHER IN THREE SIMPLE STEPS.
+            </h2>
+            <p className="font-mono text-xs text-zinc-400 mt-2 max-w-xl">
+              Get studio-grade music streaming in your Discord server in less than 30 seconds.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal flex flex-col justify-between">
+              <div className="space-y-3">
+                <span className="font-mono font-black text-3xl text-brutal-accent">01</span>
+                <h3 className="font-display font-black text-xl text-white uppercase">Invite Together to Server</h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Click the Invite to Discord button on this page. Pick your Discord server from the drop-down menu. Grant the bot basic message and voice permissions to get started.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-brutal-border/50 text-[10px] font-mono text-zinc-400 uppercase">
+                Step 1: Authorization
+              </div>
+            </div>
+
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal flex flex-col justify-between">
+              <div className="space-y-3">
+                <span className="font-mono font-black text-3xl text-cyan-400">02</span>
+                <h3 className="font-display font-black text-xl text-white uppercase">Join Any Voice Channel</h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Hop into any voice lounge on your server with your friends. Together connects immediately when you run your first command.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-brutal-border/50 text-[10px] font-mono text-zinc-400 uppercase">
+                Step 2: Voice Connection
+              </div>
+            </div>
+
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal flex flex-col justify-between">
+              <div className="space-y-3">
+                <span className="font-mono font-black text-3xl text-emerald-400">03</span>
+                <h3 className="font-display font-black text-xl text-white uppercase">Play Music &amp; Build Queues</h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Type /play followed by any song name, artist, or direct playlist link. Sit back and enjoy clear music with no setup delays.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-brutal-border/50 text-[10px] font-mono text-zinc-400 uppercase">
+                Step 3: Instant Playback
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Benefits Section: Why Communities Choose Together */}
+        <section id="benefits" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
+          <div>
+            <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
+              COMMUNITY FIRST
+            </span>
+            <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
+              WHY SERVER OWNERS &amp; FANS CHOOSE TOGETHER.
+            </h2>
+            <p className="font-mono text-xs text-zinc-400 mt-2 max-w-xl">
+              Reliable, lag-free audio delivery designed for Discord communities of every size.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-3">
+              <div className="w-9 h-9 border-2 border-brutal-border bg-black flex items-center justify-center text-brutal-accent">
+                <Headphones className="w-4 h-4" />
+              </div>
+              <h3 className="font-display font-black text-base text-white uppercase">Crystal Clear Sound</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Together streams audio at 48,000Hz 24-bit opus quality. You hear rich bass lines, warm mid frequencies, and crisp vocals on every song.
+              </p>
+            </div>
+
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-3">
+              <div className="w-9 h-9 border-2 border-brutal-border bg-black flex items-center justify-center text-cyan-400">
+                <Zap className="w-4 h-4" />
+              </div>
+              <h3 className="font-display font-black text-base text-white uppercase">Zero Lag Streaming</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Our high-speed audio servers prevent sound drops and voice stutter, even during busy server events and peak gaming sessions.
+              </p>
+            </div>
+
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-3">
+              <div className="w-9 h-9 border-2 border-brutal-border bg-black flex items-center justify-center text-emerald-400">
+                <Layers className="w-4 h-4" />
+              </div>
+              <h3 className="font-display font-black text-base text-white uppercase">Unlimited Playlists</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Queue entire playlists and albums from Spotify, SoundCloud, YouTube, and Apple Music with zero song limits or playback delays.
+              </p>
+            </div>
+
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-3">
+              <div className="w-9 h-9 border-2 border-brutal-border bg-black flex items-center justify-center text-pink-400">
+                <HelpCircle className="w-4 h-4" />
+              </div>
+              <h3 className="font-display font-black text-base text-white uppercase">Friendly Support</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Our verified development team and active Discord server are always available to help you configure settings and answer questions.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Comparison Matrix: Together vs Competitors */}
         <section id="benchmark" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
           <div>
@@ -730,6 +881,117 @@ export default function LandingPage() {
                 </button>
               </div>
             )}
+          </div>
+        </section>
+
+                {/* Audio Guide & Sound Effects Overview */}
+        <section id="audio-guide" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
+          <div>
+            <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
+              SOUND LAB
+            </span>
+            <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
+              FOURTEEN STUDIO SOUND FILTERS &amp; AUDIO EFFECTS.
+            </h2>
+            <p className="font-mono text-xs text-zinc-400 mt-2 max-w-xl">
+              Customize real-time acoustics directly from your chat bar or web visualizer.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-3">
+              <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-widest">EQUALIZER</span>
+              <h3 className="font-display font-black text-base text-white uppercase">Bass Boost Equalizer</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Give your songs deep, punchy low-end frequencies. Choose from Low, Medium, High, or Extreme bass settings to match your music style.
+              </p>
+            </div>
+
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-3">
+              <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest">SPATIAL</span>
+              <h3 className="font-display font-black text-base text-white uppercase">8D Spatial Audio</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Experience rotating circular surround sound. The audio gently circles around your headphones to create an immersive listening room.
+              </p>
+            </div>
+
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-3">
+              <span className="text-xs font-mono font-bold text-purple-400 uppercase tracking-widest">TEMPO &amp; PITCH</span>
+              <h3 className="font-display font-black text-base text-white uppercase">Nightcore &amp; Vaporwave</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Speed up your favorite tracks with cheerful Nightcore pitch tuning, or slow them down with relaxed Vaporwave retro acoustics.
+              </p>
+            </div>
+
+            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-3">
+              <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest">VOCALS</span>
+              <h3 className="font-display font-black text-base text-white uppercase">Vocal Isolation &amp; Karaoke</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Lower recorded vocal levels so you and your friends can sing along directly in your Discord voice lounge.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Interactive FAQ Section */}
+        <section id="faq" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
+          <div>
+            <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
+              QUESTIONS &amp; ANSWERS
+            </span>
+            <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
+              FREQUENTLY ASKED QUESTIONS.
+            </h2>
+            <p className="font-mono text-xs text-zinc-400 mt-2 max-w-xl">
+              Everything you need to know about Together Discord Music Bot, audio settings, and dashboard features.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {LANDING_FAQS.map((faq, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div 
+                  key={idx} 
+                  className="border-2 border-brutal-border bg-brutal-surface shadow-brutal transition-all"
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggleFaq(idx)}
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-answer-${idx}`}
+                    id={`faq-question-${idx}`}
+                    className="w-full p-5 text-left flex items-center justify-between gap-4 focus:outline-none focus:bg-white/5"
+                  >
+                    <span className="font-display font-black text-base text-white uppercase">
+                      {faq.q}
+                    </span>
+                    <ChevronDown className={`w-5 h-5 text-brutal-accent shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isOpen && (
+                    <div 
+                      id={`faq-answer-${idx}`}
+                      role="region"
+                      aria-labelledby={`faq-question-${idx}`}
+                      className="px-5 pb-5 pt-1 text-xs text-zinc-300 font-mono leading-relaxed border-t border-brutal-border/40"
+                    >
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="pt-4 flex flex-wrap gap-4 items-center justify-between text-xs font-mono text-zinc-400 border-t border-brutal-border/50">
+            <span>Need more technical answers or troubleshooting steps?</span>
+            <Link 
+              to="/faq" 
+              className="px-4 py-2 bg-brutal-surface border-2 border-brutal-border text-white hover:border-brutal-accent hover:text-brutal-accent flex items-center gap-2 uppercase font-bold"
+            >
+              <span>View Full Documentation</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </section>
 
