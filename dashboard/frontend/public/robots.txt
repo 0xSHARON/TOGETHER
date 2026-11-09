@@ -9,6 +9,7 @@ User-agent: *
 Allow: /
 Allow: /login
 Allow: /commands
+Allow: /faq
 Allow: /leaderboard
 Allow: /terms
 Allow: /privacy

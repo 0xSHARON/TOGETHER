@@ -44,6 +44,14 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Documentation & Frequently Asked Questions -->
+  <url>
+    <loc>https://dash.together.dpdns.org/faq</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
   <!-- Terms of Service -->
   <url>
     <loc>https://dash.together.dpdns.org/terms</loc>

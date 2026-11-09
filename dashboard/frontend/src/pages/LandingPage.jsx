@@ -184,11 +184,11 @@ export default function LandingPage() {
             <a href="#commands" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               COMMANDS
             </a>
-            <a href="#faq" className="text-brutal-muted hover:text-brutal-accent transition-colors">
+            <Link to="/faq" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               FAQ
-            </a>
-            <a href="#about" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              ABOUT
+            </Link>
+            <a href="#creator" className="text-brutal-muted hover:text-brutal-accent transition-colors">
+              CREATOR
             </a>
           </nav>
 
@@ -709,64 +709,11 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Frequently Asked Questions */}
-        <section id="faq" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
-          <div>
-            <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
-              KNOWLEDGE BASE
-            </span>
-            <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
-              FREQUENTLY ASKED QUESTIONS.
-            </h2>
-            <p className="font-mono text-xs text-zinc-400 mt-2 max-w-xl">
-              Answers regarding lossless audio codecs, webplayer visualizers, and permissions.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-2">
-              <h3 className="font-display font-black text-lg text-white uppercase flex items-center gap-2">
-                <span className="text-brutal-accent">Q1.</span> What is Together?
-              </h3>
-              <p className="font-mono text-xs text-zinc-300 leading-relaxed">
-                Together is a next-generation high-fidelity Discord streamer engineered for 24-bit lossless opus playback, an interactive real-time 3D webplayer visualizer, 24/7 channel locking, and zero-latency audio streaming.
-              </p>
-            </div>
-
-            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-2">
-              <h3 className="font-display font-black text-lg text-white uppercase flex items-center gap-2">
-                <span className="text-brutal-accent">Q2.</span> How do I add the bot to my Discord server?
-              </h3>
-              <p className="font-mono text-xs text-zinc-300 leading-relaxed">
-                Click <a href={BOT_INVITE_URL} target="_blank" rel="noopener noreferrer" className="text-brutal-accent underline font-bold">Invite Discord Bot</a> to authorize with slash command permissions. Once joined, enter a voice channel and type <code className="text-brutal-accent bg-black px-1">/play</code> to begin streaming.
-              </p>
-            </div>
-
-            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-2">
-              <h3 className="font-display font-black text-lg text-white uppercase flex items-center gap-2">
-                <span className="text-brutal-accent">Q3.</span> Does Together feature a 3D webplayer?
-              </h3>
-              <p className="font-mono text-xs text-zinc-300 leading-relaxed">
-                Yes! Together includes an interactive real-time 3D WebGL webplayer at <a href="https://together.dpdns.org/visualizer/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 underline font-bold">together.dpdns.org/visualizer</a> that renders live frequencies, waveforms, queues, and player controls in your browser.
-              </p>
-            </div>
-
-            <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-2">
-              <h3 className="font-display font-black text-lg text-white uppercase flex items-center gap-2">
-                <span className="text-brutal-accent">Q4.</span> Is the music service free to use?
-              </h3>
-              <p className="font-mono text-xs text-zinc-300 leading-relaxed">
-                Yes, Together provides 100% free access to core audio playback, 24/7 channel persistence, studio DSP sound filters, and web dashboard controls without mandatory subscriptions.
-              </p>
-            </div>
-          </div>
-        </section>
-
         {/* Creator & Lead Architect Showcase (E-E-A-T & Authority) */}
-        <section id="about" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-6">
+        <section id="creator" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-6">
           <div>
             <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
-              LEAD ARCHITECT & E-E-A-T CREDENTIALS
+              CREATOR &amp; LEAD ARCHITECT
             </span>
             <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
               BEHIND THE ARCHITECTURE.
@@ -867,11 +814,11 @@ export default function LandingPage() {
         <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
           <Link to="/overview" className="hover:text-brutal-accent">Dashboard</Link>
           <Link to="/commands" className="hover:text-brutal-accent">Commands</Link>
+          <Link to="/faq" className="hover:text-brutal-accent">FAQ</Link>
           <Link to="/leaderboard" className="hover:text-brutal-accent">Leaderboard</Link>
           <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
           <a href="/terms#editorial" className="hover:text-brutal-accent">Editorial Policy</a>
-          <a href="/llms.txt" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">LLMs.txt</a>
           <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Support</a>
           <a href={BOT_INVITE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Invite Bot</a>
           <a href={TOPGG_VOTE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Vote Top.gg</a>
