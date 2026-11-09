@@ -22,6 +22,10 @@ const assetTags = [...cssMatches, ...scriptMatches].join('\n    ');
 const sharedHeadMeta = `
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="msvalidate.01" content="A86E9F234D5174092E1B9C7F72E84561" />
+    <link rel="indexnow" href="/indexnow-key.txt" />
+    <meta name="date" content="2026-11-09" />
+    <meta name="last-modified" content="2026-11-09" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta name="author" content="KAJU🦋" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -88,7 +92,9 @@ const sharedFooter = `
           <a href="https://discord.gg/mUdGTs2Dw5" rel="me noopener noreferrer" target="_blank">Discord Community</a> |
           <a href="https://top.gg/bot/863496211667484676" rel="me noopener noreferrer" target="_blank">Top.gg Bot Profile</a> |
           <a href="https://www.youtube.com/@dpdns" rel="me noopener noreferrer" target="_blank">YouTube Channel</a> |
-          <a href="https://twitter.com/together_bot" rel="me noopener noreferrer" target="_blank">X (Twitter) Profile</a>
+          <a href="https://twitter.com/together_bot" rel="me noopener noreferrer" target="_blank">X (Twitter) Profile</a> |
+          <a href="https://www.reddit.com/r/TogetherMusicBot/" rel="me noopener noreferrer" target="_blank">Reddit Community</a> |
+          <a href="https://www.linkedin.com/company/together-music-bot" rel="me noopener noreferrer" target="_blank">LinkedIn Company Page</a>
         </nav>
       </footer>
 `;
@@ -732,6 +738,13 @@ const pages = [
             <p>Celebrate listening milestones across thousands of Discord communities. Track total streaming hours, consecutive daily streaks, and member tier ranks.</p>
             <p class="meta-info">Updated in real-time. System timestamp: <time datetime="2026-11-09" itemprop="dateModified">November 9, 2026</time>.</p>
           </header>
+
+                    <section id="xp-formula">
+            <h2>Community Listening XP Formula &amp; Streak Metrics</h2>
+            <blockquote style="padding:12px 16px; background:rgba(34,197,94,0.08); border-left:4px solid #22c55e; margin:16px 0;">
+              <p><strong>Together Community XP:</strong> A standardized engagement metric awarded to Discord voice channels during continuous music playback. Servers earn precisely <strong>10 Base XP per minute</strong> for each active unmuted listener. When a server member votes on Top.gg, a <strong>2.0x Streak Multiplier</strong> applies to all XP gained over the subsequent 12 hours. The formula is defined as: <code>XP = (Minutes Streamed) &times; (Active Listeners) &times; 10 &times; (Vote Multiplier)</code>.</p>
+            </blockquote>
+          </section>
 
           <section id="ranking-system">
             <h2>Community Listening Streak Tier System</h2>
