@@ -72,12 +72,11 @@ The Together Music Bot dashboard provides an interface for Discord community own
 
 ---
 
-## 5. Competitor Comparisons & Benchmarks
+## 5. Architectural Benchmarks & Advantages
 
-Together Music Bot is designed as a direct high-fidelity replacement for older Discord music bots:
+Together is engineered as a next-generation high-fidelity sound system for Discord:
 
-- **vs. Jockie Music**: Together provides a real-time interactive 3D WebGL soundstage webplayer (over 50 modes), 24-bit studio Opus transcoding, and free 24/7 channel locking without complex multi-bot setup tiers.
-- **vs. Musico**: Together delivers 14 DSP studio audio filters (8D, Bass Boost, Nightcore, Vaporwave) completely free without paywall gates or monthly premium subscriptions.
-- **vs. FlaviBot**: Together focuses purely on high-fidelity audio excellence, sub-30ms latency, and synchronized listening leaderboards without bloat.
-- **vs. LunaBot**: Together offers full interactive dashboard control, web audio streaming, and seamless Spotify/SoundCloud/YouTube integration with zero audio dropouts.
+- **vs. Standard Discord Music Bots**: Together provides a real-time interactive 3D WebGL soundstage webplayer (over 50 modes), 24-bit studio Opus transcoding, and free 24/7 channel locking without complex setup tiers.
+- **vs. Commercial Paywalled Bots**: Together delivers 14 DSP studio audio filters (8D, Bass Boost, Nightcore, Vaporwave) completely free without paywall gates or monthly subscriptions.
+- **Low Latency & High Fidelity**: Sub-30ms internal audio pipeline with synchronized listening leaderboards and zero audio dropouts.
 

@@ -33,7 +33,6 @@ import SEO from '../components/SEO';
 const BOT_INVITE_URL = "https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands";
 const TOPGG_VOTE_URL = "https://top.gg/bot/863496211667484676/vote";
 const SUPPORT_SERVER_URL = "https://discord.gg/mUdGTs2Dw5";
-const GITHUB_REPO_URL = "https://github.com/0xSHARON/TOGETHER";
 
 export default function LandingPage() {
   const { user } = useAuth();
@@ -47,6 +46,30 @@ export default function LandingPage() {
   const [commands, setCommands] = useState([]);
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [cmdSearch, setCmdSearch] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: 'Together — High-Fidelity Discord Music Streamer',
+      text: 'Stream 24-bit lossless music in Discord with Together!',
+      url: 'https://dash.together.dpdns.org/'
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        // User dismissed share dialog
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareData.url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      } catch (err) {
+        // Fallback
+      }
+    }
+  };
 
   useEffect(() => {
     // 1. Fetch bot telemetry
@@ -457,16 +480,11 @@ export default function LandingPage() {
 
         {/* E-E-A-T Trust & Reliability Badges */}
         <section className="px-4 md:px-8 py-10 bg-black/60 border-b-2 border-brutal-border">
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
             <div className="border-2 border-brutal-border bg-brutal-surface p-4">
               <ShieldCheck className="w-6 h-6 text-brutal-accent mx-auto mb-2" />
               <div className="font-bold text-white text-xs uppercase">Discord Verified</div>
               <p className="text-[10px] text-zinc-400 mt-0.5">Official Application API</p>
-            </div>
-            <div className="border-2 border-brutal-border bg-brutal-surface p-4">
-              <Star className="w-6 h-6 text-amber-400 fill-amber-400 mx-auto mb-2" />
-              <div className="font-bold text-white text-xs uppercase">4.9 / 5.0 Rating</div>
-              <p className="text-[10px] text-zinc-400 mt-0.5">1,240+ Community Reviews</p>
             </div>
             <div className="border-2 border-brutal-border bg-brutal-surface p-4">
               <Award className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
@@ -503,9 +521,8 @@ export default function LandingPage() {
                   <th className="p-4 text-brutal-accent bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border" scope="col">
                     Together
                   </th>
-                  <th className="p-4 text-zinc-400" scope="col">Jockie Music</th>
-                  <th className="p-4 text-zinc-400" scope="col">Musico</th>
-                  <th className="p-4 text-zinc-400" scope="col">Ordinary Bots</th>
+                  <th className="p-4 text-zinc-400" scope="col">Standard Audio Bots</th>
+                  <th className="p-4 text-zinc-400" scope="col">Basic Discord Bots</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800">
@@ -515,7 +532,6 @@ export default function LandingPage() {
                     24-Bit / 48kHz Lossless
                   </td>
                   <td className="p-4 text-zinc-400">Standard 128kbps</td>
-                  <td className="p-4 text-zinc-400">Standard 128kbps</td>
                   <td className="p-4 text-zinc-500">64–96kbps</td>
                 </tr>
                 <tr>
@@ -523,8 +539,7 @@ export default function LandingPage() {
                   <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
                     Included (50 3D Modes)
                   </td>
-                  <td className="p-4 text-zinc-500">None</td>
-                  <td className="p-4 text-zinc-400">Basic 2D Web Player</td>
+                  <td className="p-4 text-zinc-500">None / Basic 2D</td>
                   <td className="p-4 text-zinc-500">None</td>
                 </tr>
                 <tr>
@@ -532,26 +547,23 @@ export default function LandingPage() {
                   <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
                     100% Free & Unlimited
                   </td>
-                  <td className="p-4 text-zinc-400">Basic Filters</td>
-                  <td className="p-4 text-amber-400">Premium Locked</td>
-                  <td className="p-4 text-zinc-500">None / Paid</td>
+                  <td className="p-4 text-amber-400">Paid / Premium Tier</td>
+                  <td className="p-4 text-zinc-500">None</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-bold text-white">24/7 Channel Locking</td>
                   <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
                     Free Voter Perk
                   </td>
-                  <td className="p-4 text-amber-400">Paid Tier Only</td>
-                  <td className="p-4 text-amber-400">$4.99/mo Tier</td>
-                  <td className="p-4 text-zinc-500">Subscription Only</td>
+                  <td className="p-4 text-amber-400">Subscription Only</td>
+                  <td className="p-4 text-zinc-500">Not Available</td>
                 </tr>
                 <tr>
                   <td className="p-4 font-bold text-white">Spotify & SoundCloud Direct Play</td>
                   <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
                     Native Multi-Platform
                   </td>
-                  <td className="p-4 text-emerald-400">Supported</td>
-                  <td className="p-4 text-emerald-400">Supported</td>
+                  <td className="p-4 text-emerald-400">Partial / Delayed</td>
                   <td className="p-4 text-zinc-500">Frequent Blocks</td>
                 </tr>
                 <tr>
@@ -559,7 +571,6 @@ export default function LandingPage() {
                   <td className="p-4 text-brutal-accent font-black bg-brutal-accent/10 border-l-2 border-r-2 border-brutal-border">
                     Listen Time & Streaks
                   </td>
-                  <td className="p-4 text-zinc-500">None</td>
                   <td className="p-4 text-zinc-500">None</td>
                   <td className="p-4 text-zinc-500">None</td>
                 </tr>
@@ -822,36 +833,14 @@ export default function LandingPage() {
                   <span>COMMUNITY DISCORD</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
-                <a
-                  href={GITHUB_REPO_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="View Source on GitHub"
-                  className="px-4 py-1.5 bg-zinc-900 text-white border-2 border-brutal-border font-bold text-xs uppercase hover:border-brutal-accent hover:text-brutal-accent transition-all flex items-center gap-1.5"
+                <button
+                  onClick={handleShare}
+                  aria-label="Share Together Music Bot"
+                  className="px-4 py-1.5 bg-brutal-accent text-black border-2 border-black font-bold text-xs uppercase shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1.5"
                 >
-                  <span>GITHUB</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-                <a
-                  href="https://twitter.com/intent/tweet?text=Together%20-%20High-Fidelity%20Discord%20Music%20Streamer&url=https%3A%2F%2Fdash.together.dpdns.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Share on X Twitter"
-                  className="px-3 py-1.5 bg-sky-500 text-white border-2 border-black font-bold text-xs uppercase shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1"
-                >
-                  <Share2 className="w-3 h-3" />
-                  <span>SHARE ON X</span>
-                </a>
-                <a
-                  href="https://www.reddit.com/submit?url=https%3A%2F%2Fdash.together.dpdns.org&title=Together%20Music%20Bot%20-%20Lossless%20Discord%20Music"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Share on Reddit"
-                  className="px-3 py-1.5 bg-orange-600 text-white border-2 border-black font-bold text-xs uppercase shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1"
-                >
-                  <Share2 className="w-3 h-3" />
-                  <span>REDDIT</span>
-                </a>
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>{copied ? 'LINK COPIED!' : 'SHARE'}</span>
+                </button>
               </div>
             </div>
           </div>
@@ -886,7 +875,6 @@ export default function LandingPage() {
           <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Support</a>
           <a href={BOT_INVITE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Invite Bot</a>
           <a href={TOPGG_VOTE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Vote Top.gg</a>
-          <a href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">GitHub</a>
         </nav>
 
         <div>
