@@ -31,6 +31,21 @@ const BOT_INVITE_URL = "https://discord.com/oauth2/authorize?client_id=863496211
 const TOPGG_VOTE_URL = "https://top.gg/bot/863496211667484676/vote";
 const SUPPORT_SERVER_URL = "https://discord.gg/mUdGTs2Dw5";
 
+const POPULAR_COMMANDS = [
+  { name: 'play', category: 'MUSIC', description: 'Stream high-fidelity music from YouTube, Spotify, SoundCloud, or direct URLs.', aliases: ['p'] },
+  { name: 'skip', category: 'MUSIC', description: 'Skip the current track to the next song in the playback queue.', aliases: ['s'] },
+  { name: 'pause', category: 'MUSIC', description: 'Pause or resume current playback stream in voice channel.', aliases: [] },
+  { name: 'stop', category: 'MUSIC', description: 'Stop playback, clear the active queue, and release the voice channel.', aliases: [] },
+  { name: 'queue', category: 'MUSIC', description: 'View currently queued songs, upcoming tracks, and estimated duration.', aliases: ['q'] },
+  { name: 'volume', category: 'AUDIO', description: 'Adjust stream playback volume level between 1% and 150%.', aliases: ['vol'] },
+  { name: 'bassboost', category: 'FILTERS', description: 'Amplify low-end bass frequencies for deep, punchy audio.', aliases: ['bb'] },
+  { name: 'nightcore', category: 'FILTERS', description: 'Increase pitch and playback speed for dynamic energetic sessions.', aliases: ['nc'] },
+  { name: '8d', category: 'FILTERS', description: 'Simulate 360-degree binaural spatial audio panning through headphones.', aliases: [] },
+  { name: 'loop', category: 'MUSIC', description: 'Toggle looping mode for single track or entire playback queue.', aliases: ['repeat'] },
+  { name: 'lyrics', category: 'UTILITY', description: 'Display real-time synchronized song lyrics for the playing track.', aliases: ['ly'] },
+  { name: '247', category: 'SETTINGS', description: 'Keep Together bot locked in voice channel 24 hours a day.', voterOnly: true, aliases: ['stay'] }
+];
+
 export default function LandingPage() {
   const { user } = useAuth();
   const [stats, setStats] = useState({
@@ -40,7 +55,7 @@ export default function LandingPage() {
     ping: 96,
   });
 
-  const [commands, setCommands] = useState([]);
+  const [commands, setCommands] = useState(POPULAR_COMMANDS);
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [cmdSearch, setCmdSearch] = useState('');
   const [copied, setCopied] = useState(false);
@@ -69,31 +84,34 @@ export default function LandingPage() {
   };
 
   useEffect(() => {
-    // 1. Fetch bot telemetry
-    axios.get('/api/overview')
-      .then((res) => {
-        if (res.data?.bot) {
-          setStats({
-            guilds: res.data.bot.totalGuilds || 106,
-            users: res.data.bot.totalUsers || 23075,
-            sessions: res.data.bot.activeSessions || 3,
-            ping: res.data.bot.ping || 96,
-          });
-        }
-      })
-      .catch(() => {});
+    // Defer dynamic API calls slightly to let initial paint and LCP complete unhindered
+    const timer = setTimeout(() => {
+      axios.get('/api/overview')
+        .then((res) => {
+          if (res.data?.bot) {
+            setStats({
+              guilds: res.data.bot.totalGuilds || 106,
+              users: res.data.bot.totalUsers || 23075,
+              sessions: res.data.bot.activeSessions || 3,
+              ping: res.data.bot.ping || 96,
+            });
+          }
+        })
+        .catch(() => {});
 
-    // 2. Fetch public command registry
-    axios.get('/api/commands')
-      .then((res) => {
-        if (res.data?.commands) {
-          const publicCmds = res.data.commands.filter(
-            (c) => !c.owner && c.category?.toUpperCase() !== 'OWNER'
-          );
-          setCommands(publicCmds);
-        }
-      })
-      .catch(() => {});
+      axios.get('/api/commands')
+        .then((res) => {
+          if (res.data?.commands) {
+            const publicCmds = res.data.commands.filter(
+              (c) => !c.owner && c.category?.toUpperCase() !== 'OWNER'
+            );
+            setCommands(publicCmds);
+          }
+        })
+        .catch(() => {});
+    }, 1200);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Filter commands by active category and search (Excluding all owner commands)
