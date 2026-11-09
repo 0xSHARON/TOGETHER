@@ -41,18 +41,15 @@ const sharedHeadMeta = `
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVnskPMA.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&amp;family=JetBrains+Mono:wght@400;600;800&amp;family=Orbitron:wght@700;900&amp;display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&amp;family=JetBrains+Mono:wght@400;600;800&amp;family=Orbitron:wght@700;900&amp;display=swap" media="print" onload="this.media='all'" />
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&amp;family=JetBrains+Mono:wght@400;600;800&amp;family=Orbitron:wght@700;900&amp;display=swap" />
-    </noscript>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" media="print" onload="this.media='all'" />
 `;
 
 const sharedHeader = `
       <header class="site-header">
         <a href="#main-content" class="skip-link">Skip to main content</a>
         <div class="brand">
-          <img src="/logo.webp" srcset="/logo.webp 1x, /logo.png 2x" alt="Together Music Bot Logo" width="36" height="36" fetchpriority="high" loading="eager" />
+          <img src="/logo.webp" srcset="/logo.webp 1x, /logo.webp 2x" alt="Together Music Bot Logo" width="36" height="36" fetchpriority="high" loading="eager" />
           <span class="brand-title">Together Music Bot</span>
         </div>
         <nav aria-label="Main Navigation">
@@ -62,7 +59,7 @@ const sharedHeader = `
           <a href="/leaderboard">Listening Leaderboard</a> |
           <a href="/about">About Together Bot</a> |
           <a href="/contact">Contact Support Team</a> |
-          <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="nofollow noopener noreferrer">Vote on Top.gg Directory</a> |
+          <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="noopener noreferrer">Vote on Top.gg Directory</a> |
           <a href="/login">Sign in to Web Dashboard</a>
         </nav>
       </header>
@@ -96,7 +93,7 @@ const sharedFooter = `
           <a href="https://twitter.com/together_bot" rel="me noopener noreferrer" target="_blank">Follow on X Twitter</a> |
           <a href="https://www.youtube.com/@dpdns" rel="me noopener noreferrer" target="_blank">Official YouTube Channel</a> |
           <a href="https://www.reddit.com/r/TogetherMusicBot/" rel="me noopener noreferrer" target="_blank">Reddit Community</a> |
-          <a href="https://top.gg/bot/863496211667484676" rel="nofollow noopener noreferrer" target="_blank">Together on Top.gg Bot Directory</a>
+          <a href="https://top.gg/bot/863496211667484676" rel="noopener noreferrer" target="_blank">Together on Top.gg Bot Directory</a>
         </nav>
       </footer>
 `;
@@ -1290,7 +1287,8 @@ for (const p of pages) {
         "https://discord.gg/mUdGTs2Dw5",
         "https://top.gg/bot/863496211667484676",
         "https://www.youtube.com/@dpdns",
-        "https://twitter.com/together_bot"
+        "https://twitter.com/together_bot",
+        "https://www.reddit.com/r/TogetherMusicBot/"
       ]
     },
     "publisher": {
@@ -1327,12 +1325,87 @@ for (const p of pages) {
       "url": "https://dash.together.dpdns.org/contact"
     },
     "sameAs": [
-        "https://discord.gg/mUdGTs2Dw5",
-        "https://top.gg/bot/863496211667484676",
-        "https://www.youtube.com/@dpdns",
-        "https://twitter.com/together_bot"
-      ]
+      "https://discord.gg/mUdGTs2Dw5",
+      "https://top.gg/bot/863496211667484676",
+      "https://www.youtube.com/@dpdns",
+      "https://twitter.com/together_bot",
+      "https://www.reddit.com/r/TogetherMusicBot/"
+    ]
   };
+
+  let extraSchemaTag = '';
+  if (p.route === 'commands') {
+    const howToJson = {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Stream High-Fidelity Music in Discord with Together Bot",
+      "description": "Step-by-step instructions for queuing songs, adjusting volume, and applying 14 DSP audio filters in any Discord voice channel.",
+      "totalTime": "PT1M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Invite Together Bot",
+          "text": "Add Together Bot to your Discord server with permissions to join voice channels and send slash commands.",
+          "url": "https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&scope=bot%20applications.commands"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Join a Voice Channel",
+          "text": "Connect to any voice or stage channel in your Discord server where you want to listen to music.",
+          "url": "https://dash.together.dpdns.org/commands"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Play Your Music",
+          "text": "Type /play followed by a song title, YouTube URL, Spotify playlist, or SoundCloud link to start immediate 24-bit opus streaming.",
+          "url": "https://dash.together.dpdns.org/commands"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Customize Sound and Audio Filters",
+          "text": "Enhance your playback with DSP audio filters using /bassboost, /nightcore, /8d, or open the real-time 3D WebGL webplayer.",
+          "url": "https://dash.together.dpdns.org/commands"
+        }
+      ]
+    };
+    extraSchemaTag = `\n    <script type="application/ld+json">\n    ${JSON.stringify(howToJson, null, 2)}\n    </script>`;
+  } else if (p.route === 'faq') {
+    const howToJson = {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Configure 24/7 Music Playback and Custom Settings in Together Bot",
+      "description": "Learn how to lock Together bot into dedicated voice channels for uninterrupted round-the-clock radio streaming.",
+      "totalTime": "PT2M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Access Server Settings",
+          "text": "Type /settings in your Discord server or log into the web dashboard to open the bot configuration panel.",
+          "url": "https://dash.together.dpdns.org/faq"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Enable 24/7 Mode",
+          "text": "Toggle 24/7 voice stay to keep Together Bot active in your voice channel even when all listeners disconnect.",
+          "url": "https://dash.together.dpdns.org/faq"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Set Default Volume and Audio Filter",
+          "text": "Configure default volume levels and audio equalizer presets for all automated queue transitions.",
+          "url": "https://dash.together.dpdns.org/faq"
+        }
+      ]
+    };
+    extraSchemaTag = `\n    <script type="application/ld+json">\n    ${JSON.stringify(howToJson, null, 2)}\n    </script>`;
+  }
 
   const pageHtml = `<!doctype html>
 <html lang="en" prefix="og: https://ogp.me/ns#">
@@ -1372,10 +1445,13 @@ for (const p of pages) {
     </script>
     <script type="application/ld+json">
     ${JSON.stringify(orgJson, null, 2)}
-    </script>
+    </script>${extraSchemaTag}
     ${assetTags}
   </head>
   <body>
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" />
+    </noscript>
     <div id="root">
       ${sharedHeader}
       <main id="main-content">

@@ -68,8 +68,8 @@ export default function AboutPage() {
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="shrink-0 relative">
               <img
-                src="https://cdn.discordapp.com/avatars/780345293237125152/9352c3dd8bc5d5722007156bcdc62075.png?size=512"
-                srcSet="https://cdn.discordapp.com/avatars/780345293237125152/9352c3dd8bc5d5722007156bcdc62075.png?size=256 1x, https://cdn.discordapp.com/avatars/780345293237125152/9352c3dd8bc5d5722007156bcdc62075.png?size=512 2x"
+                src="/kaju-avatar.webp"
+                srcSet="/kaju-avatar.webp 1x, /kaju-avatar-256.webp 2x"
                 alt="KAJU🦋 - Lead Systems Architect and Bot Creator"
                 width="112"
                 height="112"

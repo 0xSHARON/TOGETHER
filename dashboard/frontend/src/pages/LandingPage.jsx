@@ -158,7 +158,7 @@ export default function LandingPage() {
               <source srcSet="/logo.webp" type="image/webp" />
               <img 
                 src="/logo.webp" 
-                srcSet="/logo.webp 1x, /logo.png 2x" 
+                srcSet="/logo.webp 1x, /logo.webp 2x" 
                 alt="Together Music Bot Logo" 
                 width="36" 
                 height="36" 
@@ -179,13 +179,13 @@ export default function LandingPage() {
 
           <nav className="hidden md:flex items-center gap-6 font-mono text-xs font-bold uppercase" aria-label="Main Navigation">
             <a href="#features" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              FEATURES
+              BROWSE FEATURES
             </a>
             <a href="#benchmark" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              BENCHMARK
+              AUDIO BENCHMARK
             </a>
             <a href="#commands" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              COMMANDS
+              VIEW COMMANDS
             </a>
             <Link to="/faq" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               FAQ
@@ -202,11 +202,11 @@ export default function LandingPage() {
             <a
               href={TOPGG_VOTE_URL}
               target="_blank"
-              rel="nofollow noopener noreferrer"
+              rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-amber-400 text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
             >
               <Star className="w-3.5 h-3.5 fill-black" />
-              <span>VOTE TOP.GG</span>
+              <span>VOTE ON TOP.GG</span>
             </a>
 
             {user ? (
@@ -222,7 +222,7 @@ export default function LandingPage() {
                 href="/api/auth/login"
                 className="px-4 py-1.5 bg-brutal-accent text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
               >
-                <span>LOGIN</span>
+                <span>SIGN IN WITH DISCORD</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             )}
@@ -276,7 +276,7 @@ export default function LandingPage() {
                   <a
                     href={TOPGG_VOTE_URL}
                     target="_blank"
-                    rel="nofollow noopener noreferrer"
+                    rel="noopener noreferrer"
                     className="px-5 py-3.5 bg-amber-400 text-black font-display font-black text-sm uppercase border-2 border-black shadow-brutal hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-2"
                   >
                     <Star className="w-4 h-4 fill-black" />
@@ -296,7 +296,7 @@ export default function LandingPage() {
                       <source srcSet="/logo.webp" type="image/webp" />
                       <img 
                         src="/logo.webp" 
-                        srcSet="/logo.webp 1x, /logo.png 2x" 
+                        srcSet="/logo.webp 1x, /logo.webp 2x" 
                         alt="Together Music Bot Logo" 
                         width="64" 
                         height="64" 
@@ -720,8 +720,8 @@ export default function LandingPage() {
           <div className="border-2 border-brutal-border bg-brutal-surface p-8 shadow-brutal flex flex-col md:flex-row items-center gap-8">
             <div className="shrink-0 relative">
               <img
-                src="https://cdn.discordapp.com/avatars/780345293237125152/9352c3dd8bc5d5722007156bcdc62075.png?size=512"
-                srcSet="https://cdn.discordapp.com/avatars/780345293237125152/9352c3dd8bc5d5722007156bcdc62075.png?size=256 1x, https://cdn.discordapp.com/avatars/780345293237125152/9352c3dd8bc5d5722007156bcdc62075.png?size=512 2x"
+                src="/kaju-avatar.webp"
+                srcSet="/kaju-avatar.webp 1x, /kaju-avatar-256.webp 2x"
                 alt="KAJU🦋 - Lead Systems Architect and Bot Creator"
                 width="112"
                 height="112"
@@ -769,7 +769,7 @@ export default function LandingPage() {
                   <a
                     href={TOPGG_VOTE_URL}
                     target="_blank"
-                    rel="nofollow noopener noreferrer"
+                    rel="noopener noreferrer"
                     className="px-4 py-1.5 bg-amber-400 text-black border-2 border-black font-bold text-xs uppercase shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1.5"
                   >
                     <Star className="w-3.5 h-3.5 fill-black" />
@@ -794,16 +794,14 @@ export default function LandingPage() {
                       href="https://twitter.com/intent/tweet?text=Experience%20TOGETHER%20%E2%80%94%20the%20audiophile%20Discord%20music%20bot%20with%20real-time%203D%20WebGL%20visualizer&url=https%3A%2F%2Fdash.together.dpdns.org%2F"
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Share on X (Twitter)"
                       className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
                     >
-                      Share on X
+                      Share on X (Twitter)
                     </a>
                     <a
                       href="https://www.reddit.com/submit?url=https%3A%2F%2Fdash.together.dpdns.org%2F&title=TOGETHER%20%E2%80%94%20Audiophile%20Discord%20Music%20Bot%20with%20Real-Time%203D%20WebGL%20Visualizer"
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Share on Reddit"
                       className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
                     >
                       Share on Reddit
@@ -812,7 +810,6 @@ export default function LandingPage() {
                       href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdash.together.dpdns.org%2F"
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Share on Facebook"
                       className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
                     >
                       Share on Facebook
@@ -821,7 +818,6 @@ export default function LandingPage() {
                       href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fdash.together.dpdns.org%2F"
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Share on LinkedIn"
                       className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
                     >
                       Share on LinkedIn
@@ -850,7 +846,7 @@ export default function LandingPage() {
               <source srcSet="/logo.webp" type="image/webp" />
               <img 
                 src="/logo.webp" 
-                srcSet="/logo.webp 1x, /logo.png 2x" 
+                srcSet="/logo.webp 1x, /logo.webp 2x" 
                 alt="Together Music Bot Logo" 
                 width="24" 
                 height="24" 
@@ -885,7 +881,7 @@ export default function LandingPage() {
           <a href="https://twitter.com/together_bot" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Follow on X Twitter</a>
           <a href="https://www.youtube.com/@dpdns" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Official YouTube Channel</a>
           <a href="https://www.reddit.com/r/TogetherMusicBot/" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Reddit Subreddit</a>
-          <a href={TOPGG_VOTE_URL} target="_blank" rel="nofollow noopener noreferrer" className="hover:text-brutal-accent">Vote on Top.gg</a>
+          <a href={TOPGG_VOTE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Vote on Top.gg Directory</a>
         </nav>
 
         <div className="text-center md:text-right">
