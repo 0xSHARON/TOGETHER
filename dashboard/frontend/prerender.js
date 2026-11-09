@@ -59,7 +59,7 @@ const sharedHeader = `
           <a href="/leaderboard">Listening Leaderboard</a> |
           <a href="/about">About Together Bot</a> |
           <a href="/contact">Contact Support Team</a> |
-          <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="noopener noreferrer">Vote on Top.gg Directory</a> |
+          <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="nofollow noopener noreferrer">Vote on Top.gg Directory</a> |
           <a href="/login">Sign in to Web Dashboard</a>
         </nav>
       </header>
@@ -90,9 +90,10 @@ const sharedFooter = `
           <a href="/terms">Terms of Service Agreement</a> |
           <a href="/privacy">Privacy and Data Security Policy</a> |
           <a href="https://discord.gg/mUdGTs2Dw5" rel="me noopener noreferrer" target="_blank">Join Official Discord Community</a> |
-          <a href="https://top.gg/bot/863496211667484676" rel="me noopener noreferrer" target="_blank">Together on Top.gg Bot Directory</a> |
+          <a href="https://twitter.com/together_bot" rel="me noopener noreferrer" target="_blank">Follow on X Twitter</a> |
           <a href="https://www.youtube.com/@dpdns" rel="me noopener noreferrer" target="_blank">Official YouTube Channel</a> |
-          <a href="https://twitter.com/together_bot" rel="me noopener noreferrer" target="_blank">Follow on X Twitter</a>
+          <a href="https://www.reddit.com/r/TogetherMusicBot/" rel="me noopener noreferrer" target="_blank">Reddit Community</a> |
+          <a href="https://top.gg/bot/863496211667484676" rel="nofollow noopener noreferrer" target="_blank">Together on Top.gg Bot Directory</a>
         </nav>
       </footer>
 `;

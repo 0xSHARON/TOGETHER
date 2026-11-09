@@ -740,7 +740,7 @@ export default function LandingPage() {
                   <strong>Role & Credentials:</strong> Lead Audio Systems Architect and Software Engineer with 8+ years of expertise in distributed streaming architectures, low-latency DSP audio pipelines, and WebGL visualization engines.
                 </p>
                 <p>
-                  Together is designed and engineered by <strong className="text-white" rel="author">KAJU🦋</strong>. For inquiries, developer assistance, or partnership discussions, visit our <Link to="/contact" className="text-brutal-accent underline font-bold">Contact Technical Support</Link> page or read our <Link to="/about" className="text-brutal-accent underline font-bold">About Us</Link> documentation.
+                  Together is designed and engineered by <strong className="text-white">KAJU🦋</strong>. For inquiries, developer assistance, or partnership discussions, visit our <Link to="/contact" className="text-brutal-accent underline font-bold">Contact Technical Support</Link> page or read our <Link to="/about" className="text-brutal-accent underline font-bold">About Us</Link> documentation.
                 </p>
               </div>
               
@@ -753,35 +753,80 @@ export default function LandingPage() {
               </div>
 
               {/* Social Profiles & Share Buttons */}
-              <div className="pt-2 flex flex-wrap justify-center md:justify-start gap-3 items-center">
-                <a
-                  href={TOPGG_VOTE_URL}
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  aria-label="Vote on Top.gg"
-                  className="px-4 py-1.5 bg-amber-400 text-black border-2 border-black font-bold text-xs uppercase shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1.5"
-                >
-                  <Star className="w-3.5 h-3.5 fill-black" />
-                  <span>SUPPORT ON TOP.GG</span>
-                </a>
-                <a
-                  href={SUPPORT_SERVER_URL}
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  aria-label="Join Community Discord"
-                  className="px-4 py-1.5 bg-brutal-secondary text-white border-2 border-brutal-border font-bold text-xs uppercase hover:border-white transition-all flex items-center gap-1.5"
-                >
-                  <span>COMMUNITY DISCORD</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-                <button
-                  onClick={handleShare}
-                  aria-label="Share Together Music Bot"
-                  className="px-4 py-1.5 bg-brutal-accent text-black border-2 border-black font-bold text-xs uppercase shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1.5"
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>{copied ? 'LINK COPIED!' : 'SHARE'}</span>
-                </button>
+              <div className="pt-2 flex flex-col gap-3">
+                <div className="flex flex-wrap justify-center md:justify-start gap-3 items-center">
+                  <a
+                    href={TOPGG_VOTE_URL}
+                    target="_blank"
+                    rel="nofollow noopener noreferrer"
+                    aria-label="Vote on Top.gg"
+                    className="px-4 py-1.5 bg-amber-400 text-black border-2 border-black font-bold text-xs uppercase shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1.5"
+                  >
+                    <Star className="w-3.5 h-3.5 fill-black" />
+                    <span>SUPPORT ON TOP.GG</span>
+                  </a>
+                  <a
+                    href={SUPPORT_SERVER_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Join Community Discord"
+                    className="px-4 py-1.5 bg-brutal-secondary text-white border-2 border-brutal-border font-bold text-xs uppercase hover:border-white transition-all flex items-center gap-1.5"
+                  >
+                    <span>COMMUNITY DISCORD</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+
+                {/* Social Media Share Buttons */}
+                <div className="pt-1 flex flex-col gap-1.5" aria-label="Social Media Share Buttons">
+                  <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider text-center md:text-left">Share Together Bot:</span>
+                  <div className="flex flex-wrap justify-center md:justify-start gap-2 items-center">
+                    <a
+                      href="https://twitter.com/intent/tweet?text=Experience%20TOGETHER%20%E2%80%94%20the%20audiophile%20Discord%20music%20bot%20with%20real-time%203D%20WebGL%20visualizer&url=https%3A%2F%2Fdash.together.dpdns.org%2F"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Share on X (Twitter)"
+                      className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
+                    >
+                      Share on X
+                    </a>
+                    <a
+                      href="https://www.reddit.com/submit?url=https%3A%2F%2Fdash.together.dpdns.org%2F&title=TOGETHER%20%E2%80%94%20Audiophile%20Discord%20Music%20Bot%20with%20Real-Time%203D%20WebGL%20Visualizer"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Share on Reddit"
+                      className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
+                    >
+                      Share on Reddit
+                    </a>
+                    <a
+                      href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdash.together.dpdns.org%2F"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Share on Facebook"
+                      className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
+                    >
+                      Share on Facebook
+                    </a>
+                    <a
+                      href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fdash.together.dpdns.org%2F"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Share on LinkedIn"
+                      className="px-2.5 py-1 bg-black text-zinc-300 border border-zinc-700 hover:border-emerald-400 hover:text-white font-mono text-[10px] font-bold uppercase transition-all"
+                    >
+                      Share on LinkedIn
+                    </a>
+                    <button
+                      onClick={handleShare}
+                      aria-label="Share or Copy Link"
+                      className="px-2.5 py-1 bg-brutal-accent text-black font-mono text-[10px] font-bold uppercase border border-black hover:bg-emerald-300 transition-all flex items-center gap-1"
+                    >
+                      <Share2 className="w-3 h-3" />
+                      <span>{copied ? 'LINK COPIED!' : 'COPY LINK'}</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -828,14 +873,17 @@ export default function LandingPage() {
           <Link to="/terms" className="hover:text-brutal-accent">Terms of Service</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy Policy</Link>
           <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Official Discord Server</a>
-          <a href={TOPGG_VOTE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Vote on Top.gg</a>
+          <a href="https://twitter.com/together_bot" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Follow on X Twitter</a>
+          <a href="https://www.youtube.com/@dpdns" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Official YouTube Channel</a>
+          <a href="https://www.reddit.com/r/TogetherMusicBot/" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Reddit Subreddit</a>
+          <a href={TOPGG_VOTE_URL} target="_blank" rel="nofollow noopener noreferrer" className="hover:text-brutal-accent">Vote on Top.gg</a>
         </nav>
 
         <div className="text-center md:text-right">
           <address className="company-address not-italic text-[10px] text-zinc-500">
             Together Audio Systems • 100 Innovation Way, Suite 400, San Francisco, CA 94105, United States
           </address>
-          <div className="text-[11px] mt-0.5">Author Byline: <strong className="text-white" rel="author">KAJU🦋</strong> (Lead Systems Architect)</div>
+          <div className="text-[11px] mt-0.5">Author Byline: <strong className="text-white">KAJU🦋</strong> (Lead Systems Architect)</div>
         </div>
       </footer>
     </div>
