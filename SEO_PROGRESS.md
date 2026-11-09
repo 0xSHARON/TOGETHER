@@ -124,3 +124,17 @@ strict-transport-security: max-age=31536000; includeSubDomains; preload
       * Live hydrated React DOM visible text: **6,191 bytes** (**19.04%** text-to-HTML ratio)
       * Flesch-Kincaid Reading Grade Level: **8.40** (target <= 12)
     - Successfully deployed and verified live on production VPS.
+
+16. **Launch of High-Intent Comparison Hub (Phase 12 — Commit `86e165d`)**
+    - Created dedicated `/compare` route (with `/alternatives` alias redirect) directly targeting high-volume searches:
+      * "Best Discord Music Bot 2026"
+      * "Hydra bot alternative"
+      * "Rythm music bot alternative"
+      * "Discord music bot comparison"
+    - Pre-rendered static `/compare/index.html` with:
+      * Text-to-HTML ratio: **31.92%**
+      * Flesch-Kincaid Grade: **10.87** (Target <= 12)
+      * Full Schema.org Breadcrumbs, Article, and Organization graph.
+    - Updated `sitemap.xml`, `robots.txt`, and `llms.txt`.
+    - Pushed live to VPS production (`195.206.169.100`), compressed with Brotli (5.8 KB) and Gzip (6.3 KB).
+    - Pinged Bing & IndexNow API endpoints (HTTP 200 OK verified).
