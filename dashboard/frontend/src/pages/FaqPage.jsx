@@ -11,7 +11,6 @@ import {
   Terminal, 
   Headphones, 
   ShieldCheck, 
-  ExternalLink, 
   BookOpen, 
   Check, 
   Copy, 
@@ -20,7 +19,13 @@ import {
   Sparkles,
   Volume2,
   LifeBuoy,
-  Star
+  Star,
+  Music,
+  Heart,
+  Settings,
+  BarChart2,
+  ListMusic,
+  Wrench
 } from 'lucide-react';
 import SEO from '../components/SEO';
 
@@ -31,14 +36,15 @@ const TOPGG_VOTE_URL = "https://top.gg/bot/863496211667484676/vote";
 
 const DOC_CATEGORIES = [
   { id: 'quickstart', label: 'Quickstart & Adding Bot', icon: Zap },
-  { id: 'voting-perks', label: 'Voting & Voter Commands', icon: Star },
-  { id: 'audio-engine', label: '24-Bit Lossless Audio', icon: Volume2 },
-  { id: 'webplayer', label: '3D WebGL Webplayer', icon: Sparkles },
-  { id: 'dsp-filters', label: '14 DSP Sound Filters', icon: Sliders },
-  { id: 'persistence-247', label: '24/7 Channel Locking', icon: Radio },
-  { id: 'commands-parity', label: 'Slash & Prefix Commands', icon: Terminal },
-  { id: 'dashboard', label: 'Web Dashboard & Controls', icon: Layers },
-  { id: 'troubleshooting', label: 'Troubleshooting & Audio Fixes', icon: ShieldCheck },
+  { id: 'music-playback', label: 'Music Playback Commands', icon: Music },
+  { id: 'queue-mgmt', label: 'Queue & Controls', icon: ListMusic },
+  { id: 'dsp-filters', label: '14 DSP Audio Filters', icon: Sliders },
+  { id: 'voting-perks', label: 'Voting & Top.gg Perks', icon: Star },
+  { id: 'favourite-playlists', label: 'Favorites & Playlists', icon: Heart },
+  { id: 'config-settings', label: 'Server Config & 24/7', icon: Settings },
+  { id: 'webplayer-visualizer', label: '3D WebGL Webplayer', icon: Sparkles },
+  { id: 'info-leaderboard', label: 'Profiles, Stats & XP', icon: BarChart2 },
+  { id: 'troubleshooting', label: 'Troubleshooting & Fixes', icon: Wrench },
 ];
 
 const FAQ_SECTIONS = [
@@ -70,13 +76,185 @@ const FAQ_SECTIONS = [
     ]
   },
   {
+    category: 'music-playback',
+    categoryLabel: 'Music Playback Commands',
+    items: [
+      {
+        id: 'cmd-play',
+        question: 'How do I play a song, album, or playlist?',
+        answer: 'Use /play or .play followed by a song title, artist, or direct URL. Together supports Spotify tracks, albums, playlists, YouTube, SoundCloud, Apple Music, Deezer, and direct HTTP audio streams.',
+        command: '/play query: blinding lights the weeknd',
+        commandLabel: 'Play Track by Title or URL'
+      },
+      {
+        id: 'cmd-pause-resume',
+        question: 'How do I pause and resume playback?',
+        answer: 'Type /pause (or .pause) to freeze the stream without losing your position. Type /resume or .r to continue playback seamlessly.',
+        command: '/resume',
+        commandLabel: 'Resume Audio Stream'
+      },
+      {
+        id: 'cmd-skip',
+        question: 'How do I skip the current playing song?',
+        answer: 'Type /skip or .s to immediately skip to the next song in the queue. Administrators and DJs can also use /forceskip (.fs) to bypass any voting requirements.',
+        command: '/skip',
+        commandLabel: 'Skip Current Track'
+      },
+      {
+        id: 'cmd-stop',
+        question: 'How do I stop music and disconnect the player?',
+        answer: 'Type /stop (or .stop) to stop playback, flush the audio transcoder, and clear the queue.',
+        command: '/stop',
+        commandLabel: 'Stop Audio & Clear'
+      },
+      {
+        id: 'cmd-volume',
+        question: 'How do I adjust the volume of the stream?',
+        answer: 'Type /volume or .vol followed by a number between 1 and 150. Studio normalization protects audio from clipping at higher volumes.',
+        command: '/volume level: 85',
+        commandLabel: 'Set Stream Volume'
+      },
+      {
+        id: 'cmd-seek',
+        question: 'How do I seek or jump to a specific timestamp?',
+        answer: 'Use /seek or .seek followed by a timestamp (e.g. 1:30 or 90) to fast-travel to that exact point in the track.',
+        command: '/seek timestamp: 2:15',
+        commandLabel: 'Seek to Track Timestamp'
+      },
+      {
+        id: 'cmd-forward-rewind',
+        question: 'How do I fast-forward or rewind playback?',
+        answer: 'Use /forward (.ff) to jump forward by seconds (e.g. .ff 15), or /rewind (.rw) to jump backward.',
+        command: '.ff 30',
+        commandLabel: 'Forward 30 Seconds'
+      },
+      {
+        id: 'cmd-speed',
+        question: 'Can I change the playback speed of songs?',
+        answer: 'Yes! Use /speed or .speed followed by a multiplier between 0.5x and 2.0x (e.g. 1.25x or 0.8x for slow reverb).',
+        command: '/speed rate: 1.25',
+        commandLabel: 'Change Playback Tempo'
+      },
+      {
+        id: 'cmd-replay-previous',
+        question: 'How do I restart the current song or play the previous one?',
+        answer: 'Type /replay (.rp) to restart the current song from 0:00. Type /previous (.prev, .back) to play the previous song stored in your session history.',
+        command: '/replay',
+        commandLabel: 'Restart Track'
+      },
+      {
+        id: 'cmd-search',
+        question: 'How do I search for a track and select from results?',
+        answer: 'Use /search or .search followed by a query. Together will return the top 5 matching tracks with interactive buttons to choose your selection.',
+        command: '/search query: daft punk get lucky',
+        commandLabel: 'Interactive Track Search'
+      },
+      {
+        id: 'cmd-sleep',
+        question: 'How do I set a sleep timer to stop playing automatically?',
+        answer: 'Use /sleep or .sleep followed by a duration (e.g. 30m, 1h, 45m). Together will automatically stop and leave the channel once the timer expires.',
+        command: '/sleep duration: 45m',
+        commandLabel: 'Set Inactivity Sleep Timer'
+      },
+      {
+        id: 'cmd-nowplaying-grab',
+        question: 'How do I view track details or save a song to my DMs?',
+        answer: 'Type /nowplaying (.np) to view high-resolution album art, live progress, and audio codecs. Type /grab (.save) to have Together DM you the song link directly.',
+        command: '/nowplaying',
+        commandLabel: 'Inspect Currently Playing Track'
+      }
+    ]
+  },
+  {
+    category: 'queue-mgmt',
+    categoryLabel: 'Queue & Controls',
+    items: [
+      {
+        id: 'cmd-queue',
+        question: 'How do I view the upcoming music queue?',
+        answer: 'Type /queue or .q to display the upcoming song list, total duration, and remaining tracks with interactive pagination controls.',
+        command: '/queue',
+        commandLabel: 'Inspect Queue'
+      },
+      {
+        id: 'cmd-shuffle',
+        question: 'How do I randomize and shuffle the queue?',
+        answer: 'Use /shuffle or .shuffle to instantly randomize the order of all upcoming songs in your queue.',
+        command: '/shuffle',
+        commandLabel: 'Randomize Queue Order'
+      },
+      {
+        id: 'cmd-loop',
+        question: 'How do I loop a single song or the entire queue?',
+        answer: 'Type /loop or .loop to toggle between three modes: Track Loop (repeats current song), Queue Loop (cycles whole list), or Disabled.',
+        command: '/loop mode: track',
+        commandLabel: 'Toggle Repeat Loop'
+      },
+      {
+        id: 'cmd-remove',
+        question: 'How do I remove a song from the queue?',
+        answer: 'Use /remove or .rm followed by the track number in the queue (e.g. .rm 3 to remove the third song).',
+        command: '/remove position: 3',
+        commandLabel: 'Remove Track from Queue'
+      },
+      {
+        id: 'cmd-skipto',
+        question: 'How do I jump directly to a track further down in the queue?',
+        answer: 'Use /skipto or .jump followed by the track index (e.g. .jump 5) to skip directly to that track and discard previous ones.',
+        command: '/skipto position: 5',
+        commandLabel: 'Jump to Queue Position'
+      },
+      {
+        id: 'cmd-clear',
+        question: 'How do I clear the entire queue at once?',
+        answer: 'Type /clear or .cq to empty all upcoming tracks while keeping the currently playing track active.',
+        command: '/clear',
+        commandLabel: 'Clear Upcoming Queue'
+      },
+      {
+        id: 'cmd-leavecleanup',
+        question: 'How do I remove songs queued by users who left the voice channel?',
+        answer: 'Use /leavecleanup or .lc to scan the queue and automatically purge all songs requested by members who are no longer in voice.',
+        command: '/leavecleanup',
+        commandLabel: 'Clean Absent User Tracks'
+      }
+    ]
+  },
+  {
+    category: 'dsp-filters',
+    categoryLabel: '14 DSP Studio Audio Filters',
+    items: [
+      {
+        id: 'how-to-use-filters',
+        question: 'How do I enable 8D Audio, Bass Boost, or Nightcore?',
+        answer: 'You can enable any audio filter using slash commands (/filters), text prefix (.filter <name>), or through the Web Dashboard. DSP filters apply live without restarting your stream.',
+        command: '/filters mode: bassboost level: extreme',
+        commandLabel: 'Apply Studio Audio DSP'
+      },
+      {
+        id: 'list-of-filters',
+        question: 'What 14 audio filters are included in the DSP engine?',
+        answer: 'Together includes:\n• Bass Boost (Low, Med, Extreme): Custom frequency amplification.\n• 8D Audio: 360-degree circular panning spatial sound.\n• Nightcore: High pitch & speed boost.\n• Vaporwave: Slowed tempo with vintage reverb.\n• Pop / Soft / Treble: Acoustic equalization curves.\n• Tremolo & Vibrato: Rapid volume and frequency modulation.\n• Karaoke: Vocal frequency attenuation.\n• Mono: Downmix stereo to single balanced channel.\n• Clear: Reset all filters to default flat EQ.',
+        command: '.filter 8d',
+        commandLabel: 'Enable 8D Spatial Audio'
+      },
+      {
+        id: 'reset-filters',
+        question: 'How do I turn off all audio filters?',
+        answer: 'Type /filters mode: clear or .filter clear to immediately reset the sound engine to pure lossless studio flat EQ.',
+        command: '/filters mode: clear',
+        commandLabel: 'Reset Audio Equalizer'
+      }
+    ]
+  },
+  {
     category: 'voting-perks',
     categoryLabel: 'Voting & Top.gg Voter Commands',
     items: [
       {
         id: 'how-to-vote',
         question: 'How do I vote and check my vote status?',
-        answer: 'You can check your current vote status and remaining perk duration directly inside Discord using the /vote or .vote command. If your vote has expired, the command provides an interactive button that opens the official Top.gg voting page.',
+        answer: 'You can check your vote status and remaining perk duration directly inside Discord using /vote or .vote. If expired, the command provides a direct link to the Top.gg vote portal.',
         command: '/vote',
         commandLabel: 'Check Vote Status in Discord'
       },
@@ -90,7 +268,7 @@ const FAQ_SECTIONS = [
       {
         id: 'voter-exclusive-perks',
         question: 'What exclusive commands are unlocked by voting?',
-        answer: 'Voting on Top.gg instantly unlocks premium features for 12 hours without any payments:\n\n• /247 (.247): 24/7 Channel Locking to keep the bot permanently in your voice channel.\n• /autoplay (.autoplay / .ap): Algorithmic song recommendation that keeps music playing endlessly when the queue ends.\n• /lyrics (.lyrics / .ly): Real-time interactive lyrics search and display.\n• Leaderboard Streaks: Earn bonus listening streaks and verified voter indicators.',
+        answer: 'Voting on Top.gg instantly unlocks premium features for 12 hours without any payments:\n\n• /247 (.247): 24/7 Channel Locking to keep the bot permanently in voice.\n• /autoplay (.autoplay / .ap): Algorithmic song recommendation that keeps music playing endlessly when the queue ends.\n• /lyrics (.lyrics / .ly): Real-time interactive lyrics search and display.\n• Leaderboard Streaks: Earn bonus listening streaks and verified voter indicators.',
         callout: {
           type: 'tip',
           text: 'Only one person in the voice channel needs an active vote for the server to benefit from 24/7 channel locking and Autoplay!'
@@ -106,37 +284,97 @@ const FAQ_SECTIONS = [
     ]
   },
   {
-    category: 'audio-engine',
-    categoryLabel: '24-Bit Lossless Audio Engine',
+    category: 'favourite-playlists',
+    categoryLabel: 'Favorites & Personal Playlists',
     items: [
       {
-        id: 'audio-bitrate-specs',
-        question: 'What audio quality and codecs does Together support?',
-        answer: 'Together transcodes incoming streams directly into 24-Bit / 48kHz stereo Opus frames. The internal ring-buffer ensures steady 384kbps maximum Discord voice bitrate with sub-25ms audio frame latency.',
-        callout: {
-          type: 'note',
-          text: 'Discord voice channels default to 64kbps. For the best acoustic experience, server administrators should set voice channel bitrate to 128kbps, 256kbps, or 384kbps in channel settings.'
-        }
+        id: 'cmd-like-favorites',
+        question: 'How do I save songs to my personal Favorites library?',
+        answer: 'Type /like (or .fav) while listening to save the current song to your private library. To favorite every song currently in queue at once, use /likeall (.likequeue).',
+        command: '/like',
+        commandLabel: 'Favorite Current Song'
       },
       {
-        id: 'supported-sources',
-        question: 'Which music sources and platforms are supported?',
-        answer: 'Together natively resolves tracks, albums, artist radio, and playlists from YouTube, YouTube Music, Spotify, SoundCloud, Apple Music, Deezer, and direct HTTP audio livestreams.',
-        command: '/play query: https://open.spotify.com/playlist/...',
-        commandLabel: 'Example Multi-Platform Stream'
+        id: 'cmd-playliked',
+        question: 'How do I play my saved favorite songs?',
+        answer: 'Type /playliked or .playfav to instantly load and stream all your favorite tracks into your voice channel.',
+        command: '/playliked',
+        commandLabel: 'Stream Favorite Tracks'
+      },
+      {
+        id: 'cmd-showliked-unlike',
+        question: 'How do I view or remove songs from my favorites?',
+        answer: 'Type /showliked (.liked) to view your library. To remove a track, use /unlike (.delfav) followed by the track index or title.',
+        command: '/showliked',
+        commandLabel: 'Browse Saved Favorites'
+      },
+      {
+        id: 'cmd-playlist',
+        question: 'How do I create and manage custom playlists?',
+        answer: 'Use /playlist (.pl) to build custom playlists. Commands include:\n• .pl create <name>: Create a new playlist.\n• .pl add <name> <song/url>: Add track to playlist.\n• .pl play <name>: Stream your custom playlist.\n• .pl list: View all your created playlists.\n• .pl delete <name>: Delete a playlist.',
+        command: '.pl create ChillVibes',
+        commandLabel: 'Scaffold Custom Playlist'
       }
     ]
   },
   {
-    category: 'webplayer',
+    category: 'config-settings',
+    categoryLabel: 'Server Config & 24/7 Channel Locking',
+    items: [
+      {
+        id: 'cmd-247',
+        question: 'How do I lock Together into a voice channel 24/7?',
+        answer: 'Join your voice channel and type /247 or .247. The bot will lock to that room and stay connected indefinitely, automatically resuming playback if the Discord gateway disconnects.',
+        command: '/247 status: enable',
+        commandLabel: 'Activate 24/7 Voice Channel Locking'
+      },
+      {
+        id: 'cmd-setprefix',
+        question: 'How do I change the bot prefix for my server?',
+        answer: 'Server managers can use /setprefix or .setprefix followed by a new prefix (e.g. .setprefix ! or .setprefix ?). Slash commands always work regardless of custom prefix.',
+        command: '/setprefix prefix: !',
+        commandLabel: 'Configure Custom Prefix'
+      },
+      {
+        id: 'cmd-djrole',
+        question: 'How do I set up a DJ Role to restrict player controls?',
+        answer: 'Use /djrole (.dj) followed by a role mention or ID to designate a DJ role. When DJ mode is active, only users with that role or server managers can skip, stop, or seek songs.',
+        command: '/djrole role: @DJ',
+        commandLabel: 'Assign DJ Permission Role'
+      },
+      {
+        id: 'cmd-source',
+        question: 'How do I set the default audio search platform?',
+        answer: 'Use /source to choose your server\'s preferred search engine (Spotify, YouTube, or SoundCloud) when queries are entered without a direct link.',
+        command: '/source platform: spotify',
+        commandLabel: 'Set Default Search Source'
+      },
+      {
+        id: 'cmd-ignore',
+        question: 'Can I prevent the bot from responding in specific channels?',
+        answer: 'Yes! Use /ignore (.ig) in a text channel to toggle command processing on or off for that room.',
+        command: '/ignore channel: #general',
+        commandLabel: 'Ignore Channel Commands'
+      }
+    ]
+  },
+  {
+    category: 'webplayer-visualizer',
     categoryLabel: '3D WebGL Webplayer Visualizer',
     items: [
       {
         id: 'what-is-webplayer',
         question: 'What is the 3D WebGL Webplayer and how do I open it?',
-        answer: 'Together features a dedicated real-time browser visualizer at together.dpdns.org/visualizer/. It captures live synchronized audio frequencies from your server and renders reactive 3D soundstages, animated waveforms, particle meshes, and full track controls in your browser.',
+        answer: 'Together features an interactive real-time browser visualizer at together.dpdns.org/visualizer/. It captures live synchronized audio frequencies from your Discord voice channel and renders reactive 3D soundstages, animated waveforms, particle meshes, and full track controls in your browser.',
         command: 'https://together.dpdns.org/visualizer/',
         commandLabel: 'Open 3D Webplayer Visualizer'
+      },
+      {
+        id: 'cmd-visualizer',
+        question: 'Can I launch the 3D visualizer from Discord?',
+        answer: 'Yes! Type /visualizer or .vz in any server where music is playing to receive a quick-launch invite link with live session syncing.',
+        command: '/visualizer',
+        commandLabel: 'Get Visualizer Stage Link'
       },
       {
         id: 'visualizer-modes',
@@ -146,67 +384,29 @@ const FAQ_SECTIONS = [
     ]
   },
   {
-    category: 'dsp-filters',
-    categoryLabel: '14 DSP Studio Sound Filters',
+    category: 'info-leaderboard',
+    categoryLabel: 'Profiles, Stats & Listening XP',
     items: [
       {
-        id: 'how-to-use-filters',
-        question: 'How do I enable 8D Audio, Bass Boost, or Nightcore?',
-        answer: 'You can enable any audio filter using either slash commands in Discord or directly through the Web Dashboard player tab. DSP filters are applied in real time without pausing or resetting your position in the song.',
-        command: '/filters mode: bassboost level: extreme',
-        commandLabel: 'Apply Studio Audio DSP'
+        id: 'cmd-profile',
+        question: 'How do I view my music profile and listening stats?',
+        answer: 'Type /profile or .profile to generate a brutalist music card displaying your total songs listened, favorite genre, hours streamed, and custom bio banner.',
+        command: '/profile',
+        commandLabel: 'Generate Music Profile Card'
       },
       {
-        id: 'list-of-filters',
-        question: 'What filters are included in the DSP engine?',
-        answer: 'Together includes 14 hardware-accelerated DSP audio filters: 8D Circular Spatial Audio, Bass Boost (Low, Medium, Extreme), Nightcore, Vaporwave, Pop, Soft, Tremolo, Vibrato, Karaoke, Treble, and Mono.'
-      }
-    ]
-  },
-  {
-    category: 'persistence-247',
-    categoryLabel: '24/7 Channel Locking & Persistence',
-    items: [
-      {
-        id: 'how-to-activate-247',
-        question: 'How do I keep Together in my voice channel 24/7?',
-        answer: 'Type /247 or .247 in your server voice channel. Together will lock to the current channel and stay connected indefinitely, automatically resuming audio if the Discord gateway disconnects or when members leave.',
-        command: '/247 status: enable',
-        commandLabel: 'Lock Bot in Voice Channel'
+        id: 'cmd-leaderboard',
+        question: 'How do I check the music leaderboard rankings?',
+        answer: 'Type /lb or .lb to view server and global listener rankings, streak leaderboards, and most played tracks.',
+        command: '/lb type: listening_time',
+        commandLabel: 'View Server Music Leaderboard'
       },
       {
-        id: 'voter-perk-requirements',
-        question: 'Is 24/7 channel locking free?',
-        answer: 'Yes! 24/7 persistence is available to all servers as a free Top.gg community voter perk. Simply cast a quick vote on Top.gg to activate 24/7 mode on your server for 24 hours.'
-      }
-    ]
-  },
-  {
-    category: 'commands-parity',
-    categoryLabel: 'Slash & Prefix Command Parity',
-    items: [
-      {
-        id: 'command-prefixes',
-        question: 'Can I use classic text prefix commands as well as Slash commands?',
-        answer: 'Yes! Together maintains complete 100% feature parity between modern Discord Slash interactions (/play, /queue, /skip, /filters) and classic text prefix controls (.play, .q, .s, .filters). Autocomplete suggestions are available for all slash interactions.'
-      },
-      {
-        id: 'essential-commands',
-        question: 'What are the most essential commands to remember?',
-        answer: 'The primary command suite includes /play (or .play), /pause, /resume, /skip, /queue, /volume, /filters, /loop, /shuffle, /lyrics, and /247.',
-        command: '.play lofi hip hop radio',
-        commandLabel: 'Classic Text Prefix Play'
-      }
-    ]
-  },
-  {
-    category: 'dashboard',
-    categoryLabel: 'Web Dashboard & Remote Controls',
-    items: [
-      {
-        id: 'how-dashboard-works',
-        question: 'How do I access and manage the web dashboard?',
-        answer: 'Log in at dash.together.dpdns.org with your Discord account. You can view bot telemetry, monitor live server queues, adjust volume and DSP filters, inspect audio bitrate, and customize server-specific prefixes remotely.'
+        id: 'cmd-stats-ping',
+        question: 'How do I check bot latency and node health?',
+        answer: 'Type /ping to inspect Discord gateway and Audio Engine round-trip latency in milliseconds. Type /stats (.bi) for CPU, memory, and cluster health.',
+        command: '/ping',
+        commandLabel: 'Check Gateway & Audio Latency'
       }
     ]
   },
@@ -214,6 +414,13 @@ const FAQ_SECTIONS = [
     category: 'troubleshooting',
     categoryLabel: 'Troubleshooting & Audio Fixes',
     items: [
+      {
+        id: 'cmd-forcefix',
+        question: 'What should I do if the bot is lagging or stuck in a voice channel?',
+        answer: 'Use /forcefix (.fix) to force Together to re-establish the voice connection, reset the audio pipeline, and re-sync Lavalink frames without clearing your queue.',
+        command: '/forcefix',
+        commandLabel: 'Force Fix Voice Gateway Connection'
+      },
       {
         id: 'no-audio-output',
         question: 'The bot joined my voice channel but I cannot hear any sound. How do I fix it?',
@@ -265,7 +472,7 @@ export default function FaqPage() {
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono selection:bg-brutal-accent selection:text-black">
       <SEO 
         title="Documentation &amp; FAQ — Together Music Bot"
-        description="Official documentation and FAQ for Together Music Bot: 24-bit lossless opus audio, 3D webplayer visualizer, commands guide, DSP filters, and 24/7 channel locking."
+        description="Comprehensive documentation and command FAQ for Together Music Bot: 24-bit lossless opus audio, 3D webplayer visualizer, playback controls, DSP filters, and 24/7 channel locking."
         canonical="https://dash.together.dpdns.org/faq"
       />
 
@@ -289,7 +496,7 @@ export default function FaqPage() {
                   TOGETHER
                 </span>
                 <span className="hidden sm:inline-block ml-2 text-[9px] bg-brutal-accent text-black font-black px-1.5 py-0.2">
-                  DOCS &amp; KNOWLEDGE BASE
+                  COMMANDS &amp; PROTOCOL DOCS
                 </span>
               </div>
             </Link>
@@ -322,32 +529,32 @@ export default function FaqPage() {
         <div className="max-w-7xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-0.5 bg-brutal-surface border border-brutal-border text-[10px] font-black uppercase text-brutal-accent">
             <BookOpen className="w-3.5 h-3.5" />
-            <span>OFFICIAL AUDIO PROTOCOL SPECIFICATION &amp; GUIDES</span>
+            <span>COMMAND REGISTRY &amp; COMPREHENSIVE PROTOCOL FAQ</span>
           </div>
           <h1 className="font-display font-black text-3xl sm:text-5xl text-white uppercase tracking-tight">
-            DOCUMENTATION &amp; FAQ.
+            COMMANDS &amp; FAQ DIRECTORY.
           </h1>
           <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed">
-            Everything you need to know about setting up Together, maximizing 24-bit lossless audio streams, launching the 3D WebGL webplayer, and configuring Discord voice rooms.
+            Detailed guides for all 59+ commands: audio playback, queue manipulations, 14 DSP filters, 24/7 channel locking, playlists, and server configuration.
           </p>
 
           {/* Search Bar */}
           <div className="pt-2 max-w-2xl">
             <div className="relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-              <label htmlFor="doc-search-input" className="sr-only">Search documentation</label>
+              <label htmlFor="doc-search-input" className="sr-only">Search all commands and FAQs</label>
               <input
                 id="doc-search-input"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search documentation (e.g. 24-bit opus, visualizer, 24/7, filters)..."
+                placeholder="Search commands (e.g. play, skip, 247, bassboost, lyrics, djrole)..."
                 className="w-full bg-brutal-surface border-2 border-brutal-border pl-10 pr-4 py-2.5 font-mono text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-brutal-accent shadow-brutal-sm"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  aria-label="Clear doc search"
+                  aria-label="Clear command search"
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brutal-accent uppercase font-bold hover:underline"
                 >
                   CLEAR
@@ -367,10 +574,10 @@ export default function FaqPage() {
             <div className="flex items-center justify-between pb-3 border-b-2 border-brutal-border text-xs font-black uppercase tracking-wider text-zinc-400">
               <span className="flex items-center gap-2">
                 <Layers className="w-4 h-4 text-brutal-accent" />
-                CATEGORIES
+                COMMAND GROUPS
               </span>
               <span className="text-[10px] bg-black text-brutal-accent px-1.5 py-0.5 border border-zinc-800">
-                {DOC_CATEGORIES.length} TOPICS
+                {DOC_CATEGORIES.length} CATEGORIES
               </span>
             </div>
 
@@ -439,9 +646,9 @@ export default function FaqPage() {
             {filteredSections.length === 0 ? (
               <div className="border-2 border-dashed border-zinc-800 p-12 text-center space-y-3 bg-brutal-surface">
                 <HelpCircle className="w-8 h-8 text-zinc-600 mx-auto" />
-                <div className="font-display font-black text-lg text-white uppercase">No Documentation Found</div>
+                <div className="font-display font-black text-lg text-white uppercase">No Commands or FAQs Found</div>
                 <p className="text-xs text-zinc-400">
-                  No topics or answers matched "{searchQuery}". Try searching for terms like "opus", "filters", "24/7", or "webplayer".
+                  No commands matched "{searchQuery}". Try searching for command names like "play", "skip", "volume", "247", or "lyrics".
                 </p>
                 <button
                   onClick={() => setSearchQuery('')}
@@ -482,7 +689,7 @@ export default function FaqPage() {
                           {item.answer}
                         </p>
 
-                        {/* Optional Interactive Command Block */}
+                        {/* Interactive Command Block */}
                         {item.command && (
                           <div className="pl-8 pt-1">
                             <div className="border border-zinc-800 bg-black p-3 space-y-1">
@@ -564,4 +771,3 @@ export default function FaqPage() {
     </div>
   );
 }
-
