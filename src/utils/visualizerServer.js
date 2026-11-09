@@ -11,8 +11,8 @@ const fs   = require("fs");
 const path = require("path");
 const { URL } = require("url");
 
-const PUBLIC_ROOT    = path.resolve(__dirname, "../../public");
-const VISUALIZER_DIR = path.resolve(__dirname, "../../public/visualizer");
+const PUBLIC_ROOT    = path.resolve(__dirname, "../../together-visualizer");
+const VISUALIZER_DIR = path.resolve(__dirname, "../../together-visualizer/visualizer");
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
