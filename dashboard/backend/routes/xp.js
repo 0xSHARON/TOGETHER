@@ -32,13 +32,13 @@ router.get("/leaderboard", async (req, res) => {
     // 2. Fallback to MongoDB if bot is temporarily restarting
     if (!leaderboard || leaderboard.length === 0) {
       const rawUsers = await UserPreferences.find()
-        .sort({ xp: -1, songsPlayed: -1, listeningSeconds: -1 })
+        .sort({ listeningSeconds: -1, songsPlayed: -1, xp: -1 })
         .limit(100)
         .lean()
         .catch(() => []);
 
       let activeUsers = rawUsers.filter((d) => 
-        (d.songsPlayed > 0 || d.xp > 0 || d.listeningSeconds > 0) &&
+        (d.listeningSeconds > 0 || d.songsPlayed > 0 || d.xp > 0) &&
         d.userId !== "863496211667484676"
       );
       if (activeUsers.length === 0) activeUsers = rawUsers;

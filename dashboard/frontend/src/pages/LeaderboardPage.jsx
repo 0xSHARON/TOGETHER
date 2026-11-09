@@ -35,7 +35,7 @@ export default function LeaderboardPage() {
   const [scope, setScope] = useState('global'); // 'global' | 'server'
   const [guilds, setGuilds] = useState([]);
   const [selectedGuildId, setSelectedGuildId] = useState('');
-  const [sortBy, setSortBy] = useState('xp'); // 'xp' | 'songs' | 'time' | 'streak'
+  const [sortBy, setSortBy] = useState('time'); // 'time' | 'songs' | 'xp' | 'streak'
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 15;
@@ -185,9 +185,9 @@ export default function LeaderboardPage() {
         {/* Sort by Metric */}
         <div className="md:col-span-5 flex items-center gap-1.5 flex-wrap">
           {[
-            { id: 'xp', label: 'EXPERIENCE', icon: Sparkles },
+            { id: 'time', label: 'LISTEN TIME', icon: Clock },
             { id: 'songs', label: 'TRACKS', icon: Music },
-            { id: 'time', label: 'HOURS', icon: Clock },
+            { id: 'xp', label: 'EXPERIENCE', icon: Sparkles },
             { id: 'streak', label: 'STREAK', icon: Flame },
           ].map((tab) => {
             const Icon = tab.icon;
@@ -429,10 +429,10 @@ export default function LeaderboardPage() {
                     <tr className="border-b-2 border-brutal-border text-brutal-muted uppercase text-[10px]">
                       <th className="py-2.5 px-3">RANK</th>
                       <th className="py-2.5 px-3">LISTENER</th>
+                      <th className="py-2.5 px-3">LISTEN TIME</th>
+                      <th className="py-2.5 px-3">TRACKS</th>
                       <th className="py-2.5 px-3">LEVEL</th>
                       <th className="py-2.5 px-3">EXPERIENCE</th>
-                      <th className="py-2.5 px-3">TRACKS</th>
-                      <th className="py-2.5 px-3">HOURS</th>
                       <th className="py-2.5 px-3">STREAK</th>
                     </tr>
                   </thead>
@@ -469,17 +469,17 @@ export default function LeaderboardPage() {
                               </div>
                             </div>
                           </td>
-                          <td className="py-2.5 px-3 font-bold text-brutal-text">
-                            LVL {u.level}
-                          </td>
                           <td className="py-2.5 px-3 text-brutal-accent font-bold">
-                            {(u.xp || 0).toLocaleString()} XP
+                            {Math.floor((u.listeningMinutes || 0) / 60)}h {(u.listeningMinutes || 0) % 60}m
                           </td>
                           <td className="py-2.5 px-3 text-zinc-300">
                             {u.songsPlayed || 0}
                           </td>
+                          <td className="py-2.5 px-3 font-bold text-brutal-text">
+                            LVL {u.level}
+                          </td>
                           <td className="py-2.5 px-3 text-zinc-300">
-                            {Math.floor((u.listeningMinutes || 0) / 60)}h {(u.listeningMinutes || 0) % 60}m
+                            {(u.xp || 0).toLocaleString()} XP
                           </td>
                           <td className="py-2.5 px-3">
                             {u.streak > 0 ? (

@@ -1263,12 +1263,12 @@ function startVisualizerServer(client, preferredPort = 5050) {
         const UserPreferences = require("../schema/userpreferences");
         const botId = client?.user?.id;
         const guildId = reqUrl.searchParams.get("guildId") || reqUrl.searchParams.get("guild");
-        const sortBy = (reqUrl.searchParams.get("sort") || "xp").toLowerCase();
+        const sortBy = (reqUrl.searchParams.get("sort") || "time").toLowerCase();
 
         // 1. Fetch top docs excluding the bot itself
         const queryFilter = botId ? { userId: { $ne: botId } } : {};
         const rawDocs = await UserPreferences.find(queryFilter)
-          .sort({ xp: -1, songsPlayed: -1, listeningSeconds: -1 })
+          .sort({ listeningSeconds: -1, songsPlayed: -1, xp: -1 })
           .limit(200)
           .lean()
           .catch(() => []);
@@ -1328,15 +1328,16 @@ function startVisualizerServer(client, preferredPort = 5050) {
           )
         ).filter(Boolean);
 
-        // 4. Sort according to requested metric
+        // 4. Sort according to requested metric (Default: listen time)
         if (sortBy === "songs") {
-          resolvedUsers.sort((a, b) => b.songsPlayed - a.songsPlayed || b.xp - a.xp);
-        } else if (sortBy === "time") {
-          resolvedUsers.sort((a, b) => b.listeningSeconds - a.listeningSeconds || b.xp - a.xp);
+          resolvedUsers.sort((a, b) => b.songsPlayed - a.songsPlayed || b.listeningSeconds - a.listeningSeconds);
+        } else if (sortBy === "xp") {
+          resolvedUsers.sort((a, b) => b.xp - a.xp || b.listeningSeconds - a.listeningSeconds);
         } else if (sortBy === "streak") {
-          resolvedUsers.sort((a, b) => b.streak - a.streak || b.xp - a.xp);
+          resolvedUsers.sort((a, b) => b.streak - a.streak || b.listeningSeconds - a.listeningSeconds);
         } else {
-          resolvedUsers.sort((a, b) => b.xp - a.xp || b.songsPlayed - a.songsPlayed);
+          // Default: "time" (listen time)
+          resolvedUsers.sort((a, b) => b.listeningSeconds - a.listeningSeconds || b.songsPlayed - a.songsPlayed || b.xp - a.xp);
         }
 
         // Re-index ranks after filtering and sorting

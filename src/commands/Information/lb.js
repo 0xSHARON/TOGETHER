@@ -11,6 +11,14 @@ const UserPreferences = require("../../schema/userpreferences");
 const { container, flags, noticePayload, separator, text } = require("../../utils/ui");
 const emoji = require("../../emojis");
 
+function formatListeningTime(seconds) {
+  const s = Math.max(0, Number(seconds) || 0);
+  const hours = Math.floor(s / 3600);
+  const mins = Math.floor((s % 3600) / 60);
+  if (hours > 0) return `${hours}h ${mins}m`;
+  return `${mins}m`;
+}
+
 module.exports = {
   name: "lb",
   category: "Information",
@@ -29,8 +37,8 @@ module.exports = {
       type: 3, // STRING
       required: false,
       choices: [
-        { name: "🏰 Server Standings", value: "server" },
-        { name: "🌐 Global Standings", value: "global" },
+        { name: "Server Standings", value: "server" },
+        { name: "Global Standings", value: "global" },
       ],
     },
     {
@@ -67,7 +75,7 @@ module.exports = {
     }
 
     const loadCard = container().addTextDisplayComponents(
-      text(`**${emoji.load || "⏳"} Rendering brutalist music leaderboard...**`),
+      text(`**${emoji.load ? `${emoji.load} ` : ""}Rendering brutalist music leaderboard...**`),
     );
     const loadMsg = await message
       .reply({
@@ -87,17 +95,17 @@ module.exports = {
       // If scope is server but executed in DMs, fallback to global
       const effectiveScope = targetGuild ? scope : "global";
 
-      // 1. Fetch top users sorted by XP, then songs played, then listening duration
+      // 1. Fetch top users sorted primarily by LISTEN TIME, then songs played, then XP
       const queryFilter = botId ? { userId: { $ne: botId } } : {};
       const rawDocs = await UserPreferences.find(queryFilter)
-        .sort({ xp: -1, songsPlayed: -1, listeningSeconds: -1 })
+        .sort({ listeningSeconds: -1, songsPlayed: -1, xp: -1 })
         .limit(200)
         .lean();
 
       // Filter active users and strictly exclude any bot ID
       let docs = rawDocs.filter((d) => 
         d.userId !== botId && 
-        (Number(d.songsPlayed) > 0 || Number(d.xp) > 0 || Number(d.listeningSeconds) > 0)
+        (Number(d.listeningSeconds) > 0 || Number(d.songsPlayed) > 0 || Number(d.xp) > 0)
       );
 
       // Server scope filtering
@@ -210,27 +218,34 @@ module.exports = {
 
       // Text Display with custom brutalist styling
       let textContent = "";
+      const trophyEmoji = emoji.trophy ? `${emoji.trophy} ` : "";
+      const timeEmoji = emoji.time ? `${emoji.time} ` : "";
+      const headphonesEmoji = emoji.headphones ? `${emoji.headphones} ` : "";
+      const levelEmoji = emoji.level ? `${emoji.level} ` : "";
+      const fireEmoji = emoji.fire ? `${emoji.fire} ` : "";
+      const rankEmoji = emoji.rank ? `${emoji.rank} ` : "";
+
       if (isServerEmpty) {
-        textContent = `## ${emoji.trophy || "🏆"} ${serverTitle} // Podium\n*No members in this server have earned music XP yet. Play music with TOGETHER to claim #1!*`;
+        textContent = `## ${trophyEmoji}${serverTitle} // Podium\n*No members in this server have recorded listen time yet. Play music with TOGETHER to claim #1!*`;
       } else if (page === 1) {
         const p1 = resolvedUsers[0]
-          ? `${emoji.medal1 || "🥇"} **#1:** \`${resolvedUsers[0].name}\` — ${emoji.level || "⚡"} LVL \`${resolvedUsers[0].level}\` · ${emoji.sparkles || "✨"} \`${(resolvedUsers[0].xp || 0).toLocaleString()} XP\` · ${emoji.headphones || "🎧"} \`${resolvedUsers[0].songsPlayed} tracks\``
-          : `${emoji.medal1 || "🥇"} **#1:** *Open Challenger (Play music to claim)*`;
+          ? `${emoji.medal1 ? `${emoji.medal1} ` : ""}**#1:** \`${resolvedUsers[0].name}\` — ${timeEmoji}\`${formatListeningTime(resolvedUsers[0].listeningSeconds)}\` · ${headphonesEmoji}\`${resolvedUsers[0].songsPlayed} tracks\` · ${levelEmoji}LVL \`${resolvedUsers[0].level}\``
+          : `${emoji.medal1 ? `${emoji.medal1} ` : ""}**#1:** *Open Challenger (Play music to claim)*`;
         const p2 = resolvedUsers[1]
-          ? `${emoji.medal2 || "🥈"} **#2:** \`${resolvedUsers[1].name}\` — ${emoji.level || "⚡"} LVL \`${resolvedUsers[1].level}\` · ${emoji.sparkles || "✨"} \`${(resolvedUsers[1].xp || 0).toLocaleString()} XP\` · ${emoji.headphones || "🎧"} \`${resolvedUsers[1].songsPlayed} tracks\``
-          : `${emoji.medal2 || "🥈"} **#2:** *Open Challenger*`;
+          ? `${emoji.medal2 ? `${emoji.medal2} ` : ""}**#2:** \`${resolvedUsers[1].name}\` — ${timeEmoji}\`${formatListeningTime(resolvedUsers[1].listeningSeconds)}\` · ${headphonesEmoji}\`${resolvedUsers[1].songsPlayed} tracks\` · ${levelEmoji}LVL \`${resolvedUsers[1].level}\``
+          : `${emoji.medal2 ? `${emoji.medal2} ` : ""}**#2:** *Open Challenger*`;
         const p3 = resolvedUsers[2]
-          ? `${emoji.medal3 || "🥉"} **#3:** \`${resolvedUsers[2].name}\` — ${emoji.level || "⚡"} LVL \`${resolvedUsers[2].level}\` · ${emoji.sparkles || "✨"} \`${(resolvedUsers[2].xp || 0).toLocaleString()} XP\` · ${emoji.headphones || "🎧"} \`${resolvedUsers[2].songsPlayed} tracks\``
-          : `${emoji.medal3 || "🥉"} **#3:** *Open Challenger*`;
+          ? `${emoji.medal3 ? `${emoji.medal3} ` : ""}**#3:** \`${resolvedUsers[2].name}\` — ${timeEmoji}\`${formatListeningTime(resolvedUsers[2].listeningSeconds)}\` · ${headphonesEmoji}\`${resolvedUsers[2].songsPlayed} tracks\` · ${levelEmoji}LVL \`${resolvedUsers[2].level}\``
+          : `${emoji.medal3 ? `${emoji.medal3} ` : ""}**#3:** *Open Challenger*`;
 
-        textContent = `## ${emoji.trophy || "🏆"} Top Music Listeners // ${effectiveScope === "server" ? "Server Podium" : "Global Podium"}\n${p1}\n${p2}\n${p3}`;
+        textContent = `## ${trophyEmoji}Top Music Listeners // ${effectiveScope === "server" ? "Server Podium" : "Global Podium"}\n${p1}\n${p2}\n${p3}`;
       } else {
         const startRank = 4 + (page - 2) * 7;
         const rankLines = resolvedUsers.map((u, i) => {
-          const streakPart = u.streak > 0 ? ` · ${emoji.fire || "🔥"} \`${u.streak}d\`` : "";
-          return `\`#${String(startRank + i).padStart(2, "0")}\` **${u.name}** — ${emoji.level || "⚡"} LVL \`${u.level}\` · ${emoji.sparkles || "✨"} \`${u.xp.toLocaleString()} XP\` · ${emoji.headphones || "🎧"} \`${u.songsPlayed} tracks\`${streakPart}`;
+          const streakPart = u.streak > 0 ? ` · ${fireEmoji}\`${u.streak}d\`` : "";
+          return `\`#${String(startRank + i).padStart(2, "0")}\` **${u.name}** — ${timeEmoji}\`${formatListeningTime(u.listeningSeconds)}\` · ${headphonesEmoji}\`${u.songsPlayed} tracks\` · ${levelEmoji}LVL \`${u.level}\`${streakPart}`;
         });
-        textContent = `## ${emoji.rank || "📊"} Leaderboard Standings (Page ${page}/${totalPages})\n${rankLines.length ? rankLines.join("\n") : "*No additional ranked listeners on this page.*"}`;
+        textContent = `## ${rankEmoji}Leaderboard Standings (Page ${page}/${totalPages})\n${rankLines.length ? rankLines.join("\n") : "*No additional ranked listeners on this page.*"}`;
       }
 
       card.addTextDisplayComponents(text(textContent));
@@ -239,40 +254,42 @@ module.exports = {
       // Personal standing footer
       if (myRank) {
         const myDoc = docs[myRank - 1];
-        const myStreak = myDoc?.streak > 0 ? ` · ${emoji.fire || "🔥"} \`${myDoc.streak}d streak\`` : "";
+        const myStreak = myDoc?.streak > 0 ? ` · ${fireEmoji}\`${myDoc.streak}d streak\`` : "";
         card.addTextDisplayComponents(
           text(
-            `-# ${emoji.rank || "👤"} **Your Standing (${effectiveScope.toUpperCase()}):** Rank \`#${myRank}\` · ${emoji.level || "⚡"} LVL \`${myDoc?.level || 1}\` · ${emoji.sparkles || "✨"} \`${(myDoc?.xp || 0).toLocaleString()} XP\` · ${emoji.headphones || "🎧"} \`${myDoc?.songsPlayed || 0} tracks\`${myStreak}`,
+            `-# ${rankEmoji}**Your Standing (${effectiveScope.toUpperCase()}):** Rank \`#${myRank}\` · ${timeEmoji}\`${formatListeningTime(myDoc?.listeningSeconds || 0)}\` · ${headphonesEmoji}\`${myDoc?.songsPlayed || 0} tracks\` · ${levelEmoji}LVL \`${myDoc?.level || 1}\`${myStreak}`,
           ),
         );
       } else {
         card.addTextDisplayComponents(
-          text(`-# ${emoji.rank || "👤"} **Your Standing (${effectiveScope.toUpperCase()}):** *Unranked (Play songs to climb the leaderboard!)*`),
+          text(`-# ${rankEmoji}**Your Standing (${effectiveScope.toUpperCase()}):** *Unranked (Play songs to climb the leaderboard!)*`),
         );
       }
 
       // 7. Navigation Action Row 1: Pagination
       const navRow = new ActionRowBuilder();
 
-      navRow.addComponents(
-        new ButtonBuilder()
-          .setCustomId(`lb_prev_${page}_${viewerId || "0"}_${effectiveScope}`)
-          .setLabel("Prev")
-          .setEmoji(emoji.previous || "◀")
-          .setStyle(ButtonStyle.Secondary)
-          .setDisabled(page <= 1),
-        new ButtonBuilder()
-          .setCustomId(`lb_page_${page}`)
-          .setLabel(`Page ${page} / ${totalPages}`)
-          .setStyle(ButtonStyle.Primary)
-          .setDisabled(true),
-        new ButtonBuilder()
-          .setCustomId(`lb_next_${page}_${viewerId || "0"}_${effectiveScope}`)
-          .setLabel("Next")
-          .setEmoji(emoji.skip || "▶")
-          .setStyle(ButtonStyle.Secondary)
-          .setDisabled(page >= totalPages),
-      );
+      const prevBtn = new ButtonBuilder()
+        .setCustomId(`lb_prev_${page}_${viewerId || "0"}_${effectiveScope}`)
+        .setLabel("Prev")
+        .setStyle(ButtonStyle.Secondary)
+        .setDisabled(page <= 1);
+      if (emoji.previous) prevBtn.setEmoji(emoji.previous);
+
+      const pageBtn = new ButtonBuilder()
+        .setCustomId(`lb_page_${page}`)
+        .setLabel(`Page ${page} / ${totalPages}`)
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true);
+
+      const nextBtn = new ButtonBuilder()
+        .setCustomId(`lb_next_${page}_${viewerId || "0"}_${effectiveScope}`)
+        .setLabel("Next")
+        .setStyle(ButtonStyle.Secondary)
+        .setDisabled(page >= totalPages);
+      if (emoji.skip) nextBtn.setEmoji(emoji.skip);
+
+      navRow.addComponents(prevBtn, pageBtn, nextBtn);
 
       // Jump to My Rank shortcut
       if (myRank) {
@@ -281,13 +298,13 @@ module.exports = {
           myPage = 2 + Math.floor((myRank - 4) / 7);
         }
         if (myPage !== page && myPage <= totalPages) {
-          navRow.addComponents(
-            new ButtonBuilder()
-              .setCustomId(`lb_jump_${myPage}_${viewerId}_${effectiveScope}`)
-              .setLabel("My Rank")
-              .setEmoji(emoji.star || "🎯")
-              .setStyle(ButtonStyle.Success),
-          );
+          const rankBtn = new ButtonBuilder()
+            .setCustomId(`lb_jump_${myPage}_${viewerId}_${effectiveScope}`)
+            .setLabel("My Rank")
+            .setStyle(ButtonStyle.Success);
+          if (emoji.rank) rankBtn.setEmoji(emoji.rank);
+          else if (emoji.star) rankBtn.setEmoji(emoji.star);
+          navRow.addComponents(rankBtn);
         }
       }
 
@@ -296,18 +313,24 @@ module.exports = {
       // 8. Scope Toggle Action Row (Server vs Global)
       if (targetGuild) {
         const scopeRow = new ActionRowBuilder();
-        scopeRow.addComponents(
-          new ButtonBuilder()
-            .setCustomId(`lb_scope_server_${viewerId || "0"}`)
-            .setLabel("🏰 Server Leaderboard")
-            .setStyle(effectiveScope === "server" ? ButtonStyle.Success : ButtonStyle.Secondary)
-            .setDisabled(effectiveScope === "server"),
-          new ButtonBuilder()
-            .setCustomId(`lb_scope_global_${viewerId || "0"}`)
-            .setLabel("🌐 Global Leaderboard")
-            .setStyle(effectiveScope === "global" ? ButtonStyle.Success : ButtonStyle.Secondary)
-            .setDisabled(effectiveScope === "global"),
-        );
+
+        const serverBtn = new ButtonBuilder()
+          .setCustomId(`lb_scope_server_${viewerId || "0"}`)
+          .setLabel("Server Leaderboard")
+          .setStyle(effectiveScope === "server" ? ButtonStyle.Success : ButtonStyle.Secondary)
+          .setDisabled(effectiveScope === "server");
+        if (emoji.home) serverBtn.setEmoji(emoji.home);
+        else if (emoji.utility) serverBtn.setEmoji(emoji.utility);
+
+        const globalBtn = new ButtonBuilder()
+          .setCustomId(`lb_scope_global_${viewerId || "0"}`)
+          .setLabel("Global Leaderboard")
+          .setStyle(effectiveScope === "global" ? ButtonStyle.Success : ButtonStyle.Secondary)
+          .setDisabled(effectiveScope === "global");
+        if (emoji.music) globalBtn.setEmoji(emoji.music);
+        else if (emoji.trophy) globalBtn.setEmoji(emoji.trophy);
+
+        scopeRow.addComponents(serverBtn, globalBtn);
         card.addActionRowComponents(scopeRow);
       }
 
@@ -339,7 +362,7 @@ module.exports = {
       const errNotice = noticePayload({
         title: "Leaderboard Error",
         description: `Failed to render leaderboard: ${err.message}`,
-        emoji: emoji.cross || "❌",
+        emoji: emoji.cross || undefined,
         tone: "danger",
       });
 
