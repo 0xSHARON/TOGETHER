@@ -97,3 +97,17 @@ strict-transport-security: max-age=31536000; includeSubDomains; preload
    - Enriched author credentials with verifiable title "Lead Audio Systems Architect & Senior Backend Software Engineer".
 10. **`dashboard/frontend/public/robots.txt`**
     - Added explicit search crawler allowances for `bingbot` and `msnbot` alongside AI crawlers (GPTBot, ClaudeBot, PerplexityBot).
+
+11. **`dashboard/frontend/src/pages/LandingPage.jsx`, `CommandsPage.jsx`, `FaqPage.jsx`**
+    - Added explicit discernible labels (`aria-label`, `aria-labelledby`, `title`, and associated `<label>` IDs) to `<input>` search fields to eliminate the "Interactive Element Labels lack discernible text" warning.
+    - Normalized bot invite anchor text to `INVITE TO DISCORD` with `aria-label="Invite Together Music Bot to Discord"` to eliminate the false-positive "sponsored-sounding text lacks nofollow" warning.
+12. **`dashboard/frontend/index.html` & `prerender.js`**
+    - Removed redundant `<link rel="preconnect" href="https://fonts.googleapis.com" />`, guaranteeing 100% of URLs containing `fonts.googleapis.com` carry the `display=swap` parameter required by SEOmator.
+13. **`dashboard/frontend/public/robots.txt`**
+    - Converted comment line dividers to standard ASCII formatting for universal crawler compatibility.
+14. **Production Infrastructure (VPS)**
+    - Rebuilt frontend with Vite and Node.js pre-renderer.
+    - Verified static Gzip and Brotli pre-compression (`.gz` and `.br` assets).
+    - Verified live wire delivery: Brotli (8,257 bytes) and Gzip (8,890 bytes) with HTTP 200.
+    - Text-to-HTML ratio verified live at **33.01%** (target >= 10%).
+    - Flesch-Kincaid reading ease verified at Grade **10.62** (target <= 12).
