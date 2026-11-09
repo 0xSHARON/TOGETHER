@@ -85,7 +85,7 @@ export default function AboutPage() {
 
             <div className="space-y-2 text-center md:text-left flex-1" itemscope itemType="https://schema.org/Person">
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                <h3 itemprop="name" className="font-display font-black text-2xl text-white">Kaju Katli (<span className="text-brutal-accent">KAJU🦋</span>)</h3>
+                <h3 itemprop="name" className="font-display font-black text-2xl text-white"><span className="text-brutal-accent">KAJU🦋</span></h3>
                 <span className="font-mono text-xs bg-black px-2 py-0.5 border border-brutal-border text-brutal-accent font-bold">
                   @kajukatli.
                 </span>
@@ -94,22 +94,22 @@ export default function AboutPage() {
                 </span>
               </div>
               <p itemprop="description" className="text-xs text-zinc-300 leading-relaxed">
-                Kaju Katli (KAJU🦋) is a software engineer with 8+ years of production experience designing scalable distributed backend microservices, real-time WebRTC audio gateways, and high-performance WebGL 3D rendering pipelines. As the creator and lead maintainer of Together, Kaju steers the core sound pipeline and voice failover algorithms.
+                KAJU🦋 is a software engineer with 8+ years of production experience designing scalable distributed backend microservices, real-time WebRTC audio gateways, and high-performance WebGL 3D rendering pipelines. As the creator and lead maintainer of Together, Kaju steers the core sound pipeline and voice failover algorithms.
               </p>
               <div className="text-[11px] font-mono text-zinc-400 pt-1">
-                Author & Systems Architect &bull; Verified Discord Developer &bull; GPL-3.0 Core Contributor
+                Author & Systems Architect &bull; Verified Discord Developer
               </div>
             </div>
           </div>
         </section>
 
-        {/* Section 3: Open Architecture & GPL-3.0 */}
+        {/* Section 3: Open Architecture & High-Performance Audio */}
         <section className="space-y-4">
           <h2 className="font-display font-black text-xl text-white uppercase flex items-center gap-2">
-            <span className="text-brutal-accent">02.</span> OPEN SOURCE GPL-3.0 INTEGRITY
+            <span className="text-brutal-accent">02.</span> OPEN SOURCE & SOUND INTEGRITY
           </h2>
           <p className="text-xs md:text-sm text-zinc-300 leading-relaxed">
-            Together is licensed under the <strong>GNU General Public License v3.0 (GPL-3.0)</strong>, with our complete open-source architecture and public software distribution under the GPL-3.0 license. We believe community music streaming tools must remain open, inspectable, and resilient against vendor lock-in. Our software application does not monetize basic playback controls or lock essential audio equalizer filters behind subscription paywalls.
+            Together is engineered with complete open architecture standards and transparent community software principles. We believe community music streaming tools must remain open, inspectable, and resilient against vendor lock-in. Our software application does not monetize basic playback controls or lock essential audio equalizer filters behind subscription paywalls.
           </p>
         </section>
 

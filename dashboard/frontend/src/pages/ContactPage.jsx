@@ -269,10 +269,10 @@ export default function ContactPage() {
               <span>PROJECT LOCATION & COMPLIANCE</span>
             </h3>
             <address className="not-italic text-zinc-400">
-              Together Audio Systems • 100 Innovation Way, Suite 400, San Francisco, CA 94105, United States
+              Together Audio Systems • Global Distributed Engineering
             </address>
             <p className="text-[11px] text-zinc-500">
-              Verified Discord Developer Application. Licensed under GNU General Public License v3.0 (GPL-3.0). For compliance and privacy notices, view our <Link to="/privacy" className="text-brutal-accent hover:underline font-bold">Privacy Policy</Link> and <Link to="/terms" className="text-brutal-accent hover:underline font-bold">Terms of Service</Link>.
+              Verified Discord Developer Application. For compliance and privacy notices, view our <Link to="/privacy" className="text-brutal-accent hover:underline font-bold">Privacy Policy</Link> and <Link to="/terms" className="text-brutal-accent hover:underline font-bold">Terms of Service</Link>.
             </p>
           </div>
         </section>

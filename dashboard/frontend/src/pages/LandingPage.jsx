@@ -1030,7 +1030,7 @@ export default function LandingPage() {
 
             <div className="space-y-3 text-center md:text-left flex-1">
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                <h3 className="font-display font-black text-2xl text-white">Kaju Katli (<span className="text-brutal-accent">KAJU🦋</span>)</h3>
+                <h3 className="font-display font-black text-2xl text-white"><span className="text-brutal-accent">KAJU🦋</span></h3>
                 <span className="font-mono text-xs bg-black px-2 py-0.5 border border-brutal-border text-brutal-accent font-bold">
                   @kajukatli.
                 </span>
@@ -1149,11 +1149,10 @@ export default function LandingPage() {
             </picture>
             <div>
               <div className="text-white font-bold">TOGETHER // AUDIO OS v2.5.0</div>
-              <div className="text-[10px] text-zinc-400">GPL-3.0 Open Architecture • High-Performance Sound Engine</div>
+              <div className="text-[10px] text-zinc-400">High-Performance Sound Engine</div>
             </div>
           </div>
           <div className="trust-signals flex flex-wrap gap-2 text-[10px]" aria-label="Trust and Security Badges">
-            <span className="px-2 py-0.5 bg-black border border-brutal-border text-emerald-400 font-bold">✓ GPL-3.0 Certified</span>
             <span className="px-2 py-0.5 bg-black border border-brutal-border text-cyan-400 font-bold">✓ Discord Verified Bot</span>
             <span className="px-2 py-0.5 bg-black border border-brutal-border text-purple-400 font-bold">✓ 256-Bit SSL Secured</span>
           </div>
@@ -1171,16 +1170,10 @@ export default function LandingPage() {
           <Link to="/terms" className="hover:text-brutal-accent">Terms of Service</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy Policy</Link>
           <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Official Discord Server</a>
-          <a href="https://twitter.com/together_bot" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Follow on X Twitter</a>
-          <a href="https://www.youtube.com/@dpdns" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Official YouTube Channel</a>
-          <a href="https://www.reddit.com/r/TogetherMusicBot/" target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Reddit Subreddit</a>
           <a href={TOPGG_VOTE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Vote on Top.gg Directory</a>
         </nav>
 
         <div className="text-center md:text-right">
-          <address className="company-address not-italic text-[10px] text-zinc-400">
-            Together Audio Systems • 100 Innovation Way, Suite 400, San Francisco, CA 94105, United States
-          </address>
           <div className="text-[11px] mt-0.5">Author Byline: <strong className="text-white">KAJU🦋</strong> (Lead Systems Architect)</div>
         </div>
       </footer>

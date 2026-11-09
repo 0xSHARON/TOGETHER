@@ -87,7 +87,7 @@ const COMPARISON_ROWS = [
   },
   {
     feature: "Open Architecture & Verified Security",
-    together: "GPL-3.0 Open Code",
+    together: "Verified Open Source",
     hydra: "Proprietary Closed",
     rythm: "Proprietary Closed",
     smooth: "Proprietary Closed",
@@ -407,3 +407,4 @@ export default function ComparePage() {
     </div>
   );
 }
+

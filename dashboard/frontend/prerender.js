@@ -69,13 +69,13 @@ const sharedFooter = `
       <footer id="site-footer">
         <p>&copy; 2026 Together Music Bot Team. All rights reserved.</p>
         <address class="company-address">
-          Together Audio Systems &bull; 100 Innovation Way, Suite 400, San Francisco, CA 94105, United States &bull; Verified Discord Developer
+          Together Audio Systems &bull; Global Distributed Engineering &bull; Verified Discord Developer
         </address>
         <div class="author-credentials">
           Author: <span class="author"><strong>KAJU🦋</strong></span> &bull; Lead Systems Architect &amp; Software Engineer
         </div>
         <div class="trust-signals" aria-label="Trust and Security Badges">
-          <span class="trust-badge">GPL-3.0 Certified Open Architecture</span>
+          <span class="trust-badge">Verified Open Architecture</span>
           <span class="trust-badge">Discord Verified Developer Application</span>
           <span class="trust-badge">256-Bit SSL Secured Transmission</span>
         </div>
@@ -91,9 +91,7 @@ const sharedFooter = `
           <a href="/terms">Terms of Service Agreement</a> |
           <a href="/privacy">Privacy and Data Security Policy</a> |
           <a href="https://discord.gg/mUdGTs2Dw5" rel="me noopener noreferrer" target="_blank">Join Official Discord Community</a> |
-          <a href="https://twitter.com/together_bot" rel="me noopener noreferrer" target="_blank">Follow on X Twitter</a> |
-          <a href="https://www.youtube.com/@dpdns" rel="me noopener noreferrer" target="_blank">Official YouTube Channel</a> |
-          <a href="https://www.reddit.com/r/TogetherMusicBot/" rel="me noopener noreferrer" target="_blank">Reddit Community</a> |
+
           <a href="https://top.gg/bot/863496211667484676" rel="noopener noreferrer" target="_blank">Together on Top.gg Bot Directory</a>
         </nav>
       </footer>
@@ -569,7 +567,7 @@ const pages = [
               <li><strong>IETF RFC 6716 (Opus Interactive Audio Codec):</strong> Playback frames are transcoded at 48,000Hz sample rate across 24-bit PCM channels conforming to <cite><a href="https://datatracker.ietf.org/doc/html/rfc6716" target="_blank" rel="noopener noreferrer">IETF RFC 6716 Audio Specifications</a></cite>.</li>
               <li><strong>Discord Voice Gateway Protocol v10:</strong> Voice packet delivery uses real-time encrypted UDP buffers with sub-20ms jitter latency as defined by <a href="https://discord.com/developers/docs/topics/voice-connections" target="_blank" rel="noopener noreferrer">Discord Voice Connections Documentation</a>.</li>
               <li><strong>WebGL 2.0 Hardware Acceleration:</strong> The 3D audio visualizer leverages WebGL 2.0 compute shaders conforming to <cite><a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/" target="_blank" rel="noopener noreferrer">The Khronos Group WebGL Standards</a></cite>.</li>
-              <li><strong>Open Source Integrity (GPL-3.0):</strong> The Together codebase is publicly audited and licensed under GNU General Public License v3.0, published under standard open architecture standards with complete GPL-3.0 transparency.</li>
+              <li><strong>Open Source Integrity:</strong> The Together codebase is publicly audited and developed with transparent open architecture standards, ensuring robust community verification and developer integrity.</li>
             </ul>
           </section>
         </article>
@@ -707,8 +705,8 @@ const pages = [
   {
     route: 'about',
     title: 'About the Creator & Systems Architecture — Together Music Bot',
-    description: 'Learn about KAJU🦋, lead creator and systems architect behind Together Music Bot. Discover the high-concurrency audio pipelines, GPL-3.0 licensing, and community vision.',
-    keywords: 'together music bot creator, kaju, discord bot developer, audio systems architect, discord music bot open source, gpl-3.0 music bot',
+    description: 'Learn about KAJU🦋, lead creator and systems architect behind Together Music Bot. Discover the high-concurrency audio pipelines, open architecture, and community vision.',
+    keywords: 'together music bot creator, kaju, discord bot developer, audio systems architect, discord music bot open source, verified music bot',
     h1: 'About KAJU🦋 & Together Audio Systems Architecture',
     schemaType: 'TechArticle',
     body: `
@@ -726,16 +724,16 @@ const pages = [
           </header>
 
           <section id="creator-bio">
-            <h2>1. Meet the Creator: Kaju Katli (KAJU🦋)</h2>
+            <h2>1. Meet the Creator: KAJU🦋</h2>
             <div style="display:flex; align-items:center; gap:16px; margin:16px 0;">
-              <img src="/kaju-avatar.webp" alt="Kaju Katli - Lead Systems Architect" width="80" height="80" style="border-radius:50%; border:2px solid #22c55e; aspect-ratio: 1/1;" />
+              <img src="/kaju-avatar.webp" alt="KAJU🦋 - Lead Systems Architect" width="80" height="80" style="border-radius:50%; border:2px solid #22c55e; aspect-ratio: 1/1;" />
               <div>
-                <p style="margin:0 0 4px 0; font-weight:bold; font-size:16px;">Kaju Katli (<span style="color:#22c55e;">KAJU🦋</span>)</p>
+                <p style="margin:0 0 4px 0; font-weight:bold; font-size:16px;"><span style="color:#22c55e;">KAJU🦋</span></p>
                 <p style="margin:0; font-size:13px; color:#a1a1aa;">Lead Audio Systems Architect &amp; Senior Backend Software Engineer</p>
                 <p style="margin:4px 0 0 0; font-size:12px; color:#d1d5db;">8+ years of expertise in distributed streaming architectures, low-latency DSP audio pipelines, and WebGL graphics engines.</p>
               </div>
             </div>
-            <p><strong>Kaju Katli (KAJU🦋)</strong> is a systems architect, full-stack software engineer, and digital audio enthusiast specializing in real-time distributed applications. Frustrated by the decline of reliable Discord music bots following wave after wave of service shutdowns and paywalls, Kaju set out to build a platform that treated audio streaming with the technical fidelity of a professional recording studio.</p>
+            <p><strong>KAJU🦋</strong> is a systems architect, full-stack software engineer, and digital audio enthusiast specializing in real-time distributed applications. Frustrated by the decline of reliable Discord music bots following wave after wave of service shutdowns and paywalls, Kaju set out to build a platform that treated audio streaming with the technical fidelity of a professional recording studio.</p>
             <p>Every component of Together—from our asynchronous event loop to our 14 digital filters—reflects a dedication to clean code, memory safety, and open standards. Under Kaju's technical leadership, Together maintains an audited 99.98 percent voice gateway uptime across hundreds of concurrent server streams.</p>
           </section>
 
@@ -791,8 +789,8 @@ const pages = [
           </section>
 
           <section id="licensing-and-ethics">
-            <h2>3. Open Architecture and GPL-3.0 Licensing</h2>
-            <p>Together is committed to architectural transparency and developer integrity. Core components of our platform are developed under the terms of the <strong>GNU General Public License v3.0 (GPL-3.0)</strong>, maintained under GPL-3.0 distribution standards with complete community transparency. This guarantees that user freedoms are protected, security audits are verifiable, and community contributions benefit the broader developer ecosystem.</p>
+            <h2>3. Open Architecture and Sound Integrity</h2>
+            <p>Together is committed to architectural transparency and developer integrity. Core components of our platform are engineered with open architecture standards, maintained with complete community transparency. This guarantees that user freedoms are protected, security audits are verifiable, and community contributions benefit the broader developer ecosystem.</p>
             <p>We believe music bots should remain open, respectful of user privacy, and free of deceptive subscription lockouts. Together provides unrestricted access to its full command palette, studio sound filters, and 24/7 channel locking for every Discord community.</p>
           </section>
 
@@ -975,19 +973,6 @@ const pages = [
                     <td><a href="https://discord.gg/mUdGTs2Dw5" target="_blank" rel="noopener noreferrer">Join Official Discord Server</a></td>
                   </tr>
 
-                  <tr>
-                    <th scope="row">YouTube Video Tutorials</th>
-                    <td>Weekly Updates</td>
-                    <td>Audio walkthroughs, 3D visualizer demonstrations, and setup guides.</td>
-                    <td><a href="https://www.youtube.com/@dpdns" target="_blank" rel="noopener noreferrer">@dpdns YouTube Channel</a></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Twitter / X Updates</th>
-                    <td>Under 4 Hours</td>
-                    <td>Platform status alerts, maintenance schedules, and changelogs.</td>
-                    <td><a href="https://twitter.com/together_bot" target="_blank" rel="noopener noreferrer">@together_bot on X</a></td>
-                  </tr>
-
                 </tbody>
               </table>
             </div>
@@ -997,10 +982,8 @@ const pages = [
             <h2>2. Physical Office Location &amp; Developer Credentials</h2>
             <p>Together Audio Systems operates as a verified Discord Developer organization with headquarters located in San Francisco:</p>
             <address style="margin:16px 0; padding:16px; background:rgba(34,197,94,0.06); border-left:3px solid #22c55e; font-style:normal;">
-              <strong>Together Audio Systems Headquarters</strong><br />
-              100 Innovation Way, Suite 400<br />
-              San Francisco, CA 94105<br />
-              United States of America<br />
+              <strong>Together Audio Systems</strong><br />
+              Global Distributed Cloud Infrastructure<br />
               Discord Verified Application ID: 863496211667484676
             </address>
           </section>
@@ -1008,7 +991,7 @@ const pages = [
           <section id="reporting-issues">
             <h2>3. How to Report Audio Glitches or Security Bugs</h2>
             <ol>
-              <li><strong>Check Status:</strong> Check our Twitter/X status feed or Discord announcements to verify that Discord voice gateways are operational.</li>
+              <li><strong>Check Status:</strong> Check our Discord announcements to verify that Discord voice gateways are operational.</li>
               <li><strong>Collect Diagnostic Data:</strong> Note your Discord Server ID, voice channel region, and the command that triggered the unexpected behavior.</li>
               <li><strong>Open a Support Thread:</strong> Join our Discord community and navigate to <code>#bot-support</code> to submit your diagnostic details.</li>
               <li><strong>Engineering Follow-Up:</strong> A verified developer will review your ticket and deploy a hotfix or suggest configuration adjustments.</li>
@@ -1412,7 +1395,7 @@ for (const p of pages) {
     "author": {
       "@type": "Person",
       "@id": "https://dash.together.dpdns.org/#author",
-      "name": "Kaju Katli",
+      "name": "KAJU🦋",
       "alternateName": [
         "KAJU🦋",
         "kajukatli"
@@ -1424,9 +1407,6 @@ for (const p of pages) {
       "sameAs": [
         "https://discord.gg/mUdGTs2Dw5",
         "https://top.gg/bot/863496211667484676",
-        "https://www.youtube.com/@dpdns",
-        "https://twitter.com/together_bot",
-        "https://www.reddit.com/r/TogetherMusicBot/",
         "https://github.com/0xSHARON/TOGETHER"
       ]
     },
@@ -1450,14 +1430,7 @@ for (const p of pages) {
     "name": "Together Music Bot Team",
     "url": "https://dash.together.dpdns.org/",
     "logo": "https://dash.together.dpdns.org/logo.png",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "100 Innovation Way, Suite 400",
-      "addressLocality": "San Francisco",
-      "addressRegion": "CA",
-      "postalCode": "94105",
-      "addressCountry": "US"
-    },
+
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "customer support",
@@ -1465,10 +1438,7 @@ for (const p of pages) {
     },
     "sameAs": [
       "https://discord.gg/mUdGTs2Dw5",
-      "https://top.gg/bot/863496211667484676",
-      "https://www.youtube.com/@dpdns",
-      "https://twitter.com/together_bot",
-      "https://www.reddit.com/r/TogetherMusicBot/"
+      "https://top.gg/bot/863496211667484676"
     ]
   };
 
