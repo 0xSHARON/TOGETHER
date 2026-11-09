@@ -199,7 +199,7 @@ export default function LandingPage() {
             <a
               href={TOPGG_VOTE_URL}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               aria-label="Vote for Together on Top.gg"
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-amber-400 text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
             >
@@ -275,7 +275,7 @@ export default function LandingPage() {
                   <a
                     href={TOPGG_VOTE_URL}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="nofollow noopener noreferrer"
                     className="px-5 py-3.5 bg-amber-400 text-black font-display font-black text-sm uppercase border-2 border-black shadow-brutal hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-2"
                   >
                     <Star className="w-4 h-4 fill-black" />
