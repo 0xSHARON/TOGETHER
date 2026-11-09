@@ -36,3 +36,4 @@ test("Leaderboard bot filtering and ranking logic", () => {
   assert.equal(byStreak[0].name, "Alice");
   assert.equal(byStreak[1].name, "Bob");
 });
+

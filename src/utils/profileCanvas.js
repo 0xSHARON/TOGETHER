@@ -1,4 +1,27 @@
-const { createCanvas, loadImage } = require("@napi-rs/canvas");
+const { createCanvas, loadImage, GlobalFonts } = require("@napi-rs/canvas");
+const fs = require("fs");
+
+// Register system and local emoji fonts for seamless Discord emoji & unicode display
+let fontsInitialized = false;
+function initEmojiFonts() {
+  if (fontsInitialized) return;
+  const paths = [
+    { p: "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf", name: "Noto Color Emoji" },
+    { p: "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf", name: "Symbola" },
+    { p: "C:/Windows/Fonts/seguiemj.ttf", name: "Segoe UI Emoji" },
+  ];
+  for (const { p, name } of paths) {
+    if (fs.existsSync(p)) {
+      try {
+        GlobalFonts.registerFromPath(p, name);
+      } catch {}
+    }
+  }
+  fontsInitialized = true;
+}
+initEmojiFonts();
+
+const EMOJI_FALLBACK = '"Noto Color Emoji", "Segoe UI Emoji", "Apple Color Emoji", Symbola, sans-serif';
 
 const WIDTH = 1200;
 const HEIGHT = 675;
@@ -812,14 +835,14 @@ async function renderProfileCanvas(user, profile = {}) {
 
   // Huge User Name (Emoji-safe)
   const rawName = user?.displayName || user?.username || "LISTENER";
-  const cleanName = Array.from(rawName).slice(0, 14).join("").toUpperCase();
+  const cleanName = Array.from(rawName).slice(0, 16).join("");
   ctx.fillStyle = "#FFFFFF";
 
   let nameFontSize = 46;
-  ctx.font = `900 ${nameFontSize}px Bahnschrift, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif`;
+  ctx.font = `900 ${nameFontSize}px "Segoe UI", Bahnschrift, ${EMOJI_FALLBACK}`;
   while (ctx.measureText(cleanName).width > 360 && nameFontSize > 22) {
     nameFontSize -= 3;
-    ctx.font = `900 ${nameFontSize}px Bahnschrift, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif`;
+    ctx.font = `900 ${nameFontSize}px "Segoe UI", Bahnschrift, ${EMOJI_FALLBACK}`;
   }
   ctx.fillText(cleanName, infoX, 200);
 
@@ -829,13 +852,13 @@ async function renderProfileCanvas(user, profile = {}) {
 
   // Handle Box: @USERNAME
   const rawHandle = user?.username || "USER";
-  const handleTag = `@${Array.from(rawHandle).slice(0, 16).join("").toUpperCase()}`;
+  const handleTag = `@${Array.from(rawHandle).slice(0, 16).join("")}`;
   ctx.fillStyle = "#131418";
   ctx.strokeStyle = "#2C2E36";
   ctx.fillRect(infoX, 216, 140, 24);
   ctx.strokeRect(infoX, 216, 140, 24);
   ctx.fillStyle = "#9598A0";
-  ctx.font = '700 11px Consolas, "Segoe UI Emoji", "Apple Color Emoji", monospace';
+  ctx.font = `700 11px Consolas, ${EMOJI_FALLBACK}`;
   ctx.fillText(handleTag, infoX + 12, 232);
 
   // LEVEL BOX (x: 810, y: 122)
@@ -919,7 +942,7 @@ async function renderProfileCanvas(user, profile = {}) {
 
   // Bio Text lines (Emoji-safe)
   ctx.fillStyle = "#D0D3DB";
-  ctx.font = '500 13px Consolas, "Segoe UI Emoji", "Apple Color Emoji", monospace';
+  ctx.font = `500 13px Consolas, ${EMOJI_FALLBACK}`;
   const bioLines = bio.split("\n");
   const bioLine1 = Array.from(bioLines[0] || "No bio set yet.").slice(0, 48).join("");
   ctx.fillText(bioLine1, bioX + 46, bioY + 44);
@@ -928,7 +951,7 @@ async function renderProfileCanvas(user, profile = {}) {
     ctx.fillText(bioLine2, bioX + 46, bioY + 66);
   } else if (!profile.bio && profile.anthem?.title) {
     ctx.fillStyle = "#8E929D";
-    ctx.font = '500 12px Consolas, "Segoe UI Emoji", monospace';
+    ctx.font = `500 12px Consolas, ${EMOJI_FALLBACK}`;
     ctx.fillText(`Anthem: ${Array.from(profile.anthem.title).slice(0, 42).join("")}`, bioX + 46, bioY + 66);
   }
 

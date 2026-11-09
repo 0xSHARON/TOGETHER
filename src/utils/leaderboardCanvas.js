@@ -1,4 +1,25 @@
-const { createCanvas, loadImage } = require("@napi-rs/canvas");
+const { createCanvas, loadImage, GlobalFonts } = require("@napi-rs/canvas");
+const fs = require("fs");
+
+// Register system and local emoji fonts for seamless Discord emoji & unicode display
+let fontsInitialized = false;
+function initEmojiFonts() {
+  if (fontsInitialized) return;
+  const paths = [
+    { p: "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf", name: "Noto Color Emoji" },
+    { p: "/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf", name: "Symbola" },
+    { p: "C:/Windows/Fonts/seguiemj.ttf", name: "Segoe UI Emoji" },
+  ];
+  for (const { p, name } of paths) {
+    if (fs.existsSync(p)) {
+      try {
+        GlobalFonts.registerFromPath(p, name);
+      } catch {}
+    }
+  }
+  fontsInitialized = true;
+}
+initEmojiFonts();
 
 const WIDTH = 1200;
 const HEIGHT = 675;
@@ -27,8 +48,8 @@ const C = {
   bronzeDark: "#B85C19",
 };
 
-// Emoji fonts declaration for native Unicode and nickname emoji support
-const EMOJI_FALLBACK = '"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+// Emoji fonts declaration prioritizing Noto Color Emoji & Segoe UI Emoji
+const EMOJI_FALLBACK = '"Noto Color Emoji", "Segoe UI Emoji", "Apple Color Emoji", Symbola, sans-serif';
 
 // Safe Avatar Fetcher with 2-second timeout
 async function loadAvatarSafe(url) {
@@ -637,7 +658,7 @@ async function renderLeaderboardPodium(users = [], options = {}) {
     const displayName = Array.from(rawName).slice(0, isChampion ? 16 : 13).join("");
 
     ctx.fillStyle = C.white;
-    ctx.font = `900 ${isChampion ? 20 : 17}px "Segoe UI", ${EMOJI_FALLBACK}`;
+    ctx.font = `900 ${isChampion ? 20 : 17}px "Segoe UI", "DejaVu Sans", "Noto Sans", ${EMOJI_FALLBACK}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(displayName, x + w / 2, nameY);
@@ -856,7 +877,7 @@ async function renderLeaderboardRanks(users = [], page = 2, totalPages = 2, opti
     const displayName = Array.from(rawName).slice(0, 18).join("");
 
     ctx.fillStyle = C.white;
-    ctx.font = `900 17px "Segoe UI", ${EMOJI_FALLBACK}`;
+    ctx.font = `900 17px "Segoe UI", "DejaVu Sans", "Noto Sans", ${EMOJI_FALLBACK}`;
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     ctx.fillText(displayName, avX + 38, y + 26);
