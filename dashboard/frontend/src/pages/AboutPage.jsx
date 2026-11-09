@@ -109,7 +109,7 @@ export default function AboutPage() {
             <span className="text-brutal-accent">02.</span> OPEN SOURCE GPL-3.0 INTEGRITY
           </h2>
           <p className="text-xs md:text-sm text-zinc-300 leading-relaxed">
-            Together is licensed under the <strong>GNU General Public License v3.0 (GPL-3.0)</strong>. We believe community music streaming tools must remain open, inspectable, and resilient against vendor lock-in. Our software application does not monetize basic playback controls or lock essential audio equalizer filters behind subscription paywalls.
+            Together is licensed under the <strong>GNU General Public License v3.0 (GPL-3.0)</strong>, with our complete open source repository hosted at <a href="https://github.com/0xSHARON/TOGETHER" target="_blank" rel="noopener noreferrer" className="text-brutal-accent hover:underline font-bold">GitHub (0xSHARON/TOGETHER)</a>. We believe community music streaming tools must remain open, inspectable, and resilient against vendor lock-in. Our software application does not monetize basic playback controls or lock essential audio equalizer filters behind subscription paywalls.
           </p>
         </section>
 
