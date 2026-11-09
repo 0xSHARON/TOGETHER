@@ -1,10 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, ArrowLeft, Lock, Database, Trash2, EyeOff, KeyRound } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono p-4 md:p-8 flex flex-col justify-between selection:bg-brutal-accent selection:text-black">
+      <SEO 
+        title="Privacy Policy — TOGETHER Discord Music Bot"
+        description="Privacy policy and data retention practices for TOGETHER Discord music bot. Learn how telemetry, server configs, and Discord IDs are securely processed."
+        canonical="https://dash.together.dpdns.org/privacy"
+      />
       {/* Top Navbar */}
       <header className="max-w-5xl w-full mx-auto flex items-center justify-between border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal mb-8">
         <Link to="/" className="flex items-center gap-3 group">

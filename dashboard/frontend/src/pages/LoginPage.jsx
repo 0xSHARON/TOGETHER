@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ExternalLink, ShieldAlert, ArrowRight, Star } from 'lucide-react';
 import { BrutButton } from '../components/Brutalist';
 import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 
 const FALLBACK_BOT = {
   name: "TOGETHER",
@@ -39,6 +40,11 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text flex items-center justify-center p-4 brutal-grid">
+      <SEO 
+        title="Login — TOGETHER Discord Music Bot Dashboard"
+        description="Authorize with Discord to access the TOGETHER Discord music bot dashboard, control 3D webplayer streaming, manage 24/7 channels, and tune audio settings."
+        canonical="https://dash.together.dpdns.org/login"
+      />
       <div className="max-w-md w-full border-2 border-brutal-border bg-brutal-surface shadow-brutal relative overflow-hidden">
         {/* Bot Banner */}
         <div className="relative w-full h-36 bg-zinc-900 border-b-2 border-brutal-border overflow-hidden">

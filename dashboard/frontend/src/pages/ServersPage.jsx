@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Server, Plus, ArrowRight, Music, Radio, Sliders, ExternalLink, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { BrutCard, BrutButton } from '../components/Brutalist';
+import SEO from '../components/SEO';
 
 const BOT_INVITE_URL = "https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=277298439232&scope=bot%20applications.commands";
 
@@ -51,6 +52,11 @@ export default function ServersPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
+      <SEO 
+        title="Servers & Communities — TOGETHER Discord Music Bot"
+        description="Select and manage your Discord servers with TOGETHER music bot. Configure audio playback, invite bot to new servers, and customize settings."
+        canonical="https://dash.together.dpdns.org/servers"
+      />
       {/* Header Banner */}
       <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal flex justify-between items-center flex-wrap gap-4">
         <div>

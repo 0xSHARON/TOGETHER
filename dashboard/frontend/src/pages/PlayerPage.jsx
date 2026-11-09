@@ -27,6 +27,7 @@ import {
   RadioTower
 } from 'lucide-react';
 import { BrutCard, BrutButton } from '../components/Brutalist';
+import SEO from '../components/SEO';
 
 function formatTime(ms) {
   if (!ms || isNaN(ms)) return "0:00";
@@ -403,6 +404,11 @@ export default function PlayerPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12 font-mono">
+      <SEO 
+        title="Webplayer & Audio Controller — TOGETHER Discord Music Bot"
+        description="Stream, control, and visualize Discord music in real time with the TOGETHER webplayer. Search tracks, adjust 14 DSP audio filters, manage queue, and toggle 24/7."
+        canonical="https://dash.together.dpdns.org/player"
+      />
       {/* Notice Banner: If another guild has active playback, give 1-click switch */}
       {otherPlayingGuild && !isPlaying && (
         <div className="border-2 border-brutal-accent bg-brutal-accent/15 p-4 shadow-brutal flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-pulse">

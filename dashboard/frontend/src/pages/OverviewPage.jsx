@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { BrutCard, StatBox, BrutButton } from '../components/Brutalist';
 import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 
 export default function OverviewPage() {
   const { user } = useAuth();
@@ -65,6 +66,11 @@ export default function OverviewPage() {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-12">
+      <SEO 
+        title="Dashboard Overview — TOGETHER Discord Music Bot"
+        description="Monitor Discord music bot cluster status, live voice sessions, node telemetry, active listeners, and audio streaming statistics."
+        canonical="https://dash.together.dpdns.org/overview"
+      />
       {/* Hero Banner with Logo & Status */}
       <div className="border-2 border-brutal-border bg-brutal-surface p-6 md:p-8 shadow-brutal flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex items-center gap-5">

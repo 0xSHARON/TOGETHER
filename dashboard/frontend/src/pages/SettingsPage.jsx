@@ -17,6 +17,7 @@ import {
   Lock
 } from 'lucide-react';
 import { BrutCard, BrutButton } from '../components/Brutalist';
+import SEO from '../components/SEO';
 
 export default function SettingsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -235,6 +236,7 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-12">
+      <SEO title="Server Settings — TOGETHER Discord Music Bot" noindex={true} />
       {/* Header Banner with Server Dropdown */}
       <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>

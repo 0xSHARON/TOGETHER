@@ -40,6 +40,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { BrutCard, StatBox, BrutButton } from '../components/Brutalist';
+import SEO from '../components/SEO';
 
 export const LOG_CHANNEL_ID = "1568284208533864498";
 
@@ -386,6 +387,7 @@ export default function OwnerPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16 font-mono">
+      <SEO title="Apex Mission Control — TOGETHER" noindex={true} />
       {/* Toast Notification for Clipboard */}
       {copiedText && (
         <div className="fixed bottom-6 right-6 z-50 bg-brutal-accent text-black font-black font-mono text-xs px-4 py-2.5 border-2 border-black shadow-brutal flex items-center gap-2 animate-bounce">

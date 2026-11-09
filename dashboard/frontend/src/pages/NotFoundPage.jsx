@@ -11,10 +11,12 @@ import {
   Disc3
 } from 'lucide-react';
 import { BrutButton } from '../components/Brutalist';
+import SEO from '../components/SEO';
 
 export default function NotFoundPage() {
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono flex flex-col justify-between p-4 sm:p-8 brutal-grid">
+      <SEO title="404: Page Not Found — TOGETHER" noindex={true} />
       {/* Top Header Strip */}
       <header className="max-w-6xl mx-auto w-full flex items-center justify-between pb-6 border-b-2 border-brutal-border">
         <Link to="/" className="flex items-center gap-3 group">

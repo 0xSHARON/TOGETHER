@@ -20,6 +20,7 @@ import {
   Filter
 } from 'lucide-react';
 import { BrutCard, StatBox } from '../components/Brutalist';
+import SEO from '../components/SEO';
 
 const DEFAULT_TOPGG_URL = "https://top.gg/bot/863496211667484676/vote";
 
@@ -108,6 +109,11 @@ export default function CommandsPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
+      <SEO 
+        title="Commands — TOGETHER Discord Music Bot & Webplayer"
+        description="Browse all 69+ Discord music bot commands for TOGETHER. Full slash and prefix syntax for playing music, 14 DSP audio filters, 24/7 playback, and playlists."
+        canonical="https://dash.together.dpdns.org/commands"
+      />
       {/* Brutalist Header Banner */}
       <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -117,9 +123,9 @@ export default function CommandsPage() {
             </span>
             <span className="font-mono text-xs text-brutal-muted">v2.4.0 ENGINE</span>
           </div>
-          <h2 className="font-display font-black text-3xl md:text-4xl text-brutal-text uppercase tracking-tight">
-            COMMAND REGISTRY
-          </h2>
+          <h1 className="font-display font-black text-3xl md:text-4xl text-brutal-text uppercase tracking-tight">
+            DISCORD MUSIC BOT COMMANDS
+          </h1>
           <p className="font-mono text-xs text-brutal-muted mt-1 max-w-2xl">
             Complete synchronized inventory of all {stats.total} public Discord slash interactions and prefix utilities powering TOGETHER.
           </p>

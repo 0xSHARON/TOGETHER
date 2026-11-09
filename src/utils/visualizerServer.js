@@ -24,6 +24,9 @@ const MIME_TYPES = {
   ".svg":  "image/svg+xml",
   ".ico":  "image/x-icon",
   ".webp": "image/webp",
+  ".txt":  "text/plain; charset=utf-8",
+  ".xml":  "application/xml; charset=utf-8",
+  ".webmanifest": "application/manifest+json; charset=utf-8",
 };
 
 /**

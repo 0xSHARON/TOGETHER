@@ -18,6 +18,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import { BrutCard, StatBox, BrutButton } from '../components/Brutalist';
+import SEO from '../components/SEO';
 
 export default function LeaderboardPage() {
   const [data, setData] = useState({ 
@@ -109,6 +110,11 @@ export default function LeaderboardPage() {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
+      <SEO 
+        title="Leaderboard — TOGETHER Discord Music Bot"
+        description="Track live global and server music listening leaderboards for TOGETHER Discord music bot. View hours listened, streak rankings, and top users."
+        canonical="https://dash.together.dpdns.org/leaderboard"
+      />
       {/* Header Banner */}
       <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal flex justify-between items-center flex-wrap gap-4">
         <div>
@@ -118,9 +124,9 @@ export default function LeaderboardPage() {
               OFFICIAL BOT STANDINGS // DISCORD SYNCED
             </span>
           </div>
-          <h2 className="font-display font-black text-3xl text-brutal-text uppercase">
+          <h1 className="font-display font-black text-3xl text-brutal-text uppercase">
             MUSIC LEADERBOARD
-          </h2>
+          </h1>
           <p className="font-mono text-xs text-brutal-muted mt-1">
             Real-time rankings across {data.totalUsers || rawList.length} verified listeners in {data.serverName || 'the community'}.
           </p>

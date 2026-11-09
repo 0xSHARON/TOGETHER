@@ -19,9 +19,12 @@ import {
   CheckCircle2, 
   Cpu,
   Volume2,
-  Search
+  Search,
+  HelpCircle,
+  ChevronDown
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import SEO from '../components/SEO';
 
 const BOT_INVITE_URL = "https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands";
 const TOPGG_VOTE_URL = "https://top.gg/bot/863496211667484676/vote";
@@ -105,6 +108,11 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono brutal-grid">
+      <SEO 
+        title="TOGETHER — #1 Discord Music Bot & Lossless Webplayer"
+        description="Top-rated Discord music bot featuring 24-bit lossless opus audio, real-time 3D webplayer visualizer, 24/7 uptime, and multi-source streaming. Add to Discord now."
+        canonical="https://dash.together.dpdns.org/"
+      />
       {/* Top Navbar */}
       <header className="sticky top-0 z-50 bg-brutal-surface/95 backdrop-blur border-b-2 border-brutal-border px-4 md:px-8 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -179,12 +187,12 @@ export default function LandingPage() {
             <div className="lg:col-span-8 space-y-6">
               <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl leading-none uppercase tracking-tight text-white">
                 THE NEXT GENERATION <br />
-                <span className="text-brutal-accent underline decoration-4 decoration-black">OF DISCORD MUSIC.</span>
+                <span className="text-brutal-accent underline decoration-4 decoration-black">OF DISCORD MUSIC BOT.</span>
               </h1>
 
               <p className="font-mono text-sm sm:text-base text-zinc-300 max-w-2xl leading-relaxed">
-                Experience ultra-low latency, 24-bit lossless opus audio streaming across your Discord servers. 
-                Featuring real-time WebGL 2.0 3D visualization, 14 DSP studio audio filters, zero audio dropouts, and 24/7 channel locking.
+                Experience ultra-low latency, 24-bit lossless opus audio streaming across your Discord servers with TOGETHER, the premier Discord music bot and real-time 3D WebGL webplayer. 
+                Featuring 14 DSP studio audio filters, zero dropouts, and 24/7 channel locking.
               </p>
 
               {/* Action Buttons */}
@@ -531,6 +539,59 @@ export default function LandingPage() {
         </div>
 
         {/* Bottom Callout Banner */}
+      </section>
+
+      {/* Frequently Asked Questions (SEO & Schema Compliance) */}
+      <section id="faq" className="px-4 md:px-8 py-16 border-b-2 border-brutal-border max-w-7xl mx-auto space-y-8">
+        <div>
+          <span className="font-mono text-[10px] bg-brutal-accent text-black font-black px-2 py-0.5 uppercase tracking-widest">
+            KNOWLEDGE BASE
+          </span>
+          <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white mt-2">
+            FREQUENTLY ASKED QUESTIONS.
+          </h2>
+          <p className="font-mono text-xs text-zinc-400 mt-2 max-w-xl">
+            Everything you need to know about the TOGETHER Discord music bot, lossless webplayer, and server configurations.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-2">
+            <h3 className="font-display font-black text-lg text-white uppercase flex items-center gap-2">
+              <span className="text-brutal-accent">Q1.</span> What is TOGETHER Discord Music Bot?
+            </h3>
+            <p className="font-mono text-xs text-zinc-300 leading-relaxed">
+              TOGETHER is a next-generation high-fidelity Discord music bot engineered for 24-bit lossless opus audio streaming, interactive real-time 3D webplayer visualizer, 24/7 channel locking, and zero-latency playback across servers.
+            </p>
+          </div>
+
+          <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-2">
+            <h3 className="font-display font-black text-lg text-white uppercase flex items-center gap-2">
+              <span className="text-brutal-accent">Q2.</span> How do I add the Discord music bot?
+            </h3>
+            <p className="font-mono text-xs text-zinc-300 leading-relaxed">
+              Click <a href={BOT_INVITE_URL} target="_blank" rel="noreferrer" className="text-brutal-accent underline font-bold">Invite Discord Bot</a> on the homepage to authorize the bot with slash command permissions. Once in your server, join a voice channel and type <code className="text-brutal-accent bg-black px-1">/play</code> to start streaming.
+            </p>
+          </div>
+
+          <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-2">
+            <h3 className="font-display font-black text-lg text-white uppercase flex items-center gap-2">
+              <span className="text-brutal-accent">Q3.</span> Does TOGETHER have a webplayer?
+            </h3>
+            <p className="font-mono text-xs text-zinc-300 leading-relaxed">
+              Yes! TOGETHER features an interactive real-time 3D WebGL webplayer at <a href="https://together.dpdns.org/visualizer/" target="_blank" rel="noreferrer" className="text-cyan-400 underline font-bold">together.dpdns.org/visualizer</a> that renders live audio frequency spectrums, synchronized waveforms, track queues, and controls in your web browser.
+            </p>
+          </div>
+
+          <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal space-y-2">
+            <h3 className="font-display font-black text-lg text-white uppercase flex items-center gap-2">
+              <span className="text-brutal-accent">Q4.</span> Is TOGETHER Discord music bot free?
+            </h3>
+            <p className="font-mono text-xs text-zinc-300 leading-relaxed">
+              Yes, TOGETHER provides 100% free access to all core audio features, 24/7 voice channel locking, studio DSP filters, and real-time dashboard controls without arbitrary premium paywalls.
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* Creator Showcase */}

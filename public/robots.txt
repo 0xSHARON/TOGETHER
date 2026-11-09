@@ -1,0 +1,32 @@
+# ==========================================
+# Robots.txt for TOGETHER Discord Music Bot
+# Domain: https://dash.together.dpdns.org
+# Crawler Compliance: Screaming Frog / Googlebot / Bingbot
+# ==========================================
+
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /commands
+Allow: /leaderboard
+Allow: /terms
+Allow: /privacy
+Allow: /assets/
+Allow: /logo.png
+Allow: /og-banner.png
+Allow: /banner.webp
+Allow: /favicon.png
+Allow: /favicon.svg
+
+# Disallow Private & Authenticated Dashboard Endpoints
+Disallow: /api/
+Disallow: /owner
+Disallow: /settings
+Disallow: /overview
+Disallow: /player
+Disallow: /servers
+Disallow: /profile
+
+# Host & XML Sitemap Location
+Host: https://dash.together.dpdns.org
+Sitemap: https://dash.together.dpdns.org/sitemap.xml

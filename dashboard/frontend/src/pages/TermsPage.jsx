@@ -1,10 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, ArrowLeft, ArrowUpRight, Scale, Lock, HeartHandshake, Database, AlertCircle } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono p-4 md:p-8 flex flex-col justify-between selection:bg-brutal-accent selection:text-black">
+      <SEO 
+        title="Terms of Service — TOGETHER Discord Music Bot"
+        description="Official Terms of Service for TOGETHER Discord music bot and web dashboard. Transparent audio bot usage policies and community guidelines."
+        canonical="https://dash.together.dpdns.org/terms"
+      />
       {/* Top Navbar */}
       <header className="max-w-5xl w-full mx-auto flex items-center justify-between border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal mb-8">
         <Link to="/" className="flex items-center gap-3 group">
