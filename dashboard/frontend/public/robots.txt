@@ -10,6 +10,8 @@
 User-agent: *
 Allow: /
 Allow: /about
+Allow: /compare
+Allow: /alternatives
 Allow: /contact
 Allow: /login
 Allow: /commands

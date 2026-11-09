@@ -19,6 +19,7 @@ const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const FaqPage = lazy(() => import('./pages/FaqPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ComparePage = lazy(() => import('./pages/ComparePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Lightweight accessible fallback loader
@@ -40,6 +41,8 @@ export default function App() {
             {/* Public Standalone Landing Page & Policies */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/compare" element={<ComparePage />} />
+            <Route path="/alternatives" element={<Navigate to="/compare" replace />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/faq" element={<FaqPage />} />
