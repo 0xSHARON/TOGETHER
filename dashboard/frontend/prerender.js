@@ -116,6 +116,10 @@ const sharedCss = `
         font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
         line-height: 1.6;
       }
+      .content-auto {
+        content-visibility: auto;
+        contain-intrinsic-size: 0 450px;
+      }
       .skip-link {
         position: absolute;
         top: -40px;
