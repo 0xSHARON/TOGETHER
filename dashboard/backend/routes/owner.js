@@ -34,7 +34,7 @@ router.get("/overview", requireOwner, async (req, res) => {
         nodes: []
       },
       discordLogs: {
-        channelId: "1568284208533864498",
+        channelId: "1557621712948830388",
         channelName: "system-logs",
         total: Array.isArray(discordLogs) ? discordLogs.length : 0,
         logs: Array.isArray(discordLogs) ? discordLogs : []
@@ -61,12 +61,12 @@ router.get("/nodes", requireOwner, async (req, res) => {
   }
 });
 
-// GET /api/owner/discord-logs -> Real-time logs from channel 1568284208533864498
+// GET /api/owner/discord-logs -> Real-time logs from channel 1557621712948830388
 router.get("/discord-logs", requireOwner, async (req, res) => {
   try {
     const logs = await botBridge.getDiscordLogs();
     res.json({
-      channelId: "1568284208533864498",
+      channelId: "1557621712948830388",
       channelName: "system-logs",
       total: logs.length,
       logs
@@ -76,7 +76,7 @@ router.get("/discord-logs", requireOwner, async (req, res) => {
   }
 });
 
-// POST /api/owner/send-log -> Send a log/diagnostic ping into channel 1568284208533864498
+// POST /api/owner/send-log -> Send a log/diagnostic ping into channel 1557621712948830388
 router.post("/send-log", requireOwner, async (req, res) => {
   try {
     const { message } = req.body || {};

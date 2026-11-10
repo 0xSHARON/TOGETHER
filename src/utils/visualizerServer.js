@@ -744,9 +744,9 @@ function startVisualizerServer(client, preferredPort = 5050) {
       }));
     }
 
-    // ── API: Real-Time Discord Logs from Channel 1568284208533864498 (/api/discord-logs) ──
+    // ── API: Real-Time Discord Logs from Channel 1557621712948830388 (/api/discord-logs) ──
     if (pathname === "/api/discord-logs" || pathname === "/api/owner-logs") {
-      const channelId = "1568284208533864498";
+      const channelId = "1557621712948830388";
       try {
         let channel = client?.channels?.cache?.get(channelId);
         if (!channel && client?.channels?.fetch) {
@@ -806,14 +806,14 @@ function startVisualizerServer(client, preferredPort = 5050) {
       }
     }
 
-    // ── API: Send Test/Direct Log to Channel 1568284208533864498 (/api/send-discord-log) ──
+    // ── API: Send Test/Direct Log to Channel 1557621712948830388 (/api/send-discord-log) ──
     if (pathname === "/api/send-discord-log" && req.method === "POST") {
       let body = "";
       req.on("data", chunk => { body += chunk; });
       req.on("end", async () => {
         try {
           const payload = JSON.parse(body || "{}");
-          const channelId = "1568284208533864498";
+          const channelId = "1557621712948830388";
           let channel = client?.channels?.cache?.get(channelId);
           if (!channel && client?.channels?.fetch) {
             channel = await client.channels.fetch(channelId).catch(() => null);
