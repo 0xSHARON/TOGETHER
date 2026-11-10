@@ -22,7 +22,9 @@ import {
   ChevronDown,
   Share2,
   Globe,
-  FileText
+  FileText,
+  Menu,
+  X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SEO from '../components/SEO';
@@ -94,6 +96,7 @@ export default function LandingPage() {
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [cmdSearch, setCmdSearch] = useState('');
   const [copied, setCopied] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleShare = async () => {
     const shareData = {
@@ -212,9 +215,9 @@ export default function LandingPage() {
       />
 
       {/* Top Navbar */}
-      <header className="sticky top-0 z-50 bg-brutal-surface/95 backdrop-blur border-b-2 border-brutal-border px-4 md:px-8 py-3.5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-50 bg-brutal-surface/95 backdrop-blur border-b-2 border-brutal-border px-4 md:px-8 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group" aria-label="Together Music Bot Home">
             <picture>
               <source srcSet="/logo.webp" type="image/webp" />
               <img 
@@ -225,28 +228,29 @@ export default function LandingPage() {
                 height="36" 
                 fetchPriority="high"
                 loading="eager"
-                className="w-9 h-9 object-contain" 
+                className="w-8 h-8 sm:w-9 sm:h-9 object-contain" 
               />
             </picture>
             <div>
-              <span className="font-display font-black text-xl md:text-2xl tracking-wider text-brutal-text">
+              <span className="font-display font-black text-lg sm:text-2xl tracking-wider text-brutal-text group-hover:text-brutal-accent transition-colors">
                 TOGETHER
               </span>
               <span className="hidden sm:inline-block ml-2 text-[9px] bg-brutal-accent text-black font-black px-1.5 py-0.2">
                 24-BIT AUDIO OS
               </span>
             </div>
-          </div>
+          </Link>
 
-          <nav className="hidden md:flex items-center gap-6 font-mono text-xs font-bold uppercase" aria-label="Main Navigation">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-5 lg:gap-6 font-mono text-xs font-bold uppercase" aria-label="Main Navigation">
             <Link to="/features" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              BOT FEATURES
+              FEATURES
             </Link>
             <Link to="/commands" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              COMMANDS CATALOG
+              COMMANDS
             </Link>
             <a href="#benchmark" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              AUDIO BENCHMARK
+              BENCHMARK
             </a>
             <Link to="/faq" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               FAQ
@@ -259,12 +263,12 @@ export default function LandingPage() {
             </Link>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <a
               href={TOPGG_VOTE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-amber-400 text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-amber-400 text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
             >
               <Star className="w-3.5 h-3.5 fill-black" />
               <span>VOTE ON TOP.GG</span>
@@ -273,22 +277,114 @@ export default function LandingPage() {
             {user ? (
               <Link
                 to="/overview"
-                className="px-4 py-1.5 bg-brutal-accent text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
+                className="px-3 sm:px-4 py-1.5 bg-brutal-accent text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1.5"
               >
-                <span>OPEN DASHBOARD</span>
+                <span className="hidden sm:inline">OPEN</span> DASHBOARD
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             ) : (
               <Link
                 to="/login"
-                className="px-4 py-1.5 bg-brutal-accent text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
+                className="px-3 sm:px-4 py-1.5 bg-brutal-accent text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-1.5"
               >
-                <span>SIGN IN WITH DISCORD</span>
+                <span>SIGN IN</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             )}
+
+            {/* Mobile Menu Hamburger Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-1.5 sm:p-2 bg-black border-2 border-brutal-border text-white hover:text-brutal-accent hover:border-brutal-accent transition-all"
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5 text-brutal-accent" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-3 pt-3 border-t-2 border-brutal-border bg-black/95 backdrop-blur px-2 py-3 space-y-1.5 font-mono text-xs font-bold uppercase animate-fade-in">
+            <Link
+              to="/features"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-2.5 bg-brutal-surface border border-brutal-border text-white hover:border-brutal-accent hover:text-brutal-accent"
+            >
+              <span>Features</span>
+              <Sparkles className="w-4 h-4 text-brutal-accent" />
+            </Link>
+            <Link
+              to="/commands"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-2.5 bg-brutal-surface border border-brutal-border text-white hover:border-brutal-accent hover:text-brutal-accent"
+            >
+              <span>Commands</span>
+              <Terminal className="w-4 h-4 text-brutal-accent" />
+            </Link>
+            <a
+              href="#benchmark"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-2.5 bg-brutal-surface border border-brutal-border text-zinc-300 hover:border-brutal-accent hover:text-white"
+            >
+              <span>Audio Benchmark</span>
+              <Cpu className="w-4 h-4 text-cyan-400" />
+            </a>
+            <Link
+              to="/faq"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-2.5 bg-brutal-surface border border-brutal-border text-zinc-300 hover:border-brutal-accent hover:text-white"
+            >
+              <span>FAQ</span>
+              <HelpCircle className="w-4 h-4 text-amber-400" />
+            </Link>
+            <Link
+              to="/leaderboard"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-2.5 bg-brutal-surface border border-brutal-border text-zinc-300 hover:border-brutal-accent hover:text-white"
+            >
+              <span>Leaderboard</span>
+              <Flame className="w-4 h-4 text-orange-400" />
+            </Link>
+            <Link
+              to="/about"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-2.5 bg-brutal-surface border border-brutal-border text-zinc-300 hover:border-brutal-accent hover:text-white"
+            >
+              <span>About</span>
+              <Globe className="w-4 h-4 text-purple-400" />
+            </Link>
+            <Link
+              to="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-2.5 bg-brutal-surface border border-brutal-border text-zinc-300 hover:border-brutal-accent hover:text-white"
+            >
+              <span>Contact</span>
+              <FileText className="w-4 h-4 text-blue-400" />
+            </Link>
+            <div className="pt-2 grid grid-cols-2 gap-2">
+              <a
+                href={TOPGG_VOTE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 bg-amber-400 text-black border-2 border-black font-black text-center flex items-center justify-center gap-1.5 shadow-brutal-sm"
+              >
+                <Star className="w-3.5 h-3.5 fill-black" />
+                <span>Top.gg</span>
+              </a>
+              <a
+                href={BOT_INVITE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 bg-brutal-accent text-black border-2 border-black font-black text-center flex items-center justify-center gap-1.5 shadow-brutal-sm"
+              >
+                <Zap className="w-3.5 h-3.5 fill-black" />
+                <span>Invite Bot</span>
+              </a>
+            </div>
+          </div>
+        )}
       </header>
 
       <main id="main-content">
@@ -1119,19 +1215,19 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
-          <Link to="/about" className="hover:text-brutal-accent">About Together Bot</Link>
-          <Link to="/features" className="hover:text-brutal-accent text-brutal-accent font-bold">Bot Features</Link>
-          <Link to="/commands" className="hover:text-brutal-accent">Bot Commands</Link>
-          <Link to="/contact" className="hover:text-brutal-accent">Contact Support Team</Link>
-          <Link to="/about#editorial-policy" className="hover:text-brutal-accent">Editorial Standards</Link>
-          <Link to="/faq" className="hover:text-brutal-accent">Documentation & FAQ</Link>
-          <Link to="/overview" className="hover:text-brutal-accent">Web Player Dashboard</Link>
-          <Link to="/leaderboard" className="hover:text-brutal-accent">Music Leaderboard</Link>
-          <Link to="/terms" className="hover:text-brutal-accent">Terms of Service</Link>
-          <Link to="/privacy" className="hover:text-brutal-accent">Privacy Policy</Link>
-          <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Official Discord Server</a>
-          <a href={TOPGG_VOTE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Vote on Top.gg Directory</a>
+        <nav className="flex flex-wrap gap-3 sm:gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
+          <Link to="/about" className="hover:text-brutal-accent">About</Link>
+          <Link to="/features" className="hover:text-brutal-accent text-brutal-accent font-bold">Features</Link>
+          <Link to="/commands" className="hover:text-brutal-accent">Commands</Link>
+          <Link to="/contact" className="hover:text-brutal-accent">Contact</Link>
+          <Link to="/about#editorial-policy" className="hover:text-brutal-accent">Editorial</Link>
+          <Link to="/faq" className="hover:text-brutal-accent">FAQ</Link>
+          <Link to="/overview" className="hover:text-brutal-accent">Web Player</Link>
+          <Link to="/leaderboard" className="hover:text-brutal-accent">Leaderboard</Link>
+          <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
+          <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
+          <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Discord</a>
+          <a href={TOPGG_VOTE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Top.gg</a>
         </nav>
 
         <div className="text-center md:text-right">

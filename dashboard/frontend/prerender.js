@@ -53,14 +53,14 @@ const sharedHeader = `
         </div>
         <nav aria-label="Main Navigation">
           <a href="/">Home</a> |
-          <a href="/features">Bot Features &amp; Architecture</a> |
-          <a href="/commands">Music Bot Commands</a> |
-          <a href="/faq">Frequently Asked Questions</a> |
-          <a href="/leaderboard">Listening Leaderboard</a> |
-          <a href="/about">About Together Bot</a> |
-          <a href="/contact">Contact Support Team</a> |
-          <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="noopener noreferrer">Vote on Top.gg Directory</a> |
-          <a href="/login">Sign in to Web Dashboard</a>
+          <a href="/features">Features</a> |
+          <a href="/commands">Commands</a> |
+          <a href="/faq">FAQ</a> |
+          <a href="/leaderboard">Leaderboard</a> |
+          <a href="/about">About</a> |
+          <a href="/contact">Contact</a> |
+          <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="noopener noreferrer">Top.gg</a> |
+          <a href="/login">Sign In</a>
         </nav>
       </header>
 `;
@@ -81,17 +81,18 @@ const sharedFooter = `
         </div>
         <nav aria-label="Footer Navigation">
           <a href="/">Home</a> |
-          <a href="/features">Bot Features &amp; Architecture</a> |
-          <a href="/commands">Bot Commands Reference</a> |
-          <a href="/about">About Together Bot</a> |
-          <a href="/contact">Contact Support Team</a> |
-          <a href="/about#editorial-policy">Editorial Standards and Review Policy</a> |
-          <a href="/faq">Documentation and User Guides</a> |
-          <a href="/leaderboard">Music Listening Leaderboard</a> |
-          <a href="/terms">Terms of Service Agreement</a> |
-          <a href="/privacy">Privacy and Data Security Policy</a> |
-          <a href="https://discord.gg/mUdGTs2Dw5" rel="me noopener noreferrer" target="_blank">Join Official Discord Community</a> |
-          <a href="https://top.gg/bot/863496211667484676" rel="noopener noreferrer" target="_blank">Together on Top.gg Bot Directory</a>
+          <a href="/about">About</a> |
+          <a href="/features">Features</a> |
+          <a href="/commands">Commands</a> |
+          <a href="/contact">Contact</a> |
+          <a href="/about#editorial-policy">Editorial</a> |
+          <a href="/faq">FAQ</a> |
+          <a href="/overview">Web Player</a> |
+          <a href="/leaderboard">Leaderboard</a> |
+          <a href="/terms">Terms</a> |
+          <a href="/privacy">Privacy</a> |
+          <a href="https://discord.gg/mUdGTs2Dw5" rel="me noopener noreferrer" target="_blank">Discord</a> |
+          <a href="https://top.gg/bot/863496211667484676/vote" target="_blank" rel="noopener noreferrer">Top.gg</a>
         </nav>
       </footer>
 `;

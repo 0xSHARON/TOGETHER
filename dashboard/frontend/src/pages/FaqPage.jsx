@@ -477,32 +477,44 @@ export default function FaqPage() {
       />
 
       {/* Top Navbar */}
-      <header className="sticky top-0 z-50 bg-brutal-surface/95 backdrop-blur border-b-2 border-brutal-border px-4 md:px-8 py-3.5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center gap-3 group">
-              <picture>
+      <header className="sticky top-0 z-50 bg-brutal-surface/95 backdrop-blur border-b-2 border-brutal-border px-4 md:px-8 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <Link to="/" className="flex items-center gap-2 group min-w-0" aria-label="Together Music Bot Home">
+              <picture className="shrink-0">
                 <source srcSet="/logo.webp" type="image/webp" />
                 <img 
                   src="/logo.png" 
                   alt="Together Logo" 
                   width="36" 
                   height="36" 
-                  className="w-9 h-9 object-contain" 
+                  className="w-8 h-8 sm:w-9 sm:h-9 object-contain" 
                 />
               </picture>
-              <div>
-                <span className="font-display font-black text-xl md:text-2xl tracking-wider text-brutal-text group-hover:text-brutal-accent transition-colors">
+              <div className="min-w-0">
+                <span className="font-display font-black text-lg sm:text-2xl tracking-wider text-brutal-text group-hover:text-brutal-accent transition-colors block truncate">
                   TOGETHER
                 </span>
-                <span className="hidden sm:inline-block ml-2 text-[9px] bg-brutal-accent text-black font-black px-1.5 py-0.2">
-                  COMMANDS & PROTOCOL DOCS
+                <span className="hidden sm:inline-block text-[9px] bg-brutal-accent text-black font-black px-1.5 py-0.2">
+                  COMMANDS &amp; PROTOCOL DOCS
                 </span>
               </div>
             </Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <Link
+              to="/features"
+              className="hidden md:inline-flex px-2.5 py-1.5 bg-brutal-bg border border-brutal-border hover:border-brutal-accent text-white font-bold text-xs uppercase shadow-brutal-sm transition-all"
+            >
+              FEATURES
+            </Link>
+            <Link
+              to="/commands"
+              className="hidden md:inline-flex px-2.5 py-1.5 bg-brutal-bg border border-brutal-border hover:border-brutal-accent text-white font-bold text-xs uppercase shadow-brutal-sm transition-all"
+            >
+              COMMANDS
+            </Link>
             <a
               href={BOT_INVITE_URL}
               target="_blank"
@@ -515,10 +527,10 @@ export default function FaqPage() {
 
             <Link
               to="/"
-              className="px-3 py-1.5 bg-black border-2 border-brutal-border hover:border-brutal-accent text-white font-bold text-xs uppercase shadow-brutal-sm flex items-center gap-1.5 transition-all"
+              className="px-2.5 sm:px-3 py-1.5 bg-black border-2 border-brutal-border hover:border-brutal-accent text-white font-bold text-xs uppercase shadow-brutal-sm flex items-center gap-1.5 transition-all"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>RETURN HOME</span>
+              <span>HOME</span>
             </Link>
           </div>
         </div>
@@ -570,12 +582,12 @@ export default function FaqPage() {
       </section>
 
       {/* Main Two-Column Doc Layout */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 sm:py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           
-          {/* Left Sticky Sidebar: Doc Navigation */}
-          <aside className="lg:col-span-4 sticky top-20 border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b-2 border-brutal-border text-xs font-black uppercase tracking-wider text-zinc-400">
+          {/* Left Sticky Sidebar / Mobile Carousel: Doc Navigation */}
+          <aside className="lg:col-span-4 lg:sticky lg:top-20 border-2 border-brutal-border bg-brutal-surface p-3 sm:p-4 shadow-brutal space-y-3 sm:space-y-4">
+            <div className="flex items-center justify-between pb-2 sm:pb-3 border-b-2 border-brutal-border text-xs font-black uppercase tracking-wider text-zinc-400">
               <span className="flex items-center gap-2">
                 <Layers className="w-4 h-4 text-brutal-accent" />
                 COMMAND GROUPS
@@ -585,7 +597,7 @@ export default function FaqPage() {
               </span>
             </div>
 
-            <nav className="space-y-1" aria-label="Documentation Categories">
+            <nav className="flex lg:flex-col overflow-x-auto lg:overflow-visible gap-1.5 lg:space-y-1 pb-1.5 lg:pb-0 scrollbar-none" aria-label="Documentation Categories">
               {DOC_CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
                 const isActive = activeCategory === cat.id && !searchQuery;
@@ -598,7 +610,7 @@ export default function FaqPage() {
                       const el = document.getElementById(cat.id);
                       if (el) el.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className={`w-full text-left p-2.5 font-mono text-xs font-bold uppercase border transition-all flex items-center justify-between ${
+                    className={`whitespace-nowrap shrink-0 lg:w-full text-left px-3 py-2 lg:p-2.5 font-mono text-xs font-bold uppercase border transition-all flex items-center justify-between gap-2 ${
                       isActive
                         ? 'bg-brutal-accent text-black border-black shadow-brutal-sm'
                         : 'bg-brutal-bg text-zinc-300 border-transparent hover:border-brutal-border hover:text-white'
@@ -608,13 +620,13 @@ export default function FaqPage() {
                       <Icon className="w-4 h-4 shrink-0" />
                       <span className="truncate">{cat.label}</span>
                     </div>
-                    <ChevronRight className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-black' : 'text-zinc-600'}`} />
+                    <ChevronRight className={`hidden lg:block w-3.5 h-3.5 shrink-0 ${isActive ? 'text-black' : 'text-zinc-600'}`} />
                   </button>
                 );
               })}
             </nav>
 
-            <div className="pt-4 border-t-2 border-brutal-border space-y-2">
+            <div className="hidden lg:block pt-4 border-t-2 border-brutal-border space-y-2">
               <a
                 href={TOPGG_VOTE_URL}
                 target="_blank"
@@ -646,12 +658,12 @@ export default function FaqPage() {
           </aside>
 
           {/* Right Main Column: Doc Content */}
-          <main className="lg:col-span-8 space-y-12">
+          <main className="lg:col-span-8 space-y-8 sm:space-y-12">
             {filteredSections.length === 0 ? (
-              <div className="border-2 border-dashed border-zinc-800 p-12 text-center space-y-3 bg-brutal-surface">
+              <div className="border-2 border-dashed border-zinc-800 p-8 sm:p-12 text-center space-y-3 bg-brutal-surface">
                 <HelpCircle className="w-8 h-8 text-zinc-600 mx-auto" />
-                <div className="font-display font-black text-lg text-white uppercase">No Commands or FAQs Found</div>
-                <p className="text-xs text-zinc-400">
+                <div className="font-display font-black text-base sm:text-lg text-white uppercase">No Commands or FAQs Found</div>
+                <p className="text-xs text-zinc-400 max-w-md mx-auto">
                   No commands matched "{searchQuery}". Try searching for command names like "play", "skip", "volume", "247", or "lyrics".
                 </p>
                 <button
@@ -666,50 +678,50 @@ export default function FaqPage() {
                 <article
                   key={section.category}
                   id={section.category}
-                  className="border-2 border-brutal-border bg-brutal-surface p-6 md:p-8 shadow-brutal space-y-6 scroll-mt-24"
+                  className="border-2 border-brutal-border bg-brutal-surface p-4 sm:p-6 md:p-8 shadow-brutal space-y-5 sm:space-y-6 scroll-mt-24"
                 >
-                  <div className="flex items-center gap-2 border-b-2 border-brutal-border pb-4">
-                    <span className="w-2.5 h-2.5 bg-brutal-accent" />
-                    <h2 className="font-display font-black text-xl md:text-2xl text-white uppercase tracking-tight">
+                  <div className="flex items-center gap-2 border-b-2 border-brutal-border pb-3 sm:pb-4">
+                    <span className="w-2.5 h-2.5 bg-brutal-accent shrink-0" />
+                    <h2 className="font-display font-black text-lg sm:text-2xl text-white uppercase tracking-tight">
                       {section.categoryLabel}
                     </h2>
                   </div>
 
-                  <div className="space-y-6">
+                  <div className="space-y-5 sm:space-y-6">
                     {section.items.map((item, idx) => (
                       <div
                         key={item.id}
                         id={item.id}
-                        className="space-y-3 pb-6 border-b border-zinc-800 last:border-b-0 last:pb-0"
+                        className="space-y-2.5 sm:space-y-3 pb-5 sm:pb-6 border-b border-zinc-800 last:border-b-0 last:pb-0"
                       >
-                        <h3 className="font-display font-bold text-base md:text-lg text-white flex items-start gap-2.5">
-                          <span className="text-brutal-accent font-black text-xs font-mono px-1.5 py-0.5 bg-black border border-zinc-800 shrink-0 mt-0.5">
+                        <h3 className="font-display font-bold text-sm sm:text-base md:text-lg text-white flex items-start gap-2">
+                          <span className="text-brutal-accent font-black text-[10px] sm:text-xs font-mono px-1.5 py-0.5 bg-black border border-zinc-800 shrink-0 mt-0.5">
                             {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
                           </span>
-                          <span>{item.question}</span>
+                          <span className="leading-snug">{item.question}</span>
                         </h3>
 
-                        <p className="font-mono text-xs md:text-sm text-zinc-300 leading-relaxed whitespace-pre-line pl-8">
+                        <p className="font-mono text-xs sm:text-sm text-zinc-300 leading-relaxed whitespace-pre-line pl-0 sm:pl-8">
                           {item.answer}
                         </p>
 
                         {/* Interactive Command Block */}
                         {item.command && (
-                          <div className="pl-8 pt-1">
-                            <div className="border border-zinc-800 bg-black p-3 space-y-1">
+                          <div className="pl-0 sm:pl-8 pt-1">
+                            <div className="border border-zinc-800 bg-black p-2.5 sm:p-3 space-y-1">
                               {item.commandLabel && (
                                 <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">
                                   {item.commandLabel}
                                 </div>
                               )}
                               <div className="flex items-center justify-between gap-2">
-                                <code className="text-xs text-brutal-accent font-mono break-all">
+                                <code className="text-[11px] sm:text-xs text-brutal-accent font-mono break-all">
                                   {item.command}
                                 </code>
                                 <button
                                   onClick={() => handleCopy(item.command, item.id)}
                                   aria-label="Copy command snippet"
-                                  className="p-1 text-zinc-400 hover:text-white shrink-0 transition-colors"
+                                  className="p-1.5 text-zinc-400 hover:text-white shrink-0 transition-colors"
                                 >
                                   {copiedId === item.id ? (
                                     <Check className="w-4 h-4 text-brutal-accent" />
@@ -724,9 +736,9 @@ export default function FaqPage() {
 
                         {/* Optional Callout / Note Box */}
                         {item.callout && (
-                          <div className="pl-8 pt-1">
+                          <div className="pl-0 sm:pl-8 pt-1">
                             <div
-                              className={`p-3 border-l-4 text-xs font-mono leading-relaxed ${
+                              className={`p-2.5 sm:p-3 border-l-4 text-xs font-mono leading-relaxed ${
                                 item.callout.type === 'tip'
                                   ? 'bg-emerald-950/20 border-emerald-400 text-emerald-200'
                                   : item.callout.type === 'alert'
@@ -760,16 +772,19 @@ export default function FaqPage() {
           </picture>
           <span className="text-white font-bold">TOGETHER DOCUMENTATION</span>
         </div>
-        <div className="flex flex-wrap gap-4 uppercase font-bold text-[11px]">
+        <nav className="flex flex-wrap gap-3 sm:gap-4 uppercase font-bold text-[11px] justify-center sm:justify-start" aria-label="Footer Navigation">
           <Link to="/" className="hover:text-brutal-accent">Home</Link>
-          <Link to="/overview" className="hover:text-brutal-accent">Dashboard</Link>
+          <Link to="/features" className="hover:text-brutal-accent">Features</Link>
           <Link to="/commands" className="hover:text-brutal-accent">Commands</Link>
+          <Link to="/faq" className="hover:text-brutal-accent text-brutal-accent font-bold">FAQ</Link>
+          <Link to="/leaderboard" className="hover:text-brutal-accent">Leaderboard</Link>
+          <Link to="/overview" className="hover:text-brutal-accent">Dashboard</Link>
           <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
           <a href={SUPPORT_SERVER_URL} target="_blank" rel="noopener noreferrer" className="hover:text-brutal-accent">Support</a>
-        </div>
+        </nav>
         <div>
-          <span>Crafted by <strong className="text-white">KAJU🦋</strong></span>
+          <span>Author: <strong className="text-white">KAJU🦋</strong></span>
         </div>
       </footer>
     </div>
