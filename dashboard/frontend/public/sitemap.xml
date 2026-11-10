@@ -20,14 +20,6 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- Best Discord Music Bot Comparison 2026 -->
-  <url>
-    <loc>https://dash.together.dpdns.org/compare</loc>
-    <lastmod>2026-11-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.92</priority>
-  </url>
-
   <!-- Global & Server Music Listening Leaderboard -->
   <url>
     <loc>https://dash.together.dpdns.org/leaderboard</loc>

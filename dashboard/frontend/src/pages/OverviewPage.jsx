@@ -57,7 +57,7 @@ export default function OverviewPage() {
     { title: "Studio DSP Filter Suite", desc: "14 real-time DSP sound filters including Bassboost, Nightcore, Vaporwave, and 8D Spatial Audio.", badge: "REALTIME DSP" },
     { title: "24/7 Persistent Voice", desc: "Non-stop 24/7 audio connection with auto-reconnect failover, health monitors, and queue recovery.", badge: "24/7 UPTIME" },
     { title: "Smart Music Autoplay", desc: "Intelligent related song discovery keeping the audio stream alive when queue ends.", badge: "AUTOPLAY" },
-    { title: "Dual Command Parity", desc: "69 text prefix commands and 67 Discord slash interactions with interactive search autocomplete.", badge: "DUAL COMMANDS" }
+    { title: "Low-Latency Gateway", desc: "Sub-20ms Discord voice packet dispatch with UDP jitter buffer recovery and high uptime.", badge: "SUB-20MS" }
   ];
   const sessions = data?.activeSessions || [];
 
@@ -229,9 +229,6 @@ export default function OverviewPage() {
               STUDIO AUDIO ARCHITECTURE
             </h3>
           </div>
-          <a href="/commands" className="font-mono text-xs text-brutal-accent hover:underline font-bold uppercase">
-            VIEW ALL 57 COMMANDS →
-          </a>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

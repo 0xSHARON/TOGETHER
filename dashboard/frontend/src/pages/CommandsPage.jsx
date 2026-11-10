@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { 
   Terminal, 
@@ -17,12 +18,68 @@ import {
   Layers,
   Sparkles,
   Command,
-  Filter
+  Filter,
+  Check,
+  Disc3,
+  Cpu,
+  Flame,
+  ArrowRight,
+  Headphones,
+  Music,
+  Clock,
+  ArrowLeft
 } from 'lucide-react';
 import { BrutCard, StatBox } from '../components/Brutalist';
 import SEO from '../components/SEO';
 
+const BOT_INVITE_URL = "https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands";
 const DEFAULT_TOPGG_URL = "https://top.gg/bot/863496211667484676/vote";
+const SUPPORT_SERVER_URL = "https://discord.gg/mUdGTs2Dw5";
+
+const CORE_FEATURES = [
+  {
+    icon: Disc3,
+    title: "24-Bit Studio Opus Sound",
+    badge: "320 KBPS LOSSLESS",
+    desc: "Studio-grade Opus encoding running at 48,000Hz sample rate across 24-bit direct audio buffers. Zero compression artifacts and clean frequency response.",
+    highlights: ["48,000Hz Native Sampling", "Lossless Opus Transcoding", "Zero Distortion Buffer"]
+  },
+  {
+    icon: Sparkles,
+    title: "Real-Time 3D WebGL Webplayer",
+    badge: "50+ SHADERS",
+    desc: "Interactive browser-based audio visualizer powered by WebGL 2.0 compute shaders. Track frequencies dance in real-time synced to voice channels.",
+    highlights: ["Zero Client Lag", "WebGL 2.0 Hardware Accel", "Live Room Synchronization"]
+  },
+  {
+    icon: Sliders,
+    title: "14 Studio DSP Audio Filters",
+    badge: "REAL-TIME DSP",
+    desc: "Hardware-accelerated digital signal processing. Toggle 8D binaural spatial audio, heavy Bassboost, Nightcore, Vaporwave, and Karaoke on the fly.",
+    highlights: ["8D Spatial Sound Panning", "Multi-Stage Bassboost", "Instant Dynamic Resampling"]
+  },
+  {
+    icon: Radio,
+    title: "24/7 Channel Locking",
+    badge: "ALWAYS ONLINE",
+    desc: "Keep Together locked in your community voice channel indefinitely. Auto-reconnect voice failover prevents drops during regional Discord outages.",
+    highlights: ["Zero Idle Timeouts", "Auto-Reconnect Recovery", "Smart Queue Memory"]
+  },
+  {
+    icon: Music,
+    title: "Universal Source Engine",
+    badge: "MULTI-PLATFORM",
+    desc: "Seamless playback from Spotify playlists, SoundCloud tracks, YouTube videos, Apple Music albums, Deezer, and direct HTTP audio streams.",
+    highlights: ["Instant Playlist Resolution", "Duplicate Auto-Filter", "Cross-Platform Fallbacks"]
+  },
+  {
+    icon: Flame,
+    title: "Global Listening XP & Streaks",
+    badge: "GAMIFIED AUDIO",
+    desc: "Earn server XP and build daily listening streaks while hanging out in voice channels. Climb real-time global and guild music leaderboards.",
+    highlights: ["Real-Time XP Gain", "Daily Listening Streaks", "Custom User Music Cards"]
+  }
+];
 
 export default function CommandsPage() {
   const [commands, setCommands] = useState([]);
@@ -50,7 +107,6 @@ export default function CommandsPage() {
     try {
       const resp = await axios.get('/api/commands');
       if (resp.data) {
-        // Exclude owner commands strictly
         const publicCmds = (resp.data.commands || []).filter(
           (c) => !c.owner && c.category?.toUpperCase() !== 'OWNER'
         );
@@ -87,7 +143,6 @@ export default function CommandsPage() {
     }
   }
 
-  // Filter commands by Category, Search, Vote, Voice (Strictly excluding Owner)
   const filtered = commands.filter((c) => {
     if (c.owner || c.category?.toUpperCase() === 'OWNER') return false;
 
@@ -108,345 +163,429 @@ export default function CommandsPage() {
   const allCategories = ['ALL', ...categories.map((c) => c.toUpperCase())];
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+    <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono p-4 md:p-8 flex flex-col justify-between selection:bg-brutal-accent selection:text-black">
       <SEO 
-        title="Commands — Together Music Bot & Webplayer"
-        description="Browse all 69+ Together Music Bot commands for Discord. Full slash and prefix syntax for playing music, 14 DSP audio filters, 24/7 playback, and playlists."
+        title="Discord Music Bot Commands & Features — Together Music Bot"
+        description="Explore all 69 Discord music commands and high-fidelity streaming features for Together Bot. Complete syntax reference for 24-bit sound, 14 DSP audio filters, 24/7 channel locking, and 3D webplayer."
         canonical="https://dash.together.dpdns.org/commands"
       />
-      {/* Brutalist Header Banner */}
-      <div className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="font-mono text-[10px] uppercase bg-brutal-accent text-black font-black px-2 py-0.5 tracking-widest">
-              LIVE SYSTEM CATALOG
-            </span>
-            <span className="font-mono text-xs text-brutal-muted">v2.4.0 ENGINE</span>
-          </div>
-          <h1 className="font-display font-black text-3xl md:text-4xl text-brutal-text uppercase tracking-tight">
-            DISCORD MUSIC BOT COMMANDS
-          </h1>
-          <p className="font-mono text-xs text-brutal-muted mt-1 max-w-2xl">
-            Complete synchronized inventory of all {stats.total} public Discord slash interactions and prefix utilities powering TOGETHER.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
+
+      {/* Top Navbar */}
+      <header className="max-w-7xl w-full mx-auto flex items-center justify-between border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal mb-8">
+        <Link to="/" className="flex items-center gap-3 group" aria-label="Together Music Bot Home">
+          <img src="/logo.webp" alt="Together Logo" width="32" height="32" className="w-8 h-8 object-contain" />
+          <span className="font-display font-black text-sm tracking-wider group-hover:text-brutal-accent transition-colors">
+            TOGETHER // COMMANDS &amp; FEATURES
+          </span>
+        </Link>
+        <div className="flex items-center gap-3">
           <a
-            href={topggVoteUrl}
+            href={BOT_INVITE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 border-2 border-amber-500 bg-amber-950/30 text-amber-400 font-mono text-xs font-bold px-3 py-2 hover:bg-amber-500 hover:text-black transition-all"
+            className="px-3 py-1.5 bg-brutal-accent text-black font-bold text-xs uppercase shadow-brutal-sm flex items-center gap-1.5 hover:bg-emerald-300 transition-all"
           >
-            <Star className="w-4 h-4 fill-amber-400" />
-            TOP.GG PERKS
+            <Zap className="w-3.5 h-3.5 fill-black" />
+            <span className="hidden sm:inline">INVITE BOT</span>
           </a>
+          <Link
+            to="/"
+            className="px-3 py-1.5 bg-black border border-brutal-border hover:border-brutal-accent text-white font-bold text-xs uppercase shadow-brutal-sm flex items-center gap-1.5 transition-all"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>RETURN HOME</span>
+          </Link>
         </div>
-      </div>
+      </header>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <StatBox
-          label="PUBLIC COMMANDS"
-          value={loading ? '...' : stats.total}
-          sub="Synchronized registry"
-          accent
-        />
-        <StatBox
-          label="SLASH COMMANDS"
-          value={loading ? '...' : stats.slashCount}
-          sub="Discord interactions"
-        />
-        <StatBox
-          label="PREFIX UTILITIES"
-          value={loading ? '...' : stats.prefixCount}
-          sub="Text-based commands"
-        />
-        <StatBox
-          label="VOTER-LOCKED"
-          value={loading ? '...' : stats.voterOnlyCount}
-          sub="Top.gg exclusive"
-        />
-      </div>
+      {/* Main Content Area */}
+      <main id="main-content" className="space-y-12 max-w-7xl w-full mx-auto pb-12">
+        {/* Hero Section */}
+        <div className="border-2 border-brutal-border bg-brutal-surface p-6 md:p-10 shadow-brutal space-y-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-mono text-[10px] uppercase bg-brutal-accent text-black font-black px-2 py-0.5 tracking-widest">
+              OFFICIAL SYSTEM CATALOG
+            </span>
+            <span className="font-mono text-xs text-brutal-muted">v2.5.0 HYBRID ENGINE</span>
+            <span className="font-mono text-[10px] uppercase bg-black border border-brutal-border text-emerald-400 font-bold px-2 py-0.5">
+              ✓ 100% OPERATIONAL
+            </span>
+          </div>
+          <h1 className="font-display font-black text-3xl md:text-5xl text-white uppercase tracking-tight">
+            DISCORD MUSIC COMMANDS &amp; FEATURES
+          </h1>
+          <p className="font-mono text-xs md:text-sm text-zinc-300 max-w-3xl leading-relaxed">
+            Together delivers studio-quality audio, an interactive 3D WebGL webplayer, 14 DSP sound equalizers, and complete slash and text command parity across every Discord server. Browse all core system capabilities and search through the synchronized command catalog below.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <a
+              href="#commands-list"
+              className="px-4 py-2 bg-brutal-accent text-black font-bold text-xs uppercase border-2 border-black shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
+            >
+              <Terminal className="w-4 h-4" />
+              <span>JUMP TO COMMANDS</span>
+            </a>
+            <a
+              href="#features-matrix"
+              className="px-4 py-2 bg-brutal-bg text-white font-bold text-xs uppercase border-2 border-brutal-border hover:border-white transition-all flex items-center gap-2"
+            >
+              <Cpu className="w-4 h-4" />
+              <span>CORE ARCHITECTURE FEATURES</span>
+            </a>
+            <a
+              href={topggVoteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 border-2 border-amber-500 bg-amber-950/30 text-amber-400 font-bold text-xs uppercase hover:bg-amber-500 hover:text-black transition-all flex items-center gap-2"
+            >
+              <Star className="w-4 h-4 fill-amber-400" />
+              <span>TOP.GG VOTER PERKS</span>
+            </a>
+          </div>
+        </div>
 
-      {/* Category Pills & Filters */}
-      <div className="border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal-sm space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          {/* Categories */}
-          <div className="flex flex-wrap gap-1.5 md:gap-2">
-            {allCategories.map((cat) => {
-              const count =
-                cat === 'ALL'
-                  ? stats.total
-                  : stats.byCategory[cat.charAt(0) + cat.slice(1).toLowerCase()] ||
-                    stats.byCategory[cat] ||
-                    0;
-              const isActive = filter === cat;
+        {/* Section 1: Core System Features */}
+        <section id="features-matrix" className="space-y-6">
+          <div className="border-b-2 border-brutal-border pb-4 flex flex-col md:flex-row md:items-end justify-between gap-2">
+            <div>
+              <span className="text-[10px] uppercase font-bold text-brutal-accent tracking-widest">
+                ENGINE CAPABILITIES
+              </span>
+              <h2 className="font-display font-black text-2xl md:text-3xl text-white uppercase tracking-tight">
+                STUDIO AUDIO ARCHITECTURE &amp; FEATURES
+              </h2>
+            </div>
+            <span className="text-xs text-zinc-400 font-mono">
+              6 CORE ARCHITECTURAL PILLARS
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {CORE_FEATURES.map((feat, idx) => {
+              const Icon = feat.icon;
               return (
-                <button
-                  key={cat}
-                  onClick={() => setFilter(cat)}
-                  className={`px-3 py-1.5 font-mono text-xs font-bold uppercase border-2 transition-all flex items-center gap-1.5 ${
-                    isActive
-                      ? 'bg-brutal-accent text-black border-black shadow-brutal-sm'
-                      : 'bg-brutal-bg text-brutal-text border-brutal-border hover:border-brutal-accent hover:text-brutal-accent'
-                  }`}
+                <div 
+                  key={idx}
+                  className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal flex flex-col justify-between space-y-4 hover:border-brutal-accent transition-colors"
                 >
-                  <span>{cat}</span>
-                  <span
-                    className={`text-[10px] px-1 py-0.2 font-mono ${
-                      isActive ? 'bg-black text-brutal-accent' : 'bg-brutal-surface text-brutal-muted'
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="p-2.5 bg-black border-2 border-brutal-border text-brutal-accent">
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <span className="font-mono text-[9px] px-2 py-0.5 bg-black border border-brutal-border text-brutal-accent font-black uppercase tracking-wider">
+                        {feat.badge}
+                      </span>
+                    </div>
+                    <h3 className="font-display font-black text-lg text-white uppercase">
+                      {feat.title}
+                    </h3>
+                    <p className="font-mono text-xs text-zinc-300 leading-relaxed">
+                      {feat.desc}
+                    </p>
+                  </div>
+                  <div className="border-t border-brutal-border pt-3 space-y-1.5">
+                    {feat.highlights.map((h, i) => (
+                      <div key={i} className="flex items-center gap-2 text-[11px] text-zinc-400 font-mono">
+                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span>{h}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               );
             })}
           </div>
+        </section>
 
-          {/* Quick Toggles */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setOnlyVote(!onlyVote)}
-              className={`px-2.5 py-1 font-mono text-[11px] font-bold border-2 transition-all flex items-center gap-1 ${
-                onlyVote
-                  ? 'border-amber-400 bg-amber-400 text-black'
-                  : 'border-brutal-border text-brutal-muted hover:border-amber-400 hover:text-amber-400'
-              }`}
-            >
-              <Star className="w-3 h-3" />
-              TOP.GG VOTE
-            </button>
-            <button
-              onClick={() => setOnlyVoice(!onlyVoice)}
-              className={`px-2.5 py-1 font-mono text-[11px] font-bold border-2 transition-all flex items-center gap-1 ${
-                onlyVoice
-                  ? 'border-brutal-accent bg-brutal-accent text-black'
-                  : 'border-brutal-border text-brutal-muted hover:border-brutal-accent hover:text-brutal-accent'
-              }`}
-            >
-              <Mic className="w-3 h-3" />
-              VOICE CHANNEL
-            </button>
+        {/* Section 2: Command Metrics Overview */}
+        <section id="commands-list" className="space-y-6">
+          <div className="border-b-2 border-brutal-border pb-4 flex flex-col md:flex-row md:items-end justify-between gap-2">
+            <div>
+              <span className="text-[10px] uppercase font-bold text-brutal-accent tracking-widest">
+                COMMAND INVENTORY
+              </span>
+              <h2 className="font-display font-black text-2xl md:text-3xl text-white uppercase tracking-tight">
+                DISCORD COMMAND REFERENCE
+              </h2>
+            </div>
+            <span className="text-xs text-zinc-400 font-mono">
+              69 PREFIX COMMANDS • 67 SLASH INTERACTIONS
+            </span>
           </div>
-        </div>
 
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brutal-muted" />
-          <label id="commands-page-search-label" htmlFor="commands-page-search" className="sr-only">Search Discord Commands</label>
-          <input
-            id="commands-page-search"
-            name="commands-search"
-            type="text"
-            aria-label="Search public commands by name, aliases, description, or parameter"
-            aria-labelledby="commands-page-search-label"
-            title="Search Discord commands"
-            placeholder="Search public commands by name, aliases, description, or parameter..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-brutal-bg border-2 border-brutal-border pl-10 pr-4 py-2.5 font-mono text-xs text-brutal-text placeholder-brutal-muted focus:outline-none focus:border-brutal-accent"
-          />
-          {search && (
-            <button
-              onClick={() => setSearch('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-xs text-brutal-muted hover:text-brutal-text uppercase"
-            >
-              CLEAR
-            </button>
-          )}
-        </div>
-      </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <StatBox
+              label="TOTAL COMMANDS"
+              value={loading ? '...' : stats.total || 69}
+              sub="Synchronized registry"
+              accent
+            />
+            <StatBox
+              label="SLASH COMMANDS"
+              value={loading ? '...' : stats.slashCount || 67}
+              sub="Discord interactions"
+            />
+            <StatBox
+              label="PREFIX UTILITIES"
+              value={loading ? '...' : stats.prefixCount || 69}
+              sub="Text prefix commands (!)"
+            />
+            <StatBox
+              label="VOTER EXCLUSIVE"
+              value={loading ? '...' : stats.voterOnlyCount || 8}
+              sub="Unlocked via Top.gg"
+            />
+          </div>
 
-      {/* Results Header */}
-      <div className="flex items-center justify-between font-mono text-xs text-brutal-muted">
-        <span>
-          SHOWING <strong className="text-brutal-accent">{filtered.length}</strong> COMMANDS
-          {filter !== 'ALL' && ` IN ${filter}`}
-          {search && ` MATCHING "${search}"`}
-        </span>
-        <span className="text-[10px] uppercase">
-          CLICK ANY COMMAND TO INSPECT PARAMETERS & SYNTAX
-        </span>
-      </div>
-
-      {/* Commands Grid */}
-      {loading ? (
-        <div className="text-center py-20 font-mono text-sm text-brutal-muted animate-pulse">
-          INITIALIZING COMMAND REGISTRY & RETRIEVING DISCORD SCHEMAS...
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="border-2 border-brutal-border bg-brutal-surface p-12 text-center shadow-brutal space-y-3">
-          <Command className="w-10 h-10 text-brutal-muted mx-auto" />
-          <h4 className="font-display font-black text-xl text-brutal-text uppercase">
-            NO MATCHING COMMANDS FOUND
-          </h4>
-          <p className="font-mono text-xs text-brutal-muted max-w-md mx-auto">
-            No registered commands matched your current category, search term, or filters.
-          </p>
-          <button
-            onClick={() => {
-              setFilter('ALL');
-              setSearch('');
-              setOnlyVote(false);
-              setOnlyVoice(false);
-            }}
-            className="px-4 py-2 border-2 border-brutal-accent bg-brutal-accent text-black font-mono text-xs font-bold uppercase mt-2 hover:bg-black hover:text-brutal-accent transition-all"
-          >
-            RESET ALL FILTERS
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((cmd) => (
-            <div
-              key={cmd.name}
-              className="border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal-sm hover:border-brutal-accent transition-all flex flex-col justify-between cursor-pointer group"
-              onClick={() => setSelectedModalCmd(cmd)}
-            >
-              <div>
-                {/* Top Bar: Name & Badges */}
-                <div className="flex justify-between items-start gap-2 mb-2">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="font-mono font-bold text-base text-brutal-accent group-hover:underline">
-                      /{cmd.name}
-                    </span>
-                    {cmd.aliases && cmd.aliases.length > 0 && (
-                      <span className="font-mono text-[10px] text-brutal-muted">
-                        (!{cmd.aliases[0]})
+          {/* Search & Category Filtering Controls */}
+          <div className="border-2 border-brutal-border bg-brutal-surface p-5 shadow-brutal-sm space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              {/* Category Pills */}
+              <div className="flex flex-wrap gap-2">
+                {allCategories.map((cat) => {
+                  const count =
+                    cat === 'ALL'
+                      ? stats.total
+                      : stats.byCategory[cat.charAt(0) + cat.slice(1).toLowerCase()] ||
+                        stats.byCategory[cat] ||
+                        0;
+                  const isActive = filter === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setFilter(cat)}
+                      className={`px-3 py-1.5 font-mono text-xs font-bold uppercase border-2 transition-all flex items-center gap-1.5 ${
+                        isActive
+                          ? 'bg-brutal-accent text-black border-black shadow-brutal-sm'
+                          : 'bg-brutal-bg text-brutal-text border-brutal-border hover:border-brutal-accent hover:text-brutal-accent'
+                      }`}
+                    >
+                      <span>{cat}</span>
+                      <span
+                        className={`text-[10px] px-1 py-0.2 font-mono ${
+                          isActive ? 'bg-black text-brutal-accent' : 'bg-brutal-surface text-brutal-muted'
+                        }`}
+                      >
+                        {count}
                       </span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-1 flex-wrap justify-end">
-                    {cmd.voterOnly && (
-                      <span className="font-mono text-[9px] px-1.5 py-0.5 border border-amber-600 bg-amber-950/40 text-amber-400 font-bold uppercase flex items-center gap-1">
-                        <Star className="w-2.5 h-2.5 fill-amber-400" />
-                        VOTE
-                      </span>
-                    )}
-                    {cmd.inVoiceChannel && (
-                      <span className="font-mono text-[9px] px-1.5 py-0.5 border border-cyan-800 bg-cyan-950/40 text-cyan-400 font-bold uppercase">
-                        VC
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Description */}
-                <p className="font-mono text-xs text-brutal-muted leading-relaxed line-clamp-2 mb-3">
-                  {cmd.description}
-                </p>
-
-                {/* Slash Parameters Pills */}
-                {cmd.slashOptions && cmd.slashOptions.length > 0 && (
-                  <div className="mb-3 space-y-1">
-                    <span className="font-mono text-[9px] text-brutal-muted uppercase block">
-                      PARAMETERS ({cmd.slashOptions.length}):
-                    </span>
-                    <div className="flex flex-wrap gap-1">
-                      {cmd.slashOptions.map((opt, idx) => (
-                        <span
-                          key={idx}
-                          className={`font-mono text-[10px] px-1.5 py-0.5 border ${
-                            opt.required
-                              ? 'border-brutal-accent/50 bg-brutal-accent/10 text-brutal-accent font-bold'
-                              : 'border-brutal-border bg-brutal-bg text-brutal-muted'
-                          }`}
-                        >
-                          {opt.name}
-                          {opt.required && '*'}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                    </button>
+                  );
+                })}
               </div>
 
-              {/* Footer Info */}
-              <div className="mt-3 pt-2.5 border-t border-brutal-border flex justify-between items-center text-[10px] font-mono text-brutal-muted uppercase">
-                <div className="flex items-center gap-2">
-                  <span className="text-brutal-text font-bold">{cmd.category}</span>
-                  {cmd.cooldown > 0 && (
-                    <span>• {cmd.cooldown}s CD</span>
-                  )}
-                </div>
-                <div className="flex items-center gap-1">
-                  {cmd.hasSlash && (
-                    <span className="px-1 border border-brutal-border bg-brutal-bg text-[9px] text-emerald-400 font-bold">
-                      SLASH
-                    </span>
-                  )}
-                  {cmd.hasPrefix && (
-                    <span className="px-1 border border-brutal-border bg-brutal-bg text-[9px] text-zinc-400 font-bold">
-                      PREFIX
-                    </span>
-                  )}
-                </div>
+              {/* Toggle Filters */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setOnlyVote(!onlyVote)}
+                  className={`px-3 py-1.5 font-mono text-xs font-bold uppercase border-2 transition-all flex items-center gap-1.5 ${
+                    onlyVote
+                      ? 'border-amber-400 bg-amber-950/40 text-amber-400'
+                      : 'border-brutal-border bg-brutal-bg text-brutal-muted hover:text-white'
+                  }`}
+                >
+                  <Star className="w-3.5 h-3.5 fill-amber-400" />
+                  <span>VOTER ONLY</span>
+                </button>
+                <button
+                  onClick={() => setOnlyVoice(!onlyVoice)}
+                  className={`px-3 py-1.5 font-mono text-xs font-bold uppercase border-2 transition-all flex items-center gap-1.5 ${
+                    onlyVoice
+                      ? 'border-cyan-400 bg-cyan-950/40 text-cyan-400'
+                      : 'border-brutal-border bg-brutal-bg text-brutal-muted hover:text-white'
+                  }`}
+                >
+                  <Mic className="w-3.5 h-3.5" />
+                  <span>VOICE REQ</span>
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
 
-      {/* Detailed Command Modal */}
+            {/* Search Input */}
+            <div className="relative">
+              <label htmlFor="command-search-input" className="sr-only">
+                Search commands by name, description, alias, or parameter
+              </label>
+              <Search className="w-4 h-4 text-brutal-muted absolute left-3.5 top-1/2 -translate-y-1/2" aria-hidden="true" />
+              <input
+                type="text"
+                id="command-search-input"
+                name="command_search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search commands by name, alias, category, or description..."
+                aria-label="Search commands by name, description, alias, or parameter"
+                title="Search commands"
+                className="w-full bg-brutal-bg border-2 border-brutal-border py-2.5 pl-10 pr-4 text-xs font-mono text-brutal-text placeholder-brutal-muted focus:border-brutal-accent focus:outline-none"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  aria-label="Clear search query"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-brutal-muted hover:text-white"
+                >
+                  CLEAR
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Commands Grid */}
+          {loading ? (
+            <div className="text-center py-16 border-2 border-brutal-border bg-brutal-surface p-8">
+              <div className="w-8 h-8 border-2 border-brutal-accent border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+              <p className="font-mono text-xs text-brutal-muted uppercase">LOADING COMMAND REGISTRY...</p>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-16 border-2 border-dashed border-brutal-border bg-brutal-surface p-8 space-y-3">
+              <Filter className="w-10 h-10 text-brutal-muted mx-auto" />
+              <h4 className="font-display font-black text-xl text-white uppercase">NO MATCHING COMMANDS FOUND</h4>
+              <p className="font-mono text-xs text-brutal-muted max-w-md mx-auto">
+                No commands match your filter query "{search}". Try searching for popular commands like <code className="text-brutal-accent">play</code>, <code className="text-brutal-accent">skip</code>, <code className="text-brutal-accent">queue</code>, or <code className="text-brutal-accent">volume</code>.
+              </p>
+              <button
+                onClick={() => { setFilter('ALL'); setSearch(''); setOnlyVote(false); setOnlyVoice(false); }}
+                className="px-4 py-2 bg-brutal-accent text-black font-bold text-xs uppercase border border-black hover:bg-emerald-300 transition-all inline-block"
+              >
+                RESET FILTERS
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filtered.map((cmd) => (
+                <div
+                  key={cmd.name}
+                  onClick={() => setSelectedModalCmd(cmd)}
+                  className="border-2 border-brutal-border bg-brutal-surface p-4 shadow-brutal-sm hover:border-brutal-accent cursor-pointer transition-all flex flex-col justify-between group space-y-3"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-display font-black text-base text-white group-hover:text-brutal-accent transition-colors">
+                          /{cmd.name}
+                        </span>
+                        {cmd.hasPrefix && (
+                          <span className="font-mono text-[10px] text-zinc-400">
+                            (!{cmd.name})
+                          </span>
+                        )}
+                      </div>
+                      <span className="font-mono text-[9px] px-2 py-0.5 bg-black border border-brutal-border text-zinc-300 uppercase font-bold">
+                        {cmd.category}
+                      </span>
+                    </div>
+                    <p className="font-mono text-xs text-zinc-300 line-clamp-2 leading-relaxed">
+                      {cmd.description || 'Executes Discord audio playback routine.'}
+                    </p>
+                  </div>
+
+                  <div className="border-t border-brutal-border pt-2.5 flex items-center justify-between text-[10px] font-mono text-zinc-400">
+                    <div className="flex items-center gap-2">
+                      {cmd.voterOnly && (
+                        <span className="px-1.5 py-0.5 border border-amber-500 bg-amber-950/30 text-amber-400 font-bold">
+                          TOP.GG
+                        </span>
+                      )}
+                      {cmd.inVoiceChannel && (
+                        <span className="px-1.5 py-0.5 border border-cyan-500 bg-cyan-950/30 text-cyan-400 font-bold">
+                          VOICE
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-brutal-accent font-bold group-hover:underline flex items-center gap-1">
+                      <span>DETAILS</span> →
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Section 3: Audio Engineering FAQ */}
+        <section className="border-2 border-brutal-border bg-brutal-surface p-6 md:p-8 shadow-brutal space-y-6">
+          <div className="border-b-2 border-brutal-border pb-4">
+            <span className="text-[10px] uppercase font-bold text-brutal-accent tracking-widest">
+              HELP &amp; DOCUMENTATION
+            </span>
+            <h2 className="font-display font-black text-2xl text-white uppercase tracking-tight">
+              FREQUENTLY ASKED QUESTIONS ABOUT TOGETHER COMMANDS
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-zinc-300 font-mono leading-relaxed">
+            <div className="space-y-2 border border-brutal-border bg-brutal-bg p-4">
+              <h3 className="font-bold text-white text-sm">How do I start playing music in my Discord server?</h3>
+              <p>
+                Join any voice channel in your Discord server, then type <code className="text-brutal-accent font-bold">/play</code> followed by a song title, YouTube URL, or Spotify playlist link. Together will join immediately and begin streaming 24-bit audio.
+              </p>
+            </div>
+            <div className="space-y-2 border border-brutal-border bg-brutal-bg p-4">
+              <h3 className="font-bold text-white text-sm">How do I enable 24/7 channel locking?</h3>
+              <p>
+                Type <code className="text-brutal-accent font-bold">/247</code> while the bot is connected to your voice channel. Together will lock itself into the room and remain connected even after the music queue ends.
+              </p>
+            </div>
+            <div className="space-y-2 border border-brutal-border bg-brutal-bg p-4">
+              <h3 className="font-bold text-white text-sm">How do I open the 3D WebGL Webplayer?</h3>
+              <p>
+                While music is playing, type <code className="text-brutal-accent font-bold">/nowplaying</code> to receive a direct link to your server's live 3D visualizer stage, or visit our <Link to="/overview" className="text-brutal-accent underline font-bold">Web Player Dashboard</Link>.
+              </p>
+            </div>
+            <div className="space-y-2 border border-brutal-border bg-brutal-bg p-4">
+              <h3 className="font-bold text-white text-sm">Are DSP sound filters completely free?</h3>
+              <p>
+                Yes. All 14 studio DSP filters—including 8D binaural spatial audio, Bassboost, Nightcore, and Vaporwave—are 100% free with zero paid paywalls. Use <code className="text-brutal-accent font-bold">/filter</code> to select your effect.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Command Details Modal */}
       {selectedModalCmd && (
-        <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        <div 
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
           onClick={() => setSelectedModalCmd(null)}
         >
-          <div
-            className="border-2 border-brutal-border bg-brutal-surface max-w-2xl w-full p-6 shadow-brutal space-y-5"
+          <div 
+            className="border-2 border-brutal-border bg-brutal-surface max-w-lg w-full p-6 shadow-brutal space-y-6"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
-            <div className="flex justify-between items-start border-b border-brutal-border pb-4">
+            <div className="flex items-start justify-between border-b-2 border-brutal-border pb-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-mono text-[10px] uppercase bg-brutal-accent text-black font-black px-2 py-0.5">
+                  <span className="font-mono text-[9px] px-2 py-0.5 bg-black border border-brutal-border text-brutal-accent font-bold uppercase">
                     {selectedModalCmd.category}
                   </span>
                   {selectedModalCmd.voterOnly && (
-                    <a
-                      href={topggVoteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-mono text-[10px] border border-amber-600 bg-amber-950/40 text-amber-400 font-bold px-2 py-0.5 hover:bg-amber-500 hover:text-black transition-all flex items-center gap-1"
-                    >
-                      <Star className="w-2.5 h-2.5 fill-amber-400" />
-                      TOP.GG VOTE REQUIRED
-                    </a>
+                    <span className="font-mono text-[9px] px-2 py-0.5 border border-amber-500 bg-amber-950/40 text-amber-400 font-bold uppercase">
+                      TOP.GG VOTER PERK
+                    </span>
                   )}
                 </div>
-                <h3 className="font-display font-black text-3xl text-brutal-text uppercase">
+                <h3 className="font-display font-black text-2xl text-white">
                   /{selectedModalCmd.name}
                 </h3>
               </div>
               <button
                 onClick={() => setSelectedModalCmd(null)}
-                className="border-2 border-brutal-border px-3 py-1 font-mono text-xs font-bold text-brutal-muted hover:text-white hover:border-white uppercase"
+                className="px-2.5 py-1 bg-black border border-brutal-border text-zinc-400 hover:text-white font-mono text-xs font-bold"
               >
-                CLOSE [ESC]
+                ESC
               </button>
             </div>
 
-            {/* Description */}
-            <div className="space-y-1">
-              <span className="font-mono text-[10px] uppercase text-brutal-accent font-black tracking-wider">
-                FUNCTIONALITY
-              </span>
-              <p className="font-mono text-xs text-brutal-text leading-relaxed bg-brutal-bg p-3 border border-brutal-border">
-                {selectedModalCmd.description}
-              </p>
-            </div>
+            <p className="font-mono text-xs text-zinc-300 leading-relaxed">
+              {selectedModalCmd.description || 'No description provided.'}
+            </p>
 
-            {/* Syntax & Usage */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Syntax Box */}
+            <div className="space-y-2">
               <div className="border border-brutal-border bg-brutal-bg p-3 space-y-1">
-                <span className="font-mono text-[10px] uppercase text-emerald-400 font-bold">
+                <span className="font-mono text-[10px] uppercase text-zinc-400 font-bold">
                   SLASH SYNTAX
                 </span>
-                <p className="font-mono text-xs text-brutal-text font-bold">
+                <p className="font-mono text-xs text-brutal-accent font-bold">
                   /{selectedModalCmd.name}{' '}
                   {selectedModalCmd.slashOptions &&
                     selectedModalCmd.slashOptions.map((o) => `[${o.name}]`).join(' ')}
@@ -456,7 +595,7 @@ export default function CommandsPage() {
                 <span className="font-mono text-[10px] uppercase text-zinc-400 font-bold">
                   PREFIX SYNTAX
                 </span>
-                <p className="font-mono text-xs text-brutal-text font-bold">
+                <p className="font-mono text-xs text-white font-bold">
                   !{selectedModalCmd.name}{' '}
                   {selectedModalCmd.slashOptions &&
                     selectedModalCmd.slashOptions.map((o) => `<${o.name}>`).join(' ')}
@@ -464,68 +603,36 @@ export default function CommandsPage() {
               </div>
             </div>
 
-            {/* Options List */}
-            {selectedModalCmd.slashOptions && selectedModalCmd.slashOptions.length > 0 && (
-              <div className="space-y-2">
-                <span className="font-mono text-[10px] uppercase text-brutal-accent font-black tracking-wider">
-                  ARGUMENTS & OPTIONS ({selectedModalCmd.slashOptions.length})
-                </span>
-                <div className="border border-brutal-border divide-y divide-brutal-border bg-brutal-bg">
-                  {selectedModalCmd.slashOptions.map((opt, i) => (
-                    <div key={i} className="p-2.5 flex items-start justify-between gap-4 font-mono text-xs">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <strong className="text-brutal-accent">{opt.name}</strong>
-                          <span
-                            className={`text-[9px] px-1 py-0.2 border ${
-                              opt.required
-                                ? 'border-red-600 bg-red-950/30 text-red-400 font-bold'
-                                : 'border-brutal-border text-brutal-muted'
-                            }`}
-                          >
-                            {opt.required ? 'REQUIRED' : 'OPTIONAL'}
-                          </span>
-                        </div>
-                        <p className="text-brutal-muted text-[11px] mt-0.5">
-                          {opt.description || 'No description provided.'}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Metadata Badges */}
-            <div className="border-t border-brutal-border pt-4 flex flex-wrap gap-4 font-mono text-xs text-brutal-muted">
-              <div>
-                <span className="text-[10px] uppercase block">ALIASES:</span>
-                <span className="text-brutal-text font-bold">
-                  {selectedModalCmd.aliases && selectedModalCmd.aliases.length > 0
-                    ? selectedModalCmd.aliases.map((a) => `!${a}`).join(', ')
-                    : 'None'}
-                </span>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase block">COOLDOWN:</span>
-                <span className="text-brutal-text font-bold">{selectedModalCmd.cooldown || 0} seconds</span>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase block">VOICE CHANNEL:</span>
-                <span className="text-brutal-text font-bold">
-                  {selectedModalCmd.inVoiceChannel ? 'Required' : 'Not required'}
-                </span>
-              </div>
-              {selectedModalCmd.botPerms && selectedModalCmd.botPerms.length > 0 && (
-                <div>
-                  <span className="text-[10px] uppercase block">BOT PERMISSIONS:</span>
-                  <span className="text-brutal-text font-bold">{selectedModalCmd.botPerms.join(', ')}</span>
-                </div>
-              )}
+            {/* Modal Footer */}
+            <div className="border-t border-brutal-border pt-4 flex items-center justify-between">
+              <span className="text-[11px] font-mono text-zinc-400">
+                Cooldown: {selectedModalCmd.cooldown || 0}s • Voice: {selectedModalCmd.inVoiceChannel ? 'Required' : 'Not required'}
+              </span>
+              <button
+                onClick={() => setSelectedModalCmd(null)}
+                className="px-4 py-1.5 bg-brutal-accent text-black font-bold font-mono text-xs uppercase border border-black hover:bg-emerald-300 transition-all"
+              >
+                CLOSE
+              </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Footer Navigation */}
+      <footer className="max-w-7xl w-full mx-auto mt-12 pt-8 border-t-2 border-brutal-border flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-brutal-muted">
+        <div>&copy; 2026 Together Music Bot Team. All rights reserved.</div>
+        <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
+          <Link to="/" className="hover:text-brutal-accent">Home</Link>
+          <Link to="/about" className="hover:text-brutal-accent">About</Link>
+          <Link to="/commands" className="hover:text-brutal-accent text-brutal-accent font-bold">Commands &amp; Features</Link>
+          <Link to="/faq" className="hover:text-brutal-accent">FAQ</Link>
+          <Link to="/leaderboard" className="hover:text-brutal-accent">Leaderboard</Link>
+          <Link to="/contact" className="hover:text-brutal-accent">Contact Support</Link>
+          <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
+          <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
+        </nav>
+      </footer>
     </div>
   );
 }

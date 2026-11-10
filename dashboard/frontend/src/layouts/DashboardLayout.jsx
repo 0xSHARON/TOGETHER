@@ -39,7 +39,6 @@ export default function DashboardLayout() {
     { name: 'SERVERS', path: '/servers', icon: Server },
     { name: 'USER PROFILE', path: '/profile', icon: User },
     { name: 'LEADERBOARD', path: '/leaderboard', icon: Medal },
-    { name: 'COMMANDS', path: '/commands', icon: Terminal },
     { name: 'SETTINGS', path: '/settings', icon: Sliders },
   ];
 

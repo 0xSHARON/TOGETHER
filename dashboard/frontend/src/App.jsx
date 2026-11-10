@@ -19,7 +19,6 @@ const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const FaqPage = lazy(() => import('./pages/FaqPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
-const ComparePage = lazy(() => import('./pages/ComparePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Lightweight accessible fallback loader
@@ -41,8 +40,10 @@ export default function App() {
             {/* Public Standalone Landing Page & Policies */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/about" element={<AboutPage />} />
-            <Route path="/compare" element={<ComparePage />} />
-            <Route path="/alternatives" element={<Navigate to="/compare" replace />} />
+            <Route path="/commands" element={<CommandsPage />} />
+            <Route path="/features" element={<Navigate to="/commands" replace />} />
+            <Route path="/compare" element={<Navigate to="/commands" replace />} />
+            <Route path="/alternatives" element={<Navigate to="/commands" replace />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/faq" element={<FaqPage />} />
@@ -57,7 +58,6 @@ export default function App() {
               <Route path="/player" element={<PlayerPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/leaderboard" element={<LeaderboardPage />} />
-              <Route path="/commands" element={<CommandsPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/owner" element={<OwnerPage />} />
 

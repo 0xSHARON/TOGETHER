@@ -242,8 +242,8 @@ export default function LandingPage() {
             <a href="#features" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               BROWSE FEATURES
             </a>
-            <Link to="/compare" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              BOT COMPARISON
+            <Link to="/commands" className="text-brutal-muted hover:text-brutal-accent transition-colors">
+              COMMANDS & FEATURES
             </Link>
             <a href="#benchmark" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               AUDIO BENCHMARK
@@ -1124,7 +1124,7 @@ export default function LandingPage() {
 
         <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
           <Link to="/about" className="hover:text-brutal-accent">About Together Bot</Link>
-          <Link to="/compare" className="hover:text-brutal-accent text-brutal-accent font-bold">Bot Comparison (2026)</Link>
+          <Link to="/commands" className="hover:text-brutal-accent text-brutal-accent font-bold">Commands & Features</Link>
           <Link to="/contact" className="hover:text-brutal-accent">Contact Support Team</Link>
           <Link to="/about#editorial-policy" className="hover:text-brutal-accent">Editorial Standards</Link>
           <Link to="/faq" className="hover:text-brutal-accent">Documentation & FAQ</Link>

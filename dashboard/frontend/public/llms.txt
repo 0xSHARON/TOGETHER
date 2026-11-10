@@ -8,8 +8,7 @@ Together delivers studio-quality music across Discord servers with 14 digital so
 
 - [Web Dashboard](https://dash.together.dpdns.org/): Centralized web interface for server configuration, real-time player controls, and listening stats.
 - [Documentation & FAQ](https://dash.together.dpdns.org/faq): Full guide covering all 59+ bot commands, 14 DSP audio presets, server configuration, and voting rewards.
-- [Commands Directory](https://dash.together.dpdns.org/commands): Searchable directory of 69 prefix commands and 67 Discord slash interactions.
-- [Bot Comparison & Alternatives](https://dash.together.dpdns.org/compare): Objective 2026 technical benchmark comparing Together vs Hydra, Rythm, Smooth Bot, and Jockie Music.
+- [Commands & Features Catalog](https://dash.together.dpdns.org/commands): Complete searchable catalog of all 69 Discord music commands, 14 DSP audio filters, and studio streaming features.
 - [Music Leaderboard](https://dash.together.dpdns.org/leaderboard): Server and global community rankings tracked by listening time and streaks.
 - [3D Webplayer Visualizer](https://dash.together.dpdns.org/commands#visualizer): Interactive browser-based WebGL audio frequency visualizer with 50+ spectrum modes.
 - [Discord Bot Invite](https://discord.com/oauth2/authorize?client_id=863496211667484676&permissions=8&integration_type=0&scope=bot+applications.commands): Direct authorization link to invite Together to your Discord server.
