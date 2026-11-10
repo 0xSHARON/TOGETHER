@@ -10,6 +10,9 @@ const http = require("http");
 const fs   = require("fs");
 const path = require("path");
 const { URL } = require("url");
+const { EmbedBuilder } = require("discord.js");
+
+const recentSupportDispatches = [];
 
 const PUBLIC_ROOT    = path.resolve(__dirname, "../../together-visualizer");
 const VISUALIZER_DIR = path.resolve(__dirname, "../../together-visualizer/visualizer");
@@ -834,6 +837,139 @@ function startVisualizerServer(client, preferredPort = 5050) {
         }
       });
       return;
+    }
+
+    // ── API: Send Technical Support Dispatch DM to Bot Owner (/api/owner-dm-dispatch) ──
+    if (pathname === "/api/owner-dm-dispatch" && req.method === "POST") {
+      let body = "";
+      req.on("data", chunk => { body += chunk; });
+      req.on("end", async () => {
+        try {
+          const payload = JSON.parse(body || "{}");
+          const { name, discordTag, guildId, category, subject, message, userId, avatarUrl } = payload;
+
+          if (!message || !subject) {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ success: false, error: "Subject and Message are required." }));
+          }
+
+          const ownerId = "780345293237125152";
+          let ownerUser = client?.users?.cache?.get(ownerId);
+          if (!ownerUser && client?.users?.fetch) {
+            ownerUser = await client.users.fetch(ownerId).catch(() => null);
+          }
+
+          // Build Discord Embed with Lucide React iconography badges
+          const embed = new EmbedBuilder()
+            .setColor("#00FF9D")
+            .setTitle(`📨 [SUPPORT DISPATCH] • ${category || "Technical Support"}`)
+            .setDescription(
+              `📌 **Subject:** **${subject}**\n\n` +
+              `💬 **Message Details:**\n\`\`\`\n${message.slice(0, 3800)}\n\`\`\``
+            )
+            .addFields(
+              {
+                name: "👤 [User] Dispatched By",
+                value: `• **Name:** ${name || "Discord User"}\n• **Tag:** \`${discordTag || "N/A"}\`\n• **User ID:** \`${userId || "N/A"}\` (<@${userId}>)`,
+                inline: true
+              },
+              {
+                name: "🏷️ [Tag] Inquiry Category",
+                value: `• **Category:** \`${category || "Support"}\`\n• **Priority:** \`HIGH (DIRECT DISPATCH)\``,
+                inline: true
+              },
+              {
+                name: "🖥️ [Server] Guild Context",
+                value: guildId
+                  ? `• **Guild ID:** \`${guildId}\`\n• **Guild Name:** ${client?.guilds?.cache?.get(guildId)?.name || "External / Remote Server"}`
+                  : "• *No Guild ID specified*",
+                inline: false
+              },
+              {
+                name: "🛡️ [ShieldCheck] Session Security",
+                value: `• **Auth Provider:** Discord OAuth2 (Verified)\n• **Origin:** \`dash.together.dpdns.org/contact\`\n• **Direct DM Escalation:** \`Active\``,
+                inline: false
+              }
+            )
+            .setFooter({
+              text: "TOGETHER Dispatch Engine • dash.together.dpdns.org",
+              iconURL: client?.user ? client.user.displayAvatarURL() : undefined
+            })
+            .setTimestamp();
+
+          if (avatarUrl) {
+            embed.setAuthor({
+              name: `${name || "User"} (@${discordTag || "discord"})`,
+              iconURL: avatarUrl,
+              url: `https://discord.com/users/${userId}`
+            });
+          }
+
+          let dmed = false;
+          let dmError = null;
+          if (ownerUser) {
+            try {
+              await ownerUser.send({ embeds: [embed] });
+              dmed = true;
+            } catch (err) {
+              dmError = err.message;
+            }
+          }
+
+          // Backup dispatch to system log channel 1557621712948830388
+          const logChannelId = "1557621712948830388";
+          let logChannel = client?.channels?.cache?.get(logChannelId);
+          if (!logChannel && client?.channels?.fetch) {
+            logChannel = await client.channels.fetch(logChannelId).catch(() => null);
+          }
+          if (logChannel && logChannel.isTextBased()) {
+            await logChannel.send({
+              content: `<@${ownerId}> 🚨 **[NEW TECHNICAL SUPPORT DISPATCH]** ${dmed ? "(DM successfully delivered to Owner)" : "*(DM delivery fallback - DMs locked/restricted)*"}`,
+              embeds: [embed]
+            }).catch(() => {});
+          }
+
+          // Record in recent support dispatches
+          const dispatchRecord = {
+            id: `dsp_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+            name,
+            discordTag,
+            userId,
+            avatarUrl,
+            guildId,
+            category,
+            subject,
+            message,
+            timestamp: Date.now(),
+            dmed,
+            dmError
+          };
+          recentSupportDispatches.unshift(dispatchRecord);
+          if (recentSupportDispatches.length > 50) recentSupportDispatches.pop();
+
+          res.writeHead(200, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({
+            success: true,
+            dmed,
+            ownerNotified: dmed || Boolean(logChannel),
+            dispatchId: dispatchRecord.id
+          }));
+        } catch (e) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({ success: false, error: e.message }));
+        }
+      });
+      return;
+    }
+
+    // ── API: Get Recent Support Dispatches (/api/owner/support-dispatches) ──
+    if (pathname === "/api/owner/support-dispatches" && req.method === "GET") {
+      res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-cache" });
+      return res.end(JSON.stringify({
+        success: true,
+        total: recentSupportDispatches.length,
+        dispatches: recentSupportDispatches
+      }));
     }
 
     // ── API: Server Explorer & Guilds List (/api/server-list or /api/owner/server-list) ──

@@ -163,5 +163,15 @@ router.post("/reload", requireOwner, async (req, res) => {
   }
 });
 
+// GET /api/owner/support-dispatches -> Get recent support dispatches
+router.get("/support-dispatches", requireOwner, async (req, res) => {
+  try {
+    const dispatches = await botBridge.getSupportDispatches();
+    res.json({ success: true, dispatches });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;
 

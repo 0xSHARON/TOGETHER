@@ -81,6 +81,34 @@ class BotBridgeService {
     }
   }
 
+  async sendOwnerSupportDispatch(dispatchData) {
+    try {
+      const resp = await axios.post(
+        `${this.apiUrl}/api/owner-dm-dispatch`,
+        dispatchData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-dashboard-secret": this.secret
+          },
+          timeout: 8000
+        }
+      );
+      return resp.data;
+    } catch (err) {
+      return { success: false, error: err.response?.data?.error || err.message };
+    }
+  }
+
+  async getSupportDispatches() {
+    try {
+      const resp = await axios.get(`${this.apiUrl}/api/owner/support-dispatches`, { timeout: 4000 });
+      return resp.data?.dispatches || [];
+    } catch {
+      return [];
+    }
+  }
+
   async getLeaderboard(params = {}) {
     try {
       const resp = await axios.get(`${this.apiUrl}/api/leaderboard`, { 

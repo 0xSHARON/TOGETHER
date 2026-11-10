@@ -37,7 +37,10 @@ import {
   Pause,
   Play,
   Flame,
-  AlertCircle
+  AlertCircle,
+  Tag,
+  FileText,
+  Lock
 } from 'lucide-react';
 import { BrutCard, StatBox, BrutButton } from '../components/Brutalist';
 import SEO from '../components/SEO';
@@ -81,6 +84,10 @@ export default function OwnerPage() {
   const [reloadingCommands, setReloadingCommands] = useState(false);
   const [reloadResult, setReloadResult] = useState(null);
 
+  // Support Dispatches State
+  const [supportDispatches, setSupportDispatches] = useState([]);
+  const [dispatchesLoading, setDispatchesLoading] = useState(false);
+
   // Clipboard feedback
   const [copiedText, setCopiedText] = useState(null);
 
@@ -90,6 +97,7 @@ export default function OwnerPage() {
     fetchOwnerData();
     fetchServersList();
     fetchBlacklist();
+    fetchSupportDispatches();
   }, []);
 
   // Poll Discord logs every 4 seconds to maintain live stream
@@ -223,6 +231,20 @@ export default function OwnerPage() {
       alert(`Command reload failed: ${err.response?.data?.error || err.message}`);
     } finally {
       setReloadingCommands(false);
+    }
+  }
+
+  async function fetchSupportDispatches() {
+    setDispatchesLoading(true);
+    try {
+      const resp = await axios.get('/api/owner/support-dispatches', { withCredentials: true });
+      if (Array.isArray(resp.data?.dispatches)) {
+        setSupportDispatches(resp.data.dispatches);
+      }
+    } catch (err) {
+      console.warn("Failed to load support dispatches:", err.message);
+    } finally {
+      setDispatchesLoading(false);
     }
   }
 
@@ -483,7 +505,7 @@ export default function OwnerPage() {
             </BrutButton>
 
             <BrutButton 
-              onClick={() => { fetchOwnerData(); fetchServersList(); fetchBlacklist(); }} 
+              onClick={() => { fetchOwnerData(); fetchServersList(); fetchBlacklist(); fetchSupportDispatches(); }} 
               variant="secondary" 
               className="p-2.5" 
               title="Refresh All Telemetry"
@@ -495,7 +517,7 @@ export default function OwnerPage() {
       </div>
 
       {/* ─── Navigation Tabs: Neo-Brutalist Tactical Segmented Control ─ */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 font-mono text-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 font-mono text-xs">
         <button
           onClick={() => setActiveTab('telemetry')}
           className={`p-3 border-2 font-black uppercase text-left transition-all flex items-center justify-between ${
@@ -590,6 +612,23 @@ export default function OwnerPage() {
             <span>06 // NODES &amp; AUDIO</span>
           </div>
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+        </button>
+
+        <button
+          onClick={() => { setActiveTab('dispatches'); fetchSupportDispatches(); }}
+          className={`p-3 border-2 font-black uppercase text-left transition-all flex items-center justify-between ${
+            activeTab === 'dispatches'
+              ? 'border-cyan-400 bg-cyan-400 text-black shadow-brutal'
+              : 'border-brutal-border bg-brutal-surface text-zinc-300 hover:border-zinc-500 shadow-brutal-sm'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <MessageSquare className="w-4 h-4" />
+            <span>07 // TICKETS</span>
+          </div>
+          <span className="px-1.5 py-0.2 bg-black/40 text-[9px] font-mono text-cyan-300">
+            {supportDispatches.length}
+          </span>
         </button>
       </div>
 
@@ -1411,6 +1450,45 @@ export default function OwnerPage() {
                 </BrutButton>
               </div>
 
+              {/* Owner Command Cheat Sheet */}
+              <div className="border-2 border-brutal-border bg-black p-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs text-zinc-400 font-black uppercase tracking-wider">
+                    BUILT-IN APEX OWNER COMMANDS (CLICK TO COPY):
+                  </span>
+                  <span className="text-[10px] text-zinc-600 uppercase font-mono">DISCORD PREFIX / SLASH</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+                  {[
+                    { cmd: ".reload", desc: "Reload in-memory command files without downtime." },
+                    { cmd: ".serverlist", desc: "Display all connected servers with active voice state." },
+                    { cmd: ".leaveserver <guildId>", desc: "Force the bot to leave an abusive server." },
+                    { cmd: ".blacklist <add|remove> <userId>", desc: "Block malicious users from bot access." },
+                    { cmd: ".node", desc: "Inspect Lavalink Shoukaku cluster metrics." },
+                    { cmd: ".serverinfo <guildId>", desc: "Deep inspect guild permissions, vanity & roles." },
+                  ].map((item, idx) => (
+                    <div 
+                      key={idx}
+                      onClick={() => copyToClipboard(item.cmd, item.cmd)}
+                      className="p-3 bg-zinc-900/90 border border-zinc-800 hover:border-brutal-accent transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <strong className="text-brutal-accent font-mono text-xs group-hover:underline">
+                          {item.cmd}
+                        </strong>
+                        <Copy className="w-3.5 h-3.5 text-zinc-600 group-hover:text-brutal-accent transition-colors" />
+                      </div>
+                      <p className="text-zinc-400 text-[11px] leading-tight">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </BrutCard>
+        </div>
+      )}
+
       {/* ─── TAB 6: CLUSTER AUDIO ENGINE & HEALTH INSPECTOR ─────────────────────── */}
       {activeTab === 'cluster' && (
         <div className="space-y-6">
@@ -1521,40 +1599,127 @@ export default function OwnerPage() {
         </div>
       )}
 
-              {/* Owner Command Cheat Sheet */}
-              <div className="border-2 border-brutal-border bg-black p-5 space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs text-zinc-400 font-black uppercase tracking-wider">
-                    BUILT-IN APEX OWNER COMMANDS (CLICK TO COPY):
-                  </span>
-                  <span className="text-[10px] text-zinc-600 uppercase font-mono">DISCORD PREFIX / SLASH</span>
+      {/* ─── TAB 7: SUPPORT DISPATCHES & USER INQUIRIES ───────────────────────── */}
+      {activeTab === 'dispatches' && (
+        <div className="space-y-6">
+          <BrutCard
+            title="DIRECT SUPPORT DISPATCHES // BOT OWNER DM LOG"
+            subtitle="Real-time support inquiries dispatched by authenticated users directly to bot owner DM"
+            badge={`${supportDispatches.length} DISPATCHES`}
+          >
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-brutal-secondary border-2 border-brutal-border">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-emerald-400" />
+                  <div>
+                    <h4 className="font-display font-black text-sm text-white uppercase">AUTHENTICATED USER DISPATCH INBOX</h4>
+                    <p className="text-xs text-zinc-400 font-mono">Incoming support tickets from <code>/contact</code> with direct Discord DM delivery</p>
+                  </div>
                 </div>
+                <BrutButton
+                  onClick={fetchSupportDispatches}
+                  disabled={dispatchesLoading}
+                  variant="secondary"
+                  className="px-4 py-1.5 text-xs flex items-center gap-1.5 shrink-0"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${dispatchesLoading ? 'animate-spin' : ''}`} />
+                  <span>REFRESH INBOX</span>
+                </BrutButton>
+              </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
-                  {[
-                    { cmd: ".reload", desc: "Reload in-memory command files without downtime." },
-                    { cmd: ".serverlist", desc: "Display all connected servers with active voice state." },
-                    { cmd: ".leaveserver <guildId>", desc: "Force the bot to leave an abusive server." },
-                    { cmd: ".blacklist <add|remove> <userId>", desc: "Block malicious users from bot access." },
-                    { cmd: ".node", desc: "Inspect Lavalink Shoukaku cluster metrics." },
-                    { cmd: ".serverinfo <guildId>", desc: "Deep inspect guild permissions, vanity & roles." },
-                  ].map((item, idx) => (
+              {dispatchesLoading && supportDispatches.length === 0 ? (
+                <div className="p-8 text-center text-zinc-400 text-xs border border-zinc-800">
+                  <RefreshCw className="w-6 h-6 animate-spin text-emerald-400 mx-auto mb-2" />
+                  <span>Loading support tickets from cluster memory...</span>
+                </div>
+              ) : supportDispatches.length === 0 ? (
+                <div className="p-8 text-center border-2 border-dashed border-zinc-800 bg-black/40 space-y-2">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
+                  <h5 className="font-display font-black text-sm text-white uppercase">DISPATCH INBOX IS EMPTY</h5>
+                  <p className="text-xs text-zinc-400 font-mono">No incoming technical support inquiries in the active queue.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {supportDispatches.map((dsp) => (
                     <div 
-                      key={idx}
-                      onClick={() => copyToClipboard(item.cmd, item.cmd)}
-                      className="p-3 bg-zinc-900/90 border border-zinc-800 hover:border-brutal-accent transition-all cursor-pointer group"
+                      key={dsp.id}
+                      className="p-5 bg-black border-2 border-brutal-border hover:border-emerald-400/80 transition-all border-l-4 border-l-emerald-400 space-y-3"
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <strong className="text-brutal-accent font-mono text-xs group-hover:underline">
-                          {item.cmd}
-                        </strong>
-                        <Copy className="w-3.5 h-3.5 text-zinc-600 group-hover:text-brutal-accent transition-colors" />
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3">
+                        <div className="flex items-center gap-3">
+                          {dsp.avatarUrl ? (
+                            <img src={dsp.avatarUrl} alt={dsp.name} className="w-8 h-8 rounded-full border border-emerald-400" />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300">
+                              <Users className="w-4 h-4" />
+                            </div>
+                          )}
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <strong className="text-white text-xs">{dsp.name}</strong>
+                              <span className="text-zinc-400 text-xs font-mono">{dsp.discordTag}</span>
+                            </div>
+                            <div className="text-[10px] text-zinc-500 font-mono flex items-center gap-2">
+                              <span>ID: <code>{dsp.userId}</code></span>
+                              <button 
+                                onClick={() => copyToClipboard(dsp.userId, 'User ID')}
+                                className="hover:text-emerald-400 transition-colors"
+                                title="Copy User ID"
+                              >
+                                <Copy className="w-3 h-3 inline" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 self-start sm:self-auto">
+                          <span className="px-2 py-0.5 bg-amber-950/60 border border-amber-500/40 text-amber-300 text-[10px] font-bold uppercase flex items-center gap-1">
+                            <Tag className="w-3 h-3" />
+                            <span>{dsp.category}</span>
+                          </span>
+                          <span className={`px-2 py-0.5 text-[10px] font-bold uppercase flex items-center gap-1 ${
+                            dsp.dmed 
+                              ? 'bg-emerald-950/60 border border-emerald-500/40 text-emerald-300' 
+                              : 'bg-zinc-800 border border-zinc-700 text-zinc-300'
+                          }`}>
+                            <Check className="w-3 h-3" />
+                            <span>{dsp.dmed ? "DM DELIVERED" : "LOGGED IN CHANNEL"}</span>
+                          </span>
+                        </div>
                       </div>
-                      <p className="text-zinc-400 text-[11px] leading-tight">{item.desc}</p>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-white font-bold text-xs">
+                          <FileText className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>{dsp.subject}</span>
+                        </div>
+                        <div className="p-3 bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 font-mono whitespace-pre-wrap">
+                          {dsp.message}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-zinc-900 text-[10px] text-zinc-500 font-mono">
+                        <div className="flex items-center gap-3">
+                          {dsp.guildId && (
+                            <span className="flex items-center gap-1 text-purple-300">
+                              <Server className="w-3 h-3" />
+                              <span>Guild: <code>{dsp.guildId}</code></span>
+                            </span>
+                          )}
+                          <span className="flex items-center gap-1 text-emerald-400">
+                            <Shield className="w-3 h-3" />
+                            <span>OAuth2 Verified User</span>
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          <span>{new Date(dsp.timestamp).toLocaleString()}</span>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              )}
             </div>
           </BrutCard>
         </div>

@@ -21,6 +21,7 @@ const configRoutes = require("./routes/config");
 const xpRoutes = require("./routes/xp");
 const ownerRoutes = require("./routes/owner");
 const commandsRoutes = require("./routes/commands");
+const contactRoutes = require("./routes/contact");
 
 const app = express();
 app.set("trust proxy", true);
@@ -67,6 +68,7 @@ app.use("/api/config", configRoutes);
 app.use("/api/xp", xpRoutes);
 app.use("/api/owner", ownerRoutes);
 app.use("/api/commands", commandsRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Public Bot Metadata Endpoint
 app.get("/api/overview", async (req, res) => {
