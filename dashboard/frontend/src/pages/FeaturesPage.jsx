@@ -172,14 +172,14 @@ const DSP_FILTER_LIST = [
 ];
 
 const COMPARISON_DATA = [
-  { feature: "Audio Transcoding Quality", together: "24-Bit / 48,000Hz Lossless Opus", rythm: "Downsampled 16-Bit", groovy: "Defunct / Offline", fredboat: "Standard 96kbps" },
-  { feature: "Interactive 3D Webplayer", together: "Yes (50+ WebGL Shaders)", rythm: "No", groovy: "No", fredboat: "No" },
-  { feature: "14 Studio DSP Audio Filters", together: "100% Free Forever", rythm: "Paywalled / Premium", groovy: "No", fredboat: "Limited Basic EQ" },
-  { feature: "24/7 Channel Locking", together: "Free Toggle (/247)", rythm: "Monthly Subscription", groovy: "No", fredboat: "Tier-Gated" },
-  { feature: "Spotify, SC, Apple, Deezer Support", together: "Instant Cross-Platform Fallback", rythm: "Restricted", groovy: "No", fredboat: "Partial" },
-  { feature: "Global XP & Streaks System", together: "Integrated Leaderboards", rythm: "No", groovy: "No", fredboat: "No" },
-  { feature: "Slash & Prefix Command Parity", together: "69 Commands (100% Dual Support)", rythm: "Slash Only", groovy: "No", fredboat: "Partial" },
-  { feature: "No Audio Degradation Paywalls", together: "All Features 100% Free", rythm: "Paid Tiers", groovy: "N/A", fredboat: "Paid Tiers" }
+  { feature: "Audio Transcoding Quality", together: "24-Bit / 48,000Hz Lossless Opus", generic: "Downsampled 16-Bit / 96kbps", standard: "Lossy Compressed (64-96kbps)" },
+  { feature: "Interactive 3D Webplayer", together: "Yes (50+ WebGL Shaders)", generic: "Not Available", standard: "Not Available" },
+  { feature: "14 Studio DSP Audio Filters", together: "100% Free Forever", generic: "Paywalled / Tier-Gated", standard: "None / Basic EQ Only" },
+  { feature: "24/7 Channel Locking", together: "Free Toggle (/247)", generic: "Monthly Subscription Required", standard: "Timeouts After Idle" },
+  { feature: "Universal Source Engine", together: "Spotify, SC, Apple, Deezer, HTTP", generic: "Restricted / Frequent Breakages", standard: "Single Platform Only" },
+  { feature: "Global XP & Streaks System", together: "Integrated Leaderboards", generic: "Not Available", standard: "Not Available" },
+  { feature: "Slash & Prefix Command Parity", together: "69 Commands (100% Dual Support)", generic: "Slash Only / Incomplete", standard: "Partial Text Prefix Support" },
+  { feature: "Zero Audio Paywalls", together: "All Features 100% Free", generic: "Paid Tiers ($5-$15/mo)", standard: "Audio Degradation on Free Tier" }
 ];
 
 export default function FeaturesPage() {
@@ -481,7 +481,7 @@ export default function FeaturesPage() {
               </h2>
             </div>
             <span className="text-xs text-zinc-400 font-mono">
-              TOGETHER VS LEGACY DISCORD AUDIO BOTS
+              TOGETHER VS GENERIC DISCORD AUDIO BOTS
             </span>
           </div>
 
@@ -493,9 +493,8 @@ export default function FeaturesPage() {
                   <th className="p-3 uppercase tracking-wider font-black text-brutal-accent bg-emerald-950/20 border-l border-r border-brutal-accent">
                     TOGETHER BOT (2026)
                   </th>
-                  <th className="p-3 uppercase tracking-wider font-bold text-zinc-400">Rythm Bot</th>
-                  <th className="p-3 uppercase tracking-wider font-bold text-zinc-400">Groovy Bot</th>
-                  <th className="p-3 uppercase tracking-wider font-bold text-zinc-400">FredBoat</th>
+                  <th className="p-3 uppercase tracking-wider font-bold text-zinc-400">Generic Music Bots</th>
+                  <th className="p-3 uppercase tracking-wider font-bold text-zinc-400">Standard Discord Bots</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-brutal-border">
@@ -505,9 +504,8 @@ export default function FeaturesPage() {
                     <td className="p-3 font-bold text-emerald-400 bg-emerald-950/10 border-l border-r border-brutal-accent/40 whitespace-nowrap">
                       ✓ {row.together}
                     </td>
-                    <td className="p-3 text-zinc-400 whitespace-nowrap">{row.rythm}</td>
-                    <td className="p-3 text-zinc-500 whitespace-nowrap">{row.groovy}</td>
-                    <td className="p-3 text-zinc-400 whitespace-nowrap">{row.fredboat}</td>
+                    <td className="p-3 text-zinc-400 whitespace-nowrap">{row.generic}</td>
+                    <td className="p-3 text-zinc-400 whitespace-nowrap">{row.standard}</td>
                   </tr>
                 ))}
               </tbody>
@@ -515,45 +513,7 @@ export default function FeaturesPage() {
           </div>
         </section>
 
-        {/* Section 4: Features FAQ */}
-        <section className="border-2 border-brutal-border bg-brutal-surface p-6 md:p-8 shadow-brutal space-y-6">
-          <div className="border-b-2 border-brutal-border pb-4">
-            <span className="text-[10px] uppercase font-bold text-brutal-accent tracking-widest">
-              FREQUENTLY ASKED QUESTIONS
-            </span>
-            <h2 className="font-display font-black text-2xl text-white uppercase tracking-tight">
-              COMMONLY ASKED QUESTIONS ABOUT TOGETHER FEATURES
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-zinc-300 font-mono leading-relaxed">
-            <div className="space-y-2 border border-brutal-border bg-brutal-bg p-4">
-              <h3 className="font-bold text-white text-sm">Why is 24-bit Opus audio noticeably clearer?</h3>
-              <p>
-                Standard Discord music bots re-encode heavily compressed audio through multiple software bridges, causing loss of high frequencies and mushy bass. Together bypasses intermediary lossy steps, streaming 24-bit 48,000Hz direct PCM buffers straight to Discord's voice gateways.
-              </p>
-            </div>
-            <div className="space-y-2 border border-brutal-border bg-brutal-bg p-4">
-              <h3 className="font-bold text-white text-sm">How does the 3D WebGL Webplayer work?</h3>
-              <p>
-                When you play a track, Together provides an instant webplayer link. Opening it in any browser syncs your session in real time via low-latency WebSockets and computes 3D reactive audio geometry on your graphics card with 50+ shader presets.
-              </p>
-            </div>
-            <div className="space-y-2 border border-brutal-border bg-brutal-bg p-4">
-              <h3 className="font-bold text-white text-sm">Are there any paid subscriptions required for 24/7 mode?</h3>
-              <p>
-                No. Together believes in an open, un-paywalled music experience. 24/7 channel locking, all 14 DSP filters, unlimited queue length, and 3D visualizers are 100% free for every server.
-              </p>
-            </div>
-            <div className="space-y-2 border border-brutal-border bg-brutal-bg p-4">
-              <h3 className="font-bold text-white text-sm">What happens if a music stream link fails?</h3>
-              <p>
-                Our universal multi-source engine automatically scans fallback audio databases. If a primary Spotify or YouTube link cannot be decoded due to region locks, Together resolves an identical, pristine acoustic match from SoundCloud, Deezer, or Apple Music without interrupting your queue.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 5: Call to Action */}
+        {/* Section 4: Call to Action */}
         <section className="border-2 border-brutal-border bg-gradient-to-br from-brutal-surface via-black to-emerald-950/20 p-8 md:p-12 shadow-brutal text-center space-y-6">
           <span className="font-mono text-xs uppercase px-3 py-1 bg-brutal-accent text-black font-black tracking-widest inline-block">
             READY TO UPGRADE YOUR VOICE CHANNELS?
@@ -603,3 +563,4 @@ export default function FeaturesPage() {
     </div>
   );
 }
+

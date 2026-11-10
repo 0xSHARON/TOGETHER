@@ -318,83 +318,56 @@ const pages = [
           </section>
 
           <section id="comparison-table">
-            <h2>7. Architectural Comparison: Together vs Other Bots</h2>
-            <p>See how Together compares with previous generations of Discord music bots:</p>
+            <h2>7. Architectural Comparison: Together vs Generic Music Bots</h2>
+            <p>See how Together compares with generic and standard Discord music bots:</p>
             <table class="data-table">
               <thead>
                 <tr>
                   <th>Feature</th>
                   <th>Together Bot</th>
-                  <th>Rythm Bot</th>
-                  <th>FredBoat</th>
-                  <th>Groovy Bot</th>
+                  <th>Generic Music Bots</th>
+                  <th>Standard Discord Bots</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td><strong>Audio Transcoding</strong></td>
                   <td>24-Bit / 48 kHz Lossless Opus</td>
-                  <td>Downsampled 16-Bit</td>
-                  <td>Standard 96 kbps</td>
-                  <td>Defunct</td>
+                  <td>Downsampled 16-Bit / 96 kbps</td>
+                  <td>Standard 64-96 kbps</td>
                 </tr>
                 <tr>
                   <td><strong>3D Webplayer</strong></td>
                   <td>Included (50+ Shaders)</td>
-                  <td>None</td>
-                  <td>None</td>
-                  <td>None</td>
+                  <td>Not Available</td>
+                  <td>Not Available</td>
                 </tr>
                 <tr>
                   <td><strong>14 DSP Audio Filters</strong></td>
                   <td>100% Free Forever</td>
-                  <td>Paywalled</td>
+                  <td>Paywalled / Tier-Gated</td>
                   <td>Basic Equalizer Only</td>
-                  <td>None</td>
                 </tr>
                 <tr>
                   <td><strong>24/7 Channel Locking</strong></td>
                   <td>Free (/247 Command)</td>
                   <td>Paid Monthly Tier</td>
-                  <td>Tier-Gated</td>
-                  <td>None</td>
+                  <td>Timeouts After Idle</td>
                 </tr>
                 <tr>
                   <td><strong>Universal Sources</strong></td>
                   <td>Spotify, SoundCloud, Apple, Deezer, HTTP</td>
-                  <td>Restricted</td>
-                  <td>Partial</td>
-                  <td>None</td>
+                  <td>Restricted / Broken Links</td>
+                  <td>Single Platform Only</td>
                 </tr>
                 <tr>
                   <td><strong>Listening XP &amp; Streaks</strong></td>
                   <td>Built-In Global Leaderboard</td>
-                  <td>None</td>
-                  <td>None</td>
-                  <td>None</td>
+                  <td>Not Available</td>
+                  <td>Not Available</td>
                 </tr>
               </tbody>
             </table>
-          </section>
-
-          <section id="features-faq">
-            <h2>8. Frequently Asked Questions About Together Features</h2>
-            <div class="faq-item">
-              <h3>Are any audio filters or high-bitrate settings locked behind a paywall?</h3>
-              <p>No. Every feature in Together—including 24-bit 48 kHz Opus sound, all 14 DSP audio filters, 24/7 channel locking, and the 3D WebGL webplayer—is completely free for all Discord servers.</p>
-            </div>
-            <div class="faq-item">
-              <h3>Does Together support private Spotify playlists?</h3>
-              <p>Yes. As long as you share the link or have the playlist set to unlisted/collaborative, Together can read the tracklist and load up to 5,000 songs directly into your server queue.</p>
-            </div>
-            <div class="faq-item">
-              <h3>Can multiple people view the 3D Webplayer at the same time?</h3>
-              <p>Yes. The webplayer uses WebSockets to synchronize stage visualizers and track progression across any number of simultaneous listeners in real time.</p>
-            </div>
-            <div class="faq-item">
-              <h3>Where can I view the full list of Discord commands?</h3>
-              <p>You can browse all 69 interactive commands with syntax options and examples on our dedicated <a href="/commands">Discord Music Bot Commands Catalog</a>.</p>
-            </div>
           </section>
         </article>
 `
