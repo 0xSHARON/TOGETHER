@@ -926,29 +926,29 @@ function startVisualizerServer(client, preferredPort = 5050) {
           if (logChannel && logChannel.isTextBased()) {
             try {
               const safeName = (name || discordTag || "user").replace(/[^a-zA-Z0-9_\-]/g, "").slice(0, 16) || "user";
-              const starterMsg = await logChannel.send({
-                content: `🎫 **[TICKET DISPATCH]** \`${category || "Support"}\` from **${name || "User"}** (<@${userId}>)\nSubject: *${subject.slice(0, 60)}*`
-              });
+              const threadTitle = `ticket-${safeName}-${Date.now().toString().slice(-4)}`;
 
-              if (typeof starterMsg.startThread === "function") {
-                const thread = await starterMsg.startThread({
-                  name: `ticket-${safeName}-${Date.now().toString().slice(-4)}`,
+              let thread = null;
+              if (logChannel.threads && typeof logChannel.threads.create === "function") {
+                thread = await logChannel.threads.create({
+                  name: threadTitle,
                   autoArchiveDuration: 1440,
-                  reason: `Support dispatch ticket thread for ${name}`
+                  reason: `Support dispatch ticket thread for ${name || userId}`
+                }).catch((tErr) => {
+                  console.error("Direct channel.threads.create failed:", tErr?.message);
+                  return null;
                 });
+              }
+
+              if (thread) {
                 threadId = thread.id;
                 await thread.send({
-                  content: `<@${ownerId}> 🚨 **New Technical Support Dispatch** from <@${userId}>:`,
+                  content: `🎫 **[TICKET DISPATCH]** \`${category || "Support"}\` from **${name || "User"}** (<@${userId}>) | Alert: <@${ownerId}>\n📌 **Subject:** *${subject.slice(0, 80)}*`,
                   embeds: [embed]
                 });
-              } else {
-                await starterMsg.reply({ embeds: [embed] });
               }
             } catch (threadErr) {
-              await logChannel.send({
-                content: `<@${ownerId}> 🚨 **[NEW TECHNICAL SUPPORT DISPATCH]** ${dmed ? "(DM successfully delivered to Owner)" : "*(DM delivery fallback - DMs locked/restricted)*"}`,
-                embeds: [embed]
-              }).catch(() => {});
+              console.error("Ticket thread dispatch error:", threadErr);
             }
           }
 
