@@ -417,7 +417,7 @@ const FAQ_SECTIONS = [
       {
         id: 'cmd-forcefix',
         question: 'What should I do if the bot is lagging or stuck in a voice channel?',
-        answer: 'Use /forcefix (.fix) to force Together to re-establish the voice connection, reset the audio pipeline, and re-sync Lavalink frames without clearing your queue.',
+        answer: 'Use /forcefix (.fix) to force Together to re-establish the voice connection, reset the audio pipeline, and re-sync native audio frames without clearing your queue.',
         command: '/forcefix',
         commandLabel: 'Force Fix Voice Gateway Connection'
       },

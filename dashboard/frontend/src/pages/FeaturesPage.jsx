@@ -38,7 +38,7 @@ const ARCHITECTURE_PILLARS = [
     badge: "48,000 HZ • 24-BIT PCM",
     title: "24-Bit Studio Opus Sound Engine",
     tagline: "Audiophile-grade direct audio buffering with zero distortion.",
-    desc: "Unlike standard Discord bots that downsample audio to 16-bit 96kbps, Together transmits losslessly compressed 48,000Hz 24-bit stereo streams directly through Lavalink v4 audio clusters. Enjoy wide soundstages, punchy low frequencies, and pristine high-end clarity.",
+    desc: "Unlike standard Discord bots that downsample audio to 16-bit 96kbps, Together transmits losslessly compressed 48,000Hz 24-bit stereo streams directly through native-together audio clusters. Enjoy wide soundstages, punchy low frequencies, and pristine high-end clarity.",
     specs: [
       { label: "Sample Rate", val: "48,000 Hz" },
       { label: "Bit Depth", val: "24-Bit Linear PCM" },
@@ -239,7 +239,7 @@ export default function FeaturesPage() {
             <span className="font-mono text-[10px] uppercase bg-brutal-accent text-black font-black px-2 py-0.5 tracking-widest">
               NEXT-GEN AUDIO ARCHITECTURE
             </span>
-            <span className="font-mono text-xs text-brutal-muted">LAVALINK v4 + WEBGL 2.0</span>
+            <span className="font-mono text-xs text-brutal-muted">NATIVE-TOGETHER CLUSTER + WEBGL 2.0</span>
             <span className="font-mono text-[10px] uppercase bg-black border border-brutal-border text-emerald-400 font-bold px-2 py-0.5">
               ✓ ZERO PAYWALLS
             </span>

@@ -252,7 +252,7 @@ const pages = [
 
           <section id="opus-audio-engine">
             <h2>1. Studio-Quality 24-Bit Opus Audio Engine</h2>
-            <p>Sound quality is the core pillar of Together. Most Discord bots downsample tracks to 16-bit audio at 96 kbps, introducing compression artifacts, clipping on loud tracks, and dull frequency responses. Together runs on dedicated Lavalink v4 nodes with custom audio pipelines that deliver pristine sound:</p>
+            <p>Sound quality is the core pillar of Together. Most Discord bots downsample tracks to 16-bit audio at 96 kbps, introducing compression artifacts, clipping on loud tracks, and dull frequency responses. Together runs on dedicated native-together audio clusters with custom audio pipelines that deliver pristine sound:</p>
             <ul>
               <li><strong>48,000 Hz Sampling Rate:</strong> Every track is processed at a native 48 kHz sample rate to match Discord's voice system without resampling blur.</li>
               <li><strong>24-Bit Linear PCM Buffering:</strong> Audio buffers retain full dynamic range, keeping quiet instruments clear and loud beats punchy without digital distortion.</li>
