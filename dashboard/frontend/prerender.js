@@ -53,7 +53,7 @@ const sharedHeader = `
         </div>
         <nav aria-label="Main Navigation">
           <a href="/">Home</a> |
-          <a href="/commands">Commands &amp; Features</a> |
+          <a href="/features">Bot Features &amp; Architecture</a> |
           <a href="/commands">Music Bot Commands</a> |
           <a href="/faq">Frequently Asked Questions</a> |
           <a href="/leaderboard">Listening Leaderboard</a> |
@@ -81,17 +81,16 @@ const sharedFooter = `
         </div>
         <nav aria-label="Footer Navigation">
           <a href="/">Home</a> |
+          <a href="/features">Bot Features &amp; Architecture</a> |
+          <a href="/commands">Bot Commands Reference</a> |
           <a href="/about">About Together Bot</a> |
           <a href="/contact">Contact Support Team</a> |
           <a href="/about#editorial-policy">Editorial Standards and Review Policy</a> |
           <a href="/faq">Documentation and User Guides</a> |
-          
-          <a href="/commands">Bot Commands Reference</a> |
           <a href="/leaderboard">Music Listening Leaderboard</a> |
           <a href="/terms">Terms of Service Agreement</a> |
           <a href="/privacy">Privacy and Data Security Policy</a> |
           <a href="https://discord.gg/mUdGTs2Dw5" rel="me noopener noreferrer" target="_blank">Join Official Discord Community</a> |
-
           <a href="https://top.gg/bot/863496211667484676" rel="noopener noreferrer" target="_blank">Together on Top.gg Bot Directory</a>
         </nav>
       </footer>
@@ -230,11 +229,182 @@ const sharedCss = `
 
 const pages = [
   {
+    route: 'features',
+    title: 'Discord Music Bot Features — 24-Bit Lossless Audio & 3D Webplayer | Together Bot',
+    description: 'Discover Together Music Bot studio architecture: 24-bit 48kHz lossless Opus audio, real-time 3D WebGL visualizer, 14 free DSP filters, 24/7 channel locking, and universal music sources.',
+    keywords: 'discord music bot features, 24-bit audio discord, discord 3d webplayer, dsp audio filters discord, 247 discord music bot, lossless opus discord bot',
+    h1: 'Together Music Bot — High-Fidelity Audio Architecture & Bot Features',
+    schemaType: 'TechArticle',
+    body: `
+        <article>
+          <header>
+            <nav class="breadcrumb-trail" aria-label="Breadcrumb">
+              <a href="/">Home</a> &raquo; <span>Features &amp; Architecture</span>
+            </nav>
+            <h1>Together Music Bot — High-Fidelity Audio Architecture &amp; Bot Features</h1>
+            <div class="freshness-signal">
+              📅 <strong>Published:</strong> <time datetime="2026-01-01" itemprop="datePublished">January 1, 2026</time> | <strong>Last Modified:</strong> <time datetime="2026-11-10" itemprop="dateModified">November 10, 2026</time> (Active Version 2.5)
+            </div>
+            <p>Together is an audiophile-grade Discord music bot built on a modern high-performance audio engine. While older Discord bots suffer from low bitrates, frequent disconnections, and restrictive paywalls, Together gives you studio-quality 24-bit sound, an interactive 3D WebGL webplayer, 14 digital signal processing (DSP) audio filters, and round-the-clock voice channel locking—all 100% free.</p>
+            <p class="author-byline">Authored and maintained by <span rel="author" class="author"><strong>KAJU🦋</strong></span>, Lead Audio Systems Architect. Last modified on <time datetime="2026-11-10" itemprop="dateModified">November 10, 2026</time>.</p>
+          </header>
+
+          <section id="opus-audio-engine">
+            <h2>1. Studio-Quality 24-Bit Opus Audio Engine</h2>
+            <p>Sound quality is the core pillar of Together. Most Discord bots downsample tracks to 16-bit audio at 96 kbps, introducing compression artifacts, clipping on loud tracks, and dull frequency responses. Together runs on dedicated Lavalink v4 nodes with custom audio pipelines that deliver pristine sound:</p>
+            <ul>
+              <li><strong>48,000 Hz Sampling Rate:</strong> Every track is processed at a native 48 kHz sample rate to match Discord's voice system without resampling blur.</li>
+              <li><strong>24-Bit Linear PCM Buffering:</strong> Audio buffers retain full dynamic range, keeping quiet instruments clear and loud beats punchy without digital distortion.</li>
+              <li><strong>320 kbps Lossless Opus Transcoding:</strong> High-bitrate Opus encoding preserves subtle acoustic textures, wide stereo imaging, and natural bass response.</li>
+              <li><strong>Low Jitter Frame Pacing:</strong> Dedicated jitter buffers keep timing steady within &plusmn;0.2 milliseconds, avoiding voice lag and audio dropouts.</li>
+            </ul>
+          </section>
+
+          <section id="webgl-webplayer">
+            <h2>2. Interactive Real-Time 3D WebGL Webplayer</h2>
+            <p>Together brings your music to life visually with an interactive browser-based stage. Whenever music plays in your Discord voice channel, members can open the webplayer to watch audio-reactive visuals rendered in real time:</p>
+            <ul>
+              <li><strong>50+ GPU Compute Shaders:</strong> Watch dynamic waveforms, frequency spectrum bars, neon cosmic fields, and tunnel visualizers powered by WebGL 2.0.</li>
+              <li><strong>Zero Client Audio Lag:</strong> Visualizer data streams through low-latency WebSockets (&lt; 15ms), matching the audio you hear in voice chat perfectly.</li>
+              <li><strong>Live Room Synchronization:</strong> See who is currently connected in your Discord voice channel, view track progress, and vote to skip directly in your web browser.</li>
+              <li><strong>Mobile and Desktop Friendly:</strong> Responsive brutalist interface with touch controls for 3D camera rotation and zoom on iOS and Android devices.</li>
+            </ul>
+          </section>
+
+          <section id="dsp-filters">
+            <h2>3. 14 Free Studio DSP Audio Filters &amp; Graphic EQ</h2>
+            <p>Customize the sound of your music on the fly without interrupting playback. Together includes 14 hardware-accelerated digital filters that process audio in real time:</p>
+            <ul>
+              <li><strong>8D Spatial Audio:</strong> Binaural panning rotates sound around your headphones in a 360-degree acoustic circle.</li>
+              <li><strong>Multi-Stage Bassboost:</strong> Boost low frequencies (30 Hz to 120 Hz) with Low, Medium, and Extreme modes for powerful electronic and hip-hop basslines.</li>
+              <li><strong>Nightcore &amp; Vaporwave:</strong> Shift tempo and pitch dynamically for fast, energetic beats or slowed-down, nostalgic lo-fi vibes.</li>
+              <li><strong>Karaoke Vocal Suppression:</strong> Remove center-panned vocal frequencies so you and your friends can sing along to instrumental backing tracks.</li>
+              <li><strong>Genre Equalizer Presets:</strong> Instantly apply tuned profiles for Pop, Rock, Jazz, and Treble Boost, or dial in custom settings using the 10-band graphic equalizer.</li>
+            </ul>
+          </section>
+
+          <section id="uptime-failover">
+            <h2>4. 24/7 Channel Locking and Automatic Failover</h2>
+            <p>Keep your community voice channel active day and night. Together includes built-in persistence tools that keep the music going without annoying timeouts:</p>
+            <ul>
+              <li><strong>Round-the-Clock Playback (/247):</strong> Turn on 24/7 mode with a simple slash command. Together remains in your channel even after your playlist finishes.</li>
+              <li><strong>Auto-Reconnect Watchdog:</strong> If Discord migrates your voice server or experiences regional connection drops, Together automatically reconnects within milliseconds.</li>
+              <li><strong>Stateful Queue Memory:</strong> Saved playback positions and playlist order are restored smoothly following any network interruptions.</li>
+              <li><strong>Smart Bandwidth Optimization:</strong> Optional auto-mute pauses outbound network bandwidth when all listeners leave the voice channel.</li>
+            </ul>
+          </section>
+
+          <section id="universal-sources">
+            <h2>5. Universal Multi-Platform Source Engine</h2>
+            <p>Play any song from almost any major audio service without dealing with broken links or regional blocks. Together resolves links and search queries across all major platforms:</p>
+            <ul>
+              <li><strong>Spotify Integration:</strong> Queue individual songs, albums, and large public, private, or collaborative playlists up to 5,000 tracks.</li>
+              <li><strong>SoundCloud Streaming:</strong> Access millions of original tracks, live DJ sets, underground remixes, and podcast episodes.</li>
+              <li><strong>Apple Music &amp; Deezer:</strong> High-speed metadata parsing maps tracks to high-bitrate streaming endpoints instantly.</li>
+              <li><strong>Direct HTTP Streams:</strong> Stream live Internet radio stations and podcast audio files directly via raw HTTP or HTTPS links.</li>
+              <li><strong>Smart Fallback Engine:</strong> If a track is unavailable in your geographic region, Together finds an identical high-quality acoustic match automatically.</li>
+            </ul>
+          </section>
+
+          <section id="gamification-xp">
+            <h2>6. Global Listening XP, Streaks &amp; Music Leaderboards</h2>
+            <p>Hang out with your community and earn rewards simply by listening to music together:</p>
+            <ul>
+              <li><strong>Real-Time Minute XP:</strong> Earn listening XP for every minute you spend listening in a Discord voice channel.</li>
+              <li><strong>Daily Streak Multipliers:</strong> Build continuous daily listening streaks to earn up to 2.5x bonus experience points.</li>
+              <li><strong>Custom Listening Profile Cards:</strong> Display your favorite music genres, top artists, listening hours, and earned community badges.</li>
+              <li><strong>Server &amp; Global Leaderboards:</strong> Compete with members in your server or see where you rank among global Together users.</li>
+            </ul>
+          </section>
+
+          <section id="comparison-table">
+            <h2>7. Architectural Comparison: Together vs Other Bots</h2>
+            <p>See how Together compares with previous generations of Discord music bots:</p>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Together Bot</th>
+                  <th>Rythm Bot</th>
+                  <th>FredBoat</th>
+                  <th>Groovy Bot</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Audio Transcoding</strong></td>
+                  <td>24-Bit / 48 kHz Lossless Opus</td>
+                  <td>Downsampled 16-Bit</td>
+                  <td>Standard 96 kbps</td>
+                  <td>Defunct</td>
+                </tr>
+                <tr>
+                  <td><strong>3D Webplayer</strong></td>
+                  <td>Included (50+ Shaders)</td>
+                  <td>None</td>
+                  <td>None</td>
+                  <td>None</td>
+                </tr>
+                <tr>
+                  <td><strong>14 DSP Audio Filters</strong></td>
+                  <td>100% Free Forever</td>
+                  <td>Paywalled</td>
+                  <td>Basic Equalizer Only</td>
+                  <td>None</td>
+                </tr>
+                <tr>
+                  <td><strong>24/7 Channel Locking</strong></td>
+                  <td>Free (/247 Command)</td>
+                  <td>Paid Monthly Tier</td>
+                  <td>Tier-Gated</td>
+                  <td>None</td>
+                </tr>
+                <tr>
+                  <td><strong>Universal Sources</strong></td>
+                  <td>Spotify, SoundCloud, Apple, Deezer, HTTP</td>
+                  <td>Restricted</td>
+                  <td>Partial</td>
+                  <td>None</td>
+                </tr>
+                <tr>
+                  <td><strong>Listening XP &amp; Streaks</strong></td>
+                  <td>Built-In Global Leaderboard</td>
+                  <td>None</td>
+                  <td>None</td>
+                  <td>None</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="features-faq">
+            <h2>8. Frequently Asked Questions About Together Features</h2>
+            <div class="faq-item">
+              <h3>Are any audio filters or high-bitrate settings locked behind a paywall?</h3>
+              <p>No. Every feature in Together—including 24-bit 48 kHz Opus sound, all 14 DSP audio filters, 24/7 channel locking, and the 3D WebGL webplayer—is completely free for all Discord servers.</p>
+            </div>
+            <div class="faq-item">
+              <h3>Does Together support private Spotify playlists?</h3>
+              <p>Yes. As long as you share the link or have the playlist set to unlisted/collaborative, Together can read the tracklist and load up to 5,000 songs directly into your server queue.</p>
+            </div>
+            <div class="faq-item">
+              <h3>Can multiple people view the 3D Webplayer at the same time?</h3>
+              <p>Yes. The webplayer uses WebSockets to synchronize stage visualizers and track progression across any number of simultaneous listeners in real time.</p>
+            </div>
+            <div class="faq-item">
+              <h3>Where can I view the full list of Discord commands?</h3>
+              <p>You can browse all 69 interactive commands with syntax options and examples on our dedicated <a href="/commands">Discord Music Bot Commands Catalog</a>.</p>
+            </div>
+          </section>
+        </article>
+`
+  },
+  {
     route: 'commands',
-    title: 'Discord Music Bot Commands & Features — Together Music Bot',
-    description: 'Explore all 69 Discord music commands and high-fidelity streaming features for Together Bot. Complete syntax reference for 24-bit sound, 14 DSP audio filters, 24/7 channel locking, and 3D webplayer.',
-    keywords: 'together music bot commands, discord music bot commands, slash commands discord music, play command discord, 247 command discord, audio filters discord',
-    h1: 'Together Music Bot — Discord Commands & Audio Features Reference',
+    title: 'Discord Music Bot Commands — Complete Slash & Prefix Reference | Together Bot',
+    description: 'Explore all 69 Discord music commands for Together Bot. Complete syntax reference for playback, queue management, volume control, 14 DSP audio filters, and 24/7 channel locking.',
+    keywords: 'together music bot commands, discord music bot commands, slash commands discord music, play command discord, 247 command discord, queue command discord',
+    h1: 'Together Music Bot — Complete Discord Slash & Prefix Commands Reference',
     schemaType: 'TechArticle',
     body: `
         <article>
@@ -242,7 +412,7 @@ const pages = [
             <nav class="breadcrumb-trail" aria-label="Breadcrumb">
               <a href="/">Home</a> &raquo; <span>Commands Catalog</span>
             </nav>
-            <h1>Together Music Bot — Complete Discord Commands &amp; Architecture Features</h1>
+            <h1>Together Music Bot — Complete Discord Slash &amp; Prefix Commands Reference</h1>
             <div class="freshness-signal">
               📅 <strong>Published:</strong> <time datetime="2026-01-01" itemprop="datePublished">January 1, 2026</time> | <strong>Last Modified:</strong> <time datetime="2026-11-09" itemprop="dateModified">November 9, 2026</time> (Active Version 2.5)
             </div>
@@ -1321,7 +1491,23 @@ for (const p of pages) {
   };
 
   let extraSchemaTag = '';
-  if (p.route === 'commands') {
+  if (p.route === 'features') {
+    const featureSoftwareApp = {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Together Music Bot — High-Fidelity Audio Architecture",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Discord, Web, Windows, macOS, Linux, iOS, Android",
+      "description": "Studio-grade Discord music bot architecture with 24-bit 48,000Hz lossless Opus audio, 3D WebGL webplayer, 14 DSP filters, and 24/7 channel locking.",
+      "url": "https://dash.together.dpdns.org/features",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    };
+    extraSchemaTag = `\n    <script type="application/ld+json">\n    ${JSON.stringify(featureSoftwareApp, null, 2)}\n    </script>`;
+  } else if (p.route === 'commands') {
     const howToJson = {
       "@context": "https://schema.org",
       "@type": "HowTo",

@@ -36,51 +36,6 @@ const BOT_INVITE_URL = "https://discord.com/oauth2/authorize?client_id=863496211
 const DEFAULT_TOPGG_URL = "https://top.gg/bot/863496211667484676/vote";
 const SUPPORT_SERVER_URL = "https://discord.gg/mUdGTs2Dw5";
 
-const CORE_FEATURES = [
-  {
-    icon: Disc3,
-    title: "24-Bit Studio Opus Sound",
-    badge: "320 KBPS LOSSLESS",
-    desc: "Studio-grade Opus encoding running at 48,000Hz sample rate across 24-bit direct audio buffers. Zero compression artifacts and clean frequency response.",
-    highlights: ["48,000Hz Native Sampling", "Lossless Opus Transcoding", "Zero Distortion Buffer"]
-  },
-  {
-    icon: Sparkles,
-    title: "Real-Time 3D WebGL Webplayer",
-    badge: "50+ SHADERS",
-    desc: "Interactive browser-based audio visualizer powered by WebGL 2.0 compute shaders. Track frequencies dance in real-time synced to voice channels.",
-    highlights: ["Zero Client Lag", "WebGL 2.0 Hardware Accel", "Live Room Synchronization"]
-  },
-  {
-    icon: Sliders,
-    title: "14 Studio DSP Audio Filters",
-    badge: "REAL-TIME DSP",
-    desc: "Hardware-accelerated digital signal processing. Toggle 8D binaural spatial audio, heavy Bassboost, Nightcore, Vaporwave, and Karaoke on the fly.",
-    highlights: ["8D Spatial Sound Panning", "Multi-Stage Bassboost", "Instant Dynamic Resampling"]
-  },
-  {
-    icon: Radio,
-    title: "24/7 Channel Locking",
-    badge: "ALWAYS ONLINE",
-    desc: "Keep Together locked in your community voice channel indefinitely. Auto-reconnect voice failover prevents drops during regional Discord outages.",
-    highlights: ["Zero Idle Timeouts", "Auto-Reconnect Recovery", "Smart Queue Memory"]
-  },
-  {
-    icon: Music,
-    title: "Universal Source Engine",
-    badge: "MULTI-PLATFORM",
-    desc: "Seamless playback from Spotify playlists, SoundCloud tracks, YouTube videos, Apple Music albums, Deezer, and direct HTTP audio streams.",
-    highlights: ["Instant Playlist Resolution", "Duplicate Auto-Filter", "Cross-Platform Fallbacks"]
-  },
-  {
-    icon: Flame,
-    title: "Global Listening XP & Streaks",
-    badge: "GAMIFIED AUDIO",
-    desc: "Earn server XP and build daily listening streaks while hanging out in voice channels. Climb real-time global and guild music leaderboards.",
-    highlights: ["Real-Time XP Gain", "Daily Listening Streaks", "Custom User Music Cards"]
-  }
-];
-
 export default function CommandsPage() {
   const [commands, setCommands] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -165,8 +120,8 @@ export default function CommandsPage() {
   return (
     <div className="min-h-screen bg-brutal-bg text-brutal-text font-mono p-4 md:p-8 flex flex-col justify-between selection:bg-brutal-accent selection:text-black">
       <SEO 
-        title="Discord Music Bot Commands & Features — Together Music Bot"
-        description="Explore all 69 Discord music commands and high-fidelity streaming features for Together Bot. Complete syntax reference for 24-bit sound, 14 DSP audio filters, 24/7 channel locking, and 3D webplayer."
+        title="Discord Music Bot Commands — Complete Slash & Prefix Reference | Together Bot"
+        description="Explore all 69 Discord music commands for Together Bot. Complete syntax reference for playback, queue management, volume control, 14 DSP audio filters, and 24/7 channel locking."
         canonical="https://dash.together.dpdns.org/commands"
       />
 
@@ -175,10 +130,17 @@ export default function CommandsPage() {
         <Link to="/" className="flex items-center gap-3 group" aria-label="Together Music Bot Home">
           <img src="/logo.webp" alt="Together Logo" width="32" height="32" className="w-8 h-8 object-contain" />
           <span className="font-display font-black text-sm tracking-wider group-hover:text-brutal-accent transition-colors">
-            TOGETHER // COMMANDS &amp; FEATURES
+            TOGETHER // COMMANDS CATALOG
           </span>
         </Link>
         <div className="flex items-center gap-3">
+          <Link
+            to="/features"
+            className="px-3 py-1.5 bg-brutal-bg border border-brutal-border hover:border-brutal-accent text-white font-bold text-xs uppercase shadow-brutal-sm flex items-center gap-1.5 transition-all"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-brutal-accent" />
+            <span className="hidden sm:inline">VIEW FEATURES</span>
+          </Link>
           <a
             href={BOT_INVITE_URL}
             target="_blank"
@@ -193,29 +155,29 @@ export default function CommandsPage() {
             className="px-3 py-1.5 bg-black border border-brutal-border hover:border-brutal-accent text-white font-bold text-xs uppercase shadow-brutal-sm flex items-center gap-1.5 transition-all"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>RETURN HOME</span>
+            <span>HOME</span>
           </Link>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main id="main-content" className="space-y-12 max-w-7xl w-full mx-auto pb-12">
+      <main id="main-content" className="space-y-10 max-w-7xl w-full mx-auto pb-12">
         {/* Hero Section */}
         <div className="border-2 border-brutal-border bg-brutal-surface p-6 md:p-10 shadow-brutal space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-[10px] uppercase bg-brutal-accent text-black font-black px-2 py-0.5 tracking-widest">
-              OFFICIAL SYSTEM CATALOG
+              OFFICIAL COMMAND REGISTRY
             </span>
-            <span className="font-mono text-xs text-brutal-muted">v2.5.0 HYBRID ENGINE</span>
+            <span className="font-mono text-xs text-brutal-muted">v2.5.0 SYNCED</span>
             <span className="font-mono text-[10px] uppercase bg-black border border-brutal-border text-emerald-400 font-bold px-2 py-0.5">
-              ✓ 100% OPERATIONAL
+              ✓ 69 COMMANDS ONLINE
             </span>
           </div>
           <h1 className="font-display font-black text-3xl md:text-5xl text-white uppercase tracking-tight">
-            DISCORD MUSIC COMMANDS &amp; FEATURES
+            DISCORD MUSIC BOT COMMANDS
           </h1>
           <p className="font-mono text-xs md:text-sm text-zinc-300 max-w-3xl leading-relaxed">
-            Together delivers studio-quality audio, an interactive 3D WebGL webplayer, 14 DSP sound equalizers, and complete slash and text command parity across every Discord server. Browse all core system capabilities and search through the synchronized command catalog below.
+            Full syntax reference for Together Music Bot. Search and filter across all 69 slash and text commands for song queue management, 14 DSP audio filters, 24/7 channel locking, server volume controls, and music leaderboards.
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <a
@@ -223,15 +185,15 @@ export default function CommandsPage() {
               className="px-4 py-2 bg-brutal-accent text-black font-bold text-xs uppercase border-2 border-black shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
             >
               <Terminal className="w-4 h-4" />
-              <span>JUMP TO COMMANDS</span>
+              <span>BROWSE ALL COMMANDS</span>
             </a>
-            <a
-              href="#features-matrix"
-              className="px-4 py-2 bg-brutal-bg text-white font-bold text-xs uppercase border-2 border-brutal-border hover:border-white transition-all flex items-center gap-2"
+            <Link
+              to="/features"
+              className="px-4 py-2 bg-brutal-bg text-white font-bold text-xs uppercase border-2 border-brutal-border hover:border-brutal-accent transition-all flex items-center gap-2"
             >
-              <Cpu className="w-4 h-4" />
-              <span>CORE ARCHITECTURE FEATURES</span>
-            </a>
+              <Sparkles className="w-4 h-4 text-brutal-accent" />
+              <span>EXPLORE BOT FEATURES</span>
+            </Link>
             <a
               href={topggVoteUrl}
               target="_blank"
@@ -244,69 +206,15 @@ export default function CommandsPage() {
           </div>
         </div>
 
-        {/* Section 1: Core System Features */}
-        <section id="features-matrix" className="space-y-6">
-          <div className="border-b-2 border-brutal-border pb-4 flex flex-col md:flex-row md:items-end justify-between gap-2">
-            <div>
-              <span className="text-[10px] uppercase font-bold text-brutal-accent tracking-widest">
-                ENGINE CAPABILITIES
-              </span>
-              <h2 className="font-display font-black text-2xl md:text-3xl text-white uppercase tracking-tight">
-                STUDIO AUDIO ARCHITECTURE &amp; FEATURES
-              </h2>
-            </div>
-            <span className="text-xs text-zinc-400 font-mono">
-              6 CORE ARCHITECTURAL PILLARS
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {CORE_FEATURES.map((feat, idx) => {
-              const Icon = feat.icon;
-              return (
-                <div 
-                  key={idx}
-                  className="border-2 border-brutal-border bg-brutal-surface p-6 shadow-brutal flex flex-col justify-between space-y-4 hover:border-brutal-accent transition-colors"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="p-2.5 bg-black border-2 border-brutal-border text-brutal-accent">
-                        <Icon className="w-6 h-6" />
-                      </div>
-                      <span className="font-mono text-[9px] px-2 py-0.5 bg-black border border-brutal-border text-brutal-accent font-black uppercase tracking-wider">
-                        {feat.badge}
-                      </span>
-                    </div>
-                    <h3 className="font-display font-black text-lg text-white uppercase">
-                      {feat.title}
-                    </h3>
-                    <p className="font-mono text-xs text-zinc-300 leading-relaxed">
-                      {feat.desc}
-                    </p>
-                  </div>
-                  <div className="border-t border-brutal-border pt-3 space-y-1.5">
-                    {feat.highlights.map((h, i) => (
-                      <div key={i} className="flex items-center gap-2 text-[11px] text-zinc-400 font-mono">
-                        <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span>{h}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Section 2: Command Metrics Overview */}
+        {/* Section: Command Inventory & Search */}
         <section id="commands-list" className="space-y-6">
           <div className="border-b-2 border-brutal-border pb-4 flex flex-col md:flex-row md:items-end justify-between gap-2">
             <div>
               <span className="text-[10px] uppercase font-bold text-brutal-accent tracking-widest">
-                COMMAND INVENTORY
+                INTERACTIVE DIRECTORY
               </span>
               <h2 className="font-display font-black text-2xl md:text-3xl text-white uppercase tracking-tight">
-                DISCORD COMMAND REFERENCE
+                SYNCHRONIZED COMMAND DIRECTORY
               </h2>
             </div>
             <span className="text-xs text-zinc-400 font-mono">
@@ -502,11 +410,11 @@ export default function CommandsPage() {
           )}
         </section>
 
-        {/* Section 3: Audio Engineering FAQ */}
+        {/* Section: Command Usage Guidance FAQ */}
         <section className="border-2 border-brutal-border bg-brutal-surface p-6 md:p-8 shadow-brutal space-y-6">
           <div className="border-b-2 border-brutal-border pb-4">
             <span className="text-[10px] uppercase font-bold text-brutal-accent tracking-widest">
-              HELP &amp; DOCUMENTATION
+              HELP &amp; SYNTAX GUIDANCE
             </span>
             <h2 className="font-display font-black text-2xl text-white uppercase tracking-tight">
               FREQUENTLY ASKED QUESTIONS ABOUT TOGETHER COMMANDS
@@ -624,11 +532,12 @@ export default function CommandsPage() {
         <div>&copy; 2026 Together Music Bot Team. All rights reserved.</div>
         <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
           <Link to="/" className="hover:text-brutal-accent">Home</Link>
-          <Link to="/about" className="hover:text-brutal-accent">About</Link>
-          <Link to="/commands" className="hover:text-brutal-accent text-brutal-accent font-bold">Commands &amp; Features</Link>
+          <Link to="/features" className="hover:text-brutal-accent">Features</Link>
+          <Link to="/commands" className="hover:text-brutal-accent text-brutal-accent font-bold">Commands</Link>
           <Link to="/faq" className="hover:text-brutal-accent">FAQ</Link>
           <Link to="/leaderboard" className="hover:text-brutal-accent">Leaderboard</Link>
-          <Link to="/contact" className="hover:text-brutal-accent">Contact Support</Link>
+          <Link to="/about" className="hover:text-brutal-accent">About</Link>
+          <Link to="/contact" className="hover:text-brutal-accent">Contact</Link>
           <Link to="/terms" className="hover:text-brutal-accent">Terms</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy</Link>
         </nav>

@@ -239,11 +239,11 @@ export default function LandingPage() {
           </div>
 
           <nav className="hidden md:flex items-center gap-6 font-mono text-xs font-bold uppercase" aria-label="Main Navigation">
-            <a href="#features" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              BROWSE FEATURES
-            </a>
+            <Link to="/features" className="text-brutal-muted hover:text-brutal-accent transition-colors">
+              BOT FEATURES
+            </Link>
             <Link to="/commands" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              COMMANDS & FEATURES
+              COMMANDS CATALOG
             </Link>
             <a href="#benchmark" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               AUDIO BENCHMARK
@@ -1124,12 +1124,12 @@ export default function LandingPage() {
 
         <nav className="flex flex-wrap gap-4 uppercase font-bold text-[11px] justify-center md:justify-start" aria-label="Footer Navigation">
           <Link to="/about" className="hover:text-brutal-accent">About Together Bot</Link>
-          <Link to="/commands" className="hover:text-brutal-accent text-brutal-accent font-bold">Commands & Features</Link>
+          <Link to="/features" className="hover:text-brutal-accent text-brutal-accent font-bold">Bot Features</Link>
+          <Link to="/commands" className="hover:text-brutal-accent">Bot Commands</Link>
           <Link to="/contact" className="hover:text-brutal-accent">Contact Support Team</Link>
           <Link to="/about#editorial-policy" className="hover:text-brutal-accent">Editorial Standards</Link>
           <Link to="/faq" className="hover:text-brutal-accent">Documentation & FAQ</Link>
           <Link to="/overview" className="hover:text-brutal-accent">Web Player Dashboard</Link>
-          <Link to="/commands" className="hover:text-brutal-accent">Bot Commands</Link>
           <Link to="/leaderboard" className="hover:text-brutal-accent">Music Leaderboard</Link>
           <Link to="/terms" className="hover:text-brutal-accent">Terms of Service</Link>
           <Link to="/privacy" className="hover:text-brutal-accent">Privacy Policy</Link>

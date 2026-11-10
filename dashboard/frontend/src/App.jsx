@@ -11,6 +11,7 @@ const PlayerPage = lazy(() => import('./pages/PlayerPage'));
 const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const CommandsPage = lazy(() => import('./pages/CommandsPage'));
+const FeaturesPage = lazy(() => import('./pages/FeaturesPage'));
 const OwnerPage = lazy(() => import('./pages/OwnerPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
@@ -41,9 +42,9 @@ export default function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/commands" element={<CommandsPage />} />
-            <Route path="/features" element={<Navigate to="/commands" replace />} />
-            <Route path="/compare" element={<Navigate to="/commands" replace />} />
-            <Route path="/alternatives" element={<Navigate to="/commands" replace />} />
+            <Route path="/features" element={<FeaturesPage />} />
+            <Route path="/compare" element={<Navigate to="/features" replace />} />
+            <Route path="/alternatives" element={<Navigate to="/features" replace />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/faq" element={<FaqPage />} />
