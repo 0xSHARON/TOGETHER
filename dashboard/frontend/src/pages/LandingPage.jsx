@@ -248,9 +248,6 @@ export default function LandingPage() {
             <a href="#benchmark" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               AUDIO BENCHMARK
             </a>
-            <a href="#commands" className="text-brutal-muted hover:text-brutal-accent transition-colors">
-              VIEW COMMANDS
-            </a>
             <Link to="/faq" className="text-brutal-muted hover:text-brutal-accent transition-colors">
               FAQ
             </Link>
