@@ -141,13 +141,13 @@ export default function DashboardLayout() {
               </button>
             </div>
           ) : (
-            <a 
-              href="/api/auth/login"
+            <Link 
+              to="/login"
               className="w-full font-mono text-xs font-bold uppercase py-2.5 px-4 bg-brutal-accent text-black border-2 border-black flex items-center justify-center gap-2 shadow-brutal-sm"
             >
-              <span>DISCORD LOGIN</span>
+              <span>SIGN IN WITH DISCORD</span>
               <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+            </Link>
           )}
         </div>
       </aside>

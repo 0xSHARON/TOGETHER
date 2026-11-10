@@ -104,7 +104,7 @@ export default function OverviewPage() {
               </BrutButton>
             </a>
           ) : (
-            <a href="/api/auth/login" className="w-full">
+            <a href="/login" className="w-full">
               <BrutButton variant="primary" size="md" className="w-full" icon={ExternalLink}>
                 LOGIN WITH DISCORD
               </BrutButton>

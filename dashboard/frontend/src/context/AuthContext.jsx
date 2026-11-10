@@ -26,11 +26,11 @@ export function AuthProvider({ children }) {
     try {
       await axios.post('/api/auth/logout', {}, { withCredentials: true });
       setUser(null);
-      window.location.href = '/';
+      window.location.href = 'https://dash.together.dpdns.org/';
     } catch (err) {
       console.error('Logout error:', err);
       setUser(null);
-      window.location.href = '/';
+      window.location.href = 'https://dash.together.dpdns.org/';
     }
   }
 

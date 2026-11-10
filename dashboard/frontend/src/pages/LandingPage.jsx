@@ -282,13 +282,13 @@ export default function LandingPage() {
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             ) : (
-              <a
-                href="/api/auth/login"
+              <Link
+                to="/login"
                 className="px-4 py-1.5 bg-brutal-accent text-black border-2 border-black font-bold text-xs shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center gap-2"
               >
                 <span>SIGN IN WITH DISCORD</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             )}
           </div>
         </div>
