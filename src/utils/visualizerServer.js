@@ -916,17 +916,40 @@ function startVisualizerServer(client, preferredPort = 5050) {
             }
           }
 
-          // Backup dispatch to system log channel 1557621712948830388
+          // Backup dispatch to system log channel 1557621712948830388 in a dedicated thread
           const logChannelId = "1557621712948830388";
           let logChannel = client?.channels?.cache?.get(logChannelId);
           if (!logChannel && client?.channels?.fetch) {
             logChannel = await client.channels.fetch(logChannelId).catch(() => null);
           }
+          let threadId = null;
           if (logChannel && logChannel.isTextBased()) {
-            await logChannel.send({
-              content: `<@${ownerId}> 🚨 **[NEW TECHNICAL SUPPORT DISPATCH]** ${dmed ? "(DM successfully delivered to Owner)" : "*(DM delivery fallback - DMs locked/restricted)*"}`,
-              embeds: [embed]
-            }).catch(() => {});
+            try {
+              const safeName = (name || discordTag || "user").replace(/[^a-zA-Z0-9_\-]/g, "").slice(0, 16) || "user";
+              const starterMsg = await logChannel.send({
+                content: `🎫 **[TICKET DISPATCH]** \`${category || "Support"}\` from **${name || "User"}** (<@${userId}>)\nSubject: *${subject.slice(0, 60)}*`
+              });
+
+              if (typeof starterMsg.startThread === "function") {
+                const thread = await starterMsg.startThread({
+                  name: `ticket-${safeName}-${Date.now().toString().slice(-4)}`,
+                  autoArchiveDuration: 1440,
+                  reason: `Support dispatch ticket thread for ${name}`
+                });
+                threadId = thread.id;
+                await thread.send({
+                  content: `<@${ownerId}> 🚨 **New Technical Support Dispatch** from <@${userId}>:`,
+                  embeds: [embed]
+                });
+              } else {
+                await starterMsg.reply({ embeds: [embed] });
+              }
+            } catch (threadErr) {
+              await logChannel.send({
+                content: `<@${ownerId}> 🚨 **[NEW TECHNICAL SUPPORT DISPATCH]** ${dmed ? "(DM successfully delivered to Owner)" : "*(DM delivery fallback - DMs locked/restricted)*"}`,
+                embeds: [embed]
+              }).catch(() => {});
+            }
           }
 
           // Record in recent support dispatches
@@ -942,7 +965,9 @@ function startVisualizerServer(client, preferredPort = 5050) {
             message,
             timestamp: Date.now(),
             dmed,
-            dmError
+            dmError,
+            threadId,
+            replies: []
           };
           recentSupportDispatches.unshift(dispatchRecord);
           if (recentSupportDispatches.length > 50) recentSupportDispatches.pop();
@@ -952,7 +977,8 @@ function startVisualizerServer(client, preferredPort = 5050) {
             success: true,
             dmed,
             ownerNotified: dmed || Boolean(logChannel),
-            dispatchId: dispatchRecord.id
+            dispatchId: dispatchRecord.id,
+            threadId
           }));
         } catch (e) {
           res.writeHead(500, { "Content-Type": "application/json" });
@@ -970,6 +996,89 @@ function startVisualizerServer(client, preferredPort = 5050) {
         total: recentSupportDispatches.length,
         dispatches: recentSupportDispatches
       }));
+    }
+
+    // ── API: Owner DMs Ticket Issuer via Bot (/api/owner-dm-issuer) ──
+    if (pathname === "/api/owner-dm-issuer" && req.method === "POST") {
+      let body = "";
+      req.on("data", chunk => { body += chunk; });
+      req.on("end", async () => {
+        try {
+          const payload = JSON.parse(body || "{}");
+          const { userId, ticketId, subject, message, replyBy } = payload;
+
+          if (!userId || !message) {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ success: false, error: "User ID and message are required." }));
+          }
+
+          let targetUser = client?.users?.cache?.get(userId);
+          if (!targetUser && client?.users?.fetch) {
+            targetUser = await client.users.fetch(userId).catch(() => null);
+          }
+
+          if (!targetUser) {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            return res.end(JSON.stringify({ success: false, error: "Discord user could not be found or fetched." }));
+          }
+
+          // Build Official Discord DM Embed for the Ticket Issuer
+          const replyEmbed = new EmbedBuilder()
+            .setColor("#00FF9D")
+            .setTitle(`💬 [TOGETHER SUPPORT] • Response to Your Ticket`)
+            .setAuthor({
+              name: `Together Music Bot Support Desk`,
+              iconURL: client?.user ? client.user.displayAvatarURL() : undefined,
+              url: `https://dash.together.dpdns.org/`
+            })
+            .setDescription(
+              `Hello **${targetUser.globalName || targetUser.username}**,\n\n` +
+              `You have received an official response from **${replyBy || "KAJU🦋 (Lead Systems Architect)"}** regarding your support inquiry:\n\n` +
+              (subject ? `📌 **Inquiry Subject:** *${subject}*\n\n` : "") +
+              `💬 **Support Response:**\n\`\`\`\n${message.slice(0, 3800)}\n\`\`\`\n` +
+              `*If you have further questions or require live debugging, feel free to transmit another dispatch at [dash.together.dpdns.org/contact](https://dash.together.dpdns.org/contact) or join our [Community Discord](https://discord.gg/mUdGTs2Dw5).*`
+            )
+            .setFooter({
+              text: "TOGETHER Engine • Verified Lead Systems Architect Response",
+              iconURL: client?.user ? client.user.displayAvatarURL() : undefined
+            })
+            .setTimestamp();
+
+          await targetUser.send({ embeds: [replyEmbed] });
+
+          // Also record in the ticket's Discord thread in 1557621712948830388 if available
+          const foundTicket = recentSupportDispatches.find(d => d.id === ticketId || d.userId === userId);
+          if (foundTicket) {
+            if (!Array.isArray(foundTicket.replies)) foundTicket.replies = [];
+            foundTicket.replies.push({
+              message,
+              replyBy: replyBy || "Owner",
+              timestamp: Date.now()
+            });
+
+            if (foundTicket.threadId) {
+              const threadChannel = client?.channels?.cache?.get(foundTicket.threadId) || (await client?.channels?.fetch(foundTicket.threadId).catch(() => null));
+              if (threadChannel && threadChannel.isTextBased()) {
+                await threadChannel.send({
+                  content: `✅ **[DM SENT TO USER]** by **${replyBy || "Owner"}** to <@${userId}>:\n>>> ${message}`
+                }).catch(() => {});
+              }
+            }
+          }
+
+          res.writeHead(200, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({
+            success: true,
+            recipient: targetUser.tag || targetUser.username,
+            recipientId: targetUser.id,
+            timestamp: Date.now()
+          }));
+        } catch (err) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          return res.end(JSON.stringify({ success: false, error: err.message }));
+        }
+      });
+      return;
     }
 
     // ── API: Server Explorer & Guilds List (/api/server-list or /api/owner/server-list) ──

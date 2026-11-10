@@ -88,6 +88,12 @@ export default function OwnerPage() {
   const [supportDispatches, setSupportDispatches] = useState([]);
   const [dispatchesLoading, setDispatchesLoading] = useState(false);
 
+  // Ticket Reply via Bot State
+  const [activeReplyTicketId, setActiveReplyTicketId] = useState(null);
+  const [replyMessage, setReplyMessage] = useState('');
+  const [replySending, setReplySending] = useState(false);
+  const [replyStatus, setReplyStatus] = useState(null);
+
   // Clipboard feedback
   const [copiedText, setCopiedText] = useState(null);
 
@@ -245,6 +251,49 @@ export default function OwnerPage() {
       console.warn("Failed to load support dispatches:", err.message);
     } finally {
       setDispatchesLoading(false);
+    }
+  }
+
+  async function handleSendReplyToIssuer(ticket) {
+    if (!replyMessage.trim()) return;
+    setReplySending(true);
+    setReplyStatus(null);
+    try {
+      const resp = await axios.post('/api/owner/dm-issuer', {
+        userId: ticket.userId,
+        ticketId: ticket.id,
+        subject: ticket.subject,
+        message: replyMessage.trim()
+      }, { withCredentials: true });
+
+      if (resp.data?.success) {
+        setReplyStatus({
+          id: ticket.id,
+          text: `DM successfully delivered to ${ticket.name} (${ticket.discordTag}) via TOGETHER Bot!`,
+          isError: false
+        });
+        setReplyMessage('');
+        ticket.replies = ticket.replies || [];
+        ticket.replies.push({
+          message: replyMessage.trim(),
+          replyBy: 'Owner',
+          timestamp: Date.now()
+        });
+      } else {
+        setReplyStatus({
+          id: ticket.id,
+          text: resp.data?.error || 'Failed to deliver DM.',
+          isError: true
+        });
+      }
+    } catch (err) {
+      setReplyStatus({
+        id: ticket.id,
+        text: err.response?.data?.error || err.message || 'Error sending reply.',
+        isError: true
+      });
+    } finally {
+      setReplySending(false);
     }
   }
 
@@ -441,7 +490,7 @@ export default function OwnerPage() {
             </h1>
             
             <p className="font-mono text-xs text-brutal-muted mt-1 max-w-2xl">
-              Real-time Shoukaku Lavalink audio cluster, live Discord log channel stream, all-server management directory, and security defense matrix.
+              Real-time native-together audio cluster, live Discord log channel stream, all-server management directory, and security defense matrix.
             </p>
 
             {/* Tactical Status Ticker */}
@@ -609,7 +658,7 @@ export default function OwnerPage() {
         >
           <div className="flex items-center gap-2">
             <Radio className="w-4 h-4" />
-            <span>06 // NODES &amp; AUDIO</span>
+            <span>06 // NATIVE-TOGETHER</span>
           </div>
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
         </button>
@@ -662,15 +711,15 @@ export default function OwnerPage() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* MODULE 1: CLUSTER TELEMETRY & LAVALINK AUDIO NODES           */}
+      {/* MODULE 1: CLUSTER TELEMETRY & NATIVE-TOGETHER AUDIO ENGINES    */}
       {/* ══════════════════════════════════════════════════════════════ */}
       {activeTab === 'telemetry' && (
         <div className="space-y-6">
           {/* Audio Cluster Telemetry Card */}
           <BrutCard 
-            title="SHOUKAKU LAVALINK AUDIO CLUSTER" 
-            subtitle="Audio node health, JVM heap utilization, Opus 320kbps lossless pipeline, and packet telemetry"
-            badge={`${lavalink.onlineNodes || 1}/${lavalink.totalNodes || 1} NODES HEALTHY`}
+            title="NATIVE-TOGETHER AUDIO CLUSTER" 
+            subtitle="native-together audio engine health, JVM heap utilization, Opus 320kbps lossless pipeline, and packet telemetry"
+            badge={`${lavalink.onlineNodes || 1}/${lavalink.totalNodes || 1} ENGINES ONLINE`}
             highlight={true}
           >
             <div className="space-y-6">
@@ -715,7 +764,7 @@ export default function OwnerPage() {
                 {nodes.length === 0 ? (
                   <div className="col-span-full border-2 border-dashed border-brutal-border bg-brutal-secondary p-8 text-center font-mono text-xs text-brutal-muted">
                     <Radio className="w-8 h-8 mx-auto mb-2 text-zinc-600" />
-                    RUNNING IN HIGH-PERFORMANCE NATIVE OPUS STREAM MODE (PORT 5050). ALL NODES SYNCED.
+                    RUNNING IN HIGH-PERFORMANCE NATIVE-TOGETHER STREAM MODE (PORT 5050). ALL AUDIO ENGINES SYNCED.
                   </div>
                 ) : (
                   nodes.map((node, i) => {
@@ -732,7 +781,7 @@ export default function OwnerPage() {
                           <div className="flex items-center gap-2.5">
                             <span className={`w-3 h-3 ${node.status === 'ONLINE' ? 'bg-brutal-accent' : 'bg-red-500'} inline-block animate-pulse`}></span>
                             <span className="font-mono font-black text-sm uppercase text-brutal-text tracking-wide">
-                              {node.name}
+                              {node.name ? (node.name.toLowerCase().includes('native') ? node.name : `native-together // ${node.name.replace(/lavalink/gi, 'cluster')}`) : 'native-together-primary'}
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
@@ -752,14 +801,14 @@ export default function OwnerPage() {
                             <div className="flex justify-between items-center mb-1 text-[11px]">
                               <span className="text-brutal-muted font-bold uppercase">CPU USAGE ({node.cpu?.cores || 4} CORES)</span>
                               <span className="text-brutal-text font-bold">
-                                Lavalink: <span className="text-brutal-accent">{lavaCpu}%</span> / Sys: {sysCpu}%
+                                native-together: <span className="text-brutal-accent">{lavaCpu}%</span> / Sys: {sysCpu}%
                               </span>
                             </div>
                             <div className="w-full h-3 bg-black border border-brutal-border flex overflow-hidden">
                               <div 
                                 style={{ width: `${Math.min(100, lavaCpu)}%` }} 
                                 className="bg-brutal-accent h-full transition-all duration-300"
-                                title={`Lavalink: ${lavaCpu}%`}
+                                title={`native-together: ${lavaCpu}%`}
                               />
                               <div 
                                 style={{ width: `${Math.min(100 - lavaCpu, sysCpu)}%` }} 
@@ -1465,7 +1514,7 @@ export default function OwnerPage() {
                     { cmd: ".serverlist", desc: "Display all connected servers with active voice state." },
                     { cmd: ".leaveserver <guildId>", desc: "Force the bot to leave an abusive server." },
                     { cmd: ".blacklist <add|remove> <userId>", desc: "Block malicious users from bot access." },
-                    { cmd: ".node", desc: "Inspect Lavalink Shoukaku cluster metrics." },
+                    { cmd: ".node", desc: "Inspect native-together cluster metrics." },
                     { cmd: ".serverinfo <guildId>", desc: "Deep inspect guild permissions, vanity & roles." },
                   ].map((item, idx) => (
                     <div 
@@ -1493,15 +1542,15 @@ export default function OwnerPage() {
       {activeTab === 'cluster' && (
         <div className="space-y-6">
           <BrutCard
-            title="LAVALINK AUDIO SHARDS & GATEWAY CLUSTER"
-            subtitle="Deep node performance metrics, voice socket telemetry, and hardware audio transcoders"
-            badge={`${lavalinkNodes.length} NODES CONFIGURED`}
+            title="NATIVE-TOGETHER AUDIO SHARDS & CLUSTER"
+            subtitle="Deep native-together performance metrics, voice socket telemetry, and hardware audio transcoders"
+            badge={`${lavalinkNodes.length} ENGINES CONFIGURED`}
           >
             <div className="space-y-6">
               {/* Cluster Status Summary */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-4 bg-brutal-bg border-2 border-brutal-border">
-                  <span className="text-[10px] text-zinc-400 uppercase font-bold block mb-1">TOTAL VOICE NODES</span>
+                  <span className="text-[10px] text-zinc-400 uppercase font-bold block mb-1">TOTAL NATIVE-TOGETHER ENGINES</span>
                   <p className="font-display font-black text-2xl text-emerald-400">{lavalink.totalNodes || lavalinkNodes.length || 1} ONLINE</p>
                   <span className="text-[10px] text-zinc-500">Auto-failover enabled</span>
                 </div>
@@ -1526,7 +1575,7 @@ export default function OwnerPage() {
               <div className="border-2 border-brutal-border bg-black p-4 space-y-3">
                 <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                   <span className="font-mono text-xs text-white font-bold uppercase tracking-wider">
-                    DETAILED NODE METRICS &amp; LOAD BALANCING
+                    DETAILED NATIVE-TOGETHER METRICS &amp; LOAD BALANCING
                   </span>
                   <span className="text-[10px] text-emerald-400 font-mono font-bold">
                     ✓ BALANCED DISPATCH ACTIVE
@@ -1537,7 +1586,7 @@ export default function OwnerPage() {
                   <table className="w-full text-left font-mono text-xs border-collapse">
                     <thead>
                       <tr className="border-b border-zinc-800 text-zinc-400 text-[10px] uppercase">
-                        <th className="py-2 px-3">Node Identifier</th>
+                        <th className="py-2 px-3">Engine Identifier (native-together)</th>
                         <th className="py-2 px-3">Status</th>
                         <th className="py-2 px-3">Active Players</th>
                         <th className="py-2 px-3">CPU Usage</th>
@@ -1550,7 +1599,7 @@ export default function OwnerPage() {
                         <tr key={idx} className="hover:bg-zinc-900/50">
                           <td className="py-2.5 px-3 font-bold text-white flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                            <span>{n.name || 'Native-Opus-Cluster'}</span>
+                            <span>{n.name ? (n.name.toLowerCase().includes('native') ? n.name : `native-together // ${n.name.replace(/lavalink/gi, 'cluster')}`) : 'native-together-primary'}</span>
                           </td>
                           <td className="py-2.5 px-3 text-emerald-400 font-bold uppercase text-[11px]">
                             {n.connected !== false ? 'ONLINE' : 'OFFLINE'}
@@ -1697,6 +1746,124 @@ export default function OwnerPage() {
                           {dsp.message}
                         </div>
                       </div>
+
+                      {/* Previous DM Replies to Issuer */}
+                      {dsp.replies && dsp.replies.length > 0 && (
+                        <div className="space-y-2 pt-2 border-t border-zinc-800">
+                          <span className="text-[10px] text-zinc-400 uppercase font-bold flex items-center gap-1.5">
+                            <MessageSquare className="w-3 h-3 text-cyan-400" />
+                            <span>PREVIOUS OWNER DM REPLIES ({dsp.replies.length}):</span>
+                          </span>
+                          {dsp.replies.map((rep, rIdx) => (
+                            <div key={rIdx} className="p-2.5 bg-zinc-900/90 border border-emerald-500/30 text-xs font-mono text-zinc-200">
+                              <div className="flex items-center justify-between text-[10px] text-emerald-400 font-bold mb-1">
+                                <span>SENT BY {rep.replyBy || 'OWNER'} VIA TOGETHER BOT</span>
+                                <span className="text-zinc-500">{new Date(rep.timestamp).toLocaleTimeString()}</span>
+                              </div>
+                              <p className="whitespace-pre-wrap">{rep.message}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Ticket Action Controls */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-zinc-800">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveReplyTicketId(activeReplyTicketId === dsp.id ? null : dsp.id);
+                            setReplyStatus(null);
+                          }}
+                          className="px-3 py-1.5 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/60 text-emerald-300 font-bold text-xs uppercase flex items-center gap-1.5 shadow-sm transition-all"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>{activeReplyTicketId === dsp.id ? "CLOSE REPLY PANEL" : "DM ISSUER VIA TOGETHER BOT"}</span>
+                        </button>
+
+                        {dsp.threadId && (
+                          <span className="text-[10px] text-zinc-500 font-mono">
+                            Thread #<code>{dsp.threadId}</code> active in log channel
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Interactive Bot DM Reply Panel */}
+                      {activeReplyTicketId === dsp.id && (
+                        <div className="p-4 bg-zinc-950 border-2 border-emerald-500/60 space-y-3 shadow-brutal-sm">
+                          <div className="flex items-center justify-between">
+                            <span className="font-display font-black text-xs text-emerald-400 uppercase flex items-center gap-1.5">
+                              <Send className="w-3.5 h-3.5" />
+                              <span>REPLY TO {dsp.name} (@{dsp.discordTag}) VIA BOT DIRECT MESSAGE</span>
+                            </span>
+                            <span className="text-[10px] text-zinc-500 font-mono">USER ID: {dsp.userId}</span>
+                          </div>
+
+                          {/* Quick Response Chips */}
+                          <div className="flex flex-wrap gap-1.5 text-[10px] font-mono">
+                            <span className="text-zinc-500 self-center">Templates:</span>
+                            {[
+                              "Checking server voice logs now, stand by.",
+                              "Run /forcefix in your voice channel to flush audio buffers.",
+                              "Issue has been investigated and patched. Please test playback.",
+                            ].map((snippet, sIdx) => (
+                              <button
+                                key={sIdx}
+                                type="button"
+                                onClick={() => setReplyMessage(snippet)}
+                                className="px-2 py-0.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white transition-all"
+                              >
+                                {snippet.slice(0, 30)}...
+                              </button>
+                            ))}
+                          </div>
+
+                          <textarea
+                            rows="3"
+                            value={replyMessage}
+                            onChange={(e) => setReplyMessage(e.target.value)}
+                            placeholder={`Type the response message to send directly to ${dsp.name} in Discord DM from TOGETHER Bot...`}
+                            className="w-full px-3 py-2 bg-black border-2 border-zinc-700 text-white text-xs focus:border-emerald-400 focus:outline-none font-mono"
+                          />
+
+                          {replyStatus && replyStatus.id === dsp.id && (
+                            <div className={`p-2.5 text-xs font-mono border ${
+                              replyStatus.isError
+                                ? 'bg-red-950/60 border-red-500 text-red-200'
+                                : 'bg-emerald-950/60 border-emerald-500 text-emerald-200'
+                            }`}>
+                              {replyStatus.text}
+                            </div>
+                          )}
+
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              type="button"
+                              onClick={() => { setActiveReplyTicketId(null); setReplyStatus(null); }}
+                              className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-400 text-xs uppercase"
+                            >
+                              CANCEL
+                            </button>
+                            <button
+                              type="button"
+                              disabled={replySending || !replyMessage.trim()}
+                              onClick={() => handleSendReplyToIssuer(dsp)}
+                              className="px-4 py-1.5 bg-emerald-400 hover:bg-emerald-300 text-black font-display font-black text-xs uppercase flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                            >
+                              {replySending ? (
+                                <>
+                                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                  <span>SENDING DM VIA BOT...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Send className="w-3.5 h-3.5" />
+                                  <span>TRANSMIT DM TO USER</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      )}
 
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-zinc-900 text-[10px] text-zinc-500 font-mono">
                         <div className="flex items-center gap-3">

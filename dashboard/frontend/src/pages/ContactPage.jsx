@@ -203,7 +203,7 @@ export default function ContactPage() {
                 </p>
                 <div className="pt-2">
                   <a
-                    href="https://dash.together.dpdns.org/login"
+                    href="/login?redirect=/contact"
                     className="inline-flex items-center gap-2 px-5 py-2.5 bg-brutal-accent hover:bg-emerald-400 text-black font-display font-black text-xs uppercase shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
                   >
                     <LogIn className="w-4 h-4" />

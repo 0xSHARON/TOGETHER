@@ -25,12 +25,16 @@ router.get("/login", (req, res) => {
     return res.redirect(`${config.frontendUrl}/login?error=missing_client_secret`);
   }
 
+  const returnTo = req.query.redirect || req.query.returnTo || "";
+  const state = returnTo ? encodeURIComponent(returnTo) : "";
+
   const params = new URLSearchParams({
     client_id: config.clientId,
     redirect_uri: config.redirectUri,
     response_type: "code",
     scope: "identify guilds",
-    prompt: "consent"
+    prompt: "consent",
+    ...(state ? { state } : {})
   });
 
   res.redirect(`https://discord.com/api/oauth2/authorize?${params.toString()}`);
@@ -38,7 +42,7 @@ router.get("/login", (req, res) => {
 
 // GET /api/auth/callback -> Handle code exchange
 router.get("/callback", async (req, res) => {
-  const { code } = req.query;
+  const { code, state } = req.query;
 
   if (!code) {
     return res.redirect(`${config.frontendUrl}/login?error=missing_code`);
@@ -110,7 +114,19 @@ router.get("/callback", async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
 
-    res.redirect(`${config.frontendUrl}/overview`);
+    let targetRedirect = `${config.frontendUrl}/overview`;
+    if (state) {
+      try {
+        const decodedState = decodeURIComponent(state);
+        if (decodedState.startsWith("/")) {
+          targetRedirect = `${config.frontendUrl}${decodedState}`;
+        } else if (decodedState.startsWith(config.frontendUrl)) {
+          targetRedirect = decodedState;
+        }
+      } catch {}
+    }
+
+    res.redirect(targetRedirect);
   } catch (err) {
     const discordErr = err.response?.data?.error || err.message;
     console.error("[OAuth Error]", err.response?.data || err.message);

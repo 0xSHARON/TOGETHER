@@ -173,5 +173,30 @@ router.get("/support-dispatches", requireOwner, async (req, res) => {
   }
 });
 
+// POST /api/owner/dm-issuer -> Owner sends direct message to ticket issuer through Together Bot
+router.post("/dm-issuer", requireOwner, async (req, res) => {
+  try {
+    const { userId, ticketId, subject, message } = req.body;
+    if (!userId || !message || !message.trim()) {
+      return res.status(400).json({ error: "User ID and message are required." });
+    }
+    const replyBy = req.user.global_name || req.user.username || "KAJU🦋 (Lead Systems Architect)";
+    const result = await botBridge.dmIssuer({
+      userId,
+      ticketId,
+      subject,
+      message: message.trim(),
+      replyBy
+    });
+    if (result.success) {
+      res.json(result);
+    } else {
+      res.status(502).json({ error: result.error || "Failed to deliver DM to user." });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
 

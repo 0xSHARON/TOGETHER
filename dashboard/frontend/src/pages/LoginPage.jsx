@@ -19,6 +19,7 @@ const FALLBACK_BOT = {
 export default function LoginPage() {
   const [searchParams] = useSearchParams();
   const error = searchParams.get('error');
+  const redirectParam = searchParams.get('redirect') || searchParams.get('returnTo');
   const { user } = useAuth();
   const [bot, setBot] = useState(FALLBACK_BOT);
 
@@ -161,9 +162,9 @@ export default function LoginPage() {
               <p className="font-mono text-xs text-brutal-muted">
                 You are currently authenticated. You can proceed directly to your music control center.
               </p>
-              <Link to="/overview" className="block w-full">
+              <Link to={redirectParam || "/overview"} className="block w-full">
                 <BrutButton variant="primary" size="md" className="w-full" icon={ArrowRight}>
-                  ENTER DASHBOARD
+                  {redirectParam ? "CONTINUE TO REQUESTED PAGE" : "ENTER DASHBOARD"}
                 </BrutButton>
               </Link>
             </div>
@@ -202,7 +203,7 @@ export default function LoginPage() {
 
           {/* Login Button */}
           {!user && (
-            <a href="/api/auth/login" className="block w-full">
+            <a href={`/api/auth/login${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ''}`} className="block w-full">
               <BrutButton variant="primary" size="lg" className="w-full" icon={ExternalLink}>
                 CONNECT VIA DISCORD
               </BrutButton>

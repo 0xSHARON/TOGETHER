@@ -47,7 +47,7 @@ class BotBridgeService {
         onlineNodes: 1,
         gatewayPing: 24,
         nodes: [{
-          name: "Native-Opus-Cluster",
+          name: "native-together-primary",
           state: 1,
           status: "ONLINE",
           players: 0,
@@ -106,6 +106,21 @@ class BotBridgeService {
       return resp.data?.dispatches || [];
     } catch {
       return [];
+    }
+  }
+
+  async dmIssuer(payload) {
+    try {
+      const resp = await axios.post(`${this.apiUrl}/api/owner-dm-issuer`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+          "x-dashboard-secret": this.secret
+        },
+        timeout: 8000
+      });
+      return resp.data;
+    } catch (err) {
+      return { success: false, error: err.response?.data?.error || err.message };
     }
   }
 
