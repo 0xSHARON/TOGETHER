@@ -28,20 +28,23 @@ export function CommandCard({
 	const off = availability === "off-here" || availability === "off-everywhere";
 
 	return (
-		<Card padding="compact" className={cn("flex flex-col gap-3", off && "border-dashed")}>
+		<Card padding="compact" className={cn("flex flex-col gap-3", off && "brutal-stripe border-dashed opacity-80")}>
 			<div className="flex items-start gap-3">
-				<span className={cn("rounded-card bg-muted mt-0.5 shrink-0 p-2", tint)} aria-hidden="true">
+				<span
+					className={cn("border-border bg-muted rounded-field brutal-shadow-sm mt-0.5 shrink-0 border-2 p-2", tint)}
+					aria-hidden="true"
+				>
 					<Icon size={18} />
 				</span>
 
 				<div className="min-w-0 flex-1">
 					<div className="flex flex-wrap items-center gap-2">
-						<code className="font-mono text-sm font-medium">/{command.name}</code>
+						<code className="text-accent font-mono text-sm font-bold">/{command.name}</code>
 						{command.aliases.map((alias) => (
 							<Tooltip key={alias} label={t("commands.alsoAnswers", { alias: `${prefix}${alias}` })}>
 								<code
 									tabIndex={0}
-									className="bg-muted text-muted-foreground rounded-chip px-2 py-0.5 font-mono text-xs"
+									className="bg-muted border-border text-foreground rounded-chip border px-2 py-0.5 font-mono text-xs font-medium"
 								>
 									{prefix}
 									{alias}
@@ -67,13 +70,13 @@ export function CommandCard({
 				{place !== null && (
 					<Link
 						to={place.path}
-						className="text-accent hover:bg-muted rounded-card group flex shrink-0 items-center gap-1 px-2 py-1 text-xs font-medium transition-colors duration-150"
+						className="border-border bg-card text-foreground hover:bg-muted brutal-shadow-sm rounded-field group flex shrink-0 items-center gap-1 border-2 px-2.5 py-1 font-mono text-xs font-bold uppercase transition-all duration-100"
 					>
 						{t("commands.configure")}
 						<ChevronRight
 							size={13}
 							aria-hidden="true"
-							className="transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+							className="transition-transform duration-150 ease-out group-hover:translate-x-0.5"
 						/>
 					</Link>
 				)}

@@ -15,9 +15,19 @@ export function SectionHeading({
 	className?: string;
 }): React.JSX.Element {
 	return (
-		<Tag id={id} className={cn("text-foreground flex items-baseline gap-2 text-sm font-semibold", className)}>
+		<Tag
+			id={id}
+			className={cn(
+				"text-foreground flex items-center gap-2 font-mono text-xs font-bold tracking-wider uppercase",
+				className,
+			)}
+		>
 			{children}
-			{count !== undefined && <span className="text-muted-foreground font-normal tabular-nums">{count}</span>}
+			{count !== undefined && (
+				<span className="border-border bg-muted text-foreground rounded-chip border-2 px-1.5 py-0.5 text-[11px] font-bold tabular-nums">
+					{count}
+				</span>
+			)}
 		</Tag>
 	);
 }

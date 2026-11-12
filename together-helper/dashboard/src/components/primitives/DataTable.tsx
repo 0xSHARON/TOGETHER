@@ -1,8 +1,8 @@
 import { type ReactNode } from "react";
 import { Card } from "@/components/primitives/Card";
 
-export const TH = "px-3 py-3 text-left font-medium sm:px-6";
-export const TH_NUM = "w-24 px-3 py-3 text-right font-medium sm:w-32 sm:px-6";
+export const TH = "px-3 py-3 text-left font-mono text-[11px] font-bold tracking-wider uppercase sm:px-6";
+export const TH_NUM = "w-24 px-3 py-3 text-right font-mono text-[11px] font-bold tracking-wider uppercase sm:w-32 sm:px-6";
 export const CELL = "px-3 py-3 sm:px-6";
 export const CELL_NUM = "px-3 py-3 text-right tabular-nums sm:px-6";
 
@@ -23,7 +23,7 @@ export function DataTable({
 		<Card padding="none" className="overflow-x-auto">
 			<table className="w-full table-fixed text-sm">
 				<caption className="sr-only">{caption}</caption>
-				<thead className="text-muted-foreground border-border border-b">
+				<thead className="bg-muted text-foreground border-border border-b-2">
 					<tr>{head}</tr>
 				</thead>
 				<tbody className="divide-border divide-y">{children}</tbody>

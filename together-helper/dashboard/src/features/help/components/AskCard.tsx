@@ -127,7 +127,7 @@ export function AskCard({ name }: { name: string }): React.JSX.Element {
 						role="listbox"
 						aria-label={t("help.suggestions")}
 						hidden={!expanded}
-						className="bg-card border-border rounded-field absolute top-full right-0 left-0 z-20 mt-1 flex max-h-80 flex-col overflow-y-auto border py-1 shadow-lg"
+						className="bg-popover border-border rounded-field brutal-shadow absolute top-full right-0 left-0 z-20 mt-1 flex max-h-80 flex-col overflow-y-auto border-2 py-1"
 					>
 						{suggestions.map((entry, index) => (
 							<li

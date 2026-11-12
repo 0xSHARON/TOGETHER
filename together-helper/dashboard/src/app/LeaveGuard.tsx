@@ -58,9 +58,9 @@ export function LeaveGuard({ when }: { when: boolean }): React.JSX.Element | nul
 						buttons[(at + (event.shiftKey ? -1 : 1) + buttons.length) % buttons.length]?.focus();
 					}
 				}}
-				className="bg-popover border-border rounded-card motion-pop relative flex w-full max-w-sm flex-col gap-4 border p-6 shadow-lg"
+				className="bg-popover border-border rounded-card brutal-shadow-lg motion-pop relative flex w-full max-w-sm flex-col gap-4 border-2 p-6"
 			>
-				<h2 id={titleId} className="font-semibold">
+				<h2 id={titleId} className="font-display font-bold tracking-tight uppercase">
 					{t("leave.title")}
 				</h2>
 				<p id={bodyId} className="text-muted-foreground text-sm">

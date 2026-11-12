@@ -87,33 +87,33 @@
 
 /** The palette, measured against WCAG by `src/test/contrast.test.ts`: `primary` is a fill under white, `accent` the text colour. */
 @theme {
-	/* Neo-Brutalism High Contrast Theme Palette */
-	--color-background: light-dark(#f4f4f0, #08080a);
-	--color-foreground: light-dark(#08080a, #f4f4f0);
-	--color-muted: light-dark(#e5e5e0, #141418);
-	--color-muted-foreground: light-dark(#52525b, #9ca3af);
-	--color-card: light-dark(#ffffff, #0e0e12);
-	--color-popover: light-dark(#ffffff, #141418);
-	--color-border: light-dark(#000000, #27272a);
-	--color-input: light-dark(#000000, #3f3f46);
+	/* Neo-Brutalism High-Craft Architectural Palette (WCAG AA + Light/Dark Parity) */
+	--color-background: light-dark(#f4f3ee, #09090b);
+	--color-foreground: light-dark(#09090b, #f4f4f0);
+	--color-muted: light-dark(#e7e5dd, #15151a);
+	--color-muted-foreground: light-dark(#44444d, #a1a1aa);
+	--color-card: light-dark(#ffffff, #101015);
+	--color-popover: light-dark(#ffffff, #16161d);
+	--color-border: light-dark(#09090b, #2e2e38);
+	--color-input: light-dark(#09090b, #71717a);
 	/* The sidebar */
-	--color-sidebar: light-dark(#ebebe6, #08080a);
-	--color-primary: light-dark(#000000, #00e676);
-	--color-primary-foreground: light-dark(#ffffff, #000000);
-	--color-accent: light-dark(#00b853, #00e676);
+	--color-sidebar: light-dark(#ebe9e1, #0b0b0f);
+	--color-primary: light-dark(#8a2a6b, #bf3a94);
+	--color-primary-foreground: #ffffff;
+	--color-accent: light-dark(#7a2260, #e08ac4);
 	/* Behind the selected row or chip, under accent text. */
-	--color-accent-wash: light-dark(#dcfce7, #00e6761f);
-	--color-ring: light-dark(#000000, #00e676);
-	--color-success: #00e676;
-	--color-warning: #facc15;
-	--color-destructive: #ef4444;
-	--color-destructive-text: light-dark(#dc2626, #f87171);
+	--color-accent-wash: light-dark(#f6e9f2, #3a2433);
+	--color-ring: light-dark(#8a2a6b, #e08ac4);
+	--color-success: light-dark(#15803d, #4ade80);
+	--color-warning: light-dark(#9a3412, #fbbf24);
+	--color-destructive: #b91c1c;
+	--color-destructive-text: light-dark(#b91c1c, #f87171);
 
 	/* Category hues */
 	--color-hue-violet: light-dark(#6d28d9, #a78bfa);
-	--color-hue-amber: light-dark(#d97706, #fbbf24);
-	--color-hue-red: light-dark(#dc2626, #f87171);
-	--color-hue-green: #00e676;
+	--color-hue-amber: light-dark(#b45309, #fbbf24);
+	--color-hue-red: light-dark(#b91c1c, #f87171);
+	--color-hue-green: light-dark(#15803d, #4ade80);
 	--color-hue-blue: light-dark(#1d4ed8, #60a5fa);
 	--color-hue-pink: light-dark(#be185d, #f472b6);
 
@@ -446,12 +446,13 @@
 .tippy-box[data-theme~="testify"] {
 	background-color: var(--color-popover);
 	color: var(--color-foreground);
-	border: 1px solid var(--color-border);
+	border: 2px solid var(--color-border);
 	border-radius: var(--radius-field);
 	font-size: 0.75rem;
+	font-weight: 600;
 	line-height: 1.4;
-	padding: 0.125rem 0.25rem;
-	box-shadow: light-dark(0 2px 8px 0 rgb(21 21 31 / 12%), inset 0 1px 0 0 rgb(255 255 255 / 6%));
+	padding: 0.25rem 0.45rem;
+	box-shadow: 2px 2px 0px 0px light-dark(#09090b, #2e2e38);
 }
 
 .tippy-box[data-theme~="testify"] > .tippy-arrow {
@@ -552,58 +553,121 @@
 		}
 	}
 
-	/* Neo-Brutalism System Utilities */
-	.brutal-shadow {
-		box-shadow: 4px 4px 0px 0px #000000;
+	/* Neo-Brutalism Architectural Elevation & Texture Tokens (light-dark & accent-aware) */
+	:root {
+		--brutal-ink: light-dark(#09090b, #000000);
+		--brutal-plate: light-dark(#09090b, #2e2e3a);
+		--brutal-plate-hover: light-dark(#09090b, var(--color-accent));
+		--brutal-shadow-xs: 2px 2px 0px 0px var(--brutal-plate);
+		--brutal-shadow-sm: 2px 2px 0px 0px var(--brutal-plate);
+		--brutal-shadow: 3px 3px 0px 0px var(--brutal-plate);
+		--brutal-shadow-md: 4px 4px 0px 0px var(--brutal-plate);
+		--brutal-shadow-lg: 6px 6px 0px 0px var(--brutal-plate);
+		--brutal-shadow-accent: 3px 3px 0px 0px light-dark(#09090b, var(--color-accent));
+		--brutal-shadow-accent-md: 4px 4px 0px 0px light-dark(#09090b, var(--color-accent));
+		--brutal-shadow-accent-lg: 6px 6px 0px 0px light-dark(#09090b, var(--color-accent));
 	}
-	:root[data-theme="dark"] .brutal-shadow,
-	.dark .brutal-shadow {
-		box-shadow: 4px 4px 0px 0px #00e676;
-	}
+
 	.brutal-shadow-sm {
-		box-shadow: 2px 2px 0px 0px #000000;
+		box-shadow: var(--brutal-shadow-sm);
 	}
-	:root[data-theme="dark"] .brutal-shadow-sm,
-	.dark .brutal-shadow-sm {
-		box-shadow: 2px 2px 0px 0px #00e676;
+	.brutal-shadow {
+		box-shadow: var(--brutal-shadow-md);
+	}
+	.brutal-shadow-lg {
+		box-shadow: var(--brutal-shadow-lg);
+	}
+	.brutal-shadow-accent {
+		box-shadow: var(--brutal-shadow-accent-md);
+	}
+
+	.brutal-panel {
+		border: 2px solid var(--color-border);
+		background-color: var(--color-card);
+		box-shadow: var(--brutal-shadow);
+	}
+	.brutal-popover {
+		border: 2px solid var(--color-border);
+		background-color: var(--color-popover);
+		box-shadow: var(--brutal-shadow-lg);
 	}
 	.brutal-card {
-		border: 2px solid light-dark(#000000, #27272a);
-		background-color: light-dark(#ffffff, #0e0e12);
-		box-shadow: 3px 3px 0px 0px #000000;
-		transition: all 120ms ease;
+		border: 2px solid var(--color-border);
+		background-color: var(--color-card);
+		box-shadow: var(--brutal-shadow);
+		transition:
+			box-shadow 140ms ease,
+			border-color 140ms ease,
+			transform 140ms ease;
 	}
-	:root[data-theme="dark"] .brutal-card,
-	.dark .brutal-card {
-		box-shadow: 3px 3px 0px 0px #000000;
-	}
-	:root[data-theme="dark"] .brutal-card:hover,
-	.dark .brutal-card:hover {
-		box-shadow: 4px 4px 0px 0px #00e676;
+	.brutal-card:hover {
+		border-color: light-dark(#09090b, var(--color-accent));
+		box-shadow: var(--brutal-shadow-accent-md);
 		transform: translate(-1px, -1px);
+	}
+	.brutal-inset {
+		border: 2px solid var(--color-border);
+		background-color: var(--color-muted);
 	}
 	.brutal-btn {
-		border: 2px solid light-dark(#000000, #00e676);
+		border: 2px solid light-dark(#09090b, var(--color-border));
 		font-weight: 800;
 		text-transform: uppercase;
-		letter-spacing: 0.06em;
-		box-shadow: 3px 3px 0px 0px light-dark(#000000, #00e676);
-		transition: all 80ms ease;
+		letter-spacing: 0.05em;
+		box-shadow: var(--brutal-shadow-sm);
+		transition:
+			transform 90ms ease,
+			box-shadow 90ms ease,
+			border-color 120ms ease,
+			background-color 120ms ease;
 	}
-	.brutal-btn:hover {
-		box-shadow: 5px 5px 0px 0px light-dark(#000000, #00e676);
+	.brutal-btn:not(:disabled):hover {
+		transform: translate(-1px, -1px);
+		box-shadow: var(--brutal-shadow-accent);
+	}
+	.brutal-btn:not(:disabled):active {
+		box-shadow: 0px 0px 0px 0px transparent;
+		transform: translate(2px, 2px);
+	}
+	.brutal-btn-primary {
+		border: 2px solid light-dark(#09090b, var(--color-accent));
+		background-color: var(--color-primary);
+		color: var(--color-primary-foreground);
+		box-shadow: var(--brutal-shadow-accent);
+	}
+	.brutal-btn-primary:not(:disabled):hover {
+		box-shadow: 4px 4px 0px 0px light-dark(#09090b, var(--color-accent));
 		transform: translate(-1px, -1px);
 	}
-	.brutal-btn:active {
-		box-shadow: 0px 0px 0px 0px transparent !important;
-		transform: translate(2px, 2px) !important;
+	.brutal-btn-destructive {
+		border: 2px solid light-dark(#09090b, #f87171);
+		background-color: var(--color-destructive);
+		color: #ffffff;
+		box-shadow: 3px 3px 0px 0px light-dark(#09090b, #f87171);
 	}
+	.brutal-btn-destructive:not(:disabled):hover {
+		box-shadow: 4px 4px 0px 0px light-dark(#09090b, #f87171);
+		transform: translate(-1px, -1px);
+	}
+
+	/* Architectural blueprint matrix canvas */
 	.brutal-grid {
-		background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-		background-size: 24px 24px;
+		background-image:
+			linear-gradient(to right, light-dark(rgba(9, 9, 11, 0.045), rgba(255, 255, 255, 0.03)) 1px, transparent 1px),
+			linear-gradient(to bottom, light-dark(rgba(9, 9, 11, 0.045), rgba(255, 255, 255, 0.03)) 1px, transparent 1px);
+		background-size: 28px 28px;
 	}
-	:root[data-theme="light"] .brutal-grid {
-		background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px);
-		background-size: 24px 24px;
+	.brutal-dots {
+		background-image: radial-gradient(light-dark(rgba(9, 9, 11, 0.14), rgba(255, 255, 255, 0.09)) 1px, transparent 1px);
+		background-size: 20px 20px;
+	}
+	.brutal-stripe {
+		background-image: repeating-linear-gradient(
+			-45deg,
+			transparent,
+			transparent 6px,
+			light-dark(rgba(9, 9, 11, 0.045), rgba(255, 255, 255, 0.035)) 6px,
+			light-dark(rgba(9, 9, 11, 0.045), rgba(255, 255, 255, 0.035)) 12px
+		);
 	}
 }

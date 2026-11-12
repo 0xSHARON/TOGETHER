@@ -10,7 +10,7 @@ import { cn } from "@/lib/cn";
 
 const OPTION = cn(
 	ROW,
-	"text-muted-foreground hover:text-foreground hover:bg-card/60 text-sm transition-colors duration-150",
+	"text-muted-foreground hover:text-foreground hover:bg-muted hover:border-border border-2 border-transparent text-sm font-medium transition-all duration-100",
 );
 
 export function GuildSwitcher({
@@ -55,12 +55,15 @@ export function GuildSwitcher({
 					onClick={() => {
 						setOpen((was) => !was);
 					}}
-					className={cn(ROW, "hover:bg-card/60 w-full text-left transition-colors duration-150")}
+					className={cn(
+						ROW,
+						"bg-card border-border hover:border-accent brutal-shadow-sm mb-2 w-full cursor-pointer border-2 text-left transition-all duration-100",
+					)}
 				>
 					<span aria-hidden="true" className={ICON_SLOT}>
 						<Avatar name={guild.name} url={iconUrl} size={20} seed={guild.id} />
 					</span>
-					<span className={label("flex-1 truncate text-sm font-semibold")}>{guild.name}</span>
+					<span className={label("flex-1 truncate text-sm font-bold")}>{guild.name}</span>
 					<ChevronsUpDown
 						size={14}
 						aria-hidden="true"
@@ -69,7 +72,11 @@ export function GuildSwitcher({
 				</button>
 			</Tooltip>
 
-			<div id={listId} hidden={!open} className="border-border mt-1 mb-2 flex flex-col gap-1 border-b pb-2">
+			<div
+				id={listId}
+				hidden={!open}
+				className="border-border bg-card brutal-shadow mb-3 flex flex-col gap-1 rounded-card border-2 p-2"
+			>
 				{others.length === 0 ? (
 					<p className={label("text-muted-foreground px-2 py-1 text-sm")}>{t("nav.noOtherServers")}</p>
 				) : (

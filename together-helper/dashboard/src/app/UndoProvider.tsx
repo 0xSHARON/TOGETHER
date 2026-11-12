@@ -133,7 +133,7 @@ export function UndoProvider({ children }: { children: ReactNode }): React.JSX.E
 							onKeyDown={(event) => {
 								if (event.key === "Escape") send(waiting);
 							}}
-							className="bg-popover border-border rounded-card motion-fade pointer-events-auto flex max-w-md items-center gap-4 border py-2 pr-2 pl-4 text-sm shadow-lg"
+							className="bg-popover border-border rounded-card brutal-shadow motion-fade pointer-events-auto flex max-w-md items-center gap-4 border-2 py-2 pr-2 pl-4 text-sm font-medium"
 						>
 							<p className="min-w-0 flex-1">{t("undo.deleted", { what: waiting.label })}</p>
 							<Button ref={undoButton} variant="secondary" onClick={undo}>
@@ -146,7 +146,7 @@ export function UndoProvider({ children }: { children: ReactNode }): React.JSX.E
 				{failure !== null && (
 					<div
 						role="alert"
-						className="bg-popover border-destructive/50 rounded-card motion-fade pointer-events-auto flex max-w-md items-center gap-4 border py-2 pr-2 pl-4 text-sm shadow-lg"
+						className="bg-popover border-destructive rounded-card brutal-shadow motion-fade pointer-events-auto flex max-w-md items-center gap-4 border-2 py-2 pr-2 pl-4 text-sm font-medium"
 					>
 						<p className="min-w-0 flex-1">
 							{t("undo.failed", { what: failure.label })} {failure.message}

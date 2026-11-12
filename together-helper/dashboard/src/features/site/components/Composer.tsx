@@ -54,10 +54,13 @@ export function Composer({ palette }: { palette: readonly PaletteCommand[] }): R
 	return (
 		<figure className="flex flex-col gap-3">
 			{/* The moving box is for the eye; what it types is said once, in words, below it. */}
-			<div aria-hidden="true" className="bg-card border-border rounded-card overflow-hidden border">
-				<div className="text-muted-foreground border-border flex items-center gap-2 border-b px-4 py-2.5 text-sm">
-					<Hash size={15} />
-					<span className="text-foreground font-medium">{t("landing.composer.channel")}</span>
+			<div aria-hidden="true" className="bg-card border-border rounded-card brutal-shadow overflow-hidden border-2">
+				<div className="bg-muted text-foreground border-border flex items-center justify-between border-b-2 px-4 py-2.5 font-mono text-xs font-bold">
+					<span className="flex items-center gap-2">
+						<Hash size={14} aria-hidden="true" />
+						<span>{t("landing.composer.channel")}</span>
+					</span>
+					<span className="text-accent font-mono text-[10px] font-bold tracking-widest uppercase">LIVE</span>
 				</div>
 
 				<div className="relative flex h-64 flex-col justify-end gap-3 p-4">
@@ -67,10 +70,10 @@ export function Composer({ palette }: { palette: readonly PaletteCommand[] }): R
 				</div>
 			</div>
 
-			<figcaption className="text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+			<figcaption className="text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs">
 				<span className="sr-only">{t("landing.composer.example", { command: slashLine(scene) })}</span>
-				{t("landing.composer.twin")}
-				<code className="bg-muted text-foreground rounded-chip px-1.5 py-0.5 font-mono text-[0.8125rem]">
+				<span>{t("landing.composer.twin")}</span>
+				<code className="bg-card border-border text-foreground rounded-chip border-2 px-2 py-0.5 font-mono text-xs font-bold">
 					{prefixLine(scene, DEFAULT_PREFIX)}
 				</code>
 			</figcaption>
@@ -104,13 +107,13 @@ function History(): React.JSX.Element {
 
 function Menu({ commands, typed }: { commands: readonly PaletteCommand[]; typed: string }): React.JSX.Element {
 	return (
-		<ul className="bg-popover border-border rounded-field absolute inset-x-4 bottom-[4.5rem] flex flex-col overflow-hidden border py-1 text-sm">
+		<ul className="bg-popover border-border rounded-field brutal-shadow absolute inset-x-4 bottom-[4.5rem] flex flex-col overflow-hidden border-2 py-1 text-sm">
 			{commands.map((command, index) => (
 				<li
 					key={command.name}
-					className={cn("flex min-w-0 items-baseline gap-3 px-3 py-1.5", index === 0 && "bg-muted")}
+					className={cn("flex min-w-0 items-baseline gap-3 px-3 py-1.5", index === 0 && "bg-accent-wash")}
 				>
-					<span className="text-foreground shrink-0 font-mono">
+					<span className="text-foreground shrink-0 font-mono font-bold">
 						/<span className="text-accent">{command.name.slice(0, typed.length)}</span>
 						{command.name.slice(typed.length)}
 					</span>
@@ -123,17 +126,19 @@ function Menu({ commands, typed }: { commands: readonly PaletteCommand[]; typed:
 
 function Line({ frame, command }: { frame: ComposerFrame; command: string }): React.JSX.Element {
 	return (
-		<div className="bg-muted rounded-field flex min-h-12 flex-wrap items-center gap-2 px-3 py-2 font-mono text-sm">
-			<PlusCircle size={18} className="text-muted-foreground shrink-0" />
+		<div className="bg-muted border-border rounded-field flex min-h-12 flex-wrap items-center gap-2 border-2 px-3 py-2 font-mono text-sm">
+			<PlusCircle size={18} aria-hidden="true" className="text-muted-foreground shrink-0" />
 			{frame.typing !== null ? (
-				<span className="text-foreground">/{frame.typing}</span>
+				<span className="text-foreground font-bold">/{frame.typing}</span>
 			) : (
 				<>
-					<span className="bg-accent-wash text-accent rounded-chip px-1.5 py-0.5">/{command}</span>
+					<span className="bg-accent-wash border-border text-accent rounded-chip border px-1.5 py-0.5 font-bold">
+						/{command}
+					</span>
 					{frame.options.map((option) => (
-						<span key={option.name} className="flex items-center overflow-hidden">
-							<span className="bg-border/70 text-muted-foreground rounded-l-chip px-1.5 py-0.5">{option.name}</span>
-							<span className="bg-card text-foreground rounded-r-chip px-1.5 py-0.5">{option.value}</span>
+						<span key={option.name} className="border-border rounded-chip flex items-center overflow-hidden border">
+							<span className="bg-background text-muted-foreground px-1.5 py-0.5">{option.name}</span>
+							<span className="bg-card text-foreground px-1.5 py-0.5 font-bold">{option.value}</span>
 						</span>
 					))}
 				</>

@@ -4,16 +4,16 @@ import { cn } from "@/lib/cn";
 
 function Mock({ scheme }: { scheme: "light" | "dark" }): React.JSX.Element {
 	return (
-		<div data-scheme={scheme} className="bg-background flex h-full w-full gap-1 p-1.5">
-			<div className="bg-card border-border flex w-1/4 flex-col gap-1 rounded-chip border p-1">
-				<span className="bg-primary h-1 w-full rounded-full" />
-				<span className="bg-muted h-1 w-3/4 rounded-full" />
-				<span className="bg-muted h-1 w-2/3 rounded-full" />
+		<div data-scheme={scheme} className="bg-background flex h-full w-full gap-1 p-2">
+			<div className="bg-card border-border flex w-1/4 flex-col gap-1 rounded-chip border-2 p-1">
+				<span className="bg-primary h-1.5 w-full rounded-chip" />
+				<span className="bg-muted h-1 w-3/4 rounded-chip" />
+				<span className="bg-muted h-1 w-2/3 rounded-chip" />
 			</div>
 			<div className="flex flex-1 flex-col gap-1">
-				<span className="bg-foreground/80 h-1.5 w-1/2 rounded-full" />
-				<div className="bg-card border-border flex-1 rounded-chip border p-1">
-					<span className="bg-accent block h-1 w-1/3 rounded-full" />
+				<span className="bg-foreground/80 h-1.5 w-1/2 rounded-chip" />
+				<div className="bg-card border-border brutal-shadow-sm flex-1 rounded-chip border-2 p-1">
+					<span className="bg-accent block h-1.5 w-1/3 rounded-chip" />
 				</div>
 			</div>
 		</div>
@@ -35,8 +35,8 @@ export function ThemePreview({
 		<figure className="flex flex-col gap-2">
 			<div
 				className={cn(
-					"h-20 overflow-hidden rounded-card border transition-colors duration-200",
-					selected ? "border-primary ring-primary/30 ring-2" : "border-border",
+					"h-20 overflow-hidden rounded-card border-2 transition-all duration-100",
+					selected ? "border-accent brutal-shadow-sm" : "border-border/60",
 				)}
 			>
 				{theme === "system" ? (
@@ -51,7 +51,12 @@ export function ThemePreview({
 				)}
 			</div>
 
-			<figcaption className="text-muted-foreground flex items-center gap-2 text-xs">
+			<figcaption
+				className={cn(
+					"flex items-center gap-2 font-mono text-xs uppercase tracking-wider",
+					selected ? "text-foreground font-bold" : "text-muted-foreground font-medium",
+				)}
+			>
 				<Icon size={13} aria-hidden="true" />
 				{label}
 			</figcaption>

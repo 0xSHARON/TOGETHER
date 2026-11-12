@@ -3,14 +3,13 @@ import { cn } from "@/lib/cn";
 
 const PADDING = {
 	none: "p-0",
-	compact: "px-5 py-3.5",
+	compact: "px-6 py-4",
 	default: "p-6",
 } as const;
 
 type CardPadding = keyof typeof PADDING;
 
-const SURFACE =
-	"bg-card border-2 border-black dark:border-zinc-800 rounded-none shadow-[3px_3px_0px_0px_#000000] dark:shadow-[3px_3px_0px_0px_#000000] hover:shadow-[4px_4px_0px_0px_#00e676] transition-all duration-150";
+const SURFACE = "bg-card border-2 border-border rounded-card brutal-shadow";
 
 export function cardClass(padding: CardPadding = "default", ...extra: string[]): string {
 	return cn(SURFACE, PADDING[padding], ...extra);

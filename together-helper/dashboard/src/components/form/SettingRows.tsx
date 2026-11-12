@@ -22,7 +22,7 @@ export function SettingRows({
 		<Panel
 			{...(title === undefined ? {} : { "aria-labelledby": headingId })}
 			{...(onSubmit === undefined ? {} : { onSubmit })}
-			className="bg-card border-border rounded-card divide-border divide-y border [&>*]:px-6 [&>*]:py-4"
+			className="bg-card border-border rounded-card brutal-shadow divide-border divide-y-2 border-2 [&>*]:px-6 [&>*]:py-4"
 		>
 			{(title !== undefined || description !== undefined) && (
 				<div className="flex items-start justify-between gap-3">

@@ -25,7 +25,7 @@ export function SegmentedControl<Value extends string | number>({
 		<div
 			role="group"
 			aria-label={label}
-			className={cn("border-border flex max-w-full flex-wrap rounded-field border p-0.5", className)}
+			className={cn("border-border bg-card brutal-shadow-sm flex max-w-full flex-wrap gap-1 rounded-field border-2 p-1", className)}
 		>
 			{segments.map((segment) => {
 				const control = (
@@ -37,9 +37,9 @@ export function SegmentedControl<Value extends string | number>({
 							onChange(segment.value);
 						}}
 						className={cn(
-							"rounded-chip px-2.5 py-1 text-sm transition-colors duration-150",
+							"rounded-chip cursor-pointer px-3 py-1 font-mono text-xs font-bold tracking-wider uppercase transition-all duration-100",
 							"focus-visible:outline-ring focus-visible:outline-2 focus-visible:outline-offset-2",
-							value === segment.value ? SELECTED : "text-muted-foreground hover:text-foreground",
+							value === segment.value ? SELECTED : "text-muted-foreground hover:bg-muted hover:text-foreground",
 						)}
 					>
 						{segment.label}

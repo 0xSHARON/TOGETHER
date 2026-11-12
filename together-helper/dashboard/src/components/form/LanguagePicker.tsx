@@ -16,11 +16,11 @@ export function LanguagePicker({ className }: { className?: string }): React.JSX
 						aria-pressed={active === locale}
 						onClick={() => void i18n.changeLanguage(locale)}
 						className={cn(
-							"rounded-card flex w-full items-center gap-3 border px-3 py-2 text-sm transition-colors duration-150",
+							"rounded-card flex w-full cursor-pointer items-center gap-3 border-2 px-3 py-2 text-sm transition-all duration-100",
 							"focus-visible:outline-ring focus-visible:outline-2 focus-visible:outline-offset-2",
 							active === locale
-								? "border-primary bg-primary/10 text-foreground"
-								: "border-border text-muted-foreground hover:text-foreground hover:bg-muted",
+								? "border-accent bg-accent-wash text-foreground brutal-shadow-sm font-bold"
+								: "border-border/60 bg-card text-muted-foreground hover:text-foreground hover:border-border hover:bg-muted font-medium",
 						)}
 					>
 						<FlagIcon locale={locale} />

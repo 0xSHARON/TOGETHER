@@ -18,13 +18,18 @@ export function StatTile({
 	hint?: string;
 }): React.JSX.Element {
 	const tile = (
-		<Card padding="compact" className="flex flex-col gap-1">
-			<p className="text-muted-foreground flex items-center gap-2 text-xs">
-				{Icon !== undefined && <Icon size={14} aria-hidden="true" className={cn("shrink-0", tint)} />}
-				{label}
+		<Card padding="compact" className="relative flex flex-col gap-2 overflow-hidden">
+			<span aria-hidden="true" className="bg-accent absolute inset-x-0 top-0 h-1" />
+			<p className="text-muted-foreground flex items-center justify-between gap-2 font-mono text-[11px] font-bold tracking-wider uppercase">
+				<span>{label}</span>
+				{Icon !== undefined && (
+					<span className="border-border bg-muted inline-flex size-6 shrink-0 items-center justify-center rounded-chip border-2">
+						<Icon size={13} aria-hidden="true" className={cn("shrink-0", tint)} />
+					</span>
+				)}
 			</p>
 			{/* Two of these share a 320px row, which is WCAG 1.4.10's reflow width — the full size does not fit. */}
-			<p className="text-[1.25rem] leading-tight font-semibold tabular-nums sm:text-[1.625rem]">
+			<p className="font-display text-[1.35rem] leading-tight font-black tabular-nums sm:text-[1.75rem]">
 				{typeof value === "number" ? formatNumber(value) : value}
 			</p>
 		</Card>

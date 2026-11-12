@@ -29,11 +29,16 @@ export function FeatureGrid({
 
 				const body: ReactNode = (
 					<>
-						<span className={cn("rounded-card bg-muted shrink-0 p-2", tint)} aria-hidden="true">
+						<span
+							className={cn("border-border bg-muted rounded-field brutal-shadow-sm shrink-0 border-2 p-2", tint)}
+							aria-hidden="true"
+						>
 							<Icon size={18} />
 						</span>
 						<span className="min-w-0 flex-1">
-							<span className="block truncate font-medium">{featureLabel(feature.key, feature.label, t)}</span>
+							<span className="font-display block truncate font-bold tracking-tight uppercase">
+								{featureLabel(feature.key, feature.label, t)}
+							</span>
 							<span className="text-muted-foreground block truncate text-xs">
 								{feature.detail === null ? t("overview.notSetUp") : describeDetail(feature.detail, t, channelName)}
 							</span>
@@ -51,7 +56,13 @@ export function FeatureGrid({
 						{path === undefined ? (
 							<div className={surface}>{body}</div>
 						) : (
-							<Link to={path(guildId)} className={cn(surface, "hover:border-input group")}>
+							<Link
+								to={path(guildId)}
+								className={cn(
+									surface,
+									"hover:border-accent transition-transform duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 group",
+								)}
+							>
 								{body}
 								<HoverChevron />
 							</Link>

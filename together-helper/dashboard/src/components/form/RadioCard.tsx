@@ -18,14 +18,16 @@ export function RadioCard({
 	return (
 		<label
 			className={cn(
-				"rounded-card flex flex-col gap-1 border p-3 transition-colors duration-150",
-				disabled ? "border-border opacity-50" : "cursor-pointer",
-				checked ? "border-primary bg-primary/10" : !disabled && "border-border hover:border-input",
+				"rounded-card flex flex-col gap-1 border-2 p-3 transition-all duration-100",
+				disabled ? "border-border/50 opacity-50" : "cursor-pointer",
+				checked
+					? "border-accent bg-accent-wash brutal-shadow-sm"
+					: !disabled && "border-border/60 bg-card hover:border-border hover:bg-muted",
 			)}
 		>
 			<span className="flex items-center gap-2">
 				<input type="radio" name={name} checked={checked} disabled={disabled} onChange={onChange} />
-				<span className="text-sm font-medium">{label}</span>
+				<span className="text-sm font-bold">{label}</span>
 			</span>
 			<span className="text-muted-foreground text-xs">{description}</span>
 		</label>

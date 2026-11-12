@@ -98,9 +98,9 @@ export function QuickSearch({
 				role="dialog"
 				aria-modal="true"
 				aria-label={t("search.title")}
-				className="bg-popover border-border rounded-card motion-fade relative flex max-h-[70vh] w-full max-w-lg flex-col overflow-hidden border shadow-lg"
+				className="bg-popover border-border rounded-card brutal-shadow-lg motion-fade relative flex max-h-[70vh] w-full max-w-lg flex-col overflow-hidden border-2"
 			>
-				<div className="border-border focus-within:border-ring flex items-center gap-3 border-b px-4 transition-colors duration-150">
+				<div className="border-border focus-within:border-ring flex items-center gap-3 border-b-2 px-4 transition-colors duration-100">
 					<Search size={18} aria-hidden="true" className="text-muted-foreground shrink-0" />
 					<input
 						ref={inputRef}
@@ -120,14 +120,14 @@ export function QuickSearch({
 							setActive(0);
 						}}
 						onKeyDown={onKeyDown}
-						className="placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent py-3.5 text-[0.9375rem] outline-none"
+						className="placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent py-3.5 text-[0.9375rem] font-medium outline-none"
 					/>
-					<kbd className="text-muted-foreground border-border rounded-chip shrink-0 border px-1.5 py-0.5 font-mono text-[0.6875rem]">
+					<kbd className="text-foreground bg-muted border-border rounded-chip shrink-0 border-2 px-1.5 py-0.5 font-mono text-[0.6875rem] font-bold">
 						Esc
 					</kbd>
 				</div>
 
-				<ul id={listId} role="listbox" aria-label={t("search.results")} className="overflow-y-auto p-2">
+				<ul id={listId} role="listbox" aria-label={t("search.results")} className="flex flex-col gap-1 overflow-y-auto p-2">
 					{results.map((entry, index) => (
 						<li
 							key={entry.id}
@@ -141,14 +141,16 @@ export function QuickSearch({
 								go(entry);
 							}}
 							className={cn(
-								"rounded-field flex cursor-pointer items-center gap-3 px-3 py-2.5 text-sm",
-								entry === current ? "bg-muted text-foreground" : "text-muted-foreground",
+								"rounded-field flex cursor-pointer items-center gap-3 border-2 px-3 py-2 text-sm transition-all duration-100",
+								entry === current
+									? "bg-accent-wash border-border text-foreground brutal-shadow-sm"
+									: "border-transparent text-muted-foreground hover:bg-muted",
 							)}
 						>
 							<ResultIcon entry={entry} />
 							<span className="flex min-w-0 flex-1 flex-col">
-								<span className="text-foreground truncate font-medium">{entry.label}</span>
-								{entry.detail !== "" && <span className="truncate text-[0.8125rem]">{entry.detail}</span>}
+								<span className="text-foreground truncate font-bold">{entry.label}</span>
+								{entry.detail !== "" && <span className="truncate font-mono text-xs">{entry.detail}</span>}
 							</span>
 							<Badge>{t(KIND_LABEL[entry.kind])}</Badge>
 						</li>

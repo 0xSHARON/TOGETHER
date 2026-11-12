@@ -69,12 +69,18 @@ export function Sidebar({
 			className={cnSidebar(expanded)}
 			data-testid={expanded ? "sidebar-drawer" : "sidebar"}
 		>
-			<Link to="/guilds" className={cn(ROW, "mb-4")}>
+			<Link
+				to="/guilds"
+				className={cn(
+					ROW,
+					"border-border bg-card brutal-shadow-sm hover:border-accent mb-4 border-2 transition-all duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5",
+				)}
+			>
 				{/* Boxed to 18px like every other row icon, so the wordmark starts on the label column too. */}
 				<span aria-hidden="true" className={ICON_SLOT}>
 					<BotMark src={bot?.avatarUrl} name={bot?.name ?? null} size={22} />
 				</span>
-				<span className={label("font-display truncate text-[0.9375rem] font-semibold")}>
+				<span className={label("font-display truncate text-[0.9375rem] font-black tracking-tight uppercase")}>
 					{bot?.name ?? BUILT_IN_BOT_NAME}
 				</span>
 			</Link>
@@ -89,7 +95,7 @@ export function Sidebar({
 						{heading !== undefined && (
 							<>
 								{/* At the icon-only width the rule carries the grouping, where there is no room for the words. */}
-								<hr className="border-border mx-2 mb-2 lg:hidden" />
+								<hr className="border-border mx-2 mb-2 border-t-2 lg:hidden" />
 								{guild !== undefined && group.guildId === guild.id ? (
 									<GuildSwitcher guild={guild} guilds={guilds} expanded={expanded} />
 								) : (
@@ -117,13 +123,13 @@ export function Sidebar({
 			})}
 
 			{/* Pinned to the foot of the desktop rail; in the drawer it follows on, or a tall phone leaves a band of nothing above it. */}
-			<div className={cn("border-border flex flex-col gap-1 border-t pt-3", expanded ? "mt-4" : "mt-auto")}>
+			<div className={cn("border-border flex flex-col gap-1 border-t-2 pt-3", expanded ? "mt-4" : "mt-auto")}>
 				{user !== null && (
-					<div className={ROW}>
+					<div className={cn(ROW, "border-border bg-muted mb-1 border-2 font-bold")}>
 						<span aria-hidden="true" className={ICON_SLOT}>
 							<Avatar name={user.username} url={user.avatarUrl} size={26} seed={user.id} />
 						</span>
-						<span className={label("truncate text-sm")}>{user.username}</span>
+						<span className={label("truncate text-sm font-bold")}>{user.username}</span>
 					</div>
 				)}
 
@@ -136,7 +142,7 @@ export function Sidebar({
 								to={to}
 								className={cn(
 									ROW,
-									"text-muted-foreground hover:text-foreground hover:bg-card/60 text-sm transition-colors duration-150",
+									"text-muted-foreground hover:text-foreground hover:bg-card hover:border-border border-2 border-transparent text-sm font-medium transition-all duration-100",
 								)}
 							>
 								<Icon size={18} aria-hidden="true" className="shrink-0" />
@@ -151,7 +157,7 @@ export function Sidebar({
 						to="/appearance#language"
 						className={cn(
 							ROW,
-							"text-muted-foreground hover:text-foreground hover:bg-card/60 text-sm transition-colors duration-150",
+							"text-muted-foreground hover:text-foreground hover:bg-card hover:border-border border-2 border-transparent text-sm font-medium transition-all duration-100",
 						)}
 					>
 						<span aria-hidden="true" className={ICON_SLOT}>
@@ -169,7 +175,7 @@ export function Sidebar({
 						onClick={() => void signOut()}
 						className={cn(
 							ROW,
-							"text-muted-foreground hover:text-foreground hover:bg-card/60 text-sm transition-colors duration-150",
+							"text-muted-foreground hover:text-foreground hover:bg-card hover:border-border w-full cursor-pointer border-2 border-transparent text-left text-sm font-medium transition-all duration-100",
 						)}
 					>
 						<LogOut size={18} aria-hidden="true" className="shrink-0" />
@@ -201,7 +207,7 @@ function SearchRow({
 				aria-keyshortcuts="Control+K Meta+K"
 				className={cn(
 					ROW,
-					"border-border/80 bg-card/60 backdrop-blur-md rounded-xl text-muted-foreground hover:text-foreground hover:bg-card/90 mb-3 w-full border text-sm transition-all duration-150 shadow-xs",
+					"border-border bg-card rounded-field text-muted-foreground hover:text-foreground hover:bg-muted brutal-shadow-sm mb-3 w-full cursor-pointer border-2 text-sm font-medium transition-all duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5",
 				)}
 			>
 				<Search size={18} aria-hidden="true" className="shrink-0" />
@@ -210,7 +216,7 @@ function SearchRow({
 				<kbd
 					aria-hidden="true"
 					className={cn(
-						"border-border rounded-chip border px-1.5 font-mono text-[0.6875rem]",
+						"border-border bg-muted text-foreground rounded-chip border-2 px-1.5 py-0.5 font-mono text-[0.6875rem] font-bold",
 						expanded ? "hidden" : "hidden lg:inline",
 					)}
 				>
@@ -225,6 +231,6 @@ function SearchRow({
 function cnSidebar(expanded: boolean): string {
 	const base = "border-border flex shrink-0 flex-col p-3";
 	return expanded
-		? `${base} bg-sidebar h-full w-64 overflow-y-auto overscroll-contain border-r`
-		: `${base} bg-sidebar scrollbar-none sticky top-0 hidden h-dvh w-16 overflow-y-auto border-r md:flex lg:w-60`;
+		? `${base} bg-sidebar h-full w-64 overflow-y-auto overscroll-contain border-r-2`
+		: `${base} bg-sidebar scrollbar-none sticky top-0 hidden h-dvh w-16 overflow-y-auto border-r-2 md:flex lg:w-60`;
 }

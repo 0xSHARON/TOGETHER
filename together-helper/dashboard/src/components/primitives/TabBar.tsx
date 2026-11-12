@@ -83,14 +83,14 @@ export function TabBar<Key extends string>({
 	}
 
 	return (
-		<div className="border-border border-b">
+		<div className="border-border border-b-2 pb-2">
 			<div
 				ref={strip}
 				role="tablist"
 				aria-label={label}
 				onKeyDown={onKeyDown}
 				className={cn(
-					"scrollbar-none flex gap-1 overflow-x-auto",
+					"scrollbar-none flex gap-2 overflow-x-auto pb-1",
 					edges.end && "mask-r-from-[calc(100%-2rem)]",
 					edges.start && "mask-l-from-[calc(100%-2rem)]",
 				)}
@@ -111,16 +111,15 @@ export function TabBar<Key extends string>({
 								onSelect(key);
 							}}
 							className={cn(
-								"relative flex shrink-0 items-center gap-2 px-4 py-2 text-sm font-medium first:pl-0",
-								"transition-colors duration-150",
-								active === key ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+								"relative flex shrink-0 cursor-pointer items-center gap-2 rounded-field border-2 px-4 py-2 font-mono text-xs font-bold tracking-wider uppercase",
+								"transition-all duration-100",
+								active === key
+									? "bg-primary text-primary-foreground border-border brutal-shadow-sm"
+									: "border-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground",
 							)}
 						>
-							<Icon size={15} aria-hidden="true" />
+							<Icon size={14} aria-hidden="true" />
 							{t(labelKey)}
-							{active === key && (
-								<span aria-hidden="true" className="bg-primary motion-fade absolute inset-x-0 bottom-0 h-0.5" />
-							)}
 						</button>
 					);
 				})}

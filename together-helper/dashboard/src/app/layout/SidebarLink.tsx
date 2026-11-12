@@ -19,10 +19,10 @@ export function SidebarLink({ item, expanded = false }: { item: NavItem; expande
 				end={exact}
 				className={({ isActive }) =>
 					cn(
-						"relative flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-all duration-150",
+						"relative flex items-center gap-3 rounded-field border-2 px-3 py-2 text-sm transition-all duration-100",
 						isActive
-							? "bg-white/[0.09] text-white shadow-xs font-semibold"
-							: "text-muted-foreground hover:text-foreground hover:bg-white/[0.04]",
+							? "bg-card border-border text-foreground brutal-shadow-sm font-bold"
+							: "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted hover:border-border font-medium",
 					)
 				}
 			>
@@ -32,9 +32,9 @@ export function SidebarLink({ item, expanded = false }: { item: NavItem; expande
 						<span
 							aria-hidden="true"
 							className={cn(
-								"bg-emerald-400 absolute top-1/2 left-0.5 w-1 -translate-y-1/2 rounded-full duration-200 ease-out",
+								"bg-accent rounded-chip absolute top-1/2 left-0 w-1 -translate-y-1/2 duration-150 ease-out",
 								"transition-[height,opacity]",
-								isActive ? "h-4 opacity-100 shadow-sm shadow-emerald-400" : "h-0 opacity-0",
+								isActive ? "h-5 opacity-100" : "h-0 opacity-0",
 							)}
 						/>
 						<span aria-hidden="true" className={ICON_SLOT}>

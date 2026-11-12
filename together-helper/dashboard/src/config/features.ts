@@ -17,7 +17,6 @@ import {
 	MessageSquareReply,
 	MessageSquareWarning,
 	MessagesSquare,
-	Music,
 	Ticket,
 	ScrollText,
 	Settings,

@@ -6,8 +6,8 @@ export function SwitchTrack({ on, className }: { on: boolean; className?: string
 		<span
 			aria-hidden="true"
 			className={cn(
-				"border-input peer-checked:bg-primary peer-checked:border-primary flex h-5 w-9 shrink-0 items-center",
-				"rounded-full border p-0.5 transition-colors duration-150",
+				"border-input bg-muted peer-checked:bg-primary peer-checked:border-border flex h-6 w-10 shrink-0 items-center",
+				"rounded-chip border-2 p-0.5 transition-colors duration-100",
 				"peer-focus-visible:outline-ring peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2",
 				className,
 			)}
@@ -15,7 +15,7 @@ export function SwitchTrack({ on, className }: { on: boolean; className?: string
 			{/* White on the filled track and the field border on the card; `foreground` would invert with the theme. */}
 			<span
 				className={cn(
-					"h-3.5 w-3.5 rounded-full transition-transform duration-200 ease-out",
+					"h-3.5 w-3.5 rounded-chip transition-transform duration-150 ease-out",
 					on ? "bg-primary-foreground translate-x-4" : "bg-input translate-x-0",
 				)}
 			/>

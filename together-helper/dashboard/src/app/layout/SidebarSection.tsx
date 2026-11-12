@@ -37,7 +37,7 @@ export function SidebarSection({
 					setOpen((was) => !was);
 				}}
 				className={cn(
-					"rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/[0.04] flex w-full items-center gap-3 px-2.5 py-2 text-sm transition-colors duration-150",
+					"rounded-field text-muted-foreground hover:text-foreground hover:bg-muted border-2 border-transparent hover:border-border flex w-full items-center gap-3 px-3 py-2 text-sm font-bold transition-colors duration-100",
 					expanded ? "flex" : "hidden lg:flex",
 				)}
 			>

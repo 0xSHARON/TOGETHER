@@ -55,7 +55,7 @@ export function SetupChecklist({ guildId }: { guildId: string }): React.JSX.Elem
 				</Button>
 			</div>
 
-			<ol aria-labelledby="checklist-heading" className="divide-border flex flex-col divide-y">
+			<ol aria-labelledby="checklist-heading" className="divide-border flex flex-col divide-y-2">
 				{steps.map((step) => (
 					<StepRow
 						key={step.step}
@@ -103,7 +103,7 @@ function StepRow({
 			<span
 				aria-hidden="true"
 				className={cn(
-					"rounded-field flex size-9 shrink-0 items-center justify-center",
+					"border-border rounded-field brutal-shadow-sm flex size-9 shrink-0 items-center justify-center border-2",
 					step.done ? "bg-success/15 text-success" : cn("bg-muted", look.tint),
 				)}
 			>

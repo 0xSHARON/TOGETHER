@@ -55,7 +55,7 @@ export function MobileNav({
 
 	return (
 		<>
-			<header className="border-border bg-sidebar flex items-center gap-3 border-b p-3 md:hidden">
+			<header className="border-border bg-sidebar flex items-center gap-3 border-b-2 p-3 md:hidden">
 				<button
 					ref={openerRef}
 					type="button"
@@ -64,19 +64,19 @@ export function MobileNav({
 					onClick={() => {
 						onOpenChange(!open);
 					}}
-					className="text-muted-foreground hover:text-foreground hover:bg-card/60 rounded-card p-2 transition-colors duration-150"
+					className="border-border bg-card text-foreground hover:bg-muted brutal-shadow-sm cursor-pointer rounded-field border-2 p-2 transition-all duration-100"
 				>
 					<Menu size={20} aria-hidden="true" />
 					<span className="sr-only">{t("nav.menu")}</span>
 				</button>
-				<BotMark src={bot?.avatarUrl} name={bot?.name ?? null} size={20} />
-				<span className="font-display text-[0.9375rem] leading-tight font-bold tracking-tight">
+				<BotMark src={bot?.avatarUrl} name={bot?.name ?? null} size={22} />
+				<span className="font-display text-[0.9375rem] leading-tight font-black tracking-tight uppercase">
 					{bot?.name ?? BUILT_IN_BOT_NAME}
 				</span>
 				<button
 					type="button"
 					onClick={onSearch}
-					className="text-muted-foreground hover:text-foreground hover:bg-card/60 rounded-card ml-auto p-2 transition-colors duration-150"
+					className="border-border bg-card text-foreground hover:bg-muted brutal-shadow-sm ml-auto cursor-pointer rounded-field border-2 p-2 transition-all duration-100"
 				>
 					<Search size={20} aria-hidden="true" />
 					<span className="sr-only">{t("search.open")}</span>
@@ -86,7 +86,7 @@ export function MobileNav({
 			{open && (
 				<div className="fixed inset-0 z-40 md:hidden">
 					{/* Not a control: Escape and the close button already cover the keyboard, and a second one is only noise in the tab order. */}
-					<div aria-hidden="true" onClick={close} className="bg-background/70 motion-fade absolute inset-0" />
+					<div aria-hidden="true" onClick={close} className="bg-background/80 motion-fade absolute inset-0" />
 					<div id="mobile-nav" ref={panelRef} className="motion-fade absolute inset-y-0 left-0 overscroll-contain">
 						<Sidebar
 							user={user}
@@ -102,7 +102,7 @@ export function MobileNav({
 					<button
 						type="button"
 						onClick={close}
-						className="text-muted-foreground hover:text-foreground absolute top-4 right-4 p-2"
+						className="border-border bg-card text-foreground brutal-shadow-sm absolute top-4 right-4 cursor-pointer rounded-field border-2 p-2"
 					>
 						<X size={20} aria-hidden="true" />
 						<span className="sr-only">{t("nav.closeMenu")}</span>

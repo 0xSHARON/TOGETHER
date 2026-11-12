@@ -20,7 +20,7 @@ export function Avatar({
 		return (
 			<div
 				className={cn(
-					"flex shrink-0 items-center justify-center rounded-full font-semibold",
+					"border-border rounded-tile flex shrink-0 items-center justify-center border-2 font-mono font-bold",
 					size < 32 ? "text-xs" : "text-sm",
 					tintFor(seed ?? name),
 				)}
@@ -39,7 +39,7 @@ export function Avatar({
 			alt=""
 			width={size}
 			height={size}
-			className="max-w-none shrink-0 rounded-full object-cover"
+			className="border-border rounded-tile max-w-none shrink-0 border-2 object-cover"
 			style={style}
 			loading="lazy"
 			onError={() => {

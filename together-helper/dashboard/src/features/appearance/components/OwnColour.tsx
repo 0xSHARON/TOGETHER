@@ -15,15 +15,15 @@ function Sample({ scheme, label }: { scheme: "light" | "dark"; label: string }):
 		<figure
 			data-scheme={scheme}
 			data-accent="custom"
-			className="bg-card text-foreground border-border rounded-field flex flex-col gap-3 border p-3"
+			className="bg-card text-foreground border-border rounded-field brutal-shadow-sm flex flex-col gap-3 border-2 p-3"
 		>
-			<figcaption className="text-muted-foreground text-xs">{label}</figcaption>
+			<figcaption className="text-muted-foreground font-mono text-xs font-bold uppercase">{label}</figcaption>
 			<div className="flex flex-wrap items-center gap-3 text-sm">
-				<span className="bg-primary text-primary-foreground rounded-card px-3 py-1.5 font-medium">
+				<span className="bg-primary text-primary-foreground border-border brutal-shadow-sm rounded-card border-2 px-3 py-1.5 font-mono text-xs font-bold uppercase">
 					{t("appearance.ownButton")}
 				</span>
-				<span className="text-accent underline">{t("appearance.ownLink")}</span>
-				<span className="bg-accent-wash text-accent rounded-full px-2 text-xs font-medium">
+				<span className="text-accent font-bold underline">{t("appearance.ownLink")}</span>
+				<span className="bg-accent-wash text-accent border-border rounded-chip border-2 px-2 py-0.5 font-mono text-xs font-bold uppercase">
 					{t("appearance.ownBadge")}
 				</span>
 			</div>
@@ -55,7 +55,7 @@ export function OwnColour({
 	return (
 		<form
 			aria-labelledby={`${id}-heading`}
-			className="border-border flex flex-col gap-4 border-t pt-4"
+			className="border-border flex flex-col gap-4 border-t-2 pt-4"
 			onSubmit={(event) => {
 				event.preventDefault();
 				if (typed === null) setUnreadable(true);

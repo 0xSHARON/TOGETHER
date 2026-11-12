@@ -18,11 +18,14 @@ export function NoticeBanner(): React.JSX.Element | null {
 	return (
 		<aside
 			aria-label={t("notices.bannerLabel")}
-			className="border-primary/40 bg-primary/10 rounded-card flex flex-wrap items-center gap-x-3 gap-y-1 border px-6 py-3"
+			className="border-accent bg-accent-wash rounded-card brutal-shadow-sm flex flex-wrap items-center gap-x-3 gap-y-1 border-2 px-6 py-3"
 		>
 			<Bell size={16} className="text-accent shrink-0" aria-hidden="true" />
-			<p className="text-sm">{t("notices.banner", { count: unread })}</p>
-			<Link to={NOTIFICATIONS_PATH} className={cn(INLINE_TARGET, "text-accent text-sm font-medium underline")}>
+			<p className="text-sm font-bold">{t("notices.banner", { count: unread })}</p>
+			<Link
+				to={NOTIFICATIONS_PATH}
+				className={cn(INLINE_TARGET, "text-accent font-mono text-xs font-bold tracking-wider uppercase underline")}
+			>
 				{t("notices.open")}
 			</Link>
 		</aside>
