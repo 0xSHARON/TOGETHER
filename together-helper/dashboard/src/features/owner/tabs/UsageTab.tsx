@@ -58,8 +58,8 @@ function FleetUsage({
 				<SegmentedControl label={t("owner.window")} segments={WINDOWS} value={days} onChange={onWindow} />
 			</div>
 
-			<Card padding="none" className="divide-border divide-y">
-				<dl className="grid grid-cols-2 divide-x divide-y sm:grid-cols-4 sm:divide-y-0 [&>*]:border-border">
+			<Card padding="none" className="divide-border divide-y-2">
+				<dl className="grid grid-cols-2 divide-x-2 divide-y-2 sm:grid-cols-4 sm:divide-y-0 [&>*]:border-border">
 					<Figure className="px-6 py-4" label={t("owner.commandsRun")} value={formatNumber(report.runs)} />
 					<Figure
 						className="px-6 py-4"

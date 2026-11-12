@@ -113,7 +113,7 @@ function TicketRow({
 			</div>
 
 			{confirming && (
-				<div className="border-destructive/40 flex flex-col gap-3 rounded-field border p-3">
+				<div className="border-destructive bg-destructive/10 rounded-field brutal-shadow-sm flex flex-col gap-3 border-2 p-3">
 					<p className="text-sm">{t("tickets.closeWarning", { name })}</p>
 					<div className="flex flex-wrap gap-3">
 						<Button

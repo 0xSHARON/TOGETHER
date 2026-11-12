@@ -18,10 +18,13 @@ export function ErrorState({
 	const { title, body, retryable } = describe(error, t);
 
 	return (
-		<Card className="flex flex-col items-start gap-3">
-			<Heading className="text-lg font-semibold">{title}</Heading>
-			<p className="text-muted-foreground text-sm">{body}</p>
-			<div className="flex gap-2">
+		<Card className="border-destructive flex flex-col items-start gap-4">
+			<span className="border-destructive bg-card text-destructive-text rounded-chip border-2 px-2 py-0.5 font-mono text-[11px] font-bold tracking-wider uppercase">
+				[ ERR // DIAGNOSTIC ]
+			</span>
+			<Heading className="font-display text-lg font-black tracking-tight uppercase">{title}</Heading>
+			<p className="text-muted-foreground text-sm font-medium">{body}</p>
+			<div className="flex flex-wrap items-center gap-3">
 				{retryable && onRetry !== undefined && (
 					<Button onClick={onRetry} variant="secondary">
 						{t("common.retry")}
@@ -29,7 +32,7 @@ export function ErrorState({
 				)}
 				<Link
 					to="/guilds"
-					className="text-muted-foreground hover:text-foreground inline-flex items-center px-2 py-2 text-sm"
+					className="border-border bg-muted text-foreground hover:border-accent brutal-shadow-sm rounded-field inline-flex min-h-11 items-center border-2 px-4 py-2 font-mono text-xs font-bold tracking-wider uppercase transition-all duration-100"
 				>
 					{t("error.backToServers")}
 				</Link>

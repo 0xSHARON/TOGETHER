@@ -213,10 +213,10 @@ function Preview({ draft }: { draft: AnnouncementDraft }): React.JSX.Element {
 				)}
 				{draft.style === "embed" ? (
 					<div
-						className="border-border bg-card rounded-field border border-l-4 p-3"
+						className="border-border bg-card rounded-field brutal-shadow-sm border-2 border-l-4 p-3"
 						style={{ borderLeftColor: draft.colour }}
 					>
-						<p className="text-sm font-semibold break-words">
+						<p className="font-mono text-sm font-bold break-words">
 							{draft.title.trim() === "" ? t("announcements.defaultTitle") : draft.title}
 						</p>
 						<p className="text-sm break-words whitespace-pre-wrap">{message}</p>

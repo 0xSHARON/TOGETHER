@@ -134,12 +134,12 @@ function Step({
 		<li className="flex gap-3">
 			<span
 				aria-hidden="true"
-				className="bg-primary text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+				className="bg-primary text-primary-foreground border-border brutal-shadow-sm rounded-chip flex size-6 shrink-0 items-center justify-center border-2 font-mono text-xs font-bold"
 			>
 				{number}
 			</span>
 			<span className="flex min-w-0 flex-col gap-1">
-				<span className="text-sm font-medium">{title}</span>
+				<span className="text-sm font-bold">{title}</span>
 				<span className="text-muted-foreground text-sm">{body}</span>
 				{children}
 			</span>

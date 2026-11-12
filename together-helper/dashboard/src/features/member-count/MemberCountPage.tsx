@@ -41,7 +41,7 @@ export function MemberCountPage(): React.JSX.Element {
 
 			<Card className="flex flex-col gap-3">
 				<h2 className={CARD_HEADING}>{t("memberCount.splitTitle")}</h2>
-				<div aria-hidden="true" className="bg-muted flex h-2 overflow-hidden rounded-full">
+				<div aria-hidden="true" className="bg-muted border-border rounded-chip flex h-3 overflow-hidden border-2">
 					<span className="bg-primary block h-full" style={{ width: `${String(split.people)}%` }} />
 				</div>
 				<p className="text-sm tabular-nums">{t("memberCount.split", { people: split.people, bots: split.bots })}</p>

@@ -49,7 +49,7 @@ export function LegalPage({ document }: { document: LegalDocument }): React.JSX.
 					</ol>
 				</nav>
 
-				<ol className="divide-border flex flex-col divide-y">
+				<ol className="divide-border flex flex-col divide-y-2">
 					{document.sections.map((section, index) => (
 						<Section key={section.heading} section={section} number={index + 1} />
 					))}

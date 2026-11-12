@@ -157,11 +157,11 @@ it("keeps every accent's dark fill out of reach as a text colour", () => {
 	expect(legible).toEqual([]);
 });
 
-/** The plum block has to match the base tokens, or its swatch shows a colour it does not select. */
-it("keeps the plum block equal to the base tokens", () => {
+/** The emerald block has to match the base tokens, or its swatch shows a colour it does not select. */
+it("keeps the emerald block equal to the base tokens", () => {
 	for (const scheme of SCHEMES) {
 		for (const name of ["primary", "accent", "accent-wash", "ring"])
-			expect(accentToken("plum", name, scheme)).toBe(token(name, scheme));
+			expect(accentToken("emerald", name, scheme)).toBe(token(name, scheme));
 	}
 });
 

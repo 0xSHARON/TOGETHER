@@ -108,17 +108,17 @@ function DayChart({
 				<p className="text-muted-foreground text-sm">{t("source.noTraffic")}</p>
 			) : (
 				<figure className="flex flex-col gap-2">
-					<div className="flex h-28 items-end gap-px" aria-hidden="true">
+					<div className="border-border bg-background flex h-28 items-end gap-px border-b-2 pt-2" aria-hidden="true">
 						{days.map((day) => (
 							<span
 								key={day.date}
 								title={`${shortDate(day.date)}: ${String(count(day))}`}
-								className="bg-primary/30 hover:bg-primary/60 rounded-t-chip min-h-px flex-1 transition-colors duration-150"
+								className="bg-primary hover:bg-accent rounded-t-chip min-h-px flex-1 transition-colors duration-100"
 								style={{ height: `${String(Math.round((count(day) / max) * 100))}%` }}
 							/>
 						))}
 					</div>
-					<div className="text-muted-foreground flex justify-between text-xs" aria-hidden="true">
+					<div className="text-muted-foreground flex justify-between font-mono text-xs" aria-hidden="true">
 						<span>{shortDate(days[0]?.date ?? "")}</span>
 						<span>{shortDate(days.at(-1)?.date ?? "")}</span>
 					</div>

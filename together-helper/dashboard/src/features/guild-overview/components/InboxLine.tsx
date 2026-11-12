@@ -14,12 +14,14 @@ export function InboxLine({ guildId }: { guildId: string }): React.JSX.Element |
 	return (
 		<Link
 			to={`/guilds/${guildId}/inbox`}
-			className="bg-card border-border rounded-card hover:bg-muted/60 group flex items-center gap-3 border px-4 py-3 transition-colors duration-150"
+			className="bg-card border-accent rounded-card brutal-shadow hover:bg-muted group flex items-center gap-3 border-2 px-6 py-4 transition-all duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5"
 		>
-			<Inbox size={18} aria-hidden="true" className="text-accent shrink-0" />
+			<span className="border-border bg-accent-wash rounded-chip border-2 p-1.5" aria-hidden="true">
+				<Inbox size={16} className="text-accent shrink-0" />
+			</span>
 			<span className="min-w-0 flex-1">
-				<span className="font-medium">{inboxSummary(inbox.data, t)}</span>{" "}
-				<span className="text-muted-foreground">{t("inbox.open")}</span>
+				<span className="font-bold">{inboxSummary(inbox.data, t)}</span>{" "}
+				<span className="text-muted-foreground font-mono text-xs uppercase">{t("inbox.open")}</span>
 			</span>
 			<HoverChevron />
 		</Link>

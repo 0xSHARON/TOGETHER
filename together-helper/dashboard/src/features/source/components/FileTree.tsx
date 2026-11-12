@@ -46,8 +46,8 @@ export function FileTree({
 		<nav
 			aria-label={t("source.files")}
 			className={cn(
-				"bg-card border-border rounded-card flex flex-col gap-2 border p-2",
-				"lg:sticky lg:top-6 lg:max-h-[calc(100dvh-3rem)]",
+				"bg-card border-border brutal-shadow rounded-card flex flex-col gap-2 border-2 p-3",
+				"lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)]",
 				className,
 			)}
 		>

@@ -15,14 +15,14 @@ export function InboxBadge({ guildId, expanded }: { guildId: string; expanded: b
 			<span
 				aria-hidden="true"
 				className={cn(
-					"bg-accent-wash text-accent ml-auto rounded-full px-1.5 text-xs font-medium tabular-nums",
+					"bg-accent-wash text-accent border-border ml-auto rounded-chip border-2 px-1.5 py-0.5 font-mono text-[10px] font-bold tabular-nums",
 					!expanded && "hidden lg:inline",
 				)}
 			>
 				{formatNumber(count)}
 			</span>
 			{!expanded && (
-				<span aria-hidden="true" className="bg-accent absolute top-1.5 left-7 size-2 rounded-full lg:hidden" />
+				<span aria-hidden="true" className="bg-accent border-border rounded-chip absolute top-1.5 left-7 size-2 border lg:hidden" />
 			)}
 			<span className="sr-only">{t("inbox.waiting", { count })}</span>
 		</>

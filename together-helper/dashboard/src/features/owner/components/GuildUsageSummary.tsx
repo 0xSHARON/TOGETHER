@@ -13,16 +13,16 @@ export function GuildUsageSummary({ report }: { report: GuildUsageReport }): Rea
 
 	return (
 		<>
-			<Card padding="none" className="divide-border divide-y">
+			<Card padding="none" className="divide-border divide-y-2">
 				<div className="flex items-center gap-3 px-6 py-4">
 					<Avatar name={guild.name} url={guild.iconUrl} size={40} seed={guild.guildId} />
 					<div className="min-w-0">
-						<h2 className="truncate text-base font-semibold">{guild.name}</h2>
+						<h2 className="font-display truncate text-base font-black tracking-tight uppercase">{guild.name}</h2>
 						<p className="text-muted-foreground font-mono text-xs">{guild.guildId}</p>
 					</div>
 				</div>
 
-				<dl className="grid grid-cols-2 divide-x divide-y sm:grid-cols-4 sm:divide-y-0 [&>*]:border-border">
+				<dl className="grid grid-cols-2 divide-x-2 divide-y-2 sm:grid-cols-4 sm:divide-y-0 [&>*]:border-border">
 					<Figure className="px-6 py-4" label={t("owner.commandsRun")} value={formatNumber(report.runs)} />
 					<Figure
 						className="px-6 py-4"

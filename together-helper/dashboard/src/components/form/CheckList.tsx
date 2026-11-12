@@ -44,13 +44,20 @@ export function CheckList({
 				</span>
 			</span>
 
-			<div className={cn(SCROLL_LIST, row && "min-w-0 md:max-w-md")}>
+			<div className={cn(SCROLL_LIST, "divide-border divide-y", row && "min-w-0 md:max-w-md")}>
 				{items.map((item) => {
 					const checked = value.includes(item.id);
 					const disabled = item.blocked === true || (atLimit && !checked);
 
 					return (
-						<label key={item.id} className={cn(CHECK_ROW, disabled ? "opacity-50" : "hover:bg-muted cursor-pointer")}>
+						<label
+							key={item.id}
+							className={cn(
+								CHECK_ROW,
+								checked && "bg-accent-wash",
+								disabled ? "opacity-50" : "hover:bg-muted cursor-pointer",
+							)}
+						>
 							<input
 								type="checkbox"
 								checked={checked}

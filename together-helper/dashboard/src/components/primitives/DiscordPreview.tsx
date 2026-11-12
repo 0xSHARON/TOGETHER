@@ -11,12 +11,15 @@ export function DiscordPreview({
 	children: ReactNode;
 }): React.JSX.Element {
 	return (
-		<div className="bg-background border-border rounded-card border p-4">
+		<div className="bg-background border-border brutal-shadow-sm rounded-card border-2 p-4">
 			<div className="flex gap-3">
 				<BotMark src={avatarUrl} name={name} size={36} />
 				<div className="min-w-0 flex-1">
-					<p className="text-sm font-medium">
-						{name} <span className="bg-primary/20 text-accent ml-1 rounded-chip px-1 py-0.5 text-[0.625rem]">BOT</span>
+					<p className="flex items-center gap-2 text-sm font-bold">
+						<span>{name}</span>
+						<span className="bg-accent-wash border-border text-accent rounded-chip border px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase">
+							BOT
+						</span>
 					</p>
 					{children}
 				</div>

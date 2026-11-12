@@ -63,7 +63,7 @@ export function Pager({
 								<span
 									aria-current="page"
 									className={cn(
-										"bg-primary text-primary-foreground rounded-card inline-flex min-h-11 items-center justify-center text-sm font-medium",
+										"bg-primary text-primary-foreground border-border brutal-shadow-sm rounded-field inline-flex min-h-11 items-center justify-center border-2 font-mono text-sm font-bold",
 										NUMBER,
 									)}
 								>
@@ -92,7 +92,7 @@ export function Pager({
 				</div>
 			</div>
 
-			<p className="text-muted-foreground text-center text-sm tabular-nums" aria-live="polite">
+			<p className="text-muted-foreground text-center font-mono text-xs font-bold tracking-wider uppercase tabular-nums" aria-live="polite">
 				{t("common.pageOf", { page, pages })}
 			</p>
 		</nav>

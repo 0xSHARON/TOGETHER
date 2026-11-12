@@ -17,13 +17,13 @@ export function FolderView({ index, folder }: { index: TreeIndex; folder: string
 	return (
 		<div className="flex flex-col gap-4">
 			<Card padding="none">
-				<ul className="divide-border flex flex-col divide-y">
+				<ul className="divide-border flex flex-col divide-y-2">
 					{(index.children.get(folder) ?? []).map((entry) => (
 						<li key={entry.path}>
 							<Link
 								to={sourceRoute(entry.path)}
 								className={cn(
-									"hover:bg-muted/60 flex min-h-11 items-center gap-3 px-6 py-2 text-sm transition-colors duration-150",
+									"hover:bg-muted flex min-h-11 items-center gap-3 px-6 py-2 font-mono text-sm transition-colors duration-100",
 									"focus-visible:outline-ring focus-visible:outline-2 focus-visible:-outline-offset-2",
 								)}
 							>

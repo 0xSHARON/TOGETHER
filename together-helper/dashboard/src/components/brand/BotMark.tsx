@@ -20,7 +20,7 @@ export function BotMark({
 			<span
 				aria-hidden="true"
 				className={cn(
-					"bg-accent-wash text-accent inline-flex shrink-0 items-center justify-center rounded-full font-semibold",
+					"bg-accent-wash text-accent border-border rounded-tile inline-flex shrink-0 items-center justify-center border-2 font-mono font-bold",
 					className,
 				)}
 				style={{ width: size, height: size, fontSize: Math.round(size * 0.45) }}
@@ -39,7 +39,7 @@ export function BotMark({
 			onError={() => {
 				setBroken(src);
 			}}
-			className={cn("max-w-none shrink-0 rounded-full object-cover", className)}
+			className={cn("border-border rounded-tile max-w-none shrink-0 border-2 object-cover", className)}
 			style={{ width: size, height: size }}
 		/>
 	);

@@ -4,7 +4,7 @@ export function RoleSwatch({ name, colour }: { name: string; colour: string | nu
 		<span className="flex min-w-0 items-center gap-2">
 			<span
 				aria-hidden="true"
-				className="border-input size-2.5 shrink-0 rounded-full border"
+				className="border-input rounded-chip size-3 shrink-0 border-2"
 				style={colour === null ? undefined : { backgroundColor: colour }}
 			/>
 			<span className="truncate">{name}</span>

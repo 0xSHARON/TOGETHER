@@ -39,10 +39,10 @@ export function ConfigurationTable(): React.JSX.Element {
 					aria-label={group === "" ? t("docs.configuration.general") : group}
 					className="flex flex-col gap-3"
 				>
-					<h2 className="font-display text-xl font-bold tracking-tight">
+					<h2 className="font-display text-xl font-black tracking-tight uppercase">
 						{group === "" ? t("docs.configuration.general") : group}
 					</h2>
-					<dl className="border-border divide-border rounded-card flex flex-col divide-y border">
+					<dl className="border-border bg-card brutal-shadow divide-border rounded-card flex flex-col divide-y-2 border-2">
 						{variables.map((variable) => (
 							<div key={variable.name} className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:gap-4">
 								<dt className="flex shrink-0 flex-wrap items-start gap-2 sm:w-72">

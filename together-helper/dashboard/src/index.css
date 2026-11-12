@@ -87,27 +87,31 @@
 
 /** The palette, measured against WCAG by `src/test/contrast.test.ts`: `primary` is a fill under white, `accent` the text colour. */
 @theme {
-	/* Neo-Brutalism High-Craft Architectural Palette (WCAG AA + Light/Dark Parity) */
-	--color-background: light-dark(#f4f3ee, #09090b);
-	--color-foreground: light-dark(#09090b, #f4f4f0);
-	--color-muted: light-dark(#e7e5dd, #15151a);
-	--color-muted-foreground: light-dark(#44444d, #a1a1aa);
-	--color-card: light-dark(#ffffff, #101015);
-	--color-popover: light-dark(#ffffff, #16161d);
-	--color-border: light-dark(#09090b, #2e2e38);
-	--color-input: light-dark(#09090b, #71717a);
+	/* Cyber Terminal Neo-Brutalism Palette (Dark-First Jet-Black + Signal Emerald) */
+	--color-background: light-dark(#f2f5f3, #050608);
+	--color-foreground: light-dark(#050608, #f3f7f4);
+	--color-muted: light-dark(#e2e8e4, #11151d);
+	--color-muted-foreground: light-dark(#3f4641, #9ca6b0);
+	--color-card: light-dark(#ffffff, #0a0c10);
+	--color-popover: light-dark(#ffffff, #10141c);
+	--color-border: light-dark(#050608, #232a36);
+	--color-input: light-dark(#050608, #6b7685);
 	/* The sidebar */
-	--color-sidebar: light-dark(#ebe9e1, #0b0b0f);
-	--color-primary: light-dark(#8a2a6b, #bf3a94);
+	--color-sidebar: light-dark(#e8eeea, #07080b);
+	--color-primary: light-dark(#047857, #04805c);
 	--color-primary-foreground: #ffffff;
-	--color-accent: light-dark(#7a2260, #e08ac4);
+	--color-accent: light-dark(#065f46, #34d399);
 	/* Behind the selected row or chip, under accent text. */
-	--color-accent-wash: light-dark(#f6e9f2, #3a2433);
-	--color-ring: light-dark(#8a2a6b, #e08ac4);
+	--color-accent-wash: light-dark(#def5ef, #122b23);
+	--color-ring: light-dark(#047857, #34d399);
 	--color-success: light-dark(#15803d, #4ade80);
 	--color-warning: light-dark(#9a3412, #fbbf24);
 	--color-destructive: #b91c1c;
 	--color-destructive-text: light-dark(#b91c1c, #f87171);
+
+	/* Cyber Terminal Secondary Signals */
+	--color-cyber-cyan: light-dark(#0369a1, #22d3ee);
+	--color-cyber-emerald: light-dark(#047857, #00e676);
 
 	/* Category hues */
 	--color-hue-violet: light-dark(#6d28d9, #a78bfa);
@@ -175,9 +179,9 @@
 }
 
 @layer base {
-	/* `color-scheme` is all the theme switch moves, so the system default needs no script. */
+	/* Dark-first Cyber Terminal default unless Light is explicitly selected. */
 	:root {
-		color-scheme: light dark;
+		color-scheme: dark;
 	}
 
 	:root[data-theme="light"] {
@@ -242,9 +246,9 @@
 
 	[data-accent="emerald"] {
 		--color-primary: light-dark(#047857, #04805c);
-		--color-accent: light-dark(#065f46, #6ee7b7);
-		--color-accent-wash: light-dark(#def5ef, #1a3029);
-		--color-ring: light-dark(#047857, #6ee7b7);
+		--color-accent: light-dark(#065f46, #34d399);
+		--color-accent-wash: light-dark(#def5ef, #122b23);
+		--color-ring: light-dark(#047857, #34d399);
 	}
 
 	[data-accent="amber"] {
@@ -282,12 +286,12 @@
 		--color-ring: light-dark(#475569, #cbd5e1);
 	}
 
-	/* Somebody's own colour, written onto the root by `customAccent`, with plum's shades as the fallback. */
+	/* Somebody's own colour, written onto the root by `customAccent`, with emerald's shades as the fallback. */
 	[data-accent="custom"] {
-		--color-primary: light-dark(var(--custom-primary-light, #8a2a6b), var(--custom-primary-dark, #bf3a94));
-		--color-accent: light-dark(var(--custom-accent-light, #7a2260), var(--custom-accent-dark, #e08ac4));
-		--color-accent-wash: light-dark(var(--custom-wash-light, #f6e9f2), var(--custom-wash-dark, #3a2433));
-		--color-ring: light-dark(var(--custom-primary-light, #8a2a6b), var(--custom-accent-dark, #e08ac4));
+		--color-primary: light-dark(var(--custom-primary-light, #047857), var(--custom-primary-dark, #04805c));
+		--color-accent: light-dark(var(--custom-accent-light, #065f46), var(--custom-accent-dark, #34d399));
+		--color-accent-wash: light-dark(var(--custom-wash-light, #def5ef), var(--custom-wash-dark, #122b23));
+		--color-ring: light-dark(var(--custom-primary-light, #047857), var(--custom-accent-dark, #34d399));
 	}
 
 	body {
@@ -553,19 +557,19 @@
 		}
 	}
 
-	/* Neo-Brutalism Architectural Elevation & Texture Tokens (light-dark & accent-aware) */
+	/* Cyber Terminal Neo-Brutalism Elevation & Chrome Utilities */
 	:root {
-		--brutal-ink: light-dark(#09090b, #000000);
-		--brutal-plate: light-dark(#09090b, #2e2e3a);
-		--brutal-plate-hover: light-dark(#09090b, var(--color-accent));
+		--brutal-ink: light-dark(#050608, #000000);
+		--brutal-plate: light-dark(#050608, #222936);
+		--brutal-plate-hover: light-dark(#050608, var(--color-accent));
 		--brutal-shadow-xs: 2px 2px 0px 0px var(--brutal-plate);
 		--brutal-shadow-sm: 2px 2px 0px 0px var(--brutal-plate);
 		--brutal-shadow: 3px 3px 0px 0px var(--brutal-plate);
 		--brutal-shadow-md: 4px 4px 0px 0px var(--brutal-plate);
 		--brutal-shadow-lg: 6px 6px 0px 0px var(--brutal-plate);
-		--brutal-shadow-accent: 3px 3px 0px 0px light-dark(#09090b, var(--color-accent));
-		--brutal-shadow-accent-md: 4px 4px 0px 0px light-dark(#09090b, var(--color-accent));
-		--brutal-shadow-accent-lg: 6px 6px 0px 0px light-dark(#09090b, var(--color-accent));
+		--brutal-shadow-accent: 3px 3px 0px 0px light-dark(#050608, var(--color-accent));
+		--brutal-shadow-accent-md: 4px 4px 0px 0px light-dark(#050608, var(--color-accent));
+		--brutal-shadow-accent-lg: 6px 6px 0px 0px light-dark(#050608, var(--color-accent));
 	}
 
 	.brutal-shadow-sm {
@@ -580,11 +584,22 @@
 	.brutal-shadow-accent {
 		box-shadow: var(--brutal-shadow-accent-md);
 	}
+	.cyber-glow {
+		box-shadow:
+			0 0 0 1px color-mix(in srgb, var(--color-accent) 40%, transparent),
+			var(--brutal-shadow-accent-md);
+	}
 
 	.brutal-panel {
 		border: 2px solid var(--color-border);
 		background-color: var(--color-card);
 		box-shadow: var(--brutal-shadow);
+	}
+	.cyber-terminal {
+		border: 2px solid light-dark(#050608, var(--color-accent));
+		background-color: light-dark(#0b0e14, #040507);
+		color: #e6edf3;
+		box-shadow: var(--brutal-shadow-accent-lg);
 	}
 	.brutal-popover {
 		border: 2px solid var(--color-border);
@@ -596,12 +611,12 @@
 		background-color: var(--color-card);
 		box-shadow: var(--brutal-shadow);
 		transition:
-			box-shadow 140ms ease,
-			border-color 140ms ease,
-			transform 140ms ease;
+			box-shadow 120ms ease,
+			border-color 120ms ease,
+			transform 120ms ease;
 	}
 	.brutal-card:hover {
-		border-color: light-dark(#09090b, var(--color-accent));
+		border-color: light-dark(#050608, var(--color-accent));
 		box-shadow: var(--brutal-shadow-accent-md);
 		transform: translate(-1px, -1px);
 	}
@@ -610,7 +625,7 @@
 		background-color: var(--color-muted);
 	}
 	.brutal-btn {
-		border: 2px solid light-dark(#09090b, var(--color-border));
+		border: 2px solid light-dark(#050608, var(--color-border));
 		font-weight: 800;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
@@ -630,35 +645,35 @@
 		transform: translate(2px, 2px);
 	}
 	.brutal-btn-primary {
-		border: 2px solid light-dark(#09090b, var(--color-accent));
+		border: 2px solid light-dark(#050608, var(--color-accent));
 		background-color: var(--color-primary);
 		color: var(--color-primary-foreground);
 		box-shadow: var(--brutal-shadow-accent);
 	}
 	.brutal-btn-primary:not(:disabled):hover {
-		box-shadow: 4px 4px 0px 0px light-dark(#09090b, var(--color-accent));
+		box-shadow: 4px 4px 0px 0px light-dark(#050608, var(--color-accent));
 		transform: translate(-1px, -1px);
 	}
 	.brutal-btn-destructive {
-		border: 2px solid light-dark(#09090b, #f87171);
+		border: 2px solid light-dark(#050608, #f87171);
 		background-color: var(--color-destructive);
 		color: #ffffff;
-		box-shadow: 3px 3px 0px 0px light-dark(#09090b, #f87171);
+		box-shadow: 3px 3px 0px 0px light-dark(#050608, #f87171);
 	}
 	.brutal-btn-destructive:not(:disabled):hover {
-		box-shadow: 4px 4px 0px 0px light-dark(#09090b, #f87171);
+		box-shadow: 4px 4px 0px 0px light-dark(#050608, #f87171);
 		transform: translate(-1px, -1px);
 	}
 
-	/* Architectural blueprint matrix canvas */
+	/* Cyber Terminal Coordinate Grid & Scanline Textures */
 	.brutal-grid {
 		background-image:
-			linear-gradient(to right, light-dark(rgba(9, 9, 11, 0.045), rgba(255, 255, 255, 0.03)) 1px, transparent 1px),
-			linear-gradient(to bottom, light-dark(rgba(9, 9, 11, 0.045), rgba(255, 255, 255, 0.03)) 1px, transparent 1px);
-		background-size: 28px 28px;
+			linear-gradient(to right, light-dark(rgba(5, 6, 8, 0.055), rgba(52, 211, 153, 0.045)) 1px, transparent 1px),
+			linear-gradient(to bottom, light-dark(rgba(5, 6, 8, 0.055), rgba(52, 211, 153, 0.045)) 1px, transparent 1px);
+		background-size: 24px 24px;
 	}
 	.brutal-dots {
-		background-image: radial-gradient(light-dark(rgba(9, 9, 11, 0.14), rgba(255, 255, 255, 0.09)) 1px, transparent 1px);
+		background-image: radial-gradient(light-dark(rgba(5, 6, 8, 0.16), rgba(34, 211, 238, 0.12)) 1px, transparent 1px);
 		background-size: 20px 20px;
 	}
 	.brutal-stripe {
@@ -666,8 +681,17 @@
 			-45deg,
 			transparent,
 			transparent 6px,
-			light-dark(rgba(9, 9, 11, 0.045), rgba(255, 255, 255, 0.035)) 6px,
-			light-dark(rgba(9, 9, 11, 0.045), rgba(255, 255, 255, 0.035)) 12px
+			light-dark(rgba(5, 6, 8, 0.05), rgba(52, 211, 153, 0.045)) 6px,
+			light-dark(rgba(5, 6, 8, 0.05), rgba(52, 211, 153, 0.045)) 12px
+		);
+	}
+	.cyber-scan {
+		background-image: repeating-linear-gradient(
+			to bottom,
+			transparent 0px,
+			transparent 3px,
+			rgba(255, 255, 255, 0.02) 3px,
+			rgba(255, 255, 255, 0.02) 4px
 		);
 	}
 }

@@ -1,4 +1,4 @@
-import { ChevronRight, ExternalLink, Menu, Palette, Users, X, Zap } from "lucide-react";
+import { Activity, BookOpen, ChevronRight, ExternalLink, Menu, Palette, Users, X, Zap } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, NavLink, Outlet } from "react-router";
@@ -37,16 +37,30 @@ export function SiteShell({ column = false }: { column?: boolean }): React.JSX.E
 				{t("nav.skipToContent")}
 			</a>
 
-			{/* Neo-Brutalist Broadcast Ticker */}
-			<div className="border-border bg-primary text-primary-foreground flex w-full items-center justify-center gap-3 border-b-2 px-4 py-1 text-center font-mono text-xs font-bold tracking-widest uppercase">
-				<span aria-hidden="true" className="bg-primary-foreground size-2 shrink-0" />
-				<span>{name} // CONTROL SURFACE</span>
-				{site.data?.version !== undefined && (
-					<span className="hidden sm:inline">• {t("site.version", { version: site.data.version })}</span>
-				)}
+			{/* Cyber Terminal Top Telemetry Bar */}
+			<div className="border-border bg-sidebar text-foreground flex w-full items-center justify-between gap-4 border-b-2 px-4 py-1 font-mono text-[11px] font-bold tracking-widest uppercase sm:px-6 lg:px-8">
+				<span className="flex items-center gap-2 truncate">
+					<span aria-hidden="true" className="bg-cyber-emerald rounded-chip size-2 shrink-0" />
+					<span className="text-accent truncate">{name} // CYBER TERMINAL OS</span>
+					{site.data?.version !== undefined && (
+						<span className="text-muted-foreground hidden sm:inline">
+							· {t("site.version", { version: site.data.version })}
+						</span>
+					)}
+				</span>
+				<span className="text-muted-foreground hidden items-center gap-4 sm:flex">
+					<Link to="/status" className="hover:text-accent flex items-center gap-1 transition-colors">
+						<Activity className="text-accent size-3" aria-hidden="true" />
+						<span>{t("nav.status")}</span>
+					</Link>
+					<Link to="/docs" className="hover:text-accent flex items-center gap-1 transition-colors">
+						<BookOpen className="size-3" aria-hidden="true" />
+						<span>{t("site.docs")}</span>
+					</Link>
+				</span>
 			</div>
 
-			{/* High-Contrast Architectural Header */}
+			{/* High-Contrast Command Header */}
 			<header className="border-border bg-background sticky top-0 z-40 w-full border-b-2">
 				<div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
 					<Link
@@ -66,7 +80,7 @@ export function SiteShell({ column = false }: { column?: boolean }): React.JSX.E
 							/>
 							<span
 								aria-hidden="true"
-								className="bg-success border-border rounded-chip absolute -right-1 -bottom-1 size-2.5 border"
+								className="bg-cyber-emerald border-border rounded-chip absolute -right-1 -bottom-1 size-2.5 border"
 							/>
 						</div>
 						<div className="flex flex-col">
@@ -77,12 +91,12 @@ export function SiteShell({ column = false }: { column?: boolean }): React.JSX.E
 								</span>
 							</span>
 							<span className="text-muted-foreground font-mono text-[10px] font-bold tracking-widest uppercase">
-								AUTONOMOUS DISCORD OS
+								TERMINAL CONTROL DECK
 							</span>
 						</div>
 					</Link>
 
-					<nav aria-label={t("site.nav")} className="hidden items-center gap-2 md:flex">
+					<nav aria-label={t("site.nav")} className="hidden items-center gap-1 lg:flex">
 						<Link
 							to="/#top"
 							className="rounded-field border-transparent hover:border-border text-muted-foreground hover:text-foreground hover:bg-muted border-2 px-3 py-1 font-mono text-xs font-bold tracking-wider uppercase transition-all duration-100"
@@ -93,13 +107,13 @@ export function SiteShell({ column = false }: { column?: boolean }): React.JSX.E
 							href="/#features"
 							className="rounded-field border-transparent hover:border-border text-muted-foreground hover:text-foreground hover:bg-muted border-2 px-3 py-1 font-mono text-xs font-bold tracking-wider uppercase transition-all duration-100"
 						>
-							[ FEATURES ]
+							[ MODULES ]
 						</a>
 						<a
 							href="/#commands"
 							className="rounded-field border-transparent hover:border-border text-muted-foreground hover:text-foreground hover:bg-muted border-2 px-3 py-1 font-mono text-xs font-bold tracking-wider uppercase transition-all duration-100"
 						>
-							[ COMMAND MATRIX ]
+							[ COMMANDS ]
 						</a>
 						<Link
 							to="/docs"
@@ -145,7 +159,7 @@ export function SiteShell({ column = false }: { column?: boolean }): React.JSX.E
 							}}
 							aria-expanded={mobileMenuOpen}
 							aria-label={t("nav.menu")}
-							className="border-border bg-card text-foreground brutal-shadow-sm inline-flex size-9 cursor-pointer items-center justify-center rounded-field border-2 md:hidden"
+							className="border-border bg-card text-foreground brutal-shadow-sm inline-flex size-9 cursor-pointer items-center justify-center rounded-field border-2 lg:hidden"
 						>
 							{mobileMenuOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
 						</button>
@@ -153,7 +167,7 @@ export function SiteShell({ column = false }: { column?: boolean }): React.JSX.E
 				</div>
 
 				{mobileMenuOpen && (
-					<div className="border-border bg-background border-t-2 px-4 py-4 md:hidden">
+					<div className="border-border bg-background border-t-2 px-4 py-4 lg:hidden">
 						<nav aria-label={t("site.nav")} className="flex flex-col gap-2 font-mono text-xs font-bold uppercase">
 							<Link
 								to="/#top"
@@ -171,7 +185,7 @@ export function SiteShell({ column = false }: { column?: boolean }): React.JSX.E
 								}}
 								className="border-border bg-card text-foreground rounded-field brutal-shadow-sm border-2 p-3"
 							>
-								[ 02 // FEATURES ]
+								[ 02 // MODULES ]
 							</a>
 							<a
 								href="/#commands"
@@ -180,7 +194,7 @@ export function SiteShell({ column = false }: { column?: boolean }): React.JSX.E
 								}}
 								className="border-border bg-card text-foreground rounded-field brutal-shadow-sm border-2 p-3"
 							>
-								[ 03 // COMMAND MATRIX ]
+								[ 03 // COMMANDS ]
 							</a>
 							<Link
 								to="/docs"
@@ -190,6 +204,15 @@ export function SiteShell({ column = false }: { column?: boolean }): React.JSX.E
 								className="border-border bg-card text-foreground rounded-field brutal-shadow-sm border-2 p-3"
 							>
 								[ 04 // {t("site.docs")} ]
+							</Link>
+							<Link
+								to="/status"
+								onClick={() => {
+									setMobileMenuOpen(false);
+								}}
+								className="border-border bg-card text-foreground rounded-field brutal-shadow-sm border-2 p-3"
+							>
+								[ 05 // {t("nav.status")} ]
 							</Link>
 							<a
 								href={SUPPORT_SERVER_URL}
@@ -231,9 +254,7 @@ function AppearanceLink(): React.JSX.Element {
 				className={({ isActive }) =>
 					cn(
 						"border-border brutal-shadow-sm inline-flex size-9 shrink-0 items-center justify-center rounded-field border-2 transition-all duration-100",
-						isActive
-							? "bg-primary text-primary-foreground"
-							: "bg-card text-foreground hover:bg-muted",
+						isActive ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted",
 					)
 				}
 			>
@@ -273,7 +294,7 @@ function SiteFooter({
 	const { t } = useTranslation();
 
 	return (
-		<footer className="border-border bg-card mt-16 border-t-2 pt-12 pb-8">
+		<footer className="border-border bg-sidebar mt-16 border-t-2 pt-12 pb-8">
 			<div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 sm:px-6 lg:px-8">
 				<div className="grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-5">
 					<div className="flex flex-col gap-3 md:col-span-2">
@@ -285,8 +306,8 @@ function SiteFooter({
 							{t("landing.lede", { bot: name })}
 						</p>
 						<div className="flex items-center gap-2 pt-1 font-mono text-xs font-bold">
-							<span aria-hidden="true" className="bg-success rounded-chip size-2" />
-							<span className="text-accent">CLUSTER OPERATIONAL</span>
+							<span aria-hidden="true" className="bg-cyber-emerald rounded-chip size-2" />
+							<span className="text-accent">NODE STATUS // OPERATIONAL</span>
 						</div>
 					</div>
 
@@ -296,7 +317,7 @@ function SiteFooter({
 							Command Matrix
 						</a>
 						<a href="/#features" className="text-muted-foreground hover:text-accent transition-colors">
-							Core Architecture
+							Architecture Modules
 						</a>
 						<Link to="/docs" className="text-muted-foreground hover:text-accent transition-colors">
 							{t("site.docs")}
@@ -362,7 +383,9 @@ function SiteFooter({
 								{t("site.version", { version })}
 							</span>
 						)}
-						<span className="text-accent font-bold">READY</span>
+						<span className="border-border bg-accent-wash text-accent rounded-chip border-2 px-2 py-0.5 font-bold">
+							ONLINE
+						</span>
 					</div>
 				</div>
 			</div>

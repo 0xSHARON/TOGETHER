@@ -21,19 +21,19 @@ export function RecentChanges({ changes }: { changes: GuildOverview["recentChang
 
 	return (
 		<Card padding="none">
-			<ul className="divide-border divide-y">
+			<ul className="divide-border divide-y-2">
 				{/* The change is what identifies the row, so it takes the left column and the stamp goes right. */}
 				{changes.map((change) => (
 					<li
 						key={`${change.at}-${change.action}`}
-						className="hover:bg-muted/40 flex flex-wrap items-baseline gap-x-3 gap-y-1 px-6 py-3 text-sm transition-colors duration-150"
+						className="hover:bg-muted flex flex-wrap items-baseline gap-x-3 gap-y-1 px-6 py-3 text-sm transition-colors duration-100"
 					>
-						<span className="min-w-0 flex-1">{change.summary}</span>
-						<span className="text-muted-foreground shrink-0 text-xs">{personName(change.actorTag, t)}</span>
+						<span className="min-w-0 flex-1 font-medium">{change.summary}</span>
+						<span className="text-muted-foreground shrink-0 font-mono text-xs">{personName(change.actorTag, t)}</span>
 						<time
 							dateTime={change.at}
 							title={dateAndTime(change.at)}
-							className="text-muted-foreground shrink-0 text-xs tabular-nums"
+							className="text-accent shrink-0 font-mono text-xs font-bold tabular-nums"
 						>
 							{since(change.at)}
 						</time>

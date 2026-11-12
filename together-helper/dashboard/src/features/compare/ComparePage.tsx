@@ -23,8 +23,8 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { isRefusal } from "@/lib/api";
 import { channelLabel } from "@/lib/channels";
 
-const CELL = "border-border min-w-44 border-t px-4 py-3 text-left align-top";
-const ROW_HEAD = "bg-card border-border sticky left-0 z-10 min-w-40 border-t px-4 py-3 text-left align-top font-medium";
+const CELL = "border-border min-w-44 border-t-2 px-4 py-3 text-left align-top";
+const ROW_HEAD = "bg-card border-border sticky left-0 z-10 min-w-40 border-t-2 border-r-2 px-4 py-3 text-left align-top font-mono text-xs font-bold uppercase tracking-wider";
 
 export function ComparePage(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -84,7 +84,7 @@ export function ComparePage(): React.JSX.Element {
 			{chosen.length < 2 ? (
 				<p className="text-muted-foreground text-sm">{t("compare.chooseTwo")}</p>
 			) : (
-				<div className="bg-card border-border rounded-card overflow-x-auto border">
+				<div className="bg-card border-border rounded-card brutal-shadow overflow-x-auto border-2">
 					<table className="w-full border-collapse text-sm">
 						<caption className="sr-only">{t("compare.caption")}</caption>
 						<thead>

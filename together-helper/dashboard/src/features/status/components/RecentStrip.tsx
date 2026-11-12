@@ -14,12 +14,12 @@ export function RecentStrip({ buckets }: { buckets: StatusBucket[] }): React.JSX
 
 	return (
 		<figure className="flex flex-col gap-2">
-			<div className="flex h-20 items-end gap-px" aria-hidden="true">
+			<div className="border-border bg-background flex h-20 items-end gap-px border-b-2 pt-2" aria-hidden="true">
 				{buckets.map((bucket) => (
 					<span
 						key={bucket.start}
 						title={`${clockTime(bucket.start)}: ${describe(bucket)}`}
-						className={cn("rounded-t-chip min-w-0 flex-1 opacity-80 hover:opacity-100", HISTORY_FILL[bucket.level])}
+						className={cn("rounded-t-chip min-w-0 flex-1 opacity-90 hover:opacity-100", HISTORY_FILL[bucket.level])}
 						// A bucket with no reading is still drawn full height, so an outage reads as a wall rather than a gap.
 						style={{
 							height: `${String(bucket.gatewayPingMs === null ? 100 : barHeight(bucket.gatewayPingMs, tallest))}%`,
@@ -28,7 +28,7 @@ export function RecentStrip({ buckets }: { buckets: StatusBucket[] }): React.JSX
 				))}
 			</div>
 
-			<div className="text-muted-foreground flex justify-between text-xs" aria-hidden="true">
+			<div className="text-muted-foreground flex justify-between font-mono text-xs" aria-hidden="true">
 				<span>{t("status.dayAgo")}</span>
 				<span>{t("status.now")}</span>
 			</div>

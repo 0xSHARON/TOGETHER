@@ -1,13 +1,16 @@
 import {
 	Activity,
 	ArrowRight,
+	BookOpen,
 	Check,
+	Code2,
 	Coins,
 	Copy,
 	ExternalLink,
 	Gift,
 	Search,
 	ShieldCheck,
+	Terminal,
 	Ticket,
 	Users,
 	Zap,
@@ -130,90 +133,108 @@ export function LandingPage(): React.JSX.Element {
 
 	const capabilities = [
 		{
-			code: "01",
+			code: "MOD-01",
 			icon: ShieldCheck,
 			tint: "text-accent",
+			strip: "border-t-accent",
 			title: t("landing.features.moderation"),
 			body: t("landing.features.moderationBody"),
-			footer: "ACTIVE RULES: 14 POLICIES",
+			footer: "ACTIVE DEFENSE // ESCALATION",
 		},
 		{
-			code: "02",
+			code: "SUP-02",
 			icon: Ticket,
 			tint: "text-hue-blue",
+			strip: "border-t-hue-blue",
 			title: t("landing.features.tickets"),
 			body: t("landing.features.ticketsBody"),
-			footer: "HTML TRANSCRIPTS: READY",
+			footer: "HTML TRANSCRIPTS // ARCHIVE",
 		},
 		{
-			code: "03",
+			code: "GVY-03",
 			icon: Gift,
 			tint: "text-hue-amber",
+			strip: "border-t-hue-amber",
 			title: "Button Giveaways",
-			body: "Instant Discord button entry, live countdowns, anti-alt guards, and verifiable winner rerolls.",
-			footer: "REROLL ENGINE: 1-CLICK",
+			body: "Instant Discord button entry, live countdown timers, anti-alt guards, and verifiable winner rerolls.",
+			footer: "1-CLICK REROLL ENGINE",
 		},
 		{
-			code: "04",
+			code: "ECO-04",
 			icon: Coins,
 			tint: "text-hue-green",
+			strip: "border-t-hue-green",
 			title: t("landing.features.casino"),
 			body: t("landing.features.casinoBody"),
-			footer: "CUSTOM RANK CARDS: ENABLED",
+			footer: "RANK CARDS // ODDS TESTED",
 		},
 		{
-			code: "05",
+			code: "COM-05",
 			icon: Users,
 			tint: "text-hue-violet",
+			strip: "border-t-hue-violet",
 			title: t("landing.features.community"),
 			body: t("landing.features.communityBody"),
-			footer: "AUTOROLE & VERIFY: ACTIVE",
+			footer: "AUTOROLES // VERIFY PANELS",
 		},
 		{
-			code: "06",
+			code: "OBS-06",
 			icon: Activity,
 			tint: "text-hue-pink",
-			title: "Audit & Live Stream",
-			body: "Structured moderation cases, command telemetry, and real-time audit forwarding across channels.",
-			footer: "REALTIME AUDIT TRAIL",
+			strip: "border-t-hue-pink",
+			title: "Audit & Live Telemetry",
+			body: "Structured moderation cases, command usage histograms, and real-time audit forwarding across channels.",
+			footer: "FULL AUDIT TRAIL",
 		},
+	];
+
+	const selfHostSteps = [
+		{ step: "01", label: t("landing.selfHost.requirements"), to: "/docs/requirements" },
+		{ step: "02", label: t("landing.selfHost.setup"), to: "/docs/setup" },
+		{ step: "03", label: t("landing.selfHost.start"), to: "/docs/quick-start" },
+		{ step: "04", label: t("landing.selfHost.host"), to: "/docs/docker" },
 	];
 
 	return (
 		<div id="top" className="text-foreground mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
 			{erased && (
-				<p role="status" className="bg-card border-border text-accent rounded-card brutal-shadow border-2 px-4 py-3 font-mono text-sm font-bold">
+				<p
+					role="status"
+					className="bg-card border-border text-accent rounded-card brutal-shadow border-2 px-4 py-3 font-mono text-sm font-bold"
+				>
 					{t("account.erased")}
 				</p>
 			)}
 
-			{/* Neo-Brutalist High-Impact Hero */}
+			{/* Cyber Terminal Command Deck Hero */}
 			<section
 				aria-labelledby="landing-title"
-				className="bg-card border-border rounded-card brutal-shadow-lg relative border-2 p-6 sm:p-12"
+				className="bg-card border-border rounded-card brutal-shadow-lg cyber-glow relative overflow-hidden border-2 p-6 sm:p-12"
 			>
 				<div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-12">
 					<div className="flex flex-col items-start gap-6 lg:col-span-7">
-						<div className="border-border bg-background rounded-chip brutal-shadow-sm inline-flex items-center gap-2 border-2 px-3 py-1 font-mono text-xs font-bold tracking-widest uppercase">
-							<span aria-hidden="true" className="bg-success rounded-chip size-2" />
-							<span>{t("landing.eyebrow")}</span>
+						<div className="border-border bg-background rounded-chip brutal-shadow-sm inline-flex flex-wrap items-center gap-2 border-2 px-3 py-1 font-mono text-xs font-bold tracking-widest uppercase">
+							<span aria-hidden="true" className="bg-cyber-emerald rounded-chip size-2" />
+							<span className="text-accent">{t("landing.eyebrow")}</span>
 							<span aria-hidden="true" className="text-muted-foreground">
-								•
+								//
 							</span>
-							<span className="text-accent">
+							<span>
 								{site.data?.version !== undefined ? t("site.version", { version: site.data.version }) : name}
 							</span>
 						</div>
 
 						<h1
 							id="landing-title"
-							className="font-display text-4xl leading-[1.04] font-black tracking-tight uppercase sm:text-5xl lg:text-6xl"
+							className="font-display text-4xl leading-[1.03] font-black tracking-tight uppercase sm:text-5xl lg:text-6xl"
 						>
 							{t("landing.title")}
-							<span className="bg-primary text-primary-foreground border-border rounded-chip brutal-shadow mt-3 inline-block border-2 px-3 py-1 text-2xl sm:text-3xl">
-								AUTONOMOUS DISCORD OS.
-							</span>
 						</h1>
+
+						<div className="border-border bg-accent-wash text-accent rounded-chip brutal-shadow-sm inline-flex items-center gap-2 border-2 px-3 py-1.5 font-mono text-xs font-bold tracking-wider uppercase">
+							<Terminal className="size-3.5 shrink-0" aria-hidden="true" />
+							<span>SLASH &amp; PREFIX READY · LIVE WEB CONSOLE</span>
+						</div>
 
 						<p className="text-muted-foreground max-w-xl font-mono text-sm leading-relaxed font-medium sm:text-base">
 							{t("landing.lede", { bot: name })}
@@ -247,53 +268,64 @@ export function LandingPage(): React.JSX.Element {
 							</a>
 						</div>
 
-						{/* Architectural Telemetry Strip */}
-						<div className="grid w-full max-w-md grid-cols-3 gap-3 pt-2 font-mono text-xs">
+						{/* Hardware Telemetry Strip */}
+						<div className="grid w-full max-w-lg grid-cols-3 gap-3 pt-2 font-mono text-xs">
 							<div className="border-border bg-background rounded-card brutal-shadow-sm border-2 p-3">
-								<div className="text-muted-foreground text-[10px] font-bold">COMMANDS</div>
-								<div className="font-display text-accent text-base font-black">{PUBLIC_COMMANDS.length}+ CORE</div>
+								<div className="text-muted-foreground text-[10px] font-bold uppercase">MODULES</div>
+								<div className="font-display text-accent text-base font-black">90+ CMDS</div>
 							</div>
 							<div className="border-border bg-background rounded-card brutal-shadow-sm border-2 p-3">
-								<div className="text-muted-foreground text-[10px] font-bold">INTERFACE</div>
-								<div className="font-display text-foreground text-base font-black">SLASH + WEB</div>
+								<div className="text-muted-foreground text-[10px] font-bold uppercase">TRANSPORT</div>
+								<div className="font-display text-foreground text-base font-black">DUAL MODE</div>
 							</div>
 							<div className="border-border bg-background rounded-card brutal-shadow-sm border-2 p-3">
-								<div className="text-muted-foreground text-[10px] font-bold">RUNTIME</div>
-								<div className="font-display text-foreground text-base font-black">OPEN SOURCE</div>
+								<div className="text-muted-foreground text-[10px] font-bold uppercase">RUNTIME</div>
+								<div className="font-display text-foreground text-base font-black">DOCKER / TS</div>
 							</div>
 						</div>
 					</div>
 
-					{/* Interactive Command Composer Showcase */}
+					{/* Interactive Cyber Shell Showcase */}
 					<div className="flex flex-col items-stretch justify-center lg:col-span-5">
 						<Composer palette={palette} />
 					</div>
 				</div>
 			</section>
 
-			{/* Capabilities Bento Matrix */}
-			<section id="features" aria-labelledby="features-heading" className="flex flex-col gap-6">
-				<div className="flex flex-col gap-2">
-					<p className="text-accent font-mono text-xs font-bold tracking-widest uppercase">
-						[ SECTION 02 // ARCHITECTURE ]
-					</p>
-					<h2 id="features-heading" className="font-display text-2xl font-black tracking-tight uppercase sm:text-4xl">
-						{t("landing.featuresTitle", { bot: name })}
-					</h2>
+			{/* System Architecture Bento Grid */}
+			<section id="features" aria-labelledby="features-heading" className="flex flex-col gap-6 pt-4">
+				<div className="border-border flex flex-col justify-between gap-4 border-b-2 pb-4 sm:flex-row sm:items-end">
+					<div className="flex flex-col gap-2">
+						<p className="text-accent font-mono text-xs font-bold tracking-widest uppercase">
+							[ SECTION 02 // SYSTEM MODULES ]
+						</p>
+						<h2 id="features-heading" className="font-display text-2xl font-black tracking-tight uppercase sm:text-4xl">
+							{t("landing.featuresTitle", { bot: name })}
+						</h2>
+					</div>
+					<Link
+						to="/docs/commands"
+						className="brutal-btn bg-card text-foreground inline-flex items-center gap-2 self-start rounded-field px-4 py-2 font-mono text-xs sm:self-auto"
+					>
+						<BookOpen className="text-accent size-3.5" aria-hidden="true" />
+						<span>{t("site.docs")}</span>
+					</Link>
 				</div>
 
 				<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-					{capabilities.map(({ code, icon: Icon, tint, title, body, footer }) => (
+					{capabilities.map(({ code, icon: Icon, tint, strip, title, body, footer }) => (
 						<article
 							key={code}
-							className="brutal-card rounded-card flex flex-col justify-between gap-4 p-6"
+							className={cn("brutal-card rounded-card flex flex-col justify-between gap-4 border-t-4 p-6", strip)}
 						>
 							<div className="flex flex-col gap-3">
 								<div className="flex items-center justify-between">
 									<div className="border-border bg-muted rounded-field brutal-shadow-sm flex size-10 items-center justify-center border-2">
 										<Icon className={cn("size-5", tint)} aria-hidden="true" />
 									</div>
-									<span className="text-muted-foreground font-mono text-xs font-bold uppercase">[ {code} ]</span>
+									<span className="border-border bg-muted text-foreground rounded-chip border px-2 py-0.5 font-mono text-[10px] font-bold uppercase">
+										{code}
+									</span>
 								</div>
 								<h3 className="font-display text-lg font-black uppercase">{title}</h3>
 								<p className="text-muted-foreground text-sm leading-relaxed">{body}</p>
@@ -307,8 +339,8 @@ export function LandingPage(): React.JSX.Element {
 			</section>
 
 			{/* Interactive Command Matrix */}
-			<section id="commands" aria-labelledby="commands-heading" className="flex flex-col gap-6">
-				<div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+			<section id="commands" aria-labelledby="commands-heading" className="flex flex-col gap-6 pt-4">
+				<div className="border-border flex flex-col justify-between gap-4 border-b-2 pb-4 sm:flex-row sm:items-end">
 					<div className="flex flex-col gap-2">
 						<p className="text-accent font-mono text-xs font-bold tracking-widest uppercase">
 							[ SECTION 03 // COMMAND CATALOG ]
@@ -382,7 +414,7 @@ export function LandingPage(): React.JSX.Element {
 									</div>
 									<div className="border-border bg-background text-foreground rounded-field flex w-full items-center justify-between border-2 px-2.5 py-1.5 font-mono text-xs">
 										<span className="truncate">{cmd.syntax}</span>
-										<span className="ml-2 shrink-0">
+										<span className="ml-2 flex shrink-0 items-center gap-1">
 											{isCopied ? (
 												<Check className="text-success size-3.5" aria-hidden="true" />
 											) : (
@@ -401,36 +433,61 @@ export function LandingPage(): React.JSX.Element {
 				</div>
 			</section>
 
-			{/* Bottom Deployment CTA */}
-			<section className="bg-card border-border rounded-card brutal-shadow-lg flex flex-col items-center gap-6 border-2 p-8 text-center sm:p-12">
-				<div className="border-border bg-accent-wash text-accent rounded-chip brutal-shadow-sm inline-flex items-center gap-2 border-2 px-3 py-1 font-mono text-xs font-bold uppercase">
-					<Zap className="size-3.5" aria-hidden="true" />
-					<span>{t("landing.openSource")}</span>
+			{/* Self-Host Deployment Pipeline & Open Source CTA */}
+			<section className="bg-card border-border rounded-card brutal-shadow-lg flex flex-col gap-6 border-2 p-6 sm:p-12">
+				<div className="flex flex-col justify-between gap-4 border-b-2 border-border pb-4 md:flex-row md:items-end">
+					<div className="flex flex-col gap-2">
+						<div className="border-border bg-accent-wash text-accent rounded-chip brutal-shadow-sm inline-flex w-fit items-center gap-2 border-2 px-3 py-1 font-mono text-xs font-bold uppercase">
+							<Code2 className="size-3.5" aria-hidden="true" />
+							<span>{t("landing.openSource")}</span>
+						</div>
+						<h2 className="font-display text-2xl font-black tracking-tight uppercase sm:text-4xl">
+							{t("landing.selfHost.title")}
+						</h2>
+						<p className="text-muted-foreground max-w-xl font-mono text-xs sm:text-sm">
+							{t("landing.selfHost.body", { bot: name })}
+						</p>
+					</div>
+
+					<div className="flex flex-wrap items-center gap-3">
+						<a
+							href={invite}
+							target="_blank"
+							rel="noreferrer"
+							className="brutal-btn brutal-btn-primary inline-flex min-h-11 items-center gap-2 rounded-field px-6 py-3 font-mono text-sm"
+						>
+							<span>{t("landing.invite")}</span>
+							<ExternalLink className="size-4" aria-hidden="true" />
+						</a>
+						{site.data?.repository !== undefined && (
+							<Link
+								to="/source"
+								className="brutal-btn bg-background text-foreground inline-flex min-h-11 items-center gap-2 rounded-field px-4 py-3 font-mono text-xs"
+							>
+								<span>{t("landing.source.browse")}</span>
+								<ArrowRight className="size-4" aria-hidden="true" />
+							</Link>
+						)}
+					</div>
 				</div>
 
-				<h2 className="font-display max-w-2xl text-3xl font-black tracking-tight uppercase sm:text-4xl">
-					{t("landing.selfHost.title")}
-				</h2>
-				<p className="text-muted-foreground max-w-xl font-mono text-xs sm:text-sm">
-					{t("landing.selfHost.body", { bot: name })}
-				</p>
-				<div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-					<a
-						href={invite}
-						target="_blank"
-						rel="noreferrer"
-						className="brutal-btn brutal-btn-primary inline-flex min-h-11 items-center gap-2 rounded-field px-6 py-3 font-mono text-sm"
-					>
-						<span>{t("landing.invite")}</span>
-						<ExternalLink className="size-4" aria-hidden="true" />
-					</a>
-					<Link
-						to="/docs"
-						className="brutal-btn bg-background text-foreground inline-flex min-h-11 items-center gap-2 rounded-field px-6 py-3 font-mono text-xs"
-					>
-						<span>{t("landing.runYourOwn")}</span>
-						<ArrowRight className="size-4" aria-hidden="true" />
-					</Link>
+				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+					{selfHostSteps.map((item) => (
+						<Link
+							key={item.to}
+							to={item.to}
+							className="brutal-card bg-background rounded-card group flex flex-col justify-between gap-3 p-4"
+						>
+							<span className="text-accent font-mono text-xs font-bold">STEP {item.step} //</span>
+							<span className="font-display flex items-center justify-between gap-2 text-sm font-black uppercase">
+								<span>{item.label}</span>
+								<ArrowRight
+									className="text-muted-foreground group-hover:text-accent size-4 shrink-0 transition-transform duration-100 group-hover:translate-x-0.5"
+									aria-hidden="true"
+								/>
+							</span>
+						</Link>
+					))}
 				</div>
 			</section>
 		</div>

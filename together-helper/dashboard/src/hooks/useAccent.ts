@@ -20,12 +20,12 @@ export const ACCENTS = [
 export type PresetAccent = (typeof ACCENTS)[number];
 export type Accent = PresetAccent | "custom";
 
-/** Plum is the base palette in `index.css`, so choosing it removes the attribute rather than restating it. */
+/** Emerald is the base palette in `index.css`, so choosing it removes the attribute rather than restating it. */
 export const ACCENT: Preference<Accent> = {
 	attribute: "data-accent",
 	storageKey: "together-helper:accent",
 	options: [...ACCENTS, "custom"],
-	fallback: "plum",
+	fallback: "emerald",
 };
 
 export const CUSTOM_COLOUR_KEY = "together-helper:accent-colour";
@@ -50,7 +50,7 @@ export function applyCustomColour(hex: string | null): void {
 	}
 }
 
-/** Custom with no colour behind it is plum, which is also what the stylesheet falls back to. */
+/** Custom with no colour behind it is emerald, which is also what the stylesheet falls back to. */
 export function storedAccent(): Accent {
 	const accent = storedPreference(ACCENT);
 	return accent === "custom" && storedCustomColour() === null ? ACCENT.fallback : accent;

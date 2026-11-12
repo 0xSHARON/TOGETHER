@@ -9,18 +9,18 @@ export function UsageChart({ days }: { days: UsageDay[] }): React.JSX.Element {
 
 	return (
 		<figure className="flex flex-col gap-2">
-			<div className="flex h-28 items-end gap-px" aria-hidden="true">
+			<div className="border-border bg-background flex h-28 items-end gap-px border-b-2 pt-2" aria-hidden="true">
 				{days.map((day) => (
 					<span
 						key={day.day}
 						title={`${shortDay(day.day)}: ${formatNumber(day.count)}`}
-						className="bg-primary/30 hover:bg-primary/60 min-h-px flex-1 rounded-t-chip transition-colors duration-150"
+						className="bg-primary hover:bg-accent min-h-px flex-1 rounded-t-chip transition-colors duration-100"
 						style={{ height: `${String(Math.round((day.count / max) * 100))}%` }}
 					/>
 				))}
 			</div>
 
-			<div className="text-muted-foreground flex justify-between text-xs" aria-hidden="true">
+			<div className="text-muted-foreground flex justify-between font-mono text-xs" aria-hidden="true">
 				<span>{shortDay(days[0]?.day ?? "")}</span>
 				<span>{shortDay(days.at(-1)?.day ?? "")}</span>
 			</div>

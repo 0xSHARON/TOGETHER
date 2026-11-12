@@ -31,7 +31,10 @@ export function NotFoundContent(): React.JSX.Element {
 			</Card>
 
 			{/* The address is the one thing that makes a bug report actionable, so it is printed rather than guessed at. */}
-			<p className="text-muted-foreground font-mono text-xs break-all">{pathname}</p>
+			<p className="border-border bg-card text-muted-foreground rounded-field brutal-shadow-sm border-2 px-3 py-2 font-mono text-xs font-bold break-all">
+				<span>PATH // </span>
+				<span>{pathname}</span>
+			</p>
 		</>
 	);
 }

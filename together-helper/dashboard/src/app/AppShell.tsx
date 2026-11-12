@@ -68,14 +68,28 @@ export function AppShell(): React.JSX.Element {
 				{searching && <QuickSearch {...audience} onClose={closeSearch} />}
 
 				{/* Keyed on the path so each screen mounts afresh, and `min-w-0` because a flex item will not otherwise shrink below its content. */}
-				<main
-					id="content"
-					key={location.pathname}
-					className="mx-auto flex w-full max-w-[1120px] min-w-0 flex-1 flex-col gap-6 p-4 sm:p-6"
-				>
-					<NoticeBanner />
-					<Outlet />
-				</main>
+				<div className="flex min-w-0 flex-1 flex-col">
+					<div className="border-border bg-sidebar hidden h-11 items-center justify-between gap-4 border-b-2 px-6 font-mono text-[11px] font-bold tracking-wider uppercase md:flex">
+						<span className="text-muted-foreground flex items-center gap-2 truncate">
+							<span aria-hidden="true" className="bg-success rounded-chip size-2 shrink-0" />
+							<span className="text-accent">SYS // CONSOLE</span>
+							<span aria-hidden="true">/</span>
+							<span className="text-foreground truncate">
+								{guild === undefined ? location.pathname : `${guild.name} · ${location.pathname}`}
+							</span>
+						</span>
+						<span className="text-muted-foreground shrink-0">CTRL+K // JUMP</span>
+					</div>
+
+					<main
+						id="content"
+						key={location.pathname}
+						className="mx-auto flex w-full max-w-[1160px] min-w-0 flex-1 flex-col gap-6 p-4 sm:p-6"
+					>
+						<NoticeBanner />
+						<Outlet />
+					</main>
+				</div>
 			</div>
 		</UndoProvider>
 	);

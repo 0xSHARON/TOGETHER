@@ -108,7 +108,9 @@ export function StatusPage(): React.JSX.Element {
 				</p>
 				{report.paused && <p className="text-warning text-sm">{t("status.paused")}</p>}
 				<p className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-					<span>{t("status.version", { version: report.version })}</span>
+					<span className="border-border bg-muted text-foreground rounded-chip border-2 px-2 py-0.5 font-mono text-xs font-semibold">
+						{t("status.version", { version: report.version })}
+					</span>
 					{bot.data !== undefined && (
 						<a
 							href={`${bot.data.repositoryUrl}/releases`}

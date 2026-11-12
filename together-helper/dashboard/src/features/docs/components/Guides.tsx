@@ -77,14 +77,14 @@ function Guide({ id }: { id: string }): React.JSX.Element {
 					<h2 className="font-display text-xl font-bold tracking-tight">{article.title}</h2>
 					<ArticleBody body={article.body} />
 					{(reply.data?.related.length ?? 0) > 0 && (
-						<div className="border-border flex flex-col gap-2 border-t pt-4">
-							<h3 className="text-muted-foreground text-sm font-medium">{t("docs.guides.related")}</h3>
+						<div className="border-border flex flex-col gap-2 border-t-2 pt-4">
+							<h3 className="text-muted-foreground font-mono text-xs font-bold tracking-wider uppercase">{t("docs.guides.related")}</h3>
 							<ul className="flex flex-wrap gap-2">
 								{reply.data?.related.map((link) => (
 									<li key={link.id}>
 										<Link
 											to={`/docs/guides/${link.id}`}
-											className="bg-muted hover:text-foreground text-muted-foreground rounded-chip inline-flex min-h-6 items-center px-2 text-sm"
+											className="border-border bg-muted hover:text-foreground hover:border-accent text-muted-foreground rounded-chip inline-flex min-h-6 items-center border-2 px-2 font-mono text-xs font-semibold transition-colors"
 										>
 											{link.title}
 										</Link>

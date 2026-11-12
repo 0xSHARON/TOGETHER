@@ -1,5 +1,5 @@
 import { DEFAULT_PREFIX } from "@together-helper/shared";
-import { Hash, PlusCircle } from "lucide-react";
+import { Hash, Terminal } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -54,13 +54,21 @@ export function Composer({ palette }: { palette: readonly PaletteCommand[] }): R
 	return (
 		<figure className="flex flex-col gap-3">
 			{/* The moving box is for the eye; what it types is said once, in words, below it. */}
-			<div aria-hidden="true" className="bg-card border-border rounded-card brutal-shadow overflow-hidden border-2">
-				<div className="bg-muted text-foreground border-border flex items-center justify-between border-b-2 px-4 py-2.5 font-mono text-xs font-bold">
+			<div aria-hidden="true" className="cyber-terminal cyber-scan rounded-card overflow-hidden">
+				<div className="border-border bg-card flex items-center justify-between border-b-2 px-4 py-2.5 font-mono text-xs font-bold">
 					<span className="flex items-center gap-2">
-						<Hash size={14} aria-hidden="true" />
-						<span>{t("landing.composer.channel")}</span>
+						<span className="flex items-center gap-1">
+							<span className="bg-destructive rounded-chip size-2.5 border border-black" />
+							<span className="bg-warning rounded-chip size-2.5 border border-black" />
+							<span className="bg-success rounded-chip size-2.5 border border-black" />
+						</span>
+						<span className="text-border">|</span>
+						<Hash size={13} className="text-accent" />
+						<span className="text-foreground">{t("landing.composer.channel")}</span>
 					</span>
-					<span className="text-accent font-mono text-[10px] font-bold tracking-widest uppercase">LIVE</span>
+					<span className="border-border bg-accent-wash text-accent rounded-chip border px-2 py-0.5 text-[10px] tracking-widest uppercase">
+						LIVE SHELL
+					</span>
 				</div>
 
 				<div className="relative flex h-64 flex-col justify-end gap-3 p-4">
@@ -72,8 +80,9 @@ export function Composer({ palette }: { palette: readonly PaletteCommand[] }): R
 
 			<figcaption className="text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs">
 				<span className="sr-only">{t("landing.composer.example", { command: slashLine(scene) })}</span>
+				<Terminal size={13} aria-hidden="true" className="text-accent shrink-0" />
 				<span>{t("landing.composer.twin")}</span>
-				<code className="bg-card border-border text-foreground rounded-chip border-2 px-2 py-0.5 font-mono text-xs font-bold">
+				<code className="bg-card border-border text-accent rounded-chip border-2 px-2 py-0.5 font-mono text-xs font-bold">
 					{prefixLine(scene, DEFAULT_PREFIX)}
 				</code>
 			</figcaption>
@@ -87,17 +96,17 @@ function slashLine(scene: ComposerScene): string {
 
 function History(): React.JSX.Element {
 	return (
-		<div className="flex flex-1 flex-col justify-end gap-4 overflow-hidden opacity-60">
+		<div className="flex flex-1 flex-col justify-end gap-3 overflow-hidden opacity-55">
 			{[
-				["w-16", "w-48"],
-				["w-24", "w-56"],
-				["w-20", "w-40"],
+				["w-20", "w-52"],
+				["w-24", "w-64"],
+				["w-16", "w-44"],
 			].map(([name, text]) => (
 				<div key={name} className="flex items-start gap-3">
-					<span className="bg-muted size-8 shrink-0 rounded-full" />
+					<span className="border-border bg-muted rounded-tile size-7 shrink-0 border-2" />
 					<span className="flex flex-col gap-2 pt-1">
-						<span className={cn("bg-muted rounded-chip h-2.5", name)} />
-						<span className={cn("bg-muted/70 rounded-chip h-2.5", text)} />
+						<span className={cn("bg-muted rounded-chip h-2", name)} />
+						<span className={cn("bg-muted/70 rounded-chip h-2", text)} />
 					</span>
 				</div>
 			))}
@@ -117,7 +126,7 @@ function Menu({ commands, typed }: { commands: readonly PaletteCommand[]; typed:
 						/<span className="text-accent">{command.name.slice(0, typed.length)}</span>
 						{command.name.slice(typed.length)}
 					</span>
-					<span className="text-muted-foreground truncate">{command.description}</span>
+					<span className="text-muted-foreground truncate text-xs">{command.description}</span>
 				</li>
 			))}
 		</ul>
@@ -126,8 +135,8 @@ function Menu({ commands, typed }: { commands: readonly PaletteCommand[]; typed:
 
 function Line({ frame, command }: { frame: ComposerFrame; command: string }): React.JSX.Element {
 	return (
-		<div className="bg-muted border-border rounded-field flex min-h-12 flex-wrap items-center gap-2 border-2 px-3 py-2 font-mono text-sm">
-			<PlusCircle size={18} aria-hidden="true" className="text-muted-foreground shrink-0" />
+		<div className="bg-card border-border rounded-field flex min-h-12 flex-wrap items-center gap-2 border-2 px-3 py-2 font-mono text-sm">
+			<span className="text-accent shrink-0 font-bold">&gt;_</span>
 			{frame.typing !== null ? (
 				<span className="text-foreground font-bold">/{frame.typing}</span>
 			) : (
@@ -137,13 +146,13 @@ function Line({ frame, command }: { frame: ComposerFrame; command: string }): Re
 					</span>
 					{frame.options.map((option) => (
 						<span key={option.name} className="border-border rounded-chip flex items-center overflow-hidden border">
-							<span className="bg-background text-muted-foreground px-1.5 py-0.5">{option.name}</span>
-							<span className="bg-card text-foreground px-1.5 py-0.5 font-bold">{option.value}</span>
+							<span className="bg-muted text-muted-foreground px-1.5 py-0.5 text-xs">{option.name}</span>
+							<span className="bg-background text-foreground px-1.5 py-0.5 text-xs font-bold">{option.value}</span>
 						</span>
 					))}
 				</>
 			)}
-			<span className="bg-foreground animate-caret -ml-1 h-4 w-px" />
+			<span className="bg-accent animate-caret -ml-1 h-4 w-1.5" />
 		</div>
 	);
 }

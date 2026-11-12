@@ -55,10 +55,10 @@ export function RunOutputs({ result }: { result: CommandRunResult }): React.JSX.
 				return (
 					<article
 						key={index}
-						className="border-border bg-muted/40 rounded-field border border-l-4 py-3 pr-4 pl-4"
+						className="border-border bg-card brutal-shadow-sm rounded-field border-2 border-l-4 py-3 pr-4 pl-4"
 						{...(accent === null ? {} : { style: { borderLeftColor: accent } })}
 					>
-						{output.title !== null && <h3 className="text-sm font-semibold">{output.title}</h3>}
+						{output.title !== null && <h3 className="font-display text-sm font-black uppercase">{output.title}</h3>}
 						{output.description !== null && <p className="mt-1 text-sm whitespace-pre-wrap">{output.description}</p>}
 
 						{output.fields.length > 0 && (

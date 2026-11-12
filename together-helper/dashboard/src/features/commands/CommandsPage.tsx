@@ -197,9 +197,9 @@ function CategoryChip({
 			aria-pressed={active}
 			onClick={onSelect}
 			className={cn(
-				"rounded-full px-3 py-1 text-xs font-medium capitalize transition-colors duration-150",
+				"border-border rounded-chip brutal-shadow-sm cursor-pointer border-2 px-3 py-1 font-mono text-xs font-bold tracking-wider uppercase transition-all duration-100",
 				"focus-visible:outline-ring focus-visible:outline-2 focus-visible:outline-offset-2",
-				active ? SELECTED : cn(UNSELECTED, "hover:text-foreground"),
+				active ? SELECTED : cn(UNSELECTED, "hover:border-accent hover:text-foreground"),
 			)}
 		>
 			{label}

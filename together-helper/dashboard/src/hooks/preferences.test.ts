@@ -52,7 +52,7 @@ describe("applying stored preferences before the app mounts", () => {
 	});
 
 	/** Storage holds whatever was last written to it, and a value reaching a style property must be a colour. */
-	it("ignores a remembered colour that is not one, and falls back to plum", () => {
+	it("ignores a remembered colour that is not one, and falls back to the base accent", () => {
 		window.localStorage.setItem("together-helper:accent", "custom");
 		window.localStorage.setItem("together-helper:accent-colour", "red; background: url(x)");
 

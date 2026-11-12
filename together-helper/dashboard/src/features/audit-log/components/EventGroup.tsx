@@ -32,11 +32,11 @@ export function EventGroup({
 	const chosen = inGroup.filter((event) => events.includes(event)).length;
 
 	return (
-		<fieldset className="border-border bg-background/40 rounded-card min-w-0 border">
+		<fieldset className="border-border bg-card rounded-card brutal-shadow-sm min-w-0 border-2">
 			<legend className="sr-only">{t(GROUP_LABELS[group])}</legend>
 
 			{/* The count is beside the label rather than inside it: it is a status, not part of the tickbox's name. */}
-			<div className="border-border flex items-center gap-2 border-b px-3 py-2.5 text-sm font-semibold">
+			<div className="border-border bg-muted/40 flex items-center gap-2 border-b-2 px-3 py-2.5 font-mono text-xs font-bold tracking-wider uppercase">
 				<label
 					className={cn(
 						INLINE_TARGET,

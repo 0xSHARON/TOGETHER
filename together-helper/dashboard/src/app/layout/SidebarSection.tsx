@@ -57,8 +57,8 @@ export function SidebarSection({
 				className={cn(
 					"flex flex-col gap-1",
 					expanded
-						? "ml-[9px] border-l border-border pl-[9px]"
-						: "lg:ml-[9px] lg:border-l lg:border-border lg:pl-[9px]",
+						? "ml-[9px] border-l-2 border-border pl-3"
+						: "lg:ml-[9px] lg:border-l-2 lg:border-border lg:pl-3",
 					open ? "" : collapsible === true ? "hidden" : "lg:hidden",
 				)}
 			>

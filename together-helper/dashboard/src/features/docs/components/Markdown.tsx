@@ -239,7 +239,7 @@ function CodeBlock({ code, language }: { code: string; language: string | undefi
 
 	return (
 		<div className="relative min-w-0">
-			<pre className="code-tokens bg-card border-border rounded-field overflow-x-auto border p-4 pr-12 font-mono text-[0.8125rem] leading-relaxed">
+			<pre className="code-tokens bg-card border-border brutal-shadow rounded-field overflow-x-auto border-2 p-4 pr-12 font-mono text-[0.8125rem] leading-relaxed">
 				<code>{highlighted(code, language)}</code>
 			</pre>
 			<button
@@ -282,7 +282,7 @@ function Quote({ quote, scope }: { quote: Tokens.Blockquote; scope: Scope }): Re
 
 	if (alert === null) {
 		return (
-			<blockquote className="border-border text-muted-foreground flex flex-col gap-3 border-l-2 pl-4">
+			<blockquote className="border-border text-muted-foreground flex flex-col gap-3 border-l-4 pl-4">
 				<Blocks tokens={quote.tokens} scope={scope} />
 			</blockquote>
 		);
@@ -291,8 +291,8 @@ function Quote({ quote, scope }: { quote: Tokens.Blockquote; scope: Scope }): Re
 	const look = ALERT_LOOK[alert.kind];
 	const Icon = look.icon;
 	return (
-		<aside className={cn("bg-card rounded-field flex flex-col gap-2 border-l-2 px-4 py-3", look.tint)}>
-			<p className="flex items-center gap-2 text-sm font-semibold">
+		<aside className={cn("bg-card border-border rounded-field brutal-shadow-sm flex flex-col gap-2 border-2 border-l-4 px-4 py-3", look.tint)}>
+			<p className="flex items-center gap-2 font-mono text-xs font-bold tracking-wider uppercase">
 				<Icon size={16} aria-hidden="true" />
 				{t(look.label)}
 			</p>
@@ -340,12 +340,16 @@ function Table({ table, scope }: { table: Tokens.Table; scope: Scope }): React.J
 		cn("border-border border-b px-3 py-2 align-top", align === null ? "text-left" : ALIGN[align]);
 
 	return (
-		<div className="border-border rounded-field min-w-0 overflow-x-auto border">
+		<div className="border-border bg-card brutal-shadow rounded-field min-w-0 overflow-x-auto border-2">
 			<table className="w-full border-collapse text-sm">
-				<thead className="bg-muted/50">
+				<thead className="bg-muted border-border border-b-2">
 					<tr>
 						{table.header.map((head, index) => (
-							<th key={index} scope="col" className={cn(cell(head.align), "font-semibold")}>
+							<th
+								key={index}
+								scope="col"
+								className={cn(cell(head.align), "font-mono text-xs font-bold tracking-wider uppercase")}
+							>
 								{inline(head.tokens, scope)}
 							</th>
 						))}

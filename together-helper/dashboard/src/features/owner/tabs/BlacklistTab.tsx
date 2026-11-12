@@ -128,7 +128,7 @@ export function BlacklistTab(): React.JSX.Element {
 						{rows.data.map((row) => (
 							<li
 								key={row.userId}
-								className="border-border flex flex-wrap items-center gap-x-3 gap-y-2 border-b pb-3 last:border-0 last:pb-0"
+								className="border-border flex flex-wrap items-center gap-x-3 gap-y-2 border-b-2 pb-3 last:border-0 last:pb-0"
 							>
 								<div className="order-1 flex min-w-0 flex-1 items-center gap-3">
 									<Avatar name={row.tag ?? row.userId} url={row.avatarUrl} size={32} seed={row.userId} />

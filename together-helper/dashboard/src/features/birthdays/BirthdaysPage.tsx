@@ -123,11 +123,11 @@ export function BirthdaysPage(): React.JSX.Element {
 					</Card>
 				) : (
 					<Card padding="none">
-						<ul className="divide-border divide-y">
+						<ul className="divide-border divide-y-2">
 							{birthdays.upcoming.map((entry) => (
 								<li key={entry.userId} className="flex items-center justify-between gap-3 px-6 py-3 text-sm">
 									<span className="min-w-0 truncate font-medium">{entry.name}</span>
-									<span className="text-muted-foreground shrink-0 tabular-nums">
+									<span className="text-muted-foreground shrink-0 font-mono text-xs tabular-nums">
 										{t("birthdays.on", {
 											day: entry.day,
 											month: monthName(entry.month),

@@ -114,12 +114,12 @@ function Code({ path, text }: { path: string; text: string }): React.JSX.Element
 			role="region"
 			aria-label={t("source.codeOf", { path })}
 			tabIndex={0}
-			className="bg-card border-border rounded-card focus-visible:outline-ring overflow-x-auto border focus-visible:outline-2"
+			className="bg-card border-border brutal-shadow rounded-card focus-visible:outline-ring overflow-x-auto border-2 focus-visible:outline-2"
 		>
 			<div className="flex min-w-max font-mono text-[0.8125rem] leading-6">
 				<pre
 					aria-hidden="true"
-					className="text-muted-foreground border-border bg-card sticky left-0 border-r px-3 py-4 text-right select-none"
+					className="text-muted-foreground border-border bg-muted sticky left-0 border-r-2 px-3 py-4 text-right font-bold select-none"
 				>
 					{Array.from({ length: Math.max(1, lines) }, (_, index) => index + 1).join("\n")}
 				</pre>

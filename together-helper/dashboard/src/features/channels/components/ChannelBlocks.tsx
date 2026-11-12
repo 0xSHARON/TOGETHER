@@ -49,7 +49,7 @@ function ChannelBlock({ feature, channelId, channels, guildId }: BlockProps): Re
 	return (
 		<Card padding="none">
 			<section aria-labelledby={headingId}>
-				<div className="border-border flex flex-wrap items-center gap-3 border-b px-6 py-3">
+				<div className="border-border bg-muted/40 flex flex-wrap items-center gap-3 border-b-2 px-6 py-3">
 					<h2 id={headingId} className={CARD_HEADING}>
 						{name}
 					</h2>

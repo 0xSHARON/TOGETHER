@@ -32,10 +32,10 @@ export function DrawHistory({
 					{draws.map((draw) => (
 						<li
 							key={draw.at}
-							className="border-border flex flex-wrap items-baseline justify-between gap-2 border-b pb-3 last:border-0 last:pb-0"
+							className="border-border flex flex-wrap items-baseline justify-between gap-2 border-b-2 pb-3 last:border-0 last:pb-0"
 						>
 							<div>
-								<time dateTime={draw.at} className="text-sm font-medium">
+								<time dateTime={draw.at} className="font-mono text-xs font-bold tracking-wider uppercase">
 									{shortDate(draw.at)}
 								</time>
 								<p className="text-muted-foreground text-xs tabular-nums">

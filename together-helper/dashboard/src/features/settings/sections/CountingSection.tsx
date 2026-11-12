@@ -96,9 +96,9 @@ export function CountingSection({
 							{t("settings.resetToZero")}
 						</Button>
 					</div>
-					<div aria-hidden="true" className="bg-muted h-1.5 overflow-hidden rounded-full">
+					<div aria-hidden="true" className="bg-muted border-border rounded-chip h-2.5 overflow-hidden border-2">
 						<span
-							className="bg-primary block h-full rounded-full transition-[width] duration-500"
+							className="bg-accent-wash border-accent block h-full border-r-2 transition-[width] duration-500"
 							style={{ width: `${String(countProgress(value.count, value.maxCount))}%` }}
 						/>
 					</div>

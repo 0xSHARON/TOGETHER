@@ -72,10 +72,10 @@ function DocsNav({ current }: { current: string | undefined }): React.JSX.Elemen
 							aria-current={page.slug === current ? "page" : undefined}
 							className={cn(
 								INLINE_TARGET,
-								"rounded-chip w-full px-2 py-1 text-sm transition-colors duration-150",
+								"rounded-chip border-2 w-full px-2.5 py-1.5 text-sm font-medium transition-all duration-100",
 								page.slug === current
-									? "bg-muted text-foreground font-medium"
-									: "text-muted-foreground hover:text-foreground",
+									? "border-border bg-accent-wash text-accent brutal-shadow-sm font-bold"
+									: "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted",
 							)}
 						>
 							{t(page.titleKey)}
@@ -87,15 +87,17 @@ function DocsNav({ current }: { current: string | undefined }): React.JSX.Elemen
 	));
 
 	return (
-		<nav aria-label={t("docs.nav")} className="lg:sticky lg:top-6 lg:self-start">
+		<nav aria-label={t("docs.nav")} className="lg:sticky lg:top-20 lg:self-start">
 			{/* A phone gets the list folded away, or the page would open on two screens of links. */}
-			<details className="border-border rounded-card border lg:hidden">
-				<summary className="flex min-h-11 cursor-pointer items-center px-4 text-sm font-medium">
+			<details className="border-border bg-card brutal-shadow-sm rounded-card border-2 lg:hidden">
+				<summary className="flex min-h-11 cursor-pointer items-center px-4 font-mono text-xs font-bold tracking-wider uppercase">
 					{t("docs.contents")}
 				</summary>
 				<div className="flex flex-col gap-4 px-4 pb-4">{groups}</div>
 			</details>
-			<div className="hidden flex-col gap-6 lg:flex">{groups}</div>
+			<div className="border-border bg-card brutal-shadow rounded-card hidden flex-col gap-6 border-2 p-4 lg:flex">
+				{groups}
+			</div>
 		</nav>
 	);
 }
@@ -105,9 +107,12 @@ function DocsIndex(): React.JSX.Element {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex flex-col gap-2">
+			<div className="border-border flex flex-col gap-2 border-b-2 pb-4">
+				<p className="text-accent font-mono text-xs font-bold tracking-widest uppercase">
+					[ MANUAL // REPOSITORY DOCS ]
+				</p>
 				<h1 className={PAGE_TITLE}>{t("docs.title")}</h1>
-				<p className="text-muted-foreground max-w-2xl">{t("docs.subtitle")}</p>
+				<p className="text-muted-foreground max-w-2xl text-sm font-medium">{t("docs.subtitle")}</p>
 			</div>
 
 			{DOC_GROUPS.map((group) => (
@@ -121,17 +126,16 @@ function DocsIndex(): React.JSX.Element {
 								<Link
 									to={`/docs/${page.slug}`}
 									className={cn(
-										"bg-card border-border rounded-card group flex h-full flex-col gap-1 border px-6 py-4",
-										"hover:border-accent/60 transition-colors duration-150",
+										"brutal-card rounded-card group flex h-full flex-col gap-2 px-6 py-4",
 										"focus-visible:outline-ring focus-visible:outline-2 focus-visible:outline-offset-2",
 									)}
 								>
-									<span className="flex items-center gap-2 font-medium">
+									<span className="font-display flex items-center gap-2 font-bold tracking-tight uppercase">
 										{t(page.titleKey)}
 										<ArrowRight
 											size={14}
 											aria-hidden="true"
-											className="text-muted-foreground transition-transform duration-150 group-hover:translate-x-0.5"
+											className="text-accent transition-transform duration-150 group-hover:translate-x-0.5"
 										/>
 									</span>
 									<span className="text-muted-foreground text-sm">{t(page.summaryKey)}</span>

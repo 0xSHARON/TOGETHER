@@ -169,7 +169,7 @@ export function AskCard({ name }: { name: string }): React.JSX.Element {
 
 				{shown !== undefined &&
 					(shown.answer === null ? (
-						<p className="text-muted-foreground border-border border-t pt-4 text-sm">
+						<p className="text-muted-foreground border-border border-t-2 pt-4 text-sm">
 							{t("help.askNoAnswer", { name })}
 						</p>
 					) : (
@@ -202,7 +202,7 @@ function Article({
 	}, [focus, article.id]);
 
 	return (
-		<article aria-labelledby={headingId} className="border-border flex flex-col gap-3 border-t pt-4">
+		<article aria-labelledby={headingId} className="border-border flex flex-col gap-3 border-t-2 pt-4">
 			<div className="flex flex-col gap-1">
 				<SectionHeading>{t(TOPIC_LABELS[article.topic])}</SectionHeading>
 				<h3
@@ -256,7 +256,7 @@ function Browse({ onOpen }: { onOpen: (id: string) => void }): React.JSX.Element
 	if (groups.length === 0) return null;
 
 	return (
-		<Disclosure label={t("help.browseTitle")} defaultOpen={false} className="border-border border-t pt-3">
+		<Disclosure label={t("help.browseTitle")} defaultOpen={false} className="border-border border-t-2 pt-3">
 			<div className="flex flex-col gap-4">
 				{groups.map((group) => (
 					<section key={group.topic} className="flex flex-col gap-2">

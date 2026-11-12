@@ -10,17 +10,17 @@ export function ActivityChart({ days }: { days: InsightDay[] }): React.JSX.Eleme
 
 	return (
 		<figure className="flex flex-col gap-2">
-			<div className="flex h-32 items-end gap-px" aria-hidden="true">
+			<div className="border-border bg-background flex h-32 items-end gap-px border-b-2 pt-2" aria-hidden="true">
 				{days.map((day) => (
 					<span
 						key={day.day}
 						title={`${shortDate(day.day)}: ${formatNumber(day.messages)}`}
-						className="bg-primary/30 hover:bg-primary/60 min-h-px flex-1 rounded-t-chip transition-colors duration-150"
+						className="bg-primary hover:bg-accent min-h-px flex-1 rounded-t-chip transition-colors duration-100"
 						style={{ height: `${String(barHeight(day.messages, max))}%` }}
 					/>
 				))}
 			</div>
-			<div className="text-muted-foreground flex justify-between text-xs" aria-hidden="true">
+			<div className="text-muted-foreground flex justify-between font-mono text-xs" aria-hidden="true">
 				<span>{shortDate(days[0]?.day ?? "")}</span>
 				<span>{shortDate(days.at(-1)?.day ?? "")}</span>
 			</div>

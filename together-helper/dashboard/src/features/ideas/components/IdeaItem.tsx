@@ -65,7 +65,7 @@ export function IdeaItem({
 							when: idea.decidedAt === null ? "" : dateAndTime(idea.decidedAt),
 						})}
 					</p>
-					{idea.reason !== "" && <blockquote className="border-border mt-1 border-l-2 pl-3">{idea.reason}</blockquote>}
+					{idea.reason !== "" && <blockquote className="border-accent bg-muted/40 rounded-field mt-1 border-l-4 px-3 py-2 font-mono text-xs">{idea.reason}</blockquote>}
 				</div>
 			)}
 

@@ -68,7 +68,7 @@ export function GuildCard({
 		<Card padding="compact" className={`${CARD_ROW} brutal-stripe border-dashed opacity-80`}>
 			{body}
 			<Tooltip label={t("guilds.noPermissionHint")}>
-				<span tabIndex={0} className="text-muted-foreground flex shrink-0 items-center gap-2 rounded-full text-xs">
+				<span tabIndex={0} className="border-border bg-muted text-muted-foreground rounded-chip flex shrink-0 items-center gap-2 border-2 px-2 py-0.5 font-mono text-xs uppercase">
 					<Lock size={14} aria-hidden="true" />
 					{t("guilds.noPermission")}
 				</span>

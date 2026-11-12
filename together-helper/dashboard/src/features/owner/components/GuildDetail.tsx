@@ -100,9 +100,9 @@ function LeaveServer({ guild, onLeft }: { guild: OwnerGuildDetail; onLeft: () =>
 	const inputId = `leave-${guild.id}`;
 
 	return (
-		<div className="border-border flex flex-col gap-3 border-t pt-4">
+		<div className="border-border flex flex-col gap-3 border-t-2 pt-4">
 			<div>
-				<h4 className="text-sm font-semibold">{t("owner.leaveServer")}</h4>
+				<h4 className="font-mono text-xs font-bold tracking-wider uppercase">{t("owner.leaveServer")}</h4>
 				<p className="text-muted-foreground text-sm">{t("owner.leaveBody")}</p>
 			</div>
 

@@ -9,13 +9,13 @@ export function MissingPermissions({ permissions }: { permissions: WatchedPermis
 	if (permissions.length === 0) return null;
 
 	return (
-		<Card className="border-warning/40 flex flex-col gap-2">
-			<h2 className="flex items-center gap-2 font-semibold">
-				<AlertTriangle className="text-warning" size={18} aria-hidden="true" />
+		<Card className="border-warning flex flex-col gap-3">
+			<h2 className="text-warning flex items-center gap-2 font-display font-black tracking-tight uppercase">
+				<AlertTriangle className="text-warning shrink-0" size={18} aria-hidden="true" />
 				{t("overview.missingTitle")}
 			</h2>
-			<p className="text-muted-foreground text-sm">{t("overview.missingBody")}</p>
-			<ul className="flex list-disc flex-col gap-1 pl-5 text-sm">
+			<p className="text-muted-foreground text-sm font-medium">{t("overview.missingBody")}</p>
+			<ul className="flex list-disc flex-col gap-1 pl-5 font-mono text-xs font-bold">
 				{permissions.map((permission) => (
 					<li key={permission}>{t(MISSING_LABELS[permission])}</li>
 				))}

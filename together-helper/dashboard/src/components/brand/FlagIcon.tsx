@@ -71,7 +71,7 @@ export function FlagIcon({ locale, className }: { locale: Locale; className?: st
 			role="presentation"
 			aria-hidden="true"
 			focusable="false"
-			className={`border-border shrink-0 border ${className ?? ""}`}
+			className={`border-border rounded-chip shrink-0 border-2 ${className ?? ""}`}
 		>
 			{FLAGS[locale]}
 		</svg>

@@ -11,17 +11,17 @@ export function UptimeStrip({ days }: { days: StatusDay[] }): React.JSX.Element 
 
 	return (
 		<figure className="flex flex-col gap-2">
-			<div className="flex h-10 items-stretch gap-px" aria-hidden="true">
+			<div className="border-border bg-background flex h-10 items-stretch gap-px border-2 p-0.5" aria-hidden="true">
 				{days.map((day) => (
 					<span
 						key={day.day}
 						title={`${shortDate(day.day)}: ${label(day)}`}
-						className={cn("rounded-chip min-w-0 flex-1 opacity-80 hover:opacity-100", dayFill(day.uptime))}
+						className={cn("rounded-chip min-w-0 flex-1 opacity-90 hover:opacity-100", dayFill(day.uptime))}
 					/>
 				))}
 			</div>
 
-			<div className="text-muted-foreground flex justify-between text-xs" aria-hidden="true">
+			<div className="text-muted-foreground flex justify-between font-mono text-xs" aria-hidden="true">
 				<span>{shortDate(days[0]?.day ?? "")}</span>
 				<span>{t("status.today")}</span>
 			</div>

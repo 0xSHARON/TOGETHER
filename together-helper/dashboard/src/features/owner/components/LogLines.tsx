@@ -25,12 +25,12 @@ export function LogLines({ lines }: { lines: LogLine[] }): React.JSX.Element {
 	}
 
 	return (
-		<ol className="divide-border divide-y font-mono text-xs">
+		<ol className="divide-border divide-y-2 font-mono text-xs">
 			{lines.map((line, index) => (
 				<li key={`${line.at}-${String(index)}`} className="flex flex-col gap-1 py-2 sm:flex-row sm:gap-3">
 					<span className="text-muted-foreground shrink-0 tabular-nums">{clockTime(line.at)}</span>
-					<span className={cn("w-12 shrink-0 uppercase", TONE[line.level] ?? "text-muted-foreground")}>
-						{line.level}
+					<span className={cn("w-14 shrink-0 font-bold uppercase", TONE[line.level] ?? "text-muted-foreground")}>
+						[{line.level}]
 					</span>
 					<span className="min-w-0 flex-1 break-words">
 						{line.message}
